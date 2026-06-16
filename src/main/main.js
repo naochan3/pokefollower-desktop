@@ -28,9 +28,23 @@ function registerAppProtocol() {
   });
 }
 
+// 全ディスプレイを内包する矩形（マルチモニター対応）
+function unionBounds() {
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const d of screen.getAllDisplays()) {
+    const { x, y, width, height } = d.bounds;
+    minX = Math.min(minX, x); minY = Math.min(minY, y);
+    maxX = Math.max(maxX, x + width); maxY = Math.max(maxY, y + height);
+  }
+  return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
+}
+
+function repositionOverlay() {
+  if (overlayWin && !overlayWin.isDestroyed()) overlayWin.setBounds(unionBounds());
+}
+
 function createOverlay() {
-  const display = screen.getPrimaryDisplay();
-  const { x, y, width, height } = display.workArea;
+  const { x, y, width, height } = unionBounds();
   overlayWin = new BrowserWindow({
     x, y, width, height,
     transparent: true,
@@ -127,6 +141,9 @@ app.whenReady().then(() => {
   app.setLoginItemSettings({ openAtLogin: true });
   registerAppProtocol();
   createOverlay();
+  screen.on("display-added", repositionOverlay);
+  screen.on("display-removed", repositionOverlay);
+  screen.on("display-metrics-changed", repositionOverlay);
 
   startCursorTracker(
     () => (overlayWin ? overlayWin.getBounds() : null),

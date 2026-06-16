@@ -10,13 +10,18 @@
       --announce-h: 0px;
       --announce-side-pad: 14px;
     }
+    html { height: 100%; }
     body {
       margin: 0;
-      padding-top: calc(64px + var(--announce-h)); /* give space below top band/notch + announcement */
+      padding-top: calc(64px + var(--announce-h)); /* give space below top band/notch */
       padding-bottom: 60px;      /* give space above bottom band text */
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      min-width: 360px;
-      max-width: 360px;
+      width: 100%;
+      min-height: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
       font-size: 14px;
       position: relative;
       background: #fff;
@@ -115,7 +120,7 @@
     #enabled:checked { background: #EF4036; }
     #enabled:checked::after { left: calc(100% - 18px); }
     /* Card body */
-    .card { padding: 10px 16px 0; }
+    .card { padding: 10px 16px 0; flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; }
 
     /* Controls layout: three columns */
     .triples { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; margin-top: 6px; }
@@ -173,8 +178,8 @@
       border: 1.5px solid #000; border-radius: 8px; font-size: 13px; font-weight: 600; outline: none;
     }
     .grid {
-      margin: 0 12px; padding: 4px; height: 300px; overflow-y: auto;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      margin: 0 12px; padding: 4px; flex: 1 1 auto; min-height: 160px; overflow-y: auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-content: start;
       border: 1.5px solid #000; border-radius: 8px; background: #fafafa;
     }
     .tile {
