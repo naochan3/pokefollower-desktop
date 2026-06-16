@@ -310,6 +310,16 @@ function loop() {
 
 function updateCursor(x, y) {
   const now = performance.now();
+  if (RUNTIME.pendingRecenter) {
+    // 別モニターへ移った直後：カーソル位置へ即合わせ＋速度リセット（逆走/速度暴発の防止）
+    RUNTIME.pendingRecenter = false;
+    RUNTIME.pos.x = x; RUNTIME.pos.y = y;
+    RUNTIME.lastMouse.x = x; RUNTIME.lastMouse.y = y; RUNTIME.lastMouse.t = now;
+    RUNTIME.velAvg.x = 0; RUNTIME.velAvg.y = 0; RUNTIME.speedAvg = 0;
+    RUNTIME.lastMoveTs = now;
+    if (followerEl && RUNTIME.meta) applyFrame();
+    return;
+  }
   const dt = Math.max(1, now - (RUNTIME.lastMouse.t || now)); // ms
   const vx = (x - RUNTIME.lastMouse.x) * (1000 / dt);
   const vy = (y - RUNTIME.lastMouse.y) * (1000 / dt);
@@ -359,13 +369,9 @@ function applyState() {
 
 // --- デスクトップ版ブート ---
 window.pokeapi.onCursor(({ x, y }) => updateCursor(x, y));
-window.pokeapi.onDisplayShift(({ dx, dy }) => {
-  // 別モニターへ窓が移った分だけ内部座標を平行移動し、物理的な連続性を保つ。
-  // 旧モニター上の位置は新しい窓の縁にクランプ＝カーソルが越えた縁から続く。
-  RUNTIME.pos.x -= dx; RUNTIME.pos.y -= dy;
-  RUNTIME.lastMouse.x -= dx; RUNTIME.lastMouse.y -= dy;
-  RUNTIME.pos.x = Math.max(0, Math.min(window.innerWidth, RUNTIME.pos.x));
-  RUNTIME.pos.y = Math.max(0, Math.min(window.innerHeight, RUNTIME.pos.y));
+window.pokeapi.onDisplayShift(() => {
+  // 別モニターへ移ったら、次のカーソル更新でカーソル位置へ再センタリングする。
+  RUNTIME.pendingRecenter = true;
 });
 window.pokeapi.onConfig((patch) => {
   applyConfigPatch(patch);
