@@ -106,7 +106,7 @@ function refreshTrayMenu() {
 ipcMain.handle("overlay:loadPack", (_e, key) => packReader.readPackMeta(key));
 
 ipcMain.handle("settings:get", () => settingsStore.getAll());
-ipcMain.handle("packs:list", () => packReader.readIndex());
+ipcMain.handle("packs:list", () => packReader.readPackList());
 ipcMain.on("settings:set", (_e, patch) => {
   const next = settingsStore.set(patch);
   if (overlayWin && !overlayWin.isDestroyed()) {
