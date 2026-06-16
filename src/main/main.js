@@ -33,7 +33,7 @@ function registerAppProtocol() {
 function createOverlay() {
   const primary = screen.getPrimaryDisplay();
   overlayDisplayId = primary.id;
-  const { x, y, width, height } = primary.workArea;
+  const { x, y, width, height } = primary.bounds;
   overlayWin = new BrowserWindow({
     x, y, width, height,
     transparent: true,
@@ -152,12 +152,13 @@ app.whenReady().then(() => {
     let recenter = false;
     if (disp.id !== overlayDisplayId) {
       overlayDisplayId = disp.id;
-      overlayWin.setBounds(disp.workArea);
+      overlayWin.setBounds(disp.bounds);
       recenter = true; // モニターが変わった瞬間はカーソル位置へ再センタリング
     }
     // setBounds 直後の getBounds() は古い値を返すことがあるため、
-    // 移動先ディスプレイの workArea を原点として直接座標変換する（再センタリング指示も同梱）。
-    const local = screenPointToOverlay(screenPt, disp.workArea);
+    // 移動先ディスプレイの bounds を原点として直接座標変換する（再センタリング指示も同梱）。
+    // bounds（全画面）を使うことで、上モニターのタスクバー帯から入っても窓外に出ない。
+    const local = screenPointToOverlay(screenPt, disp.bounds);
     overlayWin.webContents.send("cursor", { x: local.x, y: local.y, recenter });
   });
 
