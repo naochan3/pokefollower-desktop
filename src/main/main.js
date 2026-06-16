@@ -5,6 +5,7 @@ const fs = require("node:fs");
 const { makePackReader } = require("./pack-reader.js");
 const { createSettingsStore } = require("./settings-store.js");
 const { createFollowerSim } = require("./follower-sim.js");
+const { getForegroundSize } = require("./fullscreen-detect.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -18,6 +19,18 @@ let currentMeta = null;
 let enabled = false;
 let simTimer = null;
 let lastStepTs = 0;
+let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
+
+// 前面ウィンドウがいずれかのモニター全体を覆っていれば「全画面」とみなす。
+// 最大化（Chrome等）は作業領域までなので一致せず、隠れない。
+function checkFullscreen() {
+  const sz = getForegroundSize();
+  if (!sz) { fullscreenActive = false; return; }
+  fullscreenActive = screen.getAllDisplays().some((d) => {
+    const sf = d.scaleFactor || 1;
+    return sz.w >= d.bounds.width * sf - 2 && sz.h >= d.bounds.height * sf - 2;
+  });
+}
 
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } },
@@ -102,7 +115,8 @@ function startSimLoop() {
     lastStepTs = now;
     const cursor = screen.getCursorScreenPoint(); // グローバル座標
     sim.updateCursor(cursor.x, cursor.y, now);
-    if (!enabled) { broadcastFrame(null); return; }
+    // 無効化中 or 前面が全画面アプリ（ゲーム等）なら隠す
+    if (!enabled || fullscreenActive) { broadcastFrame(null); return; }
     broadcastFrame(sim.step(dt, now));
   }, 16);
 }
@@ -203,6 +217,7 @@ app.whenReady().then(() => {
   screen.on("display-metrics-changed", buildOverlays);
 
   startSimLoop();
+  setInterval(checkFullscreen, 600); // 全画面アプリ検知（約0.6秒間隔）
   setEnabled(s.enabled);
   buildTray();
 });
