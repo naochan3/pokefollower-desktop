@@ -4,6 +4,7 @@ const { pathToFileURL } = require("node:url");
 const fs = require("node:fs");
 const { makePackReader } = require("./pack-reader.js");
 const { startCursorTracker } = require("./cursor-tracker.js");
+const { screenPointToOverlay } = require("./cursor-mapping.js");
 const { createSettingsStore } = require("./settings-store.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
@@ -13,6 +14,7 @@ let overlayWin = null;
 let settingsStore = null;
 let settingsWin = null;
 let tray = null;
+let overlayDisplayId = null;
 
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } },
@@ -28,23 +30,10 @@ function registerAppProtocol() {
   });
 }
 
-// 全ディスプレイを内包する矩形（マルチモニター対応）
-function unionBounds() {
-  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-  for (const d of screen.getAllDisplays()) {
-    const { x, y, width, height } = d.bounds;
-    minX = Math.min(minX, x); minY = Math.min(minY, y);
-    maxX = Math.max(maxX, x + width); maxY = Math.max(maxY, y + height);
-  }
-  return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
-}
-
-function repositionOverlay() {
-  if (overlayWin && !overlayWin.isDestroyed()) overlayWin.setBounds(unionBounds());
-}
-
 function createOverlay() {
-  const { x, y, width, height } = unionBounds();
+  const primary = screen.getPrimaryDisplay();
+  overlayDisplayId = primary.id;
+  const { x, y, width, height } = primary.workArea;
   overlayWin = new BrowserWindow({
     x, y, width, height,
     transparent: true,
@@ -141,18 +130,17 @@ app.whenReady().then(() => {
   app.setLoginItemSettings({ openAtLogin: true });
   registerAppProtocol();
   createOverlay();
-  screen.on("display-added", repositionOverlay);
-  screen.on("display-removed", repositionOverlay);
-  screen.on("display-metrics-changed", repositionOverlay);
-
-  startCursorTracker(
-    () => (overlayWin ? overlayWin.getBounds() : null),
-    (localPoint) => {
-      if (overlayWin && !overlayWin.isDestroyed()) {
-        overlayWin.webContents.send("cursor", localPoint);
-      }
+  startCursorTracker((screenPt) => {
+    if (!overlayWin || overlayWin.isDestroyed()) return;
+    // カーソルが居るモニターへオーバーレイを移す（マルチモニター対応）
+    const disp = screen.getDisplayNearestPoint(screenPt);
+    if (disp.id !== overlayDisplayId) {
+      overlayDisplayId = disp.id;
+      overlayWin.setBounds(disp.workArea);
     }
-  );
+    const b = overlayWin.getBounds();
+    overlayWin.webContents.send("cursor", screenPointToOverlay(screenPt, b));
+  });
 
   buildTray();
 });
