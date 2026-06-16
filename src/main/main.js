@@ -59,6 +59,15 @@ function createOverlay() {
   return overlayWin;
 }
 
+// ディスプレイ構成が変わったら（追加/取り外し/解像度・スケール変更）、
+// カーソルが居る画面の最新情報にオーバーレイを再同期する。
+function syncOverlayToCursorDisplay() {
+  if (!overlayWin || overlayWin.isDestroyed()) return;
+  const disp = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+  overlayDisplayId = disp.id;
+  overlayWin.setBounds(disp.workArea);
+}
+
 function getSettingsWin() {
   if (settingsWin && !settingsWin.isDestroyed()) { settingsWin.focus(); return settingsWin; }
   settingsWin = new BrowserWindow({
@@ -130,6 +139,10 @@ app.whenReady().then(() => {
   app.setLoginItemSettings({ openAtLogin: true });
   registerAppProtocol();
   createOverlay();
+  screen.on("display-added", syncOverlayToCursorDisplay);
+  screen.on("display-removed", syncOverlayToCursorDisplay);
+  screen.on("display-metrics-changed", syncOverlayToCursorDisplay);
+
   startCursorTracker((screenPt) => {
     if (!overlayWin || overlayWin.isDestroyed()) return;
     // カーソルが居るモニターへオーバーレイを移す（マルチモニター対応）
