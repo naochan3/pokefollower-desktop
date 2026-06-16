@@ -1,6 +1,7 @@
 const { app, BrowserWindow, protocol, net, screen, ipcMain, Tray, Menu, nativeImage } = require("electron");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
+const fs = require("node:fs");
 const { makePackReader } = require("./pack-reader.js");
 const { startCursorTracker } = require("./cursor-tracker.js");
 const { createSettingsStore } = require("./settings-store.js");
@@ -22,6 +23,7 @@ function registerAppProtocol() {
     const url = new URL(request.url);             // app://bundle/assets/...
     const rel = decodeURIComponent(url.pathname).replace(/^\/+/, "");
     const filePath = path.join(ROOT, rel);
+    if (!fs.existsSync(filePath)) return new Response(null, { status: 404 });
     return net.fetch(pathToFileURL(filePath).toString());
   });
 }

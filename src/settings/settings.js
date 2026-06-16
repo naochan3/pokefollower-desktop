@@ -91,11 +91,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.dataset.id = p.id;
       btn.dataset.search = tileSearchText(p);
       const numStr = p.num == null ? "" : String(p.num).padStart(3, "0");
+      const slugCompact = slug.replace(/-/g, "");
+      const nameOnly = slug.replace(/^[0-9]+-?/, "");
+      const imgCandidates = [slug, slugCompact, nameOnly]
+        .filter((v, i, a) => v && a.indexOf(v) === i)
+        .map((n) => `app://bundle/assets/ui/${gen}/${n}.png`);
+      let imgCi = 0;
       const img = document.createElement("img");
       img.loading = "lazy";
       img.alt = p.ja || p.en || slug;
-      img.src = `app://bundle/assets/ui/${gen}/${slug}.png`;
-      img.addEventListener("error", () => { img.style.visibility = "hidden"; });
+      img.src = imgCandidates[imgCi];
+      img.addEventListener("error", () => {
+        imgCi += 1;
+        if (imgCi < imgCandidates.length) img.src = imgCandidates[imgCi];
+        else img.style.visibility = "hidden";
+      });
       const name = document.createElement("span");
       name.className = "name";
       name.textContent = p.ja || p.en || slug;

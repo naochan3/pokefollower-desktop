@@ -7,7 +7,7 @@
   <style>
     /* Card sizing + paddings (wider so SPEED fits comfortably) */
     :root {
-      --announce-h: 30px;
+      --announce-h: 0px;
       --announce-side-pad: 14px;
     }
     body {
@@ -191,13 +191,12 @@
   </style>
 </head>
 <body>
-  <div class="announce">Thanks for 30k & feedback! Check footer link for updates :D</div>
   <!-- Pokéball notch -->
   <div class="notch" aria-hidden="true"></div>
 
   <!-- Header -->
   <div class="header">
-    <div class="brand">PokeFollower v4.0</div>
+    <div class="brand">PokéFollower</div>
     <label class="enable" for="enabled">
       <span>Enable Follower</span>
       <input id="enabled" type="checkbox" />
@@ -258,33 +257,8 @@
       </div>
     </div>
 
-    <!-- Bottom hint over red band -->
-    <p class="hint">
-      <span class="hint-credits">
-        Sprite art & images provided by
-        <a href="https://sprites.pmdcollab.org" target="_blank" rel="noreferrer noopener">PMD Collab</a>
-        &amp;
-        <a href="https://pokemondb.net" target="_blank" rel="noreferrer noopener">Pokémon DB</a>
-      </span>
-      <br />
-      <span class="hint-links">
-        <a
-          href="https://github.com/ThinkrDoer/pokefollower_cursor_web_plugin"
-          target="_blank"
-          rel="noreferrer noopener"
-        >About / Updates</a>
-        <a
-          href="https://practicaloverthinker.notion.site/PRIVACY-POLICY-30f41183ac9c80e68ce4cae7b481e348"
-          target="_blank"
-          rel="noreferrer noopener"
-        >Privacy Policy</a>
-        <a
-          href="https://github.com/ThinkrDoer/pokefollower_cursor_web_plugin/commits/main/"
-          target="_blank"
-          rel="noreferrer noopener"
-        >Development Log</a>
-      </span>
-    </p>
+    <!-- Bottom credit (sprite attribution only) -->
+    <p class="hint hint-credits">ドット絵素材: PMD Collab / Pokémon DB</p>
   </div>
 
   <script src="settings.js"></script>
