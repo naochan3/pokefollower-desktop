@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 初期選択をスクロールして見せる
     const sel = tiles.find((t) => t.classList.contains("selected"));
-    if (sel) sel.scrollIntoView({ block: "center" });
+    if (sel) gridEl.scrollTop = Math.max(0, sel.offsetTop - gridEl.clientHeight / 2);
 
     if (searchEl) {
       searchEl.addEventListener("input", () => {
