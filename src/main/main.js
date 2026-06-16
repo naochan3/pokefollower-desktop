@@ -131,9 +131,14 @@ ipcMain.on("settings:set", (_e, patch) => {
   }
 });
 
+// 二重起動を禁止（複数インスタンスが同時にカーソルを追って競合するのを防ぐ）。
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+
 app.whenReady().then(() => {
+  if (!gotSingleInstanceLock) { app.quit(); return; }
   settingsStore = createSettingsStore(path.join(app.getPath("userData"), "settings.json"));
-  app.setLoginItemSettings({ openAtLogin: true });
+  // 自動起動はインストール版のみ登録（開発起動でRunキーにゴミをためないようisPackagedで限定）
+  if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: true });
   registerAppProtocol();
   createOverlay();
   screen.on("display-added", onDisplayConfigChanged);
