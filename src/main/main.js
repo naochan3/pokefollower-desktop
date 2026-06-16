@@ -59,23 +59,10 @@ function createOverlay() {
   return overlayWin;
 }
 
-// カーソルが居る画面へオーバーレイを移動し、移動量をレンダラへ通知する
-// （ポケモンの内部座標を平行移動して、モニターまたぎの連続性を保つため）。
-function moveOverlayToDisplay(disp) {
-  const old = overlayWin.getBounds();
-  overlayDisplayId = disp.id;
-  overlayWin.setBounds(disp.workArea);
-  const nb = overlayWin.getBounds();
-  if (nb.x !== old.x || nb.y !== old.y) {
-    overlayWin.webContents.send("displayShift", { dx: nb.x - old.x, dy: nb.y - old.y });
-  }
-}
-
 // ディスプレイ構成が変わったら（追加/取り外し/解像度・スケール変更）、
-// カーソルが居る画面の最新情報にオーバーレイを再同期する。
-function syncOverlayToCursorDisplay() {
-  if (!overlayWin || overlayWin.isDestroyed()) return;
-  moveOverlayToDisplay(screen.getDisplayNearestPoint(screen.getCursorScreenPoint()));
+// overlayDisplayId をリセットして次のtickで再配置＋再センタリングさせる。
+function onDisplayConfigChanged() {
+  overlayDisplayId = null;
 }
 
 function getSettingsWin() {
@@ -149,17 +136,24 @@ app.whenReady().then(() => {
   app.setLoginItemSettings({ openAtLogin: true });
   registerAppProtocol();
   createOverlay();
-  screen.on("display-added", syncOverlayToCursorDisplay);
-  screen.on("display-removed", syncOverlayToCursorDisplay);
-  screen.on("display-metrics-changed", syncOverlayToCursorDisplay);
+  screen.on("display-added", onDisplayConfigChanged);
+  screen.on("display-removed", onDisplayConfigChanged);
+  screen.on("display-metrics-changed", onDisplayConfigChanged);
 
   startCursorTracker((screenPt) => {
     if (!overlayWin || overlayWin.isDestroyed()) return;
-    // カーソルが居るモニターへオーバーレイを移す（マルチモニター対応）
+    // カーソルが居るモニターを判定し、変わったら窓をそのモニターへ移す
     const disp = screen.getDisplayNearestPoint(screenPt);
-    if (disp.id !== overlayDisplayId) moveOverlayToDisplay(disp);
-    const b = overlayWin.getBounds();
-    overlayWin.webContents.send("cursor", screenPointToOverlay(screenPt, b));
+    let recenter = false;
+    if (disp.id !== overlayDisplayId) {
+      overlayDisplayId = disp.id;
+      overlayWin.setBounds(disp.workArea);
+      recenter = true; // モニターが変わった瞬間はカーソル位置へ再センタリング
+    }
+    // setBounds 直後の getBounds() は古い値を返すことがあるため、
+    // 移動先ディスプレイの workArea を原点として直接座標変換する（再センタリング指示も同梱）。
+    const local = screenPointToOverlay(screenPt, disp.workArea);
+    overlayWin.webContents.send("cursor", { x: local.x, y: local.y, recenter });
   });
 
   buildTray();
