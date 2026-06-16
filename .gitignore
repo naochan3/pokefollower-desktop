@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build / package output
+dist/
+out/
+build/
+release/
+*.exe
+
+# Logs
+npm-debug.log*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
