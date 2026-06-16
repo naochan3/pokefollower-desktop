@@ -1,5 +1,3 @@
-const DEFAULT_PACK = "retro/gen-1/001-bulbasaur";
-
 function mapKeys(obj) {
   const m = { vcp1_enabled: "enabled", vcp1_pack: "pack", vcp1_scale: "scale", vcp1_offset: "offset", vcp1_lerp: "lerp" };
   const out = {};
@@ -9,85 +7,6 @@ function mapKeys(obj) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const enabledEl = document.getElementById("enabled");
-  const packEl    = document.getElementById("pack");
-  const pickerEl  = document.querySelector(".picker");
-  const searchBtn = pickerEl ? pickerEl.querySelector(".glass") : null;
-  const searchEl  = document.getElementById("packSearch");
-  const searchListEl = document.getElementById("packSuggestions");
-  const shuffleBtn = document.querySelector(".shuffle");
-
-  // Normalize pack <option>s: sort by Pokédex number and label as "###-Name"
-  function titleCaseSlug(name) {
-    return String(name || "")
-      .split("-")
-      .filter(Boolean)
-      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-      .join("-");
-  }
-  function formatPackLabel(val) {
-    // val looks like "retro/gen-1/009-blastoise"
-    const last = (val || "").split("/").pop() || "";
-    const dash = last.indexOf("-");
-    const numStr = dash >= 0 ? last.slice(0, dash) : last;
-    const nameSlug = dash >= 0 ? last.slice(dash + 1) : "";
-    const num = (numStr || "").padStart(3, "0");
-    const name = nameSlug ? titleCaseSlug(nameSlug) : last;
-    return `${num}-${name}`;
-  }
-  function dexFromValue(val) {
-    const last = (val || "").split("/").pop() || "";
-    const n = parseInt(last, 10);
-    return Number.isFinite(n) ? n : 9999;
-  }
-  const PACK_META = [];
-  function normalizePackOptions() {
-    if (!packEl) return;
-    const opts = Array.from(packEl.options).map(o => ({ value: o.value }));
-    // sort numerically by dex
-    opts.sort((a, b) => dexFromValue(a.value) - dexFromValue(b.value));
-    // preserve current selection
-    const current = packEl.value;
-    // rebuild options with formatted labels
-    packEl.innerHTML = "";
-    for (const o of opts) {
-      const opt = document.createElement("option");
-      opt.value = o.value;
-      opt.textContent = formatPackLabel(o.value);
-      packEl.appendChild(opt);
-    }
-    // restore selection if possible
-    if (current) packEl.value = current;
-    capturePackMeta();
-  }
-
-  // Dynamically build the pack list from a generated index.json; fallback to existing options on error
-  async function populatePacksFromIndex(storedValue) {
-    try {
-      const data = await window.settingsApi.listPacks();
-      const list = (data && data.retro) || [];
-      if (!Array.isArray(list) || !list.length) throw new Error('index empty');
-
-      const current = storedValue || packEl.value;
-      packEl.innerHTML = '';
-      for (const item of list) {
-        const opt = document.createElement('option');
-        opt.value = item.id;                       // e.g., "retro/gen-1/009-blastoise"
-        opt.textContent = item.name || formatPackLabel(item.id);
-        packEl.appendChild(opt);
-      }
-      capturePackMeta();
-      if (current) {
-        packEl.value = current;
-        if (packEl.selectedIndex === -1 && packEl.options.length) {
-          packEl.selectedIndex = 0;
-        }
-      }
-      return true;
-    } catch (e) {
-      // Defer to static HTML options if index missing
-      return false;
-    }
-  }
 
   // Sliders + readouts
   const scaleEl   = document.getElementById("scale");
@@ -97,7 +16,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const scaleVal  = document.getElementById("scaleVal");
   const offsetVal = document.getElementById("offsetVal");
   const lerpVal   = document.getElementById("lerpVal");
-  const previewSpriteEl = document.getElementById("previewSprite");
 
   // Defaults align with current content.js constants
   const DEFAULTS = {
@@ -120,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const res = await window.settingsApi.getSettings();
   {
       enabledEl.checked = !!res.enabled;
-      const storedPack  = res.pack || DEFAULT_PACK;
 
       const scale  = (typeof res.scale  === "number") ? res.scale  : DEFAULTS.vcp1_scale;
       const offset = (typeof res.offset === "number") ? res.offset : DEFAULTS.vcp1_offset;
@@ -136,83 +53,85 @@ document.addEventListener("DOMContentLoaded", async () => {
       scaleVal.textContent  = scale.toFixed(2) + "×";
       offsetVal.textContent = offset + " px";
       lerpVal.textContent   = lerpUI.toFixed(1);
-
-      // Prefer dynamic index.json; fallback to static options then normalize labels/order
-      (async () => {
-        const ok = await populatePacksFromIndex(storedPack);
-        if (!ok) {
-          // Use whatever is in HTML, but fix labels/order
-          normalizePackOptions();
-          packEl.value = storedPack;
-          if (packEl.selectedIndex === -1 && packEl.options.length) packEl.selectedIndex = 0;
-        }
-        setPreviewForPack(packEl.value);
-      })();
   }
 
-  // Helper: save but do NOT auto-close (except when toggling enable)
+  // Helper: save but do NOT auto-close
   const save = (obj) => window.settingsApi.setSettings(mapKeys(obj));
 
-  // Toggle enable — close popup (people expect immediate feedback here)
+  // Toggle enable — save and keep the settings window open
   enabledEl.addEventListener("change", () => {
     save({ vcp1_enabled: enabledEl.checked });
-    window.close();
   });
 
-  // Pack select — save but keep popup open, and update preview
-  packEl.addEventListener("change", () => {
-    save({ vcp1_pack: packEl.value });
-    setPreviewForPack(packEl.value);
-  });
-
-  if (shuffleBtn) {
-    shuffleBtn.addEventListener("click", () => {
-      if (!packEl || !packEl.options.length) return;
-      const total = packEl.options.length;
-      if (!total) return;
-      const current = packEl.selectedIndex >= 0 ? packEl.selectedIndex : 0;
-      let next = Math.floor(Math.random() * total);
-      if (total > 1 && next === current) {
-        next = (next + 1) % total;
-      }
-      packEl.selectedIndex = next;
-      packEl.dispatchEvent(new Event("change", { bubbles: true }));
-    });
+  // --- カタカナ⇄ひらがな正規化（検索用） ---
+  function toHira(s) {
+    return String(s || "").replace(/[ァ-ヶ]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60));
+  }
+  function tileSearchText(p) {
+    const num = p.num == null ? "" : String(p.num);
+    const padded = num ? num.padStart(3, "0") : "";
+    return [p.ja, toHira(p.ja), p.romaji, p.en, num, padded, "#" + padded].join(" ").toLowerCase();
   }
 
-  if (searchBtn) {
-    searchBtn.addEventListener("click", () => openPackSearch());
-    searchBtn.addEventListener("keydown", (evt) => {
-      if (evt.key === "Enter" || evt.key === " ") {
-        evt.preventDefault();
-        openPackSearch();
-      }
-    });
+  async function initGrid() {
+    const gridEl = document.getElementById("grid");
+    const searchEl = document.getElementById("search");
+    if (!gridEl) return;
+    const packs = await window.settingsApi.listPacks();
+    let selectedId = res.pack;
+
+    const frag = document.createDocumentFragment();
+    const tiles = [];
+    for (const p of packs) {
+      const gen = p.id.split("/")[1];               // gen-1
+      const slug = p.id.split("/").pop();           // 009-blastoise
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tile" + (p.id === selectedId ? " selected" : "");
+      btn.dataset.id = p.id;
+      btn.dataset.search = tileSearchText(p);
+      const numStr = p.num == null ? "" : String(p.num).padStart(3, "0");
+      const img = document.createElement("img");
+      img.loading = "lazy";
+      img.alt = p.ja || p.en || slug;
+      img.src = `app://bundle/assets/ui/${gen}/${slug}.png`;
+      img.addEventListener("error", () => { img.style.visibility = "hidden"; });
+      const name = document.createElement("span");
+      name.className = "name";
+      name.textContent = p.ja || p.en || slug;
+      const num = document.createElement("span");
+      num.className = "num";
+      num.textContent = numStr ? "#" + numStr : "";
+      btn.append(img, name, num);
+      btn.addEventListener("click", () => {
+        if (p.id === selectedId) return;
+        selectedId = p.id;
+        for (const t of tiles) t.classList.toggle("selected", t.dataset.id === selectedId);
+        window.settingsApi.setSettings({ pack: p.id });
+      });
+      tiles.push(btn);
+      frag.appendChild(btn);
+    }
+    gridEl.appendChild(frag);
+
+    // 初期選択をスクロールして見せる
+    const sel = tiles.find((t) => t.classList.contains("selected"));
+    if (sel) sel.scrollIntoView({ block: "center" });
+
+    if (searchEl) {
+      searchEl.addEventListener("input", () => {
+        const q = toHira(searchEl.value.trim().toLowerCase());
+        const raw = searchEl.value.trim().toLowerCase();
+        for (const t of tiles) {
+          const hay = t.dataset.search;
+          const match = !raw || hay.includes(raw) || hay.includes(q);
+          t.classList.toggle("hidden", !match);
+        }
+      });
+    }
   }
 
-  if (searchEl) {
-    searchEl.addEventListener("input", () => {
-      searchEl.classList.remove("no-match");
-    });
-    searchEl.addEventListener("keydown", (evt) => {
-      if (evt.key === "Enter") {
-        evt.preventDefault();
-        commitPackSearch();
-      } else if (evt.key === "Escape") {
-        evt.preventDefault();
-        closePackSearch();
-      }
-    });
-    searchEl.addEventListener("change", () => {
-      if (searchEl.value.trim()) commitPackSearch();
-    });
-    searchEl.addEventListener("blur", () => {
-      // Allow other handlers (change) to fire before closing
-      setTimeout(() => {
-        if (isSearchOpen()) closePackSearch();
-      }, 0);
-    });
-  }
+  initGrid();
 
   // function clampFrom helper
   function clampFrom(el) {
@@ -231,223 +150,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function isPartialNumber(value) {
     return value === "" || value.endsWith(".");
-  }
-
-  // --- Preview sprite helpers (robust URL + fallback) ---
-  function slugFromPack(pack) {
-    // "retro/gen-1/009-blastoise" -> "blastoise"
-    const last = (pack || "").split("/").pop() || "";
-    return last.replace(/^\d+-/, "");
-  }
-
-  function generationFromPack(pack) {
-    const parts = (pack || "").split("/");
-    if (parts.length < 3) return null;
-    const maybe = parts[parts.length - 2] || "";
-    return maybe.startsWith("gen-") ? maybe : null;
-  }
-
-  function setPreviewForPack(pack) {
-    if (!previewSpriteEl) return;
-
-    // Ensure preview never mirrors even if other CSS flips the main sprite
-    previewSpriteEl.style.transform = "scaleX(1)";
-
-    const slugFull = (pack || "").split("/").pop() || "";
-    const slug = slugFromPack(pack);
-    const slugCompact = slugFull.replace(/-/g, "");
-    const names = Array.from(new Set([slugFull, slug, slugCompact]));
-    const generation = generationFromPack(pack);
-    const candidates = [];
-    const pushCandidate = (path) => {
-      if (!candidates.includes(path)) candidates.push(path);
-    };
-    for (const name of names) {
-      if (generation) {
-        pushCandidate("app://bundle/" + (`assets/ui/${generation}/${name}.png`));
-      }
-      pushCandidate("app://bundle/" + (`assets/ui/${name}.png`));
-      pushCandidate("app://bundle/" + (`assets/retro/${name}.png`));
-    }
-
-    let i = 0;
-    const tryNext = () => {
-      if (i >= candidates.length) {
-        previewSpriteEl.removeAttribute("src");
-        previewSpriteEl.alt = "";
-        return;
-      }
-      const url = candidates[i++];
-      const img = new Image();
-      img.onload = () => {
-        previewSpriteEl.src = url;
-        previewSpriteEl.alt = `${slug} preview`;
-      };
-      img.onerror = tryNext;
-      img.src = url;
-    };
-
-    tryNext();
-  }
-
-  // --- Pack search helpers (magnifying glass action) ---
-  function normalizeSearch(str) {
-    return (str || "").toLowerCase();
-  }
-  function compactSearch(str) {
-    return normalizeSearch(str).replace(/[^a-z0-9]/g, "");
-  }
-
-  function rebuildSearchSuggestions() {
-    if (!searchListEl) return;
-    searchListEl.innerHTML = "";
-
-    const seen = new Set();
-    for (const meta of PACK_META) {
-      const display = (meta.display && meta.display.trim()) ||
-        (meta.label && meta.label.trim()) ||
-        (meta.name && meta.name.trim()) ||
-        meta.id;
-      if (!display || seen.has(display)) continue;
-      seen.add(display);
-      const opt = document.createElement("option");
-      opt.value = display;
-      searchListEl.appendChild(opt);
-    }
-  }
-
-  function capturePackMeta() {
-    PACK_META.length = 0;
-    if (!packEl) return;
-    const opts = Array.from(packEl.options);
-    for (const opt of opts) {
-      const id = opt.value;
-      const label = opt.textContent || formatPackLabel(id);
-      const dex = dexFromValue(id);
-      const dexStr = Number.isFinite(dex) ? String(dex).padStart(3, "0") : "";
-      const formatted = formatPackLabel(id);
-      const labelTrimmed = (label || "").replace(/^\s*\d+\s*[-#]?\s*/, "").replace(/\s*\(#\d+\)\s*$/, "").trim();
-      const fallbackName = (formatted || "").replace(/^\s*\d+\s*[-#]?\s*/, "").trim();
-      const name = labelTrimmed || fallbackName || label || id;
-      const lowerName = normalizeSearch(name);
-      const lowerLabel = normalizeSearch(label);
-      const lowerId = normalizeSearch(id);
-      const compactName = compactSearch(name);
-      const compactLabel = compactSearch(label);
-      const compactId = compactSearch(id);
-      const display = dexStr ? `#${dexStr} ${name}` : name;
-      const values = new Set([
-        lowerName,
-        compactName,
-        lowerLabel,
-        compactLabel,
-        lowerId,
-        compactId
-      ]);
-      if (formatted) {
-        values.add(normalizeSearch(formatted));
-        values.add(compactSearch(formatted));
-      }
-      if (display) {
-        values.add(normalizeSearch(display));
-        values.add(compactSearch(display));
-      }
-      if (dexStr) {
-        values.add(String(dex));
-        values.add(dexStr);
-        values.add(`#${dexStr}`);
-      }
-      values.delete("");
-      PACK_META.push({
-        id,
-        label,
-        name,
-        display,
-        dex,
-        dexStr,
-        searchValues: Array.from(values)
-      });
-    }
-    rebuildSearchSuggestions();
-  }
-
-  function resolveSearchTerm(term) {
-    const raw = (term || "").trim();
-    if (!raw) return null;
-
-    const digits = raw.replace(/[^0-9]/g, "");
-    if (digits) {
-      const num = parseInt(digits, 10);
-      if (Number.isFinite(num)) {
-        const byDex = PACK_META.find(meta => meta.dex === num);
-        if (byDex) return byDex.id;
-      }
-    }
-
-    const lower = normalizeSearch(raw);
-    const compact = compactSearch(raw);
-
-    const exact = PACK_META.find(meta =>
-      meta.searchValues.some(val => val === lower || val === compact)
-    );
-    if (exact) return exact.id;
-
-    const partial = PACK_META.find(meta =>
-      meta.searchValues.some(val => val.includes(compact) || val.includes(lower))
-    );
-    return partial ? partial.id : null;
-  }
-
-  function isSearchOpen() {
-    return !!(pickerEl && pickerEl.classList.contains("searching"));
-  }
-
-  function openPackSearch() {
-    if (!pickerEl || !searchEl) return;
-    if (!PACK_META.length) capturePackMeta();
-    if (isSearchOpen()) {
-      searchEl.focus();
-      searchEl.select();
-      return;
-    }
-    pickerEl.classList.add("searching");
-    if (packEl) packEl.setAttribute("aria-hidden", "true");
-    searchEl.value = "";
-    searchEl.classList.remove("no-match");
-    searchEl.placeholder = "Search name or #";
-    requestAnimationFrame(() => {
-      searchEl.focus();
-    });
-  }
-
-  function closePackSearch() {
-    if (!pickerEl || !searchEl) return;
-    const wasOpen = isSearchOpen();
-    pickerEl.classList.remove("searching");
-    if (packEl) packEl.removeAttribute("aria-hidden");
-    searchEl.classList.remove("no-match");
-    searchEl.value = "";
-    if (wasOpen && document.activeElement === searchEl && packEl) {
-      packEl.focus();
-    }
-  }
-
-  function commitPackSearch() {
-    if (!searchEl || !packEl) return;
-    const term = searchEl.value.trim();
-    if (!term) {
-      closePackSearch();
-      return;
-    }
-    const matchId = resolveSearchTerm(term);
-    if (!matchId) {
-      searchEl.classList.add("no-match");
-      return;
-    }
-    searchEl.classList.remove("no-match");
-    closePackSearch();
-    packEl.value = matchId;
-    packEl.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
   function attachEnterCommit(input, commitFn) {
@@ -599,30 +301,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.addEventListener("mouseleave", stopHold, true);
   window.addEventListener("blur", stopHold, true);
 
-  // ===== CHEVRONS (◀/▶) — cycle the <select id="pack"> and trigger existing change flow =====
-  document.addEventListener("click", (e) => {
-    const left  = e.target.closest(".preview .chev.left");
-    const right = e.target.closest(".preview .chev.right");
-    if (!left && !right) return;
-
-    const dir = right ? +1 : -1;
-    const total = packEl.options.length;
-    let idx = packEl.selectedIndex;
-    if (idx < 0) idx = 0;
-    idx = (idx + dir + total) % total;
-
-    packEl.selectedIndex = idx;
-    packEl.dispatchEvent(new Event("change", { bubbles: true }));
-  });
-
   // ESC to close (QoL)
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-      if (isSearchOpen()) {
-        e.preventDefault();
-        closePackSearch();
-        return;
-      }
       window.close();
     }
   });

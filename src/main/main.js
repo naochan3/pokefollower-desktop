@@ -57,7 +57,7 @@ function createOverlay() {
 function getSettingsWin() {
   if (settingsWin && !settingsWin.isDestroyed()) { settingsWin.focus(); return settingsWin; }
   settingsWin = new BrowserWindow({
-    width: 400, height: 560, resizable: false, title: "PokéFollower 設定",
+    width: 400, height: 720, resizable: false, title: "PokéFollower 設定",
     webPreferences: {
       preload: path.join(__dirname, "..", "settings", "settings-preload.js"),
       contextIsolation: true, nodeIntegration: false,
