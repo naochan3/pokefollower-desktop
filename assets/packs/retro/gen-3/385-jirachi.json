@@ -1,0 +1,65 @@
+{
+  "name": "385-jirachi",
+  "generation": "gen-3",
+  "rawPath": "gen-3/385-jirachi",
+  "flipX": true,
+  "states": {
+    "idle": {
+      "sheet": "Idle-Anim.webp",
+      "frame": {
+        "w": 40,
+        "h": 48
+      },
+      "fps": 4,
+      "frames": 4,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "walk": {
+      "sheet": "Walk-Anim.webp",
+      "frame": {
+        "w": 40,
+        "h": 48
+      },
+      "fps": 9,
+      "frames": 9,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "sleep": {
+      "sheet": "Sleep-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 48
+      },
+      "fps": 8,
+      "frames": 8,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    }
+  }
+}
