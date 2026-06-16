@@ -373,9 +373,9 @@ window.pokeapi.onEnabled((on) => {
   applyState();
 });
 
-// 暫定ブート（Task 11 で main からの init に置き換える。スモーク確認用）
-(async () => {
-  STATE.enabled = true;
-  try { await loadPack(STATE.pack); } catch (e) { console.error("initial loadPack failed", e); }
+window.pokeapi.onInit(async (s) => {
+  STATE.enabled = !!s.enabled;
+  applyConfigPatch({ vcp1_scale: s.scale, vcp1_offset: s.offset, vcp1_lerp: s.lerp });
+  try { await loadPack(s.pack); } catch (_) { await loadPack("retro/gen-1/009-blastoise"); }
   applyState();
-})();
+});

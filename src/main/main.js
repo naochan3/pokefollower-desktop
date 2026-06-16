@@ -48,6 +48,9 @@ function createOverlay() {
   overlayWin.setIgnoreMouseEvents(true, { forward: true });
   overlayWin.setAlwaysOnTop(true, "screen-saver");
   overlayWin.loadFile(path.join(__dirname, "..", "overlay", "overlay.html"));
+  overlayWin.webContents.on("did-finish-load", () => {
+    overlayWin.webContents.send("init", settingsStore.getAll());
+  });
   return overlayWin;
 }
 
