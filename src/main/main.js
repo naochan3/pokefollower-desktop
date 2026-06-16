@@ -2,6 +2,7 @@ const { app, BrowserWindow, protocol, net, screen, ipcMain } = require("electron
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
 const { makePackReader } = require("./pack-reader.js");
+const { startCursorTracker } = require("./cursor-tracker.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -51,6 +52,15 @@ ipcMain.handle("overlay:loadPack", (_e, key) => packReader.readPackMeta(key));
 app.whenReady().then(() => {
   registerAppProtocol();
   createOverlay();
+
+  startCursorTracker(
+    () => (overlayWin ? overlayWin.getBounds() : null),
+    (localPoint) => {
+      if (overlayWin && !overlayWin.isDestroyed()) {
+        overlayWin.webContents.send("cursor", localPoint);
+      }
+    }
+  );
 });
 
 app.on("window-all-closed", () => {
