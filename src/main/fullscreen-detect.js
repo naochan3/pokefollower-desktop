@@ -20,8 +20,10 @@ if (process.platform === "win32") {
       if (!GetWindowRect(h, r)) return null;
       return { w: r.right - r.left, h: r.bottom - r.top };
     };
-  } catch (_) {
+  } catch (e) {
+    // koffi が読めない場合は全画面検知を無効化（アプリは通常どおり動く）
     getForegroundSize = () => null;
+    console.error("[fullscreen-detect] koffi load failed; 全画面自動隠しは無効:", e && e.message);
   }
 }
 
