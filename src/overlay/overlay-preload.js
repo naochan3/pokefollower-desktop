@@ -6,5 +6,6 @@ contextBridge.exposeInMainWorld("pokeapi", {
   onPack: (cb) => ipcRenderer.on("pack", (_e, key) => cb(key)),
   onEnabled: (cb) => ipcRenderer.on("enabled", (_e, on) => cb(on)),
   onInit: (cb) => ipcRenderer.on("init", (_e, s) => cb(s)),
+  onDisplayShift: (cb) => ipcRenderer.on("displayShift", (_e, d) => cb(d)),
   loadPack: (key) => ipcRenderer.invoke("overlay:loadPack", key),
 });

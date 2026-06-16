@@ -59,13 +59,23 @@ function createOverlay() {
   return overlayWin;
 }
 
+// カーソルが居る画面へオーバーレイを移動し、移動量をレンダラへ通知する
+// （ポケモンの内部座標を平行移動して、モニターまたぎの連続性を保つため）。
+function moveOverlayToDisplay(disp) {
+  const old = overlayWin.getBounds();
+  overlayDisplayId = disp.id;
+  overlayWin.setBounds(disp.workArea);
+  const nb = overlayWin.getBounds();
+  if (nb.x !== old.x || nb.y !== old.y) {
+    overlayWin.webContents.send("displayShift", { dx: nb.x - old.x, dy: nb.y - old.y });
+  }
+}
+
 // ディスプレイ構成が変わったら（追加/取り外し/解像度・スケール変更）、
 // カーソルが居る画面の最新情報にオーバーレイを再同期する。
 function syncOverlayToCursorDisplay() {
   if (!overlayWin || overlayWin.isDestroyed()) return;
-  const disp = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
-  overlayDisplayId = disp.id;
-  overlayWin.setBounds(disp.workArea);
+  moveOverlayToDisplay(screen.getDisplayNearestPoint(screen.getCursorScreenPoint()));
 }
 
 function getSettingsWin() {
@@ -147,10 +157,7 @@ app.whenReady().then(() => {
     if (!overlayWin || overlayWin.isDestroyed()) return;
     // カーソルが居るモニターへオーバーレイを移す（マルチモニター対応）
     const disp = screen.getDisplayNearestPoint(screenPt);
-    if (disp.id !== overlayDisplayId) {
-      overlayDisplayId = disp.id;
-      overlayWin.setBounds(disp.workArea);
-    }
+    if (disp.id !== overlayDisplayId) moveOverlayToDisplay(disp);
     const b = overlayWin.getBounds();
     overlayWin.webContents.send("cursor", screenPointToOverlay(screenPt, b));
   });

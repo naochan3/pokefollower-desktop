@@ -359,6 +359,14 @@ function applyState() {
 
 // --- デスクトップ版ブート ---
 window.pokeapi.onCursor(({ x, y }) => updateCursor(x, y));
+window.pokeapi.onDisplayShift(({ dx, dy }) => {
+  // 別モニターへ窓が移った分だけ内部座標を平行移動し、物理的な連続性を保つ。
+  // 旧モニター上の位置は新しい窓の縁にクランプ＝カーソルが越えた縁から続く。
+  RUNTIME.pos.x -= dx; RUNTIME.pos.y -= dy;
+  RUNTIME.lastMouse.x -= dx; RUNTIME.lastMouse.y -= dy;
+  RUNTIME.pos.x = Math.max(0, Math.min(window.innerWidth, RUNTIME.pos.x));
+  RUNTIME.pos.y = Math.max(0, Math.min(window.innerHeight, RUNTIME.pos.y));
+});
 window.pokeapi.onConfig((patch) => {
   applyConfigPatch(patch);
   if (followerEl && RUNTIME.meta) applyFrame();
