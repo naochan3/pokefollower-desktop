@@ -1,4 +1,4 @@
-const { app, BrowserWindow, protocol, net, screen, ipcMain } = require("electron");
+const { app, BrowserWindow, protocol, net, screen, ipcMain, Tray, Menu, nativeImage } = require("electron");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
 const { makePackReader } = require("./pack-reader.js");
@@ -11,6 +11,7 @@ const packReader = makePackReader(ROOT);
 let overlayWin = null;
 let settingsStore = null;
 let settingsWin = null;
+let tray = null;
 
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true } },
@@ -64,6 +65,33 @@ function getSettingsWin() {
   return settingsWin;
 }
 
+function buildTray() {
+  const icon = nativeImage.createFromPath(path.join(ROOT, "assets", "icons", "pokeball-32.png"));
+  tray = new Tray(icon);
+  tray.setToolTip("PokéFollower");
+  refreshTrayMenu();
+  tray.on("double-click", () => getSettingsWin());
+}
+
+function refreshTrayMenu() {
+  const enabled = settingsStore.get("enabled");
+  const menu = Menu.buildFromTemplate([
+    { label: "設定を開く", click: () => getSettingsWin() },
+    { type: "separator" },
+    {
+      label: "有効", type: "checkbox", checked: enabled,
+      click: (item) => {
+        const next = settingsStore.set({ enabled: item.checked });
+        if (overlayWin && !overlayWin.isDestroyed()) overlayWin.webContents.send("enabled", next.enabled);
+        refreshTrayMenu();
+      },
+    },
+    { type: "separator" },
+    { label: "終了", click: () => { app.isQuitting = true; app.quit(); } },
+  ]);
+  tray.setContextMenu(menu);
+}
+
 ipcMain.handle("overlay:loadPack", (_e, key) => packReader.readPackMeta(key));
 
 ipcMain.handle("settings:get", () => settingsStore.getAll());
@@ -95,9 +123,9 @@ app.whenReady().then(() => {
     }
   );
 
-  getSettingsWin(); // TASK9-SMOKE: 仮の自動オープン（Task 10 でトレイ起点に置換・削除）
+  buildTray();
 });
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+  // トレイ常駐のため終了しない（「終了」メニューでのみ quit）
 });
