@@ -13,5 +13,20 @@
     "electron": "^31.0.0",
     "electron-builder": "^24.13.3",
     "vitest": "^2.0.0"
+  },
+  "build": {
+    "appId": "com.naochan3.pokefollower",
+    "productName": "PokeFollower",
+    "directories": { "output": "release" },
+    "files": ["src/**/*", "assets/**/*", "package.json"],
+    "win": {
+      "target": ["nsis"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    }
   }
 }
