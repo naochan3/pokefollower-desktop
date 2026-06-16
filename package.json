@@ -1,0 +1,17 @@
+{
+  "name": "pokefollower-desktop",
+  "version": "1.0.0",
+  "description": "カーソルを追うポケモンのデスクトップ常駐マスコット (Electron)",
+  "main": "src/main/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "electron .",
+    "test": "vitest run",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "vitest": "^2.0.0"
+  }
+}
