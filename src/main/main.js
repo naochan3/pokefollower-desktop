@@ -89,6 +89,14 @@ function refreshTrayMenu() {
         refreshTrayMenu();
       },
     },
+    {
+      label: "自動起動", type: "checkbox",
+      checked: app.getLoginItemSettings().openAtLogin,
+      click: (item) => {
+        app.setLoginItemSettings({ openAtLogin: item.checked });
+        refreshTrayMenu();
+      },
+    },
     { type: "separator" },
     { label: "終了", click: () => { app.isQuitting = true; app.quit(); } },
   ]);
@@ -114,6 +122,7 @@ ipcMain.on("settings:set", (_e, patch) => {
 
 app.whenReady().then(() => {
   settingsStore = createSettingsStore(path.join(app.getPath("userData"), "settings.json"));
+  app.setLoginItemSettings({ openAtLogin: true });
   registerAppProtocol();
   createOverlay();
 

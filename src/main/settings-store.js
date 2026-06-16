@@ -1,7 +1,7 @@
 const fs = require("node:fs");
 
 const DEFAULTS = {
-  enabled: false,
+  enabled: true,
   pack: "retro/gen-1/009-blastoise",
   scale: 1.25,
   offset: 30,
