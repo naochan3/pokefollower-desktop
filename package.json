@@ -2,6 +2,7 @@
   "name": "pokefollower-desktop",
   "version": "1.0.0",
   "description": "カーソルを追うポケモンのデスクトップ常駐マスコット (Electron)",
+  "author": "naochan3",
   "main": "src/main/main.js",
   "type": "commonjs",
   "scripts": {
@@ -47,12 +48,14 @@
       "target": [
         "AppImage"
       ],
-      "category": "Game"
+      "category": "Game",
+      "icon": "assets/icons/pokeball-256.png"
     },
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "icon": "assets/icons/pokeball-256.png"
     },
     "nsis": {
       "oneClick": true,
