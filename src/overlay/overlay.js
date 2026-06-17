@@ -29,6 +29,7 @@ function ensureEl() {
     zIndex: "2147483647",
     backgroundRepeat: "no-repeat",
     imageRendering: "pixelated",
+    backfaceVisibility: "hidden",
     willChange: "transform, background-position, background-image",
     display: "none",
   });
@@ -73,6 +74,6 @@ window.pokeapi.onFrame((f) => {
   }
   followerEl.style.backgroundPosition = `${-(f.frame * w)}px ${-(f.row * h)}px`;
   followerEl.style.transform =
-    `translate(${Math.round(f.x)}px, ${Math.round(f.y)}px) translate(-50%, -50%) scale(${f.scale})`;
+    `translate3d(${f.x.toFixed(2)}px, ${f.y.toFixed(2)}px, 0) translate(-50%, -50%) scale(${f.scale})`;
   followerEl.style.transformOrigin = "center center";
 });

@@ -20,6 +20,7 @@ let enabled = false;
 let simTimer = null;
 let lastStepTs = 0;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
+const SIM_INTERVAL_MS = 8;
 
 // 前面ウィンドウがいずれかのモニター全体を覆っていれば「全画面」とみなす。
 // 最大化（Chrome等）は作業領域までなので一致せず、隠れない。
@@ -120,7 +121,7 @@ function startSimLoop() {
     // 無効化中 or 前面が全画面アプリ（ゲーム等）なら隠す
     if (!enabled || fullscreenActive) { broadcastFrame(null); return; }
     broadcastFrame(sim.step(dt, now));
-  }, 16);
+  }, SIM_INTERVAL_MS);
 }
 
 function setEnabled(on) {
