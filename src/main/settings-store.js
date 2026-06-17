@@ -4,7 +4,7 @@ const DEFAULTS = {
   enabled: true,
   pack: "retro/gen-1/009-blastoise",
   scale: 1.25,
-  offset: 30,
+  offset: 70,
   lerp: 0.20,
 };
 

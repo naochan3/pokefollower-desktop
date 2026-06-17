@@ -10,9 +10,10 @@ const WALK_SPEED_MIN_PXPS = 80;
 const WALK_SPEED_MAX_PXPS = 640;
 const SPEED_CONFIG_MIN = 0.05;
 const SPEED_CONFIG_MAX = 0.50;
+const IDLE_OFFSET_DIR = { x: 0.72, y: 0.69 };
 
 function createFollowerSim() {
-  const CONFIG = { scale: 1.25, offset: 30, lerp: 0.20 };
+  const CONFIG = { scale: 1.25, offset: 70, lerp: 0.20 };
   let meta = null;
   const R = {
     anim: { name: "idle", frame: 0, row: 0, accMs: 0 },
@@ -20,7 +21,7 @@ function createFollowerSim() {
     lastMouse: { x: 0, y: 0, t: 0 },
     pos: { x: 0, y: 0 },
     target: { x: 0, y: 0 },
-    offsetDir: { x: 0, y: -1 },
+    offsetDir: { ...IDLE_OFFSET_DIR },
     isWalking: false,
     pendingState: null,
     velAvg: { x: 0, y: 0 },
@@ -41,7 +42,7 @@ function createFollowerSim() {
     const OFFSET = CONFIG.offset;
     let dX, dY;
     if (hasDir) { dX = -(R.velAvg.x / (speed || 1)); dY = -(R.velAvg.y / (speed || 1)); }
-    else { dX = 0; dY = -1; }
+    else { dX = IDLE_OFFSET_DIR.x; dY = IDLE_OFFSET_DIR.y; }
     const OD_LERP = 0.08;
     R.offsetDir.x += (dX - R.offsetDir.x) * OD_LERP;
     R.offsetDir.y += (dY - R.offsetDir.y) * OD_LERP;
@@ -89,6 +90,7 @@ function createFollowerSim() {
     resetTo(x, y, now) {
       R.pos.x = x; R.pos.y = y; R.target.x = x; R.target.y = y;
       R.lastMouse.x = x; R.lastMouse.y = y; R.lastMouse.t = now;
+      R.offsetDir.x = IDLE_OFFSET_DIR.x; R.offsetDir.y = IDLE_OFFSET_DIR.y;
       R.velAvg.x = 0; R.velAvg.y = 0; R.speedAvg = 0; R.lastMoveTs = now;
     },
     updateCursor(x, y, now) {

@@ -42,6 +42,20 @@ describe("follower-sim", () => {
     expect(Math.abs(r.y - 1500)).toBeLessThan(50);
   });
 
+  it("停止中はカーソル先端ではなく右下の離れた位置へ寄る", () => {
+    const sim = createFollowerSim();
+    sim.setMeta(META);
+    sim.resetTo(100, 100, 0);
+    let now = 0;
+    let r = null;
+    for (let i = 0; i < 120; i++) {
+      now += 16;
+      r = sim.step(16, now);
+    }
+    expect(r.x).toBeGreaterThan(145);
+    expect(r.y).toBeGreaterThan(140);
+  });
+
   it("負の座標（左上にオフセットしたモニター）も扱える", () => {
     const sim = createFollowerSim();
     sim.setMeta(META);
