@@ -7,7 +7,9 @@
   "scripts": {
     "start": "electron .",
     "test": "vitest run",
-    "dist": "electron-builder --win"
+    "dist": "electron-builder --win",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac"
   },
   "devDependencies": {
     "electron": "^31.0.0",
@@ -29,6 +31,14 @@
       "**/node_modules/koffi/**",
       "**/node_modules/@koromix/**"
     ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.entertainment",
+      "icon": "assets/icons/PokeFollower.icns"
+    },
     "win": {
       "target": [
         "nsis"
