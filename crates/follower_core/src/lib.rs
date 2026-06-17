@@ -1,3 +1,5 @@
+use std::sync::Mutex;
+
 const ARRIVE_RADIUS_PX: f64 = 6.0;
 const SLOW_RADIUS_PX: f64 = 60.0;
 const WALK_SPEED_MIN_PXPS: f64 = 80.0;
@@ -146,6 +148,68 @@ impl FollowerCore {
 
 fn hypot(x: f64, y: f64) -> f64 {
     (x * x + y * y).sqrt()
+}
+
+static CORE: Mutex<FollowerCore> = Mutex::new(FollowerCore {
+    config: Config {
+        offset: 70.0,
+        lerp: 0.20,
+    },
+    last_mouse: Vec2 { x: 0.0, y: 0.0 },
+    last_mouse_t: 0.0,
+    position: Vec2 { x: 0.0, y: 0.0 },
+    target: Vec2 { x: 0.0, y: 0.0 },
+    offset_dir: IDLE_OFFSET_DIR,
+    velocity_avg: Vec2 { x: 0.0, y: 0.0 },
+    speed_avg: 0.0,
+});
+static LAST_STEP: Mutex<StepOutput> = Mutex::new(StepOutput {
+    position: Vec2 { x: 0.0, y: 0.0 },
+    walking: false,
+});
+
+#[no_mangle]
+pub extern "C" fn pf_set_config(offset: f64, lerp: f64) {
+    CORE.lock().expect("follower core lock").config = Config { offset, lerp };
+}
+
+#[no_mangle]
+pub extern "C" fn pf_reset_to(x: f64, y: f64, now_ms: f64) {
+    CORE.lock()
+        .expect("follower core lock")
+        .reset_to(x, y, now_ms);
+    *LAST_STEP.lock().expect("follower step lock") = StepOutput {
+        position: Vec2 { x, y },
+        walking: false,
+    };
+}
+
+#[no_mangle]
+pub extern "C" fn pf_update_cursor(x: f64, y: f64, now_ms: f64) {
+    CORE.lock()
+        .expect("follower core lock")
+        .update_cursor(x, y, now_ms);
+}
+
+#[no_mangle]
+pub extern "C" fn pf_step(dt_ms: f64) {
+    let next = CORE.lock().expect("follower core lock").step(dt_ms);
+    *LAST_STEP.lock().expect("follower step lock") = next;
+}
+
+#[no_mangle]
+pub extern "C" fn pf_x() -> f64 {
+    LAST_STEP.lock().expect("follower step lock").position.x
+}
+
+#[no_mangle]
+pub extern "C" fn pf_y() -> f64 {
+    LAST_STEP.lock().expect("follower step lock").position.y
+}
+
+#[no_mangle]
+pub extern "C" fn pf_walking() -> i32 {
+    i32::from(LAST_STEP.lock().expect("follower step lock").walking)
 }
 
 #[cfg(test)]

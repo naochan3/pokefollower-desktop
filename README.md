@@ -113,7 +113,7 @@ Linux 生成物：`release/PokeFollower-1.0.0.AppImage` など。
 |---|---|
 | メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（約60fps）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
 | 追従シム（`src/main/follower-sim.js`） | 追従とアニメーションの計算（グローバル座標）。DOM 非依存・テスト可能 |
-| Rust 追従コア（`crates/follower_core/`） | 追従計算の Rust 移行用コア。現時点では同等性検証用で、Electron 実行時は JS 版を使用 |
+| Rust 追従コア（`crates/follower_core/`） | 追従位置計算の本体。WASM として `native/pokefollower_core.wasm` にビルドされ、Electron 実行時に読み込まれる |
 | オーバーレイ窓（`src/overlay/`） | **モニターごとに1枚**常設。透明・最前面・クリック透過。メインから受け取ったローカル座標でスプライトを描くだけ |
 | 設定窓（`src/settings/`） | タイル選択 UI・日本語検索・各種スライダー |
 | パック読み込み（`src/main/pack-reader.js`） | スプライト定義（パック JSON）と日本語名の読み込み |

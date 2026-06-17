@@ -6,12 +6,13 @@
   "type": "commonjs",
   "scripts": {
     "start": "electron .",
-    "test": "vitest run",
+    "test": "npm run build:rust && vitest run",
     "test:rust": "cargo test --manifest-path crates/follower_core/Cargo.toml",
-    "dist": "electron-builder --win --x64",
-    "dist:win": "electron-builder --win --x64",
-    "dist:mac": "electron-builder --mac",
-    "dist:linux": "electron-builder --linux"
+    "build:rust": "cargo build --manifest-path crates/follower_core/Cargo.toml --release --target wasm32-unknown-unknown && node scripts/copy-rust-core.cjs",
+    "dist": "npm run build:rust && electron-builder --win --x64",
+    "dist:win": "npm run build:rust && electron-builder --win --x64",
+    "dist:mac": "npm run build:rust && electron-builder --mac",
+    "dist:linux": "npm run build:rust && electron-builder --linux"
   },
   "devDependencies": {
     "electron": "^31.0.0",
@@ -27,6 +28,7 @@
     "files": [
       "src/**/*",
       "assets/**/*",
+      "native/**/*",
       "package.json"
     ],
     "asarUnpack": [

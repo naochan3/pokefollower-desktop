@@ -7,3 +7,4 @@ publish = false
 [lib]
 name = "pokefollower_core"
 path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]

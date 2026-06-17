@@ -10,6 +10,11 @@ const META = {
 };
 
 describe("follower-sim", () => {
+  it("Rust WASM backend を追従計算に使う", () => {
+    const sim = createFollowerSim();
+    expect(sim.backend()).toBe("rust-wasm");
+  });
+
   it("meta未設定なら step は null", () => {
     const sim = createFollowerSim();
     expect(sim.step(16, 16)).toBe(null);
