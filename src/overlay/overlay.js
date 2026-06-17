@@ -5,16 +5,24 @@
 let followerEl = null;
 let meta = null;
 const images = {};
+const sheetUrls = {};
+let visible = false;
+let appliedState = "";
+let appliedSize = "";
+let appliedBgSize = "";
 
 function extUrl(rel) {
   return "app://bundle/" + String(rel).replace(/^\/+/, "");
 }
 
 function sheetUrlFor(state) {
+  if (sheetUrls[state]) return sheetUrls[state];
   const st = meta && meta.states ? meta.states[state] : null;
   const sheet = st && st.sheet ? st.sheet : "";
   const raw = typeof meta?.rawPath === "string" ? meta.rawPath.replace(/^\/+|\/+$/g, "") : "";
-  return extUrl(`assets/raw/${raw}/${sheet}`);
+  const url = extUrl(`assets/raw/${raw}/${sheet}`);
+  sheetUrls[state] = url;
+  return url;
 }
 
 function ensureEl() {
@@ -37,6 +45,8 @@ function ensureEl() {
 }
 
 function preloadImages(m) {
+  for (const key of Object.keys(images)) delete images[key];
+  for (const key of Object.keys(sheetUrls)) delete sheetUrls[key];
   for (const k of Object.keys(m.states || {})) {
     const img = new Image();
     img.src = sheetUrlFor(k);
@@ -47,6 +57,9 @@ function preloadImages(m) {
 // メタ（パック情報）を受け取って画像をプリロード
 window.pokeapi.onMeta((m) => {
   meta = m;
+  appliedState = "";
+  appliedSize = "";
+  appliedBgSize = "";
   ensureEl();
   preloadImages(m);
 });
@@ -55,22 +68,43 @@ window.pokeapi.onMeta((m) => {
 window.pokeapi.onFrame((f) => {
   ensureEl();
   if (!f || !f.visible || !meta) {
-    followerEl.style.display = "none";
+    if (visible) {
+      followerEl.style.display = "none";
+      visible = false;
+    }
     return;
   }
   const st = meta.states ? meta.states[f.state] : null;
   if (!st || !st.frame || typeof st.frames !== "number") {
-    followerEl.style.display = "none";
+    if (visible) {
+      followerEl.style.display = "none";
+      visible = false;
+    }
     return;
   }
   const { w, h } = st.frame;
-  followerEl.style.display = "block";
-  followerEl.style.width = `${w}px`;
-  followerEl.style.height = `${h}px`;
-  followerEl.style.backgroundImage = `url("${sheetUrlFor(f.state)}")`;
+  if (!visible) {
+    followerEl.style.display = "block";
+    visible = true;
+  }
+  const sizeKey = `${w}x${h}`;
+  if (appliedSize !== sizeKey) {
+    followerEl.style.width = `${w}px`;
+    followerEl.style.height = `${h}px`;
+    appliedSize = sizeKey;
+  }
+  if (appliedState !== f.state) {
+    followerEl.style.backgroundImage = `url("${sheetUrlFor(f.state)}")`;
+    appliedState = f.state;
+    appliedBgSize = "";
+  }
   const img = images[f.state];
   if (img && img.naturalWidth && img.naturalHeight) {
-    followerEl.style.backgroundSize = `${img.naturalWidth}px ${img.naturalHeight}px`;
+    const bgSize = `${img.naturalWidth}px ${img.naturalHeight}px`;
+    if (appliedBgSize !== bgSize) {
+      followerEl.style.backgroundSize = bgSize;
+      appliedBgSize = bgSize;
+    }
   }
   followerEl.style.backgroundPosition = `${-(f.frame * w)}px ${-(f.row * h)}px`;
   followerEl.style.transform =

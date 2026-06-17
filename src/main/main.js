@@ -79,7 +79,7 @@ function createOverlayWindow(display) {
 
 function buildOverlays() {
   for (const o of overlays) { if (o.win && !o.win.isDestroyed()) o.win.destroy(); }
-  overlays = screen.getAllDisplays().map((d) => ({ win: createOverlayWindow(d), bounds: d.bounds }));
+  overlays = screen.getAllDisplays().map((d) => ({ win: createOverlayWindow(d), bounds: d.bounds, visible: false }));
 }
 
 function loadPackIntoSim(packKey) {
@@ -94,9 +94,16 @@ function loadPackIntoSim(packKey) {
 
 // ポケモンのグローバル座標を、各モニター窓のローカル座標に変換して配信
 function broadcastFrame(render) {
+  const spriteBounds = render ? spriteGlobalBounds(render) : null;
   for (const o of overlays) {
     if (!o.win || o.win.isDestroyed()) continue;
-    if (!render) { o.win.webContents.send("frame", { visible: false }); continue; }
+    if (!render || !intersects(o.bounds, spriteBounds)) {
+      if (o.visible) {
+        o.win.webContents.send("frame", { visible: false });
+        o.visible = false;
+      }
+      continue;
+    }
     o.win.webContents.send("frame", {
       visible: true,
       x: render.x - o.bounds.x,
@@ -106,7 +113,29 @@ function broadcastFrame(render) {
       row: render.row,
       scale: render.scale,
     });
+    o.visible = true;
   }
+}
+
+function spriteGlobalBounds(render) {
+  const st = currentMeta && currentMeta.states ? currentMeta.states[render.state] : null;
+  const frame = st && st.frame ? st.frame : { w: 96, h: 96 };
+  const halfW = (frame.w * render.scale) / 2;
+  const halfH = (frame.h * render.scale) / 2;
+  return {
+    x: render.x - halfW,
+    y: render.y - halfH,
+    width: halfW * 2,
+    height: halfH * 2,
+  };
+}
+
+function intersects(a, b) {
+  return !!a && !!b &&
+    a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y;
 }
 
 function startSimLoop() {

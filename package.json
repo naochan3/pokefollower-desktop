@@ -7,9 +7,11 @@
   "scripts": {
     "start": "electron .",
     "test": "vitest run",
-    "dist": "electron-builder --win",
-    "dist:win": "electron-builder --win",
-    "dist:mac": "electron-builder --mac"
+    "test:rust": "cargo test --manifest-path crates/follower_core/Cargo.toml",
+    "dist": "electron-builder --win --x64",
+    "dist:win": "electron-builder --win --x64",
+    "dist:mac": "electron-builder --mac",
+    "dist:linux": "electron-builder --linux"
   },
   "devDependencies": {
     "electron": "^31.0.0",
@@ -38,6 +40,12 @@
       ],
       "category": "public.app-category.entertainment",
       "icon": "assets/icons/PokeFollower.icns"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Game"
     },
     "win": {
       "target": [
