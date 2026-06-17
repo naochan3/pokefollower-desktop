@@ -26,6 +26,7 @@ const SIM_INTERVAL_MS = 8;
 // 最大化（Chrome等）は作業領域までなので一致せず、隠れない。
 // デスクトップ/タスクバー等のシェル窓は画面全体サイズだが全画面アプリではない
 const SHELL_CLASSES = new Set(["Progman", "WorkerW", "Shell_TrayWnd", "Shell_SecondaryTrayWnd", ""]);
+const TRAY_ICON_SIZE_PX = 28;
 function checkFullscreen() {
   const info = getForegroundInfo();
   if (!info || SHELL_CLASSES.has(info.cls)) { fullscreenActive = false; return; }
@@ -178,7 +179,9 @@ function getSettingsWin() {
 }
 
 function buildTray() {
-  const icon = nativeImage.createFromPath(path.join(ROOT, "assets", "icons", "pokeball-32.png"));
+  const icon = nativeImage
+    .createFromPath(path.join(ROOT, "assets", "icons", "pokeball-32.png"))
+    .resize({ width: TRAY_ICON_SIZE_PX, height: TRAY_ICON_SIZE_PX });
   tray = new Tray(icon);
   tray.setToolTip("PokéFollower");
   refreshTrayMenu();
