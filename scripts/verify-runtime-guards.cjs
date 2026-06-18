@@ -56,8 +56,14 @@ expect(DEFAULTS.offset === 70, "settings-store DEFAULTS.offset must be 70");
 expect(/offset: 70/.test(sim), "follower-sim default offset must be 70");
 expect(/vcp1_offset: 70/.test(settingsUi), "settings UI default offset must be 70");
 expect(
-  /settingsStore = createSettingsStore\(path\.join\(app\.getPath\("userData"\), "settings\.json"\)\)/.test(main),
-  "settings must be loaded from Electron userData/settings.json",
+  /function getUserDataPath\(\)/.test(main) &&
+    /!app\.isPackaged && process\.env\.PF_DEV_USER_DATA_DIR/.test(main) &&
+    /return app\.getPath\("userData"\);/.test(main),
+  "main.js must keep PF_DEV_USER_DATA_DIR as a development-only userData override",
+);
+expect(
+  /settingsStore = createSettingsStore\(path\.join\(getUserDataPath\(\), "settings\.json"\)\)/.test(main),
+  "settings must be loaded from the resolved Electron userData/settings.json",
 );
 
 if (errors.length > 0) {

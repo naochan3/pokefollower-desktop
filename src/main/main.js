@@ -48,6 +48,11 @@ function registerAppProtocol() {
   });
 }
 
+function getUserDataPath() {
+  if (!app.isPackaged && process.env.PF_DEV_USER_DATA_DIR) return process.env.PF_DEV_USER_DATA_DIR;
+  return app.getPath("userData");
+}
+
 // --- オーバーレイ（モニターごとに常設。各窓は描画役） ---
 function createOverlayWindow(display) {
   const { x, y, width, height } = display.bounds;
@@ -234,7 +239,7 @@ const gotSingleInstanceLock = app.requestSingleInstanceLock();
 
 app.whenReady().then(() => {
   if (!gotSingleInstanceLock) { app.quit(); return; }
-  settingsStore = createSettingsStore(path.join(app.getPath("userData"), "settings.json"));
+  settingsStore = createSettingsStore(path.join(getUserDataPath(), "settings.json"));
   const s = settingsStore.getAll();
   // 自動起動はインストール版のみ登録（開発起動でRunキーにゴミをためないようisPackagedで限定）
   if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: true });

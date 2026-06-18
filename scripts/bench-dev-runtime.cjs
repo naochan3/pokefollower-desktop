@@ -1,4 +1,5 @@
 const { spawn, execFileSync } = require("node:child_process");
+const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 
@@ -6,6 +7,11 @@ const root = path.join(__dirname, "..");
 const warmupMs = Number(process.env.PF_DEV_RUNTIME_WARMUP_MS || 12000);
 const sampleMs = Number(process.env.PF_DEV_RUNTIME_SAMPLE_MS || 30000);
 const sampleIntervalMs = Number(process.env.PF_DEV_RUNTIME_SAMPLE_INTERVAL_MS || 1000);
+const modes = (process.env.PF_DEV_RUNTIME_MODES || "enabled")
+  .split(",")
+  .map((mode) => mode.trim().toLowerCase())
+  .flatMap((mode) => (mode === "both" ? ["enabled", "disabled"] : [mode]))
+  .filter(Boolean);
 const runValueNames = ["electron.app.PokeFollower", "PokeFollower"];
 
 function sleep(ms) {
@@ -96,16 +102,22 @@ function stopProcesses(pids) {
   ps(`Stop-Process -Id ${arg} -Force -ErrorAction SilentlyContinue`);
 }
 
-async function main() {
-  if (process.platform !== "win32") {
-    throw new Error("bench-dev-runtime currently supports Windows only");
-  }
+function enabledForMode(mode) {
+  if (mode === "enabled") return true;
+  if (mode === "disabled") return false;
+  throw new Error(`unknown PF_DEV_RUNTIME_MODES entry: ${mode}`);
+}
 
+async function runMode(mode) {
+  const enabled = enabledForMode(mode);
   const beforeRunValues = readRunValues();
+  const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), `pf-dev-runtime-${mode}-`));
+  fs.writeFileSync(path.join(userDataDir, "settings.json"), JSON.stringify({ enabled }, null, 2), "utf8");
   const child = spawn("cmd.exe", ["/d", "/s", "/c", "npm start"], {
     cwd: root,
     stdio: "ignore",
     windowsHide: true,
+    env: { ...process.env, PF_DEV_USER_DATA_DIR: userDataDir },
   });
 
   let trackedPids = new Set([child.pid]);
@@ -114,6 +126,9 @@ async function main() {
     const firstProcesses = getProcesses();
     trackedPids = descendantPids(firstProcesses, child.pid);
     const before = summarize(firstProcesses, trackedPids);
+    if (!before.rows.some((proc) => proc.name.toLowerCase() === "electron.exe")) {
+      throw new Error("Electron process was not found; close any existing PokeFollower instance before benchmarking");
+    }
     const sampleStarted = Date.now();
     const samples = [];
     while (Date.now() - sampleStarted < sampleMs) {
@@ -134,32 +149,41 @@ async function main() {
     const singleCoreCpu = (cpuDelta / elapsedSeconds) * 100;
     const wholeMachineCpu = singleCoreCpu / logicalCpuCount;
 
-    console.log(`[bench-dev-runtime] warmup: ${warmupMs}ms`);
-    console.log(`[bench-dev-runtime] sample: ${elapsedSeconds.toFixed(3)}s`);
-    console.log(`[bench-dev-runtime] tracked process count: ${after.count}`);
-    console.log(`[bench-dev-runtime] cpu seconds delta: ${cpuDelta.toFixed(3)}s`);
-    console.log(`[bench-dev-runtime] logical CPUs: ${logicalCpuCount}`);
-    console.log(`[bench-dev-runtime] approx single-core CPU: ${singleCoreCpu.toFixed(3)}%`);
-    console.log(`[bench-dev-runtime] approx whole-machine CPU: ${wholeMachineCpu.toFixed(3)}%`);
-    console.log(`[bench-dev-runtime] avg working set: ${(avgWorkingSet / 1024 / 1024).toFixed(1)} MB`);
-    console.log(`[bench-dev-runtime] max working set: ${(maxWorkingSet / 1024 / 1024).toFixed(1)} MB`);
+    console.log(`[bench-dev-runtime:${mode}] warmup: ${warmupMs}ms`);
+    console.log(`[bench-dev-runtime:${mode}] sample: ${elapsedSeconds.toFixed(3)}s`);
+    console.log(`[bench-dev-runtime:${mode}] initial enabled: ${enabled}`);
+    console.log(`[bench-dev-runtime:${mode}] tracked process count: ${after.count}`);
+    console.log(`[bench-dev-runtime:${mode}] cpu seconds delta: ${cpuDelta.toFixed(3)}s`);
+    console.log(`[bench-dev-runtime:${mode}] logical CPUs: ${logicalCpuCount}`);
+    console.log(`[bench-dev-runtime:${mode}] approx single-core CPU: ${singleCoreCpu.toFixed(3)}%`);
+    console.log(`[bench-dev-runtime:${mode}] approx whole-machine CPU: ${wholeMachineCpu.toFixed(3)}%`);
+    console.log(`[bench-dev-runtime:${mode}] avg working set: ${(avgWorkingSet / 1024 / 1024).toFixed(1)} MB`);
+    console.log(`[bench-dev-runtime:${mode}] max working set: ${(maxWorkingSet / 1024 / 1024).toFixed(1)} MB`);
     for (const proc of after.rows.slice(0, 8)) {
       console.log(
-        `[bench-dev-runtime] process ${proc.name} pid=${proc.pid} cpu=${proc.cpu.toFixed(3)}s ws=${(proc.workingSet / 1024 / 1024).toFixed(1)} MB`,
+        `[bench-dev-runtime:${mode}] process ${proc.name} pid=${proc.pid} cpu=${proc.cpu.toFixed(3)}s ws=${(proc.workingSet / 1024 / 1024).toFixed(1)} MB`,
       );
     }
     for (const item of afterRunValues) {
       const before = beforeRunValues.find((value) => value.name === item.name)?.value || "";
       const changed = before !== item.value ? "changed" : "unchanged";
-      console.log(`[bench-dev-runtime] HKCU Run ${item.name}: ${item.value ? "set" : "empty"} (${changed})`);
+      console.log(`[bench-dev-runtime:${mode}] HKCU Run ${item.name}: ${item.value ? "set" : "empty"} (${changed})`);
     }
   } finally {
     stopProcesses(trackedPids);
     child.kill();
     await sleep(1000);
     const leftovers = summarize(getProcesses(), trackedPids);
-    console.log(`[bench-dev-runtime] leftover tracked process count after cleanup: ${leftovers.count}`);
+    console.log(`[bench-dev-runtime:${mode}] leftover tracked process count after cleanup: ${leftovers.count}`);
+    fs.rmSync(userDataDir, { recursive: true, force: true });
   }
+}
+
+async function main() {
+  if (process.platform !== "win32") {
+    throw new Error("bench-dev-runtime currently supports Windows only");
+  }
+  for (const mode of modes) await runMode(mode);
 }
 
 main().catch((error) => {

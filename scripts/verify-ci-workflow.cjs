@@ -7,6 +7,7 @@ const dependabotPath = path.join(root, ".github", "dependabot.yml");
 const packagePath = path.join(root, "package.json");
 const workflow = fs.readFileSync(workflowPath, "utf8");
 const dependabot = fs.readFileSync(dependabotPath, "utf8");
+const benchDevRuntime = fs.readFileSync(path.join(root, "scripts", "bench-dev-runtime.cjs"), "utf8");
 const pkg = JSON.parse(fs.readFileSync(packagePath, "utf8"));
 const errors = [];
 
@@ -118,6 +119,18 @@ for (const [scriptName, scriptCommand] of [
 ]) {
   if (pkg.scripts?.[scriptName] !== scriptCommand) {
     errors.push(`package.json ${scriptName} script is missing or changed`);
+  }
+}
+
+for (const text of [
+  "PF_DEV_RUNTIME_MODES",
+  "PF_DEV_USER_DATA_DIR",
+  "fs.mkdtempSync",
+  "fs.rmSync",
+  "initial enabled",
+]) {
+  if (!benchDevRuntime.includes(text)) {
+    errors.push(`bench-dev-runtime must keep isolated mode-aware runtime measurement support: ${text}`);
   }
 }
 
