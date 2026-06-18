@@ -74,7 +74,9 @@ for (const [label, html] of [
   ["settings", settingsHtml],
 ]) {
   expect(/http-equiv="Content-Security-Policy"/.test(html), `${label} HTML must declare a CSP`);
+  expect(/default-src 'none'/.test(html), `${label} CSP must deny unspecified resource types by default`);
   expect(/script-src 'self'/.test(html), `${label} CSP must block inline and remote scripts`);
+  expect(/img-src 'self' app: data:/.test(html), `${label} CSP must allow only bundled/data images`);
   expect(/connect-src 'none'/.test(html), `${label} CSP must block renderer network connections`);
   expect(/object-src 'none'/.test(html), `${label} CSP must block plugin/object loads`);
   expect(/base-uri 'none'/.test(html), `${label} CSP must block base URI injection`);
