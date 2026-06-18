@@ -24,11 +24,13 @@ let currentMeta = null;
 let enabled = false;
 let simTimer = null;
 let simIntervalMs = null;
+let fullscreenTimer = null;
 let lastStepTs = 0;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
 
 const TRAY_ICON_SIZE_PX = 28;
 const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
+const FULLSCREEN_POLL_INTERVAL_MS = 600;
 function checkFullscreen() {
   fullscreenActive = isFullscreenForeground(getForegroundInfo(), screen.getAllDisplays());
 }
@@ -146,12 +148,27 @@ function refreshSimLoopInterval() {
   startSimLoop();
 }
 
+function startFullscreenPolling() {
+  if (fullscreenTimer) return;
+  checkFullscreen();
+  fullscreenTimer = setInterval(checkFullscreen, FULLSCREEN_POLL_INTERVAL_MS);
+}
+
+function stopFullscreenPolling() {
+  if (!fullscreenTimer) return;
+  clearInterval(fullscreenTimer);
+  fullscreenTimer = null;
+  fullscreenActive = false;
+}
+
 function setEnabled(on) {
   enabled = !!on;
   if (enabled) {
+    startFullscreenPolling();
     const c = screen.getCursorScreenPoint();
     sim.resetTo(c.x, c.y, Date.now()); // 有効化時はカーソル位置へ出現
   } else {
+    stopFullscreenPolling();
     broadcastFrame(null);
   }
 }
@@ -236,7 +253,6 @@ app.whenReady().then(() => {
   powerMonitor.on("on-battery", refreshSimLoopInterval);
 
   startSimLoop();
-  setInterval(checkFullscreen, 600); // 全画面アプリ検知（約0.6秒間隔）
   setEnabled(s.enabled);
   buildTray();
 });
