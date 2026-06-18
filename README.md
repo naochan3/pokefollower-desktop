@@ -35,9 +35,9 @@
 
 ### 既知の制限
 
-- macOS 版はビルド対応済みですが、未署名・未公証です。配布する場合は Developer ID で署名し、公証してください。
+- macOS 版はビルド対応済みですが、通常ビルドは未署名です。署名・公証の手順は `docs/RELEASING.md` を参照してください。
 - Linux 版は AppImage のビルド対応までです。デスクトップ環境ごとの常駐・透明オーバーレイ挙動は追加検証が必要です。
-- 全画面の自動判定は Windows のみ対応です。macOS / Linux では全画面アプリ上でも自動非表示にはなりません。
+- 全画面の自動判定は Windows / macOS / Linux に対応します。macOS はアクセシビリティ許可、Linux は `xdotool` / `xprop` が利用できる環境で有効です。
 - Windows の全画面判定は「前面ウィンドウがモニター全体を覆っているか」で行うため、ブラウザを `F11` で全画面にした場合もゲーム同様に隠れます（通常の最大化では出たまま）。
 - モニターごとに表示スケール（DPI）が大きく異なる構成では、位置がわずかにずれる可能性があります。
 
@@ -81,6 +81,9 @@ npm test
 # Rust 版追従コアの同等性テスト（cargo が必要）
 npm run test:rust
 
+# 追従ループの 8ms / 16ms シミュレーション負荷比較
+npm run bench:sim
+
 # Rust コアを変更したとき：WASM を再ビルドして native/ に反映（cargo + wasm32-unknown-unknown ターゲットが必要）
 npm run build:rust
 ```
@@ -122,7 +125,7 @@ Linux 生成物：`release/PokeFollower-1.0.0.AppImage` など。
 | オーバーレイ窓（`src/overlay/`） | **モニターごとに1枚**常設。透明・最前面・クリック透過。メインから受け取ったローカル座標でスプライトを描くだけ |
 | 設定窓（`src/settings/`） | タイル選択 UI・日本語検索・各種スライダー |
 | パック読み込み（`src/main/pack-reader.js`） | スプライト定義（パック JSON）と日本語名の読み込み |
-| 全画面検知（`src/main/fullscreen-detect.js`） | Windows の前面ウィンドウ判定。macOS では no-op として動作 |
+| 全画面検知（`src/main/fullscreen-detect.js`） | Windows / macOS / Linux の前面ウィンドウ判定。失敗時は no-op として動作 |
 
 **なぜこの設計か**：当初は「1枚の窓をカーソルの居るモニターへワープさせる」方式でしたが、境界越えで位置が跳ねる・逆走するなどの問題が構造的に発生しました。ポケモンをグローバル座標で連続的に動かし、各モニター窓が自分の領域分だけ描く方式に作り変えることで、境界をなめらかに越えられるようになっています。詳細は `docs/superpowers/specs/` の設計書を参照。
 
