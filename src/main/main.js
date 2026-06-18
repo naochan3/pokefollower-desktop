@@ -10,6 +10,7 @@ const { getForegroundInfo } = require("./fullscreen-detect.js");
 const { isFullscreenForeground } = require("./fullscreen-policy.js");
 const { resolveAppProtocolPath } = require("./app-protocol-path.js");
 const { getSimIntervalMs } = require("./sim-loop-config.js");
+const { applySettingsPatch } = require("./settings-patch.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -198,17 +199,7 @@ function refreshTrayMenu() {
 ipcMain.handle("settings:get", () => settingsStore.getAll());
 ipcMain.handle("packs:list", () => packReader.readPackList());
 ipcMain.on("settings:set", (_e, patch) => {
-  const next = settingsStore.set(patch);
-  if ("scale" in patch || "offset" in patch || "lerp" in patch) {
-    sim.setConfig({ vcp1_scale: next.scale, vcp1_offset: next.offset, vcp1_lerp: next.lerp });
-  }
-  if ("pack" in patch) {
-    try {
-      const resolved = loadPackIntoSim(next.pack);
-      if (resolved !== next.pack) settingsStore.set({ pack: resolved });
-    } catch (_) { /* 解決失敗時は据え置き */ }
-  }
-  if ("enabled" in patch) { setEnabled(next.enabled); refreshTrayMenu(); }
+  applySettingsPatch(patch, { settingsStore, sim, loadPackIntoSim, setEnabled, refreshTrayMenu });
 });
 
 // 二重起動を禁止（複数インスタンスが同時にカーソルを追って競合するのを防ぐ）。

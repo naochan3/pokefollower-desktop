@@ -3,6 +3,7 @@ const path = require("node:path");
 
 const root = path.join(__dirname, "..");
 const main = fs.readFileSync(path.join(root, "src", "main", "main.js"), "utf8");
+const settingsPatch = fs.readFileSync(path.join(root, "src", "main", "settings-patch.js"), "utf8");
 const errors = [];
 
 function expect(condition, message) {
@@ -41,6 +42,11 @@ expect(
   runSimFrame.indexOf("if (!enabled || fullscreenActive)") < runSimFrame.indexOf("screen.getCursorScreenPoint()"),
   "sim loop must avoid cursor polling while disabled or fullscreen-active",
 );
+expect(/const \{ applySettingsPatch \} = require\("\.\/settings-patch\.js"\);/.test(main), "main.js must route settings IPC through settings-patch helper");
+expect(/ipcMain\.on\("settings:set", \(_e, patch\) => \{[\s\S]*applySettingsPatch\(patch/.test(main), "settings:set IPC must call applySettingsPatch");
+expect(/const safePatch = sanitize\(patch\);/.test(settingsPatch), "settings patch handling must sanitize renderer input first");
+expect(/Object\.keys\(safePatch\)\.length === 0/.test(settingsPatch), "settings patch handling must ignore empty sanitized patches");
+expect(!/"scale" in patch/.test(main), "settings:set IPC must not inspect raw renderer patch with in-operator");
 
 if (errors.length > 0) {
   for (const error of errors) console.error(`[verify-ipc-routing] ${error}`);
