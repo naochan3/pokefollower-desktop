@@ -48,7 +48,11 @@ expect(
   "sim loop must avoid cursor polling while disabled or fullscreen-active",
 );
 expect(/const \{ applySettingsPatch \} = require\("\.\/settings-patch\.js"\);/.test(main), "main.js must route settings IPC through settings-patch helper");
-expect(/ipcMain\.on\("settings:set", \(_e, patch\) => \{[\s\S]*applySettingsPatch\(patch/.test(main), "settings:set IPC must call applySettingsPatch");
+expect(/function isSettingsSender\(event\) \{[\s\S]*event\.sender === settingsWin\.webContents[\s\S]*\}/.test(main), "main.js must bind settings IPC to the settings window webContents");
+expect(/function requireSettingsSender\(event\) \{[\s\S]*throw new Error\("unauthorized settings IPC sender"\)[\s\S]*\}/.test(main), "main.js must reject unauthorized settings invoke senders");
+expect(/ipcMain\.handle\("settings:get", \(event\) => \{[\s\S]*requireSettingsSender\(event\)[\s\S]*settingsStore\.getAll\(\)/.test(main), "settings:get IPC must require the settings window sender");
+expect(/ipcMain\.handle\("packs:list", \(event\) => \{[\s\S]*requireSettingsSender\(event\)[\s\S]*packReader\.readPackList\(\)/.test(main), "packs:list IPC must require the settings window sender");
+expect(/ipcMain\.on\("settings:set", \(event, patch\) => \{[\s\S]*if \(!isSettingsSender\(event\)\) return;[\s\S]*applySettingsPatch\(patch/.test(main), "settings:set IPC must guard sender and call applySettingsPatch");
 expect(/const safePatch = sanitize\(patch\);/.test(settingsPatch), "settings patch handling must sanitize renderer input first");
 expect(/Object\.keys\(safePatch\)\.length === 0/.test(settingsPatch), "settings patch handling must ignore empty sanitized patches");
 expect(!/"scale" in patch/.test(main), "settings:set IPC must not inspect raw renderer patch with in-operator");

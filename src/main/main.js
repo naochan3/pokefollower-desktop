@@ -202,6 +202,14 @@ function getSettingsWin() {
   return settingsWin;
 }
 
+function isSettingsSender(event) {
+  return !!settingsWin && !settingsWin.isDestroyed() && event.sender === settingsWin.webContents;
+}
+
+function requireSettingsSender(event) {
+  if (!isSettingsSender(event)) throw new Error("unauthorized settings IPC sender");
+}
+
 function buildTray() {
   const icon = nativeImage
     .createFromPath(path.join(ROOT, "assets", "icons", "pokeball-32.png"))
@@ -238,9 +246,16 @@ function refreshTrayMenu() {
   tray.setContextMenu(menu);
 }
 
-ipcMain.handle("settings:get", () => settingsStore.getAll());
-ipcMain.handle("packs:list", () => packReader.readPackList());
-ipcMain.on("settings:set", (_e, patch) => {
+ipcMain.handle("settings:get", (event) => {
+  requireSettingsSender(event);
+  return settingsStore.getAll();
+});
+ipcMain.handle("packs:list", (event) => {
+  requireSettingsSender(event);
+  return packReader.readPackList();
+});
+ipcMain.on("settings:set", (event, patch) => {
+  if (!isSettingsSender(event)) return;
   applySettingsPatch(patch, { settingsStore, sim, loadPackIntoSim, setEnabled, refreshTrayMenu });
 });
 
