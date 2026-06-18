@@ -30,13 +30,17 @@ expect(
   "fullscreen-detect should keep Win32 code gated behind process.platform === \"win32\"",
 );
 expect(
-  !/process\.platform === "darwin"|process\.platform === "linux"/.test(fullscreenDetect),
-  "fullscreen-detect should not imply macOS/Linux foreground detection is implemented yet",
+  /process\.platform === "darwin"/.test(fullscreenDetect) && /osascript/.test(fullscreenDetect),
+  "fullscreen-detect should include best-effort macOS foreground detection",
+);
+expect(
+  /process\.platform === "linux"/.test(fullscreenDetect) && /xdotool/.test(fullscreenDetect) && /xprop/.test(fullscreenDetect) && /xwininfo/.test(fullscreenDetect),
+  "fullscreen-detect should include best-effort Linux foreground detection",
 );
 
 expect(
-  readme.includes("全画面の自動判定は Windows のみ対応です。macOS / Linux では全画面アプリ上でも自動非表示にはなりません。"),
-  "README must state fullscreen auto-hide is Windows-only",
+  readme.includes("全画面の自動判定は Windows では Win32、macOS では System Events / Accessibility、Linux では `xdotool` / `xprop` / `xwininfo` が利用できる環境で動作します。"),
+  "README must describe fullscreen auto-hide platform requirements",
 );
 expect(
   readme.includes("Linux 版は AppImage のビルド対応までです。デスクトップ環境ごとの常駐・透明オーバーレイ挙動は追加検証が必要です。"),
@@ -46,7 +50,7 @@ expect(readme.includes("macOS（Apple Silicon / arm64）"), "README must describ
 expect(!readme.includes("macOS（Apple Silicon / Intel）"), "README must not imply Intel macOS binaries are currently published");
 expect(status.includes("現在は Windows / macOS(arm64) 向けに配布物を出せる状態。"), "STATUS must describe macOS distribution as arm64");
 expect(status.includes("macOS arm64 dmg / zip"), "STATUS included assets must describe macOS arm64 assets");
-expect(status.includes("全画面の自動非表示は **Windows のみ**。"), "STATUS must state fullscreen auto-hide is Windows-only");
+expect(status.includes("全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。"), "STATUS must state macOS/Linux fullscreen auto-hide dependencies");
 expect(status.includes("Linux は AppImage ビルドまで（実機の常駐挙動は未検証）。"), "STATUS must state Linux runtime is unverified");
 
 if (errors.length > 0) {

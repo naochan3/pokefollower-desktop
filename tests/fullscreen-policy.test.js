@@ -26,6 +26,10 @@ describe("fullscreen-policy", () => {
     expect(isFullscreenForeground({ w: 1920, h: 1080, cls: "GameWindow" }, displays)).toBe(true);
   });
 
+  it("OSが明示した全画面状態はサイズに依存せず全画面扱いする", () => {
+    expect(isFullscreenForeground({ w: 1, h: 1, cls: "GameWindow", isFullscreen: true }, displays)).toBe(true);
+  });
+
   it("DPI scale を考慮して物理ピクセル相当のサイズを判定する", () => {
     expect(isFullscreenForeground({ w: 3200, h: 1800, cls: "GameWindow" }, displays)).toBe(true);
   });
