@@ -30,8 +30,10 @@ function extractFunctionBody(source, functionName) {
 const overlayWindow = extractFunctionBody(main, "createOverlayWindow");
 const settingsWindow = extractFunctionBody(main, "getSettingsWin");
 const navigationHardening = extractFunctionBody(main, "hardenRendererNavigation");
+const permissionGuards = extractFunctionBody(main, "registerPermissionGuards");
 
 expect(/scheme: "app"/.test(main), "app protocol scheme must be registered");
+expect(/powerMonitor, session \} = require\("electron"\)/.test(main), "main.js must import Electron session for permission guards");
 expect(/standard: true/.test(main), "app protocol must be standard");
 expect(/secure: true/.test(main), "app protocol must be secure");
 expect(/supportFetchAPI: true/.test(main), "app protocol must support fetch API");
@@ -43,6 +45,9 @@ expect(/new Response\(null, \{ status: 404 \}\)/.test(main), "protocol handler m
 expect(/net\.fetch\(pathToFileURL\(filePath\)\.toString\(\)\)/.test(main), "protocol handler must fetch file URLs after validation");
 expect(/setWindowOpenHandler\(\(\) => \(\{ action: "deny" \}\)\)/.test(navigationHardening), "renderer windows must deny window.open");
 expect(/webContents\.on\("will-navigate", \(event\) => \{[\s\S]*event\.preventDefault\(\);[\s\S]*\}/.test(navigationHardening), "renderer windows must prevent navigation away from bundled UI");
+expect(/session\.defaultSession\.setPermissionRequestHandler\(\(_webContents, _permission, callback\) => \{[\s\S]*callback\(false\);[\s\S]*\}\)/.test(permissionGuards), "default session must deny permission requests");
+expect(/session\.defaultSession\.setPermissionCheckHandler\(\(\) => false\)/.test(permissionGuards), "default session must deny permission checks");
+expect(/registerPermissionGuards\(\);[\s\S]*registerAppProtocol\(\);/.test(main), "permission guards must be registered before renderer windows are created");
 
 for (const [label, body] of [
   ["overlay", overlayWindow],

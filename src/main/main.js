@@ -1,4 +1,4 @@
-const { app, BrowserWindow, protocol, net, screen, ipcMain, Tray, Menu, nativeImage, powerMonitor } = require("electron");
+const { app, BrowserWindow, protocol, net, screen, ipcMain, Tray, Menu, nativeImage, powerMonitor, session } = require("electron");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
 const fs = require("node:fs");
@@ -46,6 +46,13 @@ function registerAppProtocol() {
     if (!fs.existsSync(filePath)) return new Response(null, { status: 404 });
     return net.fetch(pathToFileURL(filePath).toString());
   });
+}
+
+function registerPermissionGuards() {
+  session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => {
+    callback(false);
+  });
+  session.defaultSession.setPermissionCheckHandler(() => false);
 }
 
 function getUserDataPath() {
@@ -278,6 +285,7 @@ app.whenReady().then(() => {
   // 自動起動はインストール版のみ登録（開発起動でRunキーにゴミをためないようisPackagedで限定）
   if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: true });
 
+  registerPermissionGuards();
   registerAppProtocol();
   sim.setConfig({ vcp1_scale: s.scale, vcp1_offset: s.offset, vcp1_lerp: s.lerp });
   try { loadPackIntoSim(s.pack); }
