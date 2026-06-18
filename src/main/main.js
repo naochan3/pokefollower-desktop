@@ -5,7 +5,7 @@ const fs = require("node:fs");
 const { makePackReader } = require("./pack-reader.js");
 const { createSettingsStore } = require("./settings-store.js");
 const { createFollowerSim } = require("./follower-sim.js");
-const { frameForOverlay } = require("./frame-routing.js");
+const { frameForOverlay, frameKey } = require("./frame-routing.js");
 const { getForegroundInfo } = require("./fullscreen-detect.js");
 const { isFullscreenForeground } = require("./fullscreen-policy.js");
 const { resolveAppProtocolPath } = require("./app-protocol-path.js");
@@ -90,7 +90,7 @@ function createOverlayWindow(display) {
 
 function buildOverlays() {
   for (const o of overlays) { if (o.win && !o.win.isDestroyed()) o.win.destroy(); }
-  overlays = screen.getAllDisplays().map((d) => ({ win: createOverlayWindow(d), bounds: d.bounds, visible: false }));
+  overlays = screen.getAllDisplays().map((d) => ({ win: createOverlayWindow(d), bounds: d.bounds, visible: false, lastFrameKey: "hidden" }));
 }
 
 let displayRebuildTimer = null;
@@ -121,11 +121,15 @@ function broadcastFrame(render) {
       if (o.visible) {
         o.win.webContents.send("frame", frame);
         o.visible = false;
+        o.lastFrameKey = "hidden";
       }
       continue;
     }
+    const nextFrameKey = frameKey(frame);
+    if (o.visible && o.lastFrameKey === nextFrameKey) continue;
     o.win.webContents.send("frame", frame);
     o.visible = true;
+    o.lastFrameKey = nextFrameKey;
   }
 }
 

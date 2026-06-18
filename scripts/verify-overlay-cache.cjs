@@ -24,10 +24,15 @@ expect(/const sheetUrls = \{\};/.test(overlay), "overlay must cache resolved she
 expect(/let appliedState = "";/.test(overlay), "overlay must cache applied sprite state");
 expect(/let appliedSize = "";/.test(overlay), "overlay must cache applied sprite size");
 expect(/let appliedBgSize = "";/.test(overlay), "overlay must cache applied background size");
+expect(/let appliedFramePosition = "";/.test(overlay), "overlay must cache applied background position");
+expect(/let appliedTransform = "";/.test(overlay), "overlay must cache applied transform");
 expect(/if \(appliedSize !== sizeKey\)/.test(overlay), "overlay must avoid repeated width/height writes");
 expect(/if \(appliedState !== f\.state\)/.test(overlay), "overlay must avoid repeated background-image writes");
 expect(/if \(appliedBgSize !== bgSize\)/.test(overlay), "overlay must avoid repeated background-size writes");
+expect(/if \(appliedFramePosition !== framePosition\)/.test(overlay), "overlay must avoid repeated background-position writes");
+expect(/if \(appliedTransform !== transform\)/.test(overlay), "overlay must avoid repeated transform writes");
 expect(/willChange: "transform, background-position, background-image"/.test(overlay), "overlay should keep compositor hints");
+expect(/transformOrigin: "center center"/.test(overlay), "overlay should set transform-origin once");
 expect(/translate3d\(/.test(overlay), "overlay should position sprites with translate3d");
 expect(
   /onMeta: \(cb\) => ipcRenderer\.on\("meta", \(_e, m\) => cb\(m\)\)/.test(preload) &&

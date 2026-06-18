@@ -32,4 +32,11 @@ function frameForOverlay(render, bounds, meta) {
   };
 }
 
-module.exports = { frameForOverlay, intersects, spriteGlobalBounds };
+function frameKey(frame) {
+  if (!frame || !frame.visible) return "hidden";
+  const x = Number.isFinite(frame.x) ? frame.x.toFixed(2) : "";
+  const y = Number.isFinite(frame.y) ? frame.y.toFixed(2) : "";
+  return `${x}:${y}:${frame.state}:${frame.frame}:${frame.row}:${frame.scale}`;
+}
+
+module.exports = { frameForOverlay, frameKey, intersects, spriteGlobalBounds };

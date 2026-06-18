@@ -45,7 +45,7 @@ function readRunValues() {
 function getProcesses() {
   const script = `
     $cim = Get-CimInstance Win32_Process | Select-Object ProcessId, ParentProcessId, Name, CommandLine
-    $proc = Get-Process | Select-Object Id, CPU, WorkingSet64
+    $proc = Get-Process | Select-Object Id, CPU, WorkingSet64, PrivateMemorySize64
     $procById = @{}
     foreach ($p in $proc) { $procById[[int]$p.Id] = $p }
     $rows = foreach ($c in $cim) {
@@ -56,6 +56,7 @@ function getProcesses() {
         name = [string]$c.Name
         cpu = if ($p -and $p.CPU -ne $null) { [double]$p.CPU } else { 0 }
         workingSet = if ($p) { [int64]$p.WorkingSet64 } else { 0 }
+        privateBytes = if ($p) { [int64]$p.PrivateMemorySize64 } else { 0 }
         commandLine = [string]$c.CommandLine
       }
     }
@@ -89,8 +90,15 @@ function summarize(processes, pids) {
     count: rows.length,
     cpu: rows.reduce((acc, proc) => acc + (proc.cpu || 0), 0),
     workingSet: rows.reduce((acc, proc) => acc + (proc.workingSet || 0), 0),
+    privateBytes: rows.reduce((acc, proc) => acc + (proc.privateBytes || 0), 0),
     rows: rows
-      .map((proc) => ({ pid: proc.pid, name: proc.name, cpu: proc.cpu || 0, workingSet: proc.workingSet || 0 }))
+      .map((proc) => ({
+        pid: proc.pid,
+        name: proc.name,
+        cpu: proc.cpu || 0,
+        workingSet: proc.workingSet || 0,
+        privateBytes: proc.privateBytes || 0,
+      }))
       .sort((a, b) => b.workingSet - a.workingSet),
   };
 }
@@ -144,7 +152,10 @@ async function runMode(mode) {
     const elapsedSeconds = Math.max(1, (Date.now() - sampleStarted) / 1000);
     const avgWorkingSet =
       samples.reduce((acc, sample) => acc + sample.workingSet, 0) / Math.max(1, samples.length);
+    const avgPrivateBytes =
+      samples.reduce((acc, sample) => acc + sample.privateBytes, 0) / Math.max(1, samples.length);
     const maxWorkingSet = Math.max(...samples.map((sample) => sample.workingSet), after.workingSet);
+    const maxPrivateBytes = Math.max(...samples.map((sample) => sample.privateBytes), after.privateBytes);
     const logicalCpuCount = os.cpus().length || 1;
     const singleCoreCpu = (cpuDelta / elapsedSeconds) * 100;
     const wholeMachineCpu = singleCoreCpu / logicalCpuCount;
@@ -159,9 +170,11 @@ async function runMode(mode) {
     console.log(`[bench-dev-runtime:${mode}] approx whole-machine CPU: ${wholeMachineCpu.toFixed(3)}%`);
     console.log(`[bench-dev-runtime:${mode}] avg working set: ${(avgWorkingSet / 1024 / 1024).toFixed(1)} MB`);
     console.log(`[bench-dev-runtime:${mode}] max working set: ${(maxWorkingSet / 1024 / 1024).toFixed(1)} MB`);
+    console.log(`[bench-dev-runtime:${mode}] avg private bytes: ${(avgPrivateBytes / 1024 / 1024).toFixed(1)} MB`);
+    console.log(`[bench-dev-runtime:${mode}] max private bytes: ${(maxPrivateBytes / 1024 / 1024).toFixed(1)} MB`);
     for (const proc of after.rows.slice(0, 8)) {
       console.log(
-        `[bench-dev-runtime:${mode}] process ${proc.name} pid=${proc.pid} cpu=${proc.cpu.toFixed(3)}s ws=${(proc.workingSet / 1024 / 1024).toFixed(1)} MB`,
+        `[bench-dev-runtime:${mode}] process ${proc.name} pid=${proc.pid} cpu=${proc.cpu.toFixed(3)}s ws=${(proc.workingSet / 1024 / 1024).toFixed(1)} MB private=${(proc.privateBytes / 1024 / 1024).toFixed(1)} MB`,
       );
     }
     for (const item of afterRunValues) {

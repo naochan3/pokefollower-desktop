@@ -66,7 +66,7 @@ function restoreRunValues(values) {
 function getProcesses() {
   const script = `
     $cim = Get-CimInstance Win32_Process | Select-Object ProcessId, ParentProcessId, Name, CommandLine
-    $proc = Get-Process | Select-Object Id, CPU, WorkingSet64
+    $proc = Get-Process | Select-Object Id, CPU, WorkingSet64, PrivateMemorySize64
     $procById = @{}
     foreach ($p in $proc) { $procById[[int]$p.Id] = $p }
     $rows = foreach ($c in $cim) {
@@ -77,6 +77,7 @@ function getProcesses() {
         name = [string]$c.Name
         cpu = if ($p -and $p.CPU -ne $null) { [double]$p.CPU } else { 0 }
         workingSet = if ($p) { [int64]$p.WorkingSet64 } else { 0 }
+        privateBytes = if ($p) { [int64]$p.PrivateMemorySize64 } else { 0 }
         commandLine = [string]$c.CommandLine
       }
     }
@@ -104,14 +105,35 @@ function descendantPids(processes, rootPid) {
   return seen;
 }
 
+function matchingPids(processes, rootPid, userDataDir) {
+  const descendants = descendantPids(processes, rootPid);
+  const normalizedAppPath = appPath.toLowerCase();
+  const normalizedUserDataDir = userDataDir.toLowerCase();
+  const matched = new Set(descendants);
+  for (const proc of processes) {
+    const commandLine = String(proc.commandLine || "").toLowerCase();
+    if (commandLine.includes(normalizedAppPath) || commandLine.includes(normalizedUserDataDir)) {
+      matched.add(proc.pid);
+    }
+  }
+  return matched;
+}
+
 function summarize(processes, pids) {
   const rows = processes.filter((proc) => pids.has(proc.pid));
   return {
     count: rows.length,
     cpu: rows.reduce((acc, proc) => acc + (proc.cpu || 0), 0),
     workingSet: rows.reduce((acc, proc) => acc + (proc.workingSet || 0), 0),
+    privateBytes: rows.reduce((acc, proc) => acc + (proc.privateBytes || 0), 0),
     rows: rows
-      .map((proc) => ({ pid: proc.pid, name: proc.name, cpu: proc.cpu || 0, workingSet: proc.workingSet || 0 }))
+      .map((proc) => ({
+        pid: proc.pid,
+        name: proc.name,
+        cpu: proc.cpu || 0,
+        workingSet: proc.workingSet || 0,
+        privateBytes: proc.privateBytes || 0,
+      }))
       .sort((a, b) => b.workingSet - a.workingSet),
   };
 }
@@ -119,7 +141,19 @@ function summarize(processes, pids) {
 function stopProcesses(pids) {
   const list = [...pids].filter((pid) => pid !== process.pid);
   if (list.length === 0) return;
-  ps(`Stop-Process -Id ${list.join(",")} -Force -ErrorAction SilentlyContinue`);
+  try {
+    ps(`
+      $ids = @(${list.join(",")})
+      $existing = foreach ($id in $ids) {
+        if (Get-Process -Id $id -ErrorAction SilentlyContinue) { $id }
+      }
+      if ($existing.Count -gt 0) {
+        Stop-Process -Id $existing -Force
+      }
+    `);
+  } catch (_) {
+    // The app can exit by itself while the benchmark is cleaning up.
+  }
 }
 
 function enabledForMode(mode) {
@@ -148,7 +182,7 @@ async function runMode(mode) {
   try {
     await sleep(warmupMs);
     const firstProcesses = getProcesses();
-    trackedPids = descendantPids(firstProcesses, child.pid);
+    trackedPids = matchingPids(firstProcesses, child.pid, userDataDir);
     const before = summarize(firstProcesses, trackedPids);
     if (!before.rows.some((proc) => proc.name.toLowerCase() === "pokefollower.exe")) {
       throw new Error("PokeFollower.exe was not found; close any existing instance before benchmarking");
@@ -158,7 +192,7 @@ async function runMode(mode) {
     while (Date.now() - sampleStarted < sampleMs) {
       await sleep(sampleIntervalMs);
       const processes = getProcesses();
-      trackedPids = descendantPids(processes, child.pid);
+      trackedPids = matchingPids(processes, child.pid, userDataDir);
       samples.push(summarize(processes, trackedPids));
     }
     const afterProcesses = getProcesses();
@@ -168,7 +202,10 @@ async function runMode(mode) {
     const elapsedSeconds = Math.max(1, (Date.now() - sampleStarted) / 1000);
     const avgWorkingSet =
       samples.reduce((acc, sample) => acc + sample.workingSet, 0) / Math.max(1, samples.length);
+    const avgPrivateBytes =
+      samples.reduce((acc, sample) => acc + sample.privateBytes, 0) / Math.max(1, samples.length);
     const maxWorkingSet = Math.max(...samples.map((sample) => sample.workingSet), after.workingSet);
+    const maxPrivateBytes = Math.max(...samples.map((sample) => sample.privateBytes), after.privateBytes);
     const logicalCpuCount = os.cpus().length || 1;
     const singleCoreCpu = (cpuDelta / elapsedSeconds) * 100;
     const wholeMachineCpu = singleCoreCpu / logicalCpuCount;
@@ -184,9 +221,11 @@ async function runMode(mode) {
     console.log(`[bench-win-unpacked-runtime:${mode}] approx whole-machine CPU: ${wholeMachineCpu.toFixed(3)}%`);
     console.log(`[bench-win-unpacked-runtime:${mode}] avg working set: ${(avgWorkingSet / 1024 / 1024).toFixed(1)} MB`);
     console.log(`[bench-win-unpacked-runtime:${mode}] max working set: ${(maxWorkingSet / 1024 / 1024).toFixed(1)} MB`);
+    console.log(`[bench-win-unpacked-runtime:${mode}] avg private bytes: ${(avgPrivateBytes / 1024 / 1024).toFixed(1)} MB`);
+    console.log(`[bench-win-unpacked-runtime:${mode}] max private bytes: ${(maxPrivateBytes / 1024 / 1024).toFixed(1)} MB`);
     for (const proc of after.rows.slice(0, 8)) {
       console.log(
-        `[bench-win-unpacked-runtime:${mode}] process ${proc.name} pid=${proc.pid} cpu=${proc.cpu.toFixed(3)}s ws=${(proc.workingSet / 1024 / 1024).toFixed(1)} MB`,
+        `[bench-win-unpacked-runtime:${mode}] process ${proc.name} pid=${proc.pid} cpu=${proc.cpu.toFixed(3)}s ws=${(proc.workingSet / 1024 / 1024).toFixed(1)} MB private=${(proc.privateBytes / 1024 / 1024).toFixed(1)} MB`,
       );
     }
     for (const item of afterRunValues) {

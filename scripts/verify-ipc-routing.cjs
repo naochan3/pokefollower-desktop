@@ -28,14 +28,19 @@ const broadcastFrame = extractFunctionBody(main, "broadcastFrame");
 const loadPackIntoSim = extractFunctionBody(main, "loadPackIntoSim");
 const runSimFrame = extractFunctionBody(main, "runSimFrame") || extractFunctionBody(main, "startSimLoop");
 
-expect(/const \{ frameForOverlay \} = require\("\.\/frame-routing\.js"\);/.test(main), "main.js must use frame-routing helper");
+expect(/const \{ frameForOverlay, frameKey \} = require\("\.\/frame-routing\.js"\);/.test(main), "main.js must use frame-routing helpers");
 expect(/visible: false/.test(buildOverlays), "new overlay records must start hidden");
+expect(/lastFrameKey: "hidden"/.test(buildOverlays), "new overlay records must start with a hidden frame key");
 expect(/frameForOverlay\(render, o\.bounds, currentMeta\)/.test(broadcastFrame), "broadcastFrame must compute per-overlay frame routing");
 expect(/if \(!o\.win \|\| o\.win\.isDestroyed\(\)\) continue;/.test(broadcastFrame), "broadcastFrame must skip destroyed overlays");
 expect(/if \(!frame\.visible\)/.test(broadcastFrame), "broadcastFrame must branch on invisible frames");
 expect(/if \(o\.visible\) \{[\s\S]*?webContents\.send\("frame", frame\)[\s\S]*?o\.visible = false;[\s\S]*?\}/.test(broadcastFrame), "broadcastFrame must send a hide frame only on visible->hidden transition");
+expect(/o\.lastFrameKey = "hidden";/.test(broadcastFrame), "broadcastFrame must reset frame cache on hide");
 expect(/continue;/.test(broadcastFrame), "broadcastFrame must continue after invisible-frame handling");
+expect(/const nextFrameKey = frameKey\(frame\);/.test(broadcastFrame), "broadcastFrame must compute a stable visible frame key");
+expect(/if \(o\.visible && o\.lastFrameKey === nextFrameKey\) continue;/.test(broadcastFrame), "broadcastFrame must skip duplicate visible frames");
 expect(/webContents\.send\("frame", frame\);[\s\S]*?o\.visible = true;/.test(broadcastFrame), "broadcastFrame must send visible frames and mark overlay visible");
+expect(/o\.lastFrameKey = nextFrameKey;/.test(broadcastFrame), "broadcastFrame must remember the last visible frame key");
 expect(/webContents\.send\("meta", meta\)/.test(loadPackIntoSim), "loadPackIntoSim must broadcast meta to existing overlays");
 expect(/if \(!enabled \|\| fullscreenActive\) \{ broadcastFrame\(null\); return; \}/.test(runSimFrame), "sim loop must hide overlays when disabled or fullscreen-active");
 expect(

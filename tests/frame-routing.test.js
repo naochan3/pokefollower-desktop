@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { frameForOverlay, intersects, spriteGlobalBounds } from "../src/main/frame-routing.js";
+import { frameForOverlay, frameKey, intersects, spriteGlobalBounds } from "../src/main/frame-routing.js";
 
 describe("frame-routing", () => {
   const meta = {
@@ -38,5 +38,14 @@ describe("frame-routing", () => {
   it("metaが無い場合は96pxのfallback frameで判定する", () => {
     const render = { x: 96, y: 50, state: "missing", frame: 0, row: 0, scale: 1 };
     expect(frameForOverlay(render, right, null).visible).toBe(true);
+  });
+
+  it("frameKeyは同一描画frameを同じキーに丸める", () => {
+    const a = { visible: true, x: 10.004, y: 20.004, state: "walk", frame: 1, row: 0, scale: 1.25 };
+    const b = { visible: true, x: 10.0041, y: 20.0041, state: "walk", frame: 1, row: 0, scale: 1.25 };
+    const c = { visible: true, x: 10.02, y: 20.004, state: "walk", frame: 1, row: 0, scale: 1.25 };
+    expect(frameKey(a)).toBe(frameKey(b));
+    expect(frameKey(a)).not.toBe(frameKey(c));
+    expect(frameKey({ visible: false })).toBe("hidden");
   });
 });

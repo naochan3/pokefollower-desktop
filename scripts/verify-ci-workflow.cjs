@@ -130,6 +130,8 @@ for (const text of [
   "fs.mkdtempSync",
   "fs.rmSync",
   "initial enabled",
+  "PrivateMemorySize64",
+  "avg private bytes",
 ]) {
   if (!benchDevRuntime.includes(text)) {
     errors.push(`bench-dev-runtime must keep isolated mode-aware runtime measurement support: ${text}`);
@@ -144,6 +146,8 @@ for (const text of [
   "HKCU Run",
   "restoreRunValues",
   "restored",
+  "PrivateMemorySize64",
+  "avg private bytes",
 ]) {
   if (!benchWinUnpackedRuntime.includes(text)) {
     errors.push(`bench-win-unpacked-runtime must keep isolated packaged runtime measurement support: ${text}`);
