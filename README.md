@@ -21,7 +21,7 @@
 
 ### macOS（Apple Silicon）
 
-**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.0.1/PokeFollower-1.0.0-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.0.1/PokeFollower-1.0.0-arm64-mac.zip)）
+**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/latest/download/PokeFollower-1.0.2-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/latest/download/PokeFollower-1.0.2-arm64-mac.zip)）
 
 1. 上のリンクから `.dmg` をダウンロード
 2. 開いて `PokeFollower.app` を**アプリケーション**にドラッグ → 起動して**メニューバー**（画面右上）に常駐
@@ -29,8 +29,6 @@
 
 > 未署名・未公証のため、初回は Gatekeeper にブロックされます。アプリを**右クリック →「開く」**、または `システム設定 → プライバシーとセキュリティ` の「このまま開く」で実行してください。
 > （macOS 版は contributor がビルドした arm64 バイナリ。全画面アプリの自動非表示は Windows のみ対応です）
-
-> ⚠ macOS 版は現在 **v1.0.1（Electron 31）相当**です。Windows 版の最新セキュリティ更新（Electron 42, v1.0.2）に追従した macOS ビルドは準備中です。
 
 > 最新版は常に[リリースページ](https://github.com/naochan3/pokefollower-desktop/releases/latest)から取得できます（上のリンクも常に最新を指します）。
 
