@@ -8,17 +8,32 @@ const DEFAULTS = {
   lerp: 0.20,
 };
 
-const NUMERIC_KEYS = ["scale", "offset", "lerp"];
+const LIMITS = {
+  scale: { min: 0.5, max: 5.0 },
+  offset: { min: 0, max: 100 },
+  lerp: { min: 0.05, max: 0.5 },
+};
+
+const PACK_ID_PATTERN = /^retro\/(?:gen-[1-9]\/)?[0-9]{3,4}-[a-z0-9-]+$/;
+
+function clamp(n, { min, max }) {
+  return Math.min(max, Math.max(min, n));
+}
 
 function sanitize(patch) {
   const out = {};
+  if (!patch || typeof patch !== "object" || Array.isArray(patch)) return out;
   for (const [k, v] of Object.entries(patch)) {
     if (!(k in DEFAULTS)) continue;
     if (k === "enabled") { out.enabled = !!v; continue; }
-    if (k === "pack") { if (typeof v === "string" && v.trim()) out.pack = v; continue; }
-    if (NUMERIC_KEYS.includes(k)) {
+    if (k === "pack") {
+      const pack = typeof v === "string" ? v.trim() : "";
+      if (PACK_ID_PATTERN.test(pack)) out.pack = pack;
+      continue;
+    }
+    if (k in LIMITS) {
       const n = Number(v);
-      if (Number.isFinite(n)) out[k] = n;
+      if (Number.isFinite(n)) out[k] = clamp(n, LIMITS[k]);
     }
   }
   return out;
@@ -46,4 +61,4 @@ function createSettingsStore(filePath) {
   };
 }
 
-module.exports = { createSettingsStore, DEFAULTS };
+module.exports = { createSettingsStore, DEFAULTS, LIMITS, PACK_ID_PATTERN, sanitize };
