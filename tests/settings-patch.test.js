@@ -37,6 +37,13 @@ describe("settings-patch", () => {
     expect(calls).toEqual([]);
   });
 
+  it("同値patchではstore更新も副作用も起こさない", () => {
+    const { deps, calls } = makeDeps();
+    expect(applySettingsPatch({ scale: DEFAULTS.scale, pack: DEFAULTS.pack, enabled: DEFAULTS.enabled }, deps))
+      .toEqual(DEFAULTS);
+    expect(calls).toEqual([]);
+  });
+
   it("数値patchはsanitize後の値でsim設定を更新する", () => {
     const { deps, calls } = makeDeps();
     const next = applySettingsPatch({ scale: 999, offset: -10, lerp: 99 }, deps);

@@ -1,4 +1,4 @@
-const { sanitize } = require("./settings-store.js");
+const { sanitize, hasStateChange } = require("./settings-store.js");
 
 function hasOwn(obj, key) {
   return Object.prototype.hasOwnProperty.call(obj, key);
@@ -12,7 +12,8 @@ function applySettingsPatch(patch, {
   refreshTrayMenu,
 }) {
   const safePatch = sanitize(patch);
-  if (Object.keys(safePatch).length === 0) return settingsStore.getAll();
+  const current = settingsStore.getAll();
+  if (Object.keys(safePatch).length === 0 || !hasStateChange(current, safePatch)) return current;
 
   const next = settingsStore.set(safePatch);
   if (hasOwn(safePatch, "scale") || hasOwn(safePatch, "offset") || hasOwn(safePatch, "lerp")) {
