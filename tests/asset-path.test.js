@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { dexFromSlug, generationForDex, packSlug, buildPackCandidates, GENERATION_DIRS } from "../src/main/asset-path.js";
+import { dexFromSlug, generationForDex, packSlug, buildPackCandidates, GENERATION_DIRS, isSafePackKey } from "../src/main/asset-path.js";
 
 describe("asset-path", () => {
   it("slugからdex番号を取り出す", () => {
@@ -9,6 +9,7 @@ describe("asset-path", () => {
   });
 
   it("dexから世代を判定する", () => {
+    expect(generationForDex(0)).toBe(null);
     expect(generationForDex(9)).toBe("gen-1");
     expect(generationForDex(152)).toBe("gen-2");
     expect(generationForDex(400)).toBe("gen-4");
@@ -69,5 +70,12 @@ describe("asset-path", () => {
       "retro/906-sprigatito",
       "retro/gen-9/906-sprigatito",
     ]);
+  });
+
+  it("pack keyは安全な形式だけ候補生成する", () => {
+    expect(isSafePackKey("retro/gen-1/025-pikachu")).toBe(true);
+    expect(isSafePackKey("retro/025-pikachu")).toBe(true);
+    expect(isSafePackKey("retro/../../secret")).toBe(false);
+    expect(buildPackCandidates("retro/../../secret")).toEqual([]);
   });
 });

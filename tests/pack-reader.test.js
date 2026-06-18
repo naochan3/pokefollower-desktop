@@ -36,4 +36,8 @@ describe("pack-reader", () => {
   it("存在しないpack keyは明示的に失敗する", () => {
     expect(() => reader.readPackMeta("retro/gen-9/999-missingno")).toThrow(/pack not found/);
   });
+
+  it("不正なpack keyではroot外候補を探索しない", () => {
+    expect(() => reader.readPackMeta("retro/../../secret")).toThrow(/pack not found/);
+  });
 });

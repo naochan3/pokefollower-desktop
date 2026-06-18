@@ -1,4 +1,5 @@
 const fs = require("node:fs");
+const { isSafePackKey } = require("./asset-path.js");
 
 const DEFAULTS = {
   enabled: true,
@@ -14,8 +15,6 @@ const LIMITS = {
   lerp: { min: 0.05, max: 0.5 },
 };
 
-const PACK_ID_PATTERN = /^retro\/(?:gen-[1-9]\/)?[0-9]{3,4}-[a-z0-9-]+$/;
-
 function clamp(n, { min, max }) {
   return Math.min(max, Math.max(min, n));
 }
@@ -28,7 +27,7 @@ function sanitize(patch) {
     if (k === "enabled") { out.enabled = !!v; continue; }
     if (k === "pack") {
       const pack = typeof v === "string" ? v.trim() : "";
-      if (PACK_ID_PATTERN.test(pack)) out.pack = pack;
+      if (isSafePackKey(pack)) out.pack = pack;
       continue;
     }
     if (k in LIMITS) {
@@ -61,4 +60,4 @@ function createSettingsStore(filePath) {
   };
 }
 
-module.exports = { createSettingsStore, DEFAULTS, LIMITS, PACK_ID_PATTERN, sanitize };
+module.exports = { createSettingsStore, DEFAULTS, LIMITS, sanitize };

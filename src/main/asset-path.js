@@ -1,5 +1,6 @@
 const DEFAULT_PACK = "retro/gen-1/009-blastoise";
 const GENERATION_DIRS = ["gen-1","gen-2","gen-3","gen-4","gen-5","gen-6","gen-7","gen-8","gen-9"];
+const PACK_KEY_PATTERN = /^retro\/(?:gen-[1-9]\/)?[0-9]{3,4}-[a-z0-9-]+$/;
 
 function packSlug(packKey) {
   const parts = String(packKey || "").split("/");
@@ -12,7 +13,7 @@ function dexFromSlug(slug) {
 }
 
 function generationForDex(dex) {
-  if (!Number.isFinite(dex)) return null;
+  if (!Number.isFinite(dex) || dex < 1) return null;
   if (dex >= 1 && dex <= 151) return "gen-1";
   if (dex <= 251) return "gen-2";
   if (dex <= 386) return "gen-3";
@@ -24,9 +25,14 @@ function generationForDex(dex) {
   return "gen-9";
 }
 
+function isSafePackKey(packKey) {
+  return PACK_KEY_PATTERN.test(String(packKey || "").trim().replace(/^\/+|\/+$/g, ""));
+}
+
 function buildPackCandidates(packKey) {
   const clean = typeof packKey === "string" ? packKey.trim().replace(/^\/+|\/+$/g, "") : "";
   if (!clean) return [DEFAULT_PACK];
+  if (!isSafePackKey(clean)) return [];
   const candidates = [clean];
   if (!clean.includes("/gen-")) {
     const parts = clean.split("/");
@@ -44,4 +50,4 @@ function buildPackCandidates(packKey) {
   return candidates;
 }
 
-module.exports = { DEFAULT_PACK, GENERATION_DIRS, packSlug, dexFromSlug, generationForDex, buildPackCandidates };
+module.exports = { DEFAULT_PACK, GENERATION_DIRS, PACK_KEY_PATTERN, packSlug, dexFromSlug, generationForDex, isSafePackKey, buildPackCandidates };

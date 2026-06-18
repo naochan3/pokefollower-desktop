@@ -18,6 +18,11 @@ describe("app-protocol-path", () => {
     expect(resolveAppProtocolPath(root, "app://bundle/assets/%2e%2e/%2e%2e/secret.txt")).toBe(null);
   });
 
+  it("不正なURLやpercent encodingは拒否して例外にしない", () => {
+    expect(resolveAppProtocolPath(root, "::::")).toBe(null);
+    expect(resolveAppProtocolPath(root, "app://bundle/assets/%E0%A4%A")).toBe(null);
+  });
+
   it("assets配下ではないroot内ファイルを拒否する", () => {
     expect(resolveAppProtocolPath(root, "app://bundle/package.json")).toBe(null);
   });
