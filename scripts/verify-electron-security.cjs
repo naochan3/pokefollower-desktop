@@ -29,6 +29,7 @@ function extractFunctionBody(source, functionName) {
 
 const overlayWindow = extractFunctionBody(main, "createOverlayWindow");
 const settingsWindow = extractFunctionBody(main, "getSettingsWin");
+const navigationHardening = extractFunctionBody(main, "hardenRendererNavigation");
 
 expect(/scheme: "app"/.test(main), "app protocol scheme must be registered");
 expect(/standard: true/.test(main), "app protocol must be standard");
@@ -40,6 +41,8 @@ expect(/resolveAppProtocolPath\(ROOT, request\.url\)/.test(main), "protocol hand
 expect(/new Response\(null, \{ status: 403 \}\)/.test(main), "protocol handler must reject forbidden paths with 403");
 expect(/new Response\(null, \{ status: 404 \}\)/.test(main), "protocol handler must return 404 for missing files");
 expect(/net\.fetch\(pathToFileURL\(filePath\)\.toString\(\)\)/.test(main), "protocol handler must fetch file URLs after validation");
+expect(/setWindowOpenHandler\(\(\) => \(\{ action: "deny" \}\)\)/.test(navigationHardening), "renderer windows must deny window.open");
+expect(/webContents\.on\("will-navigate", \(event\) => \{[\s\S]*event\.preventDefault\(\);[\s\S]*\}/.test(navigationHardening), "renderer windows must prevent navigation away from bundled UI");
 
 for (const [label, body] of [
   ["overlay", overlayWindow],
@@ -49,6 +52,7 @@ for (const [label, body] of [
   expect(body.includes("nodeIntegration: false"), `${label} window must disable nodeIntegration`);
   expect(body.includes("sandbox: true"), `${label} window must enable sandbox`);
   expect(/preload: path\.join\(__dirname, "\.\.", "(overlay|settings)", "\1-preload\.js"\)/.test(body), `${label} window must use its scoped preload`);
+  expect(/hardenRendererNavigation\((win|settingsWin)\)/.test(body), `${label} window must apply navigation hardening`);
 }
 
 expect(/focusable: false/.test(overlayWindow), "overlay window must stay non-focusable");

@@ -59,6 +59,13 @@ function getUserDataPath() {
   return app.getPath("userData");
 }
 
+function hardenRendererNavigation(win) {
+  win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  win.webContents.on("will-navigate", (event) => {
+    event.preventDefault();
+  });
+}
+
 // --- オーバーレイ（モニターごとに常設。各窓は描画役） ---
 function createOverlayWindow(display) {
   const { x, y, width, height } = display.bounds;
@@ -81,6 +88,7 @@ function createOverlayWindow(display) {
   });
   win.setIgnoreMouseEvents(true, { forward: true });
   win.setAlwaysOnTop(true, "screen-saver");
+  hardenRendererNavigation(win);
   win.loadFile(path.join(__dirname, "..", "overlay", "overlay.html"));
   win.webContents.on("did-finish-load", () => {
     if (currentMeta && !win.isDestroyed()) win.webContents.send("meta", currentMeta);
@@ -198,6 +206,7 @@ function getSettingsWin() {
     },
   });
   settingsWin.setMenuBarVisibility(false);
+  hardenRendererNavigation(settingsWin);
   settingsWin.loadFile(path.join(__dirname, "..", "settings", "settings.html"));
   return settingsWin;
 }
