@@ -6,6 +6,8 @@ const main = fs.readFileSync(path.join(root, "src", "main", "main.js"), "utf8");
 const protocolPath = fs.readFileSync(path.join(root, "src", "main", "app-protocol-path.js"), "utf8");
 const overlayPreload = fs.readFileSync(path.join(root, "src", "overlay", "overlay-preload.js"), "utf8");
 const settingsPreload = fs.readFileSync(path.join(root, "src", "settings", "settings-preload.js"), "utf8");
+const overlayHtml = fs.readFileSync(path.join(root, "src", "overlay", "overlay.html"), "utf8");
+const settingsHtml = fs.readFileSync(path.join(root, "src", "settings", "settings.html"), "utf8");
 const errors = [];
 
 function expect(condition, message) {
@@ -62,6 +64,18 @@ expect(/decodeURIComponent\(url\.pathname\)/.test(protocolPath), "app protocol m
 expect(!/require\(/.test(overlayPreload.replace(/require\("electron"\)/, "")), "overlay preload must not require non-electron modules");
 expect(!/require\(/.test(settingsPreload.replace(/require\("electron"\)/, "")), "settings preload must not require non-electron modules");
 expect(!/remote/.test(overlayPreload + settingsPreload), "preloads must not use Electron remote");
+
+for (const [label, html] of [
+  ["overlay", overlayHtml],
+  ["settings", settingsHtml],
+]) {
+  expect(/http-equiv="Content-Security-Policy"/.test(html), `${label} HTML must declare a CSP`);
+  expect(/script-src 'self'/.test(html), `${label} CSP must block inline and remote scripts`);
+  expect(/connect-src 'none'/.test(html), `${label} CSP must block renderer network connections`);
+  expect(/object-src 'none'/.test(html), `${label} CSP must block plugin/object loads`);
+  expect(/base-uri 'none'/.test(html), `${label} CSP must block base URI injection`);
+  expect(!/script-src[^;"]*'unsafe-inline'/.test(html), `${label} CSP must not allow inline scripts`);
+}
 
 if (errors.length > 0) {
   for (const error of errors) console.error(`[verify-electron-security] ${error}`);

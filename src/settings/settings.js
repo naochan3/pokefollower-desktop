@@ -24,9 +24,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     vcp1_lerp: 0.20     // LERP_ALPHA (lower = floatier/slower follow)
   };
 
-  // --- Hot-path local writes + dragging signal for smooth live updates ---
-  const setLocal = (patch) => window.settingsApi.setSettings(mapKeys(patch));
-
   // Forward live config patches to the overlay via the settings API
   function pushConfig(patch, { flush = false } = {}) {
     window.settingsApi.setSettings(mapKeys(patch));
@@ -191,7 +188,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const normalized = Number.isFinite(v) ? Number(v.toFixed(2)) : DEFAULTS.vcp1_scale;
     scaleEl.value = normalized.toFixed(2);
     scaleVal.textContent = normalized.toFixed(2) + "×";
-    setLocal({ vcp1_scale: normalized });
     pushConfig({ vcp1_scale: normalized }, { flush });
   }
   scaleEl.addEventListener("input", previewScale);
@@ -208,7 +204,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const normalized = Number.isFinite(v) ? Math.round(v) : Math.round(DEFAULTS.vcp1_offset);
     offsetEl.value = String(normalized);
     offsetVal.textContent = normalized + " px";
-    setLocal({ vcp1_offset: normalized });
     pushConfig({ vcp1_offset: normalized }, { flush });
   }
   offsetEl.addEventListener("input", previewOffset);
@@ -235,7 +230,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     lerpEl.value = normalized.toFixed(1);
     lerpVal.textContent = normalized.toFixed(1);
     const lerp = normalized / 10;              // internal 0.05–0.50
-    setLocal({ vcp1_lerp: lerp });
     pushConfig({ vcp1_lerp: lerp }, { flush });
   }
   lerpEl.addEventListener("input", previewLerp);
