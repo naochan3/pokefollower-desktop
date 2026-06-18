@@ -3,6 +3,7 @@
   "version": "1.0.2",
   "description": "カーソルを追うポケモンのデスクトップ常駐マスコット (Electron)",
   "author": "naochan3",
+  "license": "MIT",
   "main": "src/main/main.js",
   "type": "commonjs",
   "engines": {

@@ -1,0 +1,36 @@
+MIT License
+
+Copyright (c) 2026 naochan3 and contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Scope of this license / 本ライセンスの適用範囲
+
+The MIT License above applies ONLY to the source code of this project
+(the files under src/, crates/, scripts/, tests/, and the build configuration).
+
+It does NOT apply to the bundled assets — in particular the Pokémon sprites
+(under assets/), Pokémon names, the Poké Ball / monster icons, and any other
+Pokémon-related material. Those are the property of their respective owners
+(Nintendo / Creatures Inc. / GAME FREAK inc. and the sprite providers) and are
+included here only for a non-commercial, personal fan project. See the
+"クレジット・権利表記" section of README.md for details and follow each
+provider's terms for the assets.
