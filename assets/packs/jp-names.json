@@ -1970,5 +1970,2133 @@
   "493": {
     "ja": "アルセウス",
     "romaji": "Arceus"
+  },
+  "494": {
+    "ja": "ビクティニ",
+    "romaji": "Victini"
+  },
+  "495": {
+    "ja": "ツタージャ",
+    "romaji": "Tsutarja"
+  },
+  "496": {
+    "ja": "ジャノビー",
+    "romaji": "Janovy"
+  },
+  "497": {
+    "ja": "ジャローダ",
+    "romaji": "Jalorda"
+  },
+  "498": {
+    "ja": "ポカブ",
+    "romaji": "Pokabu"
+  },
+  "499": {
+    "ja": "チャオブー",
+    "romaji": "Chaoboo"
+  },
+  "500": {
+    "ja": "エンブオー",
+    "romaji": "Enbuoh"
+  },
+  "501": {
+    "ja": "ミジュマル",
+    "romaji": "Mijumaru"
+  },
+  "502": {
+    "ja": "フタチマル",
+    "romaji": "Futachimaru"
+  },
+  "503": {
+    "ja": "ダイケンキ",
+    "romaji": "Daikenki"
+  },
+  "504": {
+    "ja": "ミネズミ",
+    "romaji": "Minezumi"
+  },
+  "505": {
+    "ja": "ミルホッグ",
+    "romaji": "Miruhog"
+  },
+  "506": {
+    "ja": "ヨーテリー",
+    "romaji": "Yorterrie"
+  },
+  "507": {
+    "ja": "ハーデリア",
+    "romaji": "Herderrie"
+  },
+  "508": {
+    "ja": "ムーランド",
+    "romaji": "Mooland"
+  },
+  "509": {
+    "ja": "チョロネコ",
+    "romaji": "Choroneko"
+  },
+  "510": {
+    "ja": "レパルダス",
+    "romaji": "Lepardas"
+  },
+  "511": {
+    "ja": "ヤナップ",
+    "romaji": "Yanappu"
+  },
+  "512": {
+    "ja": "ヤナッキー",
+    "romaji": "Yanakkie"
+  },
+  "513": {
+    "ja": "バオップ",
+    "romaji": "Baoppu"
+  },
+  "514": {
+    "ja": "バオッキー",
+    "romaji": "Baokkie"
+  },
+  "515": {
+    "ja": "ヒヤップ",
+    "romaji": "Hiyappu"
+  },
+  "516": {
+    "ja": "ヒヤッキー",
+    "romaji": "Hiyakkie"
+  },
+  "517": {
+    "ja": "ムンナ",
+    "romaji": "Munna"
+  },
+  "518": {
+    "ja": "ムシャーナ",
+    "romaji": "Musharna"
+  },
+  "519": {
+    "ja": "マメパト",
+    "romaji": "Mamepato"
+  },
+  "520": {
+    "ja": "ハトーボー",
+    "romaji": "Hatoboh"
+  },
+  "521": {
+    "ja": "ケンホロウ",
+    "romaji": "Kenhallow"
+  },
+  "522": {
+    "ja": "シママ",
+    "romaji": "Shimama"
+  },
+  "523": {
+    "ja": "ゼブライカ",
+    "romaji": "Zebraika"
+  },
+  "524": {
+    "ja": "ダンゴロ",
+    "romaji": "Dangoro"
+  },
+  "525": {
+    "ja": "ガントル",
+    "romaji": "Gantle"
+  },
+  "526": {
+    "ja": "ギガイアス",
+    "romaji": "Gigaiath"
+  },
+  "527": {
+    "ja": "コロモリ",
+    "romaji": "Koromori"
+  },
+  "528": {
+    "ja": "ココロモリ",
+    "romaji": "Kokoromori"
+  },
+  "529": {
+    "ja": "モグリュー",
+    "romaji": "Mogurew"
+  },
+  "530": {
+    "ja": "ドリュウズ",
+    "romaji": "Doryuzu"
+  },
+  "531": {
+    "ja": "タブンネ",
+    "romaji": "Tabunne"
+  },
+  "532": {
+    "ja": "ドッコラー",
+    "romaji": "Dokkorer"
+  },
+  "533": {
+    "ja": "ドテッコツ",
+    "romaji": "Dotekkotsu"
+  },
+  "534": {
+    "ja": "ローブシン",
+    "romaji": "Roubushin"
+  },
+  "535": {
+    "ja": "オタマロ",
+    "romaji": "Otamaro"
+  },
+  "536": {
+    "ja": "ガマガル",
+    "romaji": "Gamagaru"
+  },
+  "537": {
+    "ja": "ガマゲロゲ",
+    "romaji": "Gamageroge"
+  },
+  "538": {
+    "ja": "ナゲキ",
+    "romaji": "Nageki"
+  },
+  "539": {
+    "ja": "ダゲキ",
+    "romaji": "Dageki"
+  },
+  "540": {
+    "ja": "クルミル",
+    "romaji": "Kurumiru"
+  },
+  "541": {
+    "ja": "クルマユ",
+    "romaji": "Kurumayu"
+  },
+  "542": {
+    "ja": "ハハコモリ",
+    "romaji": "Hahakomori"
+  },
+  "543": {
+    "ja": "フシデ",
+    "romaji": "Fushide"
+  },
+  "544": {
+    "ja": "ホイーガ",
+    "romaji": "Wheega"
+  },
+  "545": {
+    "ja": "ペンドラー",
+    "romaji": "Pendror"
+  },
+  "546": {
+    "ja": "モンメン",
+    "romaji": "Monmen"
+  },
+  "547": {
+    "ja": "エルフーン",
+    "romaji": "Elfuun"
+  },
+  "548": {
+    "ja": "チュリネ",
+    "romaji": "Churine"
+  },
+  "549": {
+    "ja": "ドレディア",
+    "romaji": "Dredear"
+  },
+  "550": {
+    "ja": "バスラオ",
+    "romaji": "Bassrao"
+  },
+  "551": {
+    "ja": "メグロコ",
+    "romaji": "Meguroco"
+  },
+  "552": {
+    "ja": "ワルビル",
+    "romaji": "Waruvile"
+  },
+  "553": {
+    "ja": "ワルビアル",
+    "romaji": "Waruvial"
+  },
+  "554": {
+    "ja": "ダルマッカ",
+    "romaji": "Darumakka"
+  },
+  "555": {
+    "ja": "ヒヒダルマ",
+    "romaji": "Hihidaruma"
+  },
+  "556": {
+    "ja": "マラカッチ",
+    "romaji": "Maracacchi"
+  },
+  "557": {
+    "ja": "イシズマイ",
+    "romaji": "Ishizumai"
+  },
+  "558": {
+    "ja": "イワパレス",
+    "romaji": "Iwapalace"
+  },
+  "559": {
+    "ja": "ズルッグ",
+    "romaji": "Zuruggu"
+  },
+  "560": {
+    "ja": "ズルズキン",
+    "romaji": "Zuruzukin"
+  },
+  "561": {
+    "ja": "シンボラー",
+    "romaji": "Symboler"
+  },
+  "562": {
+    "ja": "デスマス",
+    "romaji": "Desumasu"
+  },
+  "563": {
+    "ja": "デスカーン",
+    "romaji": "Desukarn"
+  },
+  "564": {
+    "ja": "プロトーガ",
+    "romaji": "Protoga"
+  },
+  "565": {
+    "ja": "アバゴーラ",
+    "romaji": "Abagoura"
+  },
+  "566": {
+    "ja": "アーケン",
+    "romaji": "Archen"
+  },
+  "567": {
+    "ja": "アーケオス",
+    "romaji": "Archeos"
+  },
+  "568": {
+    "ja": "ヤブクロン",
+    "romaji": "Yabukuron"
+  },
+  "569": {
+    "ja": "ダストダス",
+    "romaji": "Dustdas"
+  },
+  "570": {
+    "ja": "ゾロア",
+    "romaji": "Zorua"
+  },
+  "571": {
+    "ja": "ゾロアーク",
+    "romaji": "Zoroark"
+  },
+  "572": {
+    "ja": "チラーミィ",
+    "romaji": "Chillarmy"
+  },
+  "573": {
+    "ja": "チラチーノ",
+    "romaji": "Chillaccino"
+  },
+  "574": {
+    "ja": "ゴチム",
+    "romaji": "Gothimu"
+  },
+  "575": {
+    "ja": "ゴチミル",
+    "romaji": "Gothimiru"
+  },
+  "576": {
+    "ja": "ゴチルゼル",
+    "romaji": "Gothiruselle"
+  },
+  "577": {
+    "ja": "ユニラン",
+    "romaji": "Uniran"
+  },
+  "578": {
+    "ja": "ダブラン",
+    "romaji": "Doublan"
+  },
+  "579": {
+    "ja": "ランクルス",
+    "romaji": "Lanculus"
+  },
+  "580": {
+    "ja": "コアルヒー",
+    "romaji": "Koaruhie"
+  },
+  "581": {
+    "ja": "スワンナ",
+    "romaji": "Swanna"
+  },
+  "582": {
+    "ja": "バニプッチ",
+    "romaji": "Vanipeti"
+  },
+  "583": {
+    "ja": "バニリッチ",
+    "romaji": "Vanirich"
+  },
+  "584": {
+    "ja": "バイバニラ",
+    "romaji": "Baivanilla"
+  },
+  "585": {
+    "ja": "シキジカ",
+    "romaji": "Shikijika"
+  },
+  "586": {
+    "ja": "メブキジカ",
+    "romaji": "Mebukijika"
+  },
+  "587": {
+    "ja": "エモンガ",
+    "romaji": "Emonga"
+  },
+  "588": {
+    "ja": "カブルモ",
+    "romaji": "Kaburumo"
+  },
+  "589": {
+    "ja": "シュバルゴ",
+    "romaji": "Chevargo"
+  },
+  "590": {
+    "ja": "タマゲタケ",
+    "romaji": "Tamagetake"
+  },
+  "591": {
+    "ja": "モロバレル",
+    "romaji": "Morobareru"
+  },
+  "592": {
+    "ja": "プルリル",
+    "romaji": "Pururill"
+  },
+  "593": {
+    "ja": "ブルンゲル",
+    "romaji": "Burungel"
+  },
+  "594": {
+    "ja": "ママンボウ",
+    "romaji": "Mamanbou"
+  },
+  "595": {
+    "ja": "バチュル",
+    "romaji": "Bachuru"
+  },
+  "596": {
+    "ja": "デンチュラ",
+    "romaji": "Dentula"
+  },
+  "597": {
+    "ja": "テッシード",
+    "romaji": "Tesseed"
+  },
+  "598": {
+    "ja": "ナットレイ",
+    "romaji": "Nutrey"
+  },
+  "599": {
+    "ja": "ギアル",
+    "romaji": "Giaru"
+  },
+  "600": {
+    "ja": "ギギアル",
+    "romaji": "Gigiaru"
+  },
+  "601": {
+    "ja": "ギギギアル",
+    "romaji": "Gigigiaru"
+  },
+  "602": {
+    "ja": "シビシラス",
+    "romaji": "Shibishirasu"
+  },
+  "603": {
+    "ja": "シビビール",
+    "romaji": "Shibibeel"
+  },
+  "604": {
+    "ja": "シビルドン",
+    "romaji": "Shibirudon"
+  },
+  "605": {
+    "ja": "リグレー",
+    "romaji": "Ligray"
+  },
+  "606": {
+    "ja": "オーベム",
+    "romaji": "Ohbem"
+  },
+  "607": {
+    "ja": "ヒトモシ",
+    "romaji": "Hitomoshi"
+  },
+  "608": {
+    "ja": "ランプラー",
+    "romaji": "Lampler"
+  },
+  "609": {
+    "ja": "シャンデラ",
+    "romaji": "Chandela"
+  },
+  "610": {
+    "ja": "キバゴ",
+    "romaji": "Kibago"
+  },
+  "611": {
+    "ja": "オノンド",
+    "romaji": "Onondo"
+  },
+  "612": {
+    "ja": "オノノクス",
+    "romaji": "Ononokus"
+  },
+  "613": {
+    "ja": "クマシュン",
+    "romaji": "Kumasyun"
+  },
+  "614": {
+    "ja": "ツンベアー",
+    "romaji": "Tunbear"
+  },
+  "615": {
+    "ja": "フリージオ",
+    "romaji": "Freegeo"
+  },
+  "616": {
+    "ja": "チョボマキ",
+    "romaji": "Chobomaki"
+  },
+  "617": {
+    "ja": "アギルダー",
+    "romaji": "Agilder"
+  },
+  "618": {
+    "ja": "マッギョ",
+    "romaji": "Maggyo"
+  },
+  "619": {
+    "ja": "コジョフー",
+    "romaji": "Kojofu"
+  },
+  "620": {
+    "ja": "コジョンド",
+    "romaji": "Kojondo"
+  },
+  "621": {
+    "ja": "クリムガン",
+    "romaji": "Crimgan"
+  },
+  "622": {
+    "ja": "ゴビット",
+    "romaji": "Gobit"
+  },
+  "623": {
+    "ja": "ゴルーグ",
+    "romaji": "Goloog"
+  },
+  "624": {
+    "ja": "コマタナ",
+    "romaji": "Komatana"
+  },
+  "625": {
+    "ja": "キリキザン",
+    "romaji": "Kirikizan"
+  },
+  "626": {
+    "ja": "バッフロン",
+    "romaji": "Buffron"
+  },
+  "627": {
+    "ja": "ワシボン",
+    "romaji": "Washibon"
+  },
+  "628": {
+    "ja": "ウォーグル",
+    "romaji": "Warrgle"
+  },
+  "629": {
+    "ja": "バルチャイ",
+    "romaji": "Valchai"
+  },
+  "630": {
+    "ja": "バルジーナ",
+    "romaji": "Vulgina"
+  },
+  "631": {
+    "ja": "クイタラン",
+    "romaji": "Kuitaran"
+  },
+  "632": {
+    "ja": "アイアント",
+    "romaji": "Aiant"
+  },
+  "633": {
+    "ja": "モノズ",
+    "romaji": "Monozu"
+  },
+  "634": {
+    "ja": "ジヘッド",
+    "romaji": "Dihead"
+  },
+  "635": {
+    "ja": "サザンドラ",
+    "romaji": "Sazandora"
+  },
+  "636": {
+    "ja": "メラルバ",
+    "romaji": "Merlarva"
+  },
+  "637": {
+    "ja": "ウルガモス",
+    "romaji": "Ulgamoth"
+  },
+  "638": {
+    "ja": "コバルオン",
+    "romaji": "Cobalon"
+  },
+  "639": {
+    "ja": "テラキオン",
+    "romaji": "Terrakion"
+  },
+  "640": {
+    "ja": "ビリジオン",
+    "romaji": "Virizion"
+  },
+  "641": {
+    "ja": "トルネロス",
+    "romaji": "Tornelos"
+  },
+  "642": {
+    "ja": "ボルトロス",
+    "romaji": "Voltolos"
+  },
+  "643": {
+    "ja": "レシラム",
+    "romaji": "Reshiram"
+  },
+  "644": {
+    "ja": "ゼクロム",
+    "romaji": "Zekrom"
+  },
+  "645": {
+    "ja": "ランドロス",
+    "romaji": "Landlos"
+  },
+  "646": {
+    "ja": "キュレム",
+    "romaji": "Kyurem"
+  },
+  "647": {
+    "ja": "ケルディオ",
+    "romaji": "Keldeo"
+  },
+  "648": {
+    "ja": "メロエッタ",
+    "romaji": "Meloetta"
+  },
+  "649": {
+    "ja": "ゲノセクト",
+    "romaji": "Genesect"
+  },
+  "650": {
+    "ja": "ハリマロン",
+    "romaji": "Harimaron"
+  },
+  "651": {
+    "ja": "ハリボーグ",
+    "romaji": "Hariborg"
+  },
+  "652": {
+    "ja": "ブリガロン",
+    "romaji": "Brigarron"
+  },
+  "653": {
+    "ja": "フォッコ",
+    "romaji": "Fokko"
+  },
+  "654": {
+    "ja": "テールナー",
+    "romaji": "Tairenar"
+  },
+  "655": {
+    "ja": "マフォクシー",
+    "romaji": "Mahoxy"
+  },
+  "656": {
+    "ja": "ケロマツ",
+    "romaji": "Keromatsu"
+  },
+  "657": {
+    "ja": "ゲコガシラ",
+    "romaji": "Gekogashira"
+  },
+  "658": {
+    "ja": "ゲッコウガ",
+    "romaji": "Gekkouga"
+  },
+  "659": {
+    "ja": "ホルビー",
+    "romaji": "Horubee"
+  },
+  "660": {
+    "ja": "ホルード",
+    "romaji": "Horudo"
+  },
+  "661": {
+    "ja": "ヤヤコマ",
+    "romaji": "Yayakoma"
+  },
+  "662": {
+    "ja": "ヒノヤコマ",
+    "romaji": "Hinoyakoma"
+  },
+  "663": {
+    "ja": "ファイアロー",
+    "romaji": "Fiarrow"
+  },
+  "664": {
+    "ja": "コフキムシ",
+    "romaji": "Kofukimushi"
+  },
+  "665": {
+    "ja": "コフーライ",
+    "romaji": "Kofuurai"
+  },
+  "666": {
+    "ja": "ビビヨン",
+    "romaji": "Viviyon"
+  },
+  "667": {
+    "ja": "シシコ",
+    "romaji": "Shishiko"
+  },
+  "668": {
+    "ja": "カエンジシ",
+    "romaji": "Kaenjishi"
+  },
+  "669": {
+    "ja": "フラベベ",
+    "romaji": "Flabebe"
+  },
+  "670": {
+    "ja": "フラエッテ",
+    "romaji": "Floette"
+  },
+  "671": {
+    "ja": "フラージェス",
+    "romaji": "Florges"
+  },
+  "672": {
+    "ja": "メェークル",
+    "romaji": "Meecle"
+  },
+  "673": {
+    "ja": "ゴーゴート",
+    "romaji": "Gogoat"
+  },
+  "674": {
+    "ja": "ヤンチャム",
+    "romaji": "Yancham"
+  },
+  "675": {
+    "ja": "ゴロンダ",
+    "romaji": "Goronda"
+  },
+  "676": {
+    "ja": "トリミアン",
+    "romaji": "Trimmien"
+  },
+  "677": {
+    "ja": "ニャスパー",
+    "romaji": "Nyasper"
+  },
+  "678": {
+    "ja": "ニャオニクス",
+    "romaji": "Nyaonix"
+  },
+  "679": {
+    "ja": "ヒトツキ",
+    "romaji": "Hitotsuki"
+  },
+  "680": {
+    "ja": "ニダンギル",
+    "romaji": "Nidangill"
+  },
+  "681": {
+    "ja": "ギルガルド",
+    "romaji": "Gillgard"
+  },
+  "682": {
+    "ja": "シュシュプ",
+    "romaji": "Shushupu"
+  },
+  "683": {
+    "ja": "フレフワン",
+    "romaji": "Frefuwan"
+  },
+  "684": {
+    "ja": "ペロッパフ",
+    "romaji": "Peroppafu"
+  },
+  "685": {
+    "ja": "ペロリーム",
+    "romaji": "Peroream"
+  },
+  "686": {
+    "ja": "マーイーカ",
+    "romaji": "Maaiika"
+  },
+  "687": {
+    "ja": "カラマネロ",
+    "romaji": "Calamanero"
+  },
+  "688": {
+    "ja": "カメテテ",
+    "romaji": "Kametete"
+  },
+  "689": {
+    "ja": "ガメノデス",
+    "romaji": "Gamenodes"
+  },
+  "690": {
+    "ja": "クズモー",
+    "romaji": "Kuzumo"
+  },
+  "691": {
+    "ja": "ドラミドロ",
+    "romaji": "Dramidoro"
+  },
+  "692": {
+    "ja": "ウデッポウ",
+    "romaji": "Udeppou"
+  },
+  "693": {
+    "ja": "ブロスター",
+    "romaji": "Bloster"
+  },
+  "694": {
+    "ja": "エリキテル",
+    "romaji": "Erikiteru"
+  },
+  "695": {
+    "ja": "エレザード",
+    "romaji": "Elezard"
+  },
+  "696": {
+    "ja": "チゴラス",
+    "romaji": "Chigoras"
+  },
+  "697": {
+    "ja": "ガチゴラス",
+    "romaji": "Gachigoras"
+  },
+  "698": {
+    "ja": "アマルス",
+    "romaji": "Amarus"
+  },
+  "699": {
+    "ja": "アマルルガ",
+    "romaji": "Amaruruga"
+  },
+  "700": {
+    "ja": "ニンフィア",
+    "romaji": "Nymphia"
+  },
+  "701": {
+    "ja": "ルチャブル",
+    "romaji": "Luchabull"
+  },
+  "702": {
+    "ja": "デデンネ",
+    "romaji": "Dedenne"
+  },
+  "703": {
+    "ja": "メレシー",
+    "romaji": "Melecie"
+  },
+  "704": {
+    "ja": "ヌメラ",
+    "romaji": "Numera"
+  },
+  "705": {
+    "ja": "ヌメイル",
+    "romaji": "Numeil"
+  },
+  "706": {
+    "ja": "ヌメルゴン",
+    "romaji": "Numelgon"
+  },
+  "707": {
+    "ja": "クレッフィ",
+    "romaji": "Cleffy"
+  },
+  "708": {
+    "ja": "ボクレー",
+    "romaji": "Bokurei"
+  },
+  "709": {
+    "ja": "オーロット",
+    "romaji": "Ohrot"
+  },
+  "710": {
+    "ja": "バケッチャ",
+    "romaji": "Bakeccha"
+  },
+  "711": {
+    "ja": "パンプジン",
+    "romaji": "Pumpjin"
+  },
+  "712": {
+    "ja": "カチコール",
+    "romaji": "Kachikohru"
+  },
+  "713": {
+    "ja": "クレベース",
+    "romaji": "Crebase"
+  },
+  "714": {
+    "ja": "オンバット",
+    "romaji": "Onbat"
+  },
+  "715": {
+    "ja": "オンバーン",
+    "romaji": "Onvern"
+  },
+  "716": {
+    "ja": "ゼルネアス",
+    "romaji": "Xerneas"
+  },
+  "717": {
+    "ja": "イベルタル",
+    "romaji": "Yveltal"
+  },
+  "718": {
+    "ja": "ジガルデ",
+    "romaji": "Zygarde"
+  },
+  "719": {
+    "ja": "ディアンシー",
+    "romaji": "Diancie"
+  },
+  "720": {
+    "ja": "フーパ",
+    "romaji": "Hoopa"
+  },
+  "721": {
+    "ja": "ボルケニオン",
+    "romaji": "Volcanion"
+  },
+  "722": {
+    "ja": "モクロー",
+    "romaji": "Mokuroh"
+  },
+  "723": {
+    "ja": "フクスロー",
+    "romaji": "Fukuthrow"
+  },
+  "724": {
+    "ja": "ジュナイパー",
+    "romaji": "Junaiper"
+  },
+  "725": {
+    "ja": "ニャビー",
+    "romaji": "Nyabby"
+  },
+  "726": {
+    "ja": "ニャヒート",
+    "romaji": "Nyaheat"
+  },
+  "727": {
+    "ja": "ガオガエン",
+    "romaji": "Gaogaen"
+  },
+  "728": {
+    "ja": "アシマリ",
+    "romaji": "Ashimari"
+  },
+  "729": {
+    "ja": "オシャマリ",
+    "romaji": "Osyamari"
+  },
+  "730": {
+    "ja": "アシレーヌ",
+    "romaji": "Ashirene"
+  },
+  "731": {
+    "ja": "ツツケラ",
+    "romaji": "Tsutsukera"
+  },
+  "732": {
+    "ja": "ケララッパ",
+    "romaji": "Kerarappa"
+  },
+  "733": {
+    "ja": "ドデカバシ",
+    "romaji": "Dodekabashi"
+  },
+  "734": {
+    "ja": "ヤングース",
+    "romaji": "Youngoose"
+  },
+  "735": {
+    "ja": "デカグース",
+    "romaji": "Dekagoose"
+  },
+  "736": {
+    "ja": "アゴジムシ",
+    "romaji": "Agojimushi"
+  },
+  "737": {
+    "ja": "デンヂムシ",
+    "romaji": "Dendimushi"
+  },
+  "738": {
+    "ja": "クワガノン",
+    "romaji": "Kuwagannon"
+  },
+  "739": {
+    "ja": "マケンカニ",
+    "romaji": "Makenkani"
+  },
+  "740": {
+    "ja": "ケケンカニ",
+    "romaji": "Kekenkani"
+  },
+  "741": {
+    "ja": "オドリドリ",
+    "romaji": "Odoridori"
+  },
+  "742": {
+    "ja": "アブリー",
+    "romaji": "Abuly"
+  },
+  "743": {
+    "ja": "アブリボン",
+    "romaji": "Aburibbon"
+  },
+  "744": {
+    "ja": "イワンコ",
+    "romaji": "Iwanko"
+  },
+  "745": {
+    "ja": "ルガルガン",
+    "romaji": "Lugarugan"
+  },
+  "746": {
+    "ja": "ヨワシ",
+    "romaji": "Yowashi"
+  },
+  "747": {
+    "ja": "ヒドイデ",
+    "romaji": "Hidoide"
+  },
+  "748": {
+    "ja": "ドヒドイデ",
+    "romaji": "Dohidoide"
+  },
+  "749": {
+    "ja": "ドロバンコ",
+    "romaji": "Dorobanko"
+  },
+  "750": {
+    "ja": "バンバドロ",
+    "romaji": "Banbadoro"
+  },
+  "751": {
+    "ja": "シズクモ",
+    "romaji": "Shizukumo"
+  },
+  "752": {
+    "ja": "オニシズクモ",
+    "romaji": "Onishizukumo"
+  },
+  "753": {
+    "ja": "カリキリ",
+    "romaji": "Karikiri"
+  },
+  "754": {
+    "ja": "ラランテス",
+    "romaji": "Lalantes"
+  },
+  "755": {
+    "ja": "ネマシュ",
+    "romaji": "Nemasyu"
+  },
+  "756": {
+    "ja": "マシェード",
+    "romaji": "Mashade"
+  },
+  "757": {
+    "ja": "ヤトウモリ",
+    "romaji": "Yatoumori"
+  },
+  "758": {
+    "ja": "エンニュート",
+    "romaji": "Ennewt"
+  },
+  "759": {
+    "ja": "ヌイコグマ",
+    "romaji": "Nuikoguma"
+  },
+  "760": {
+    "ja": "キテルグマ",
+    "romaji": "Kiteruguma"
+  },
+  "761": {
+    "ja": "アマカジ",
+    "romaji": "Amakaji"
+  },
+  "762": {
+    "ja": "アママイコ",
+    "romaji": "Amamaiko"
+  },
+  "763": {
+    "ja": "アマージョ",
+    "romaji": "Amajo"
+  },
+  "764": {
+    "ja": "キュワワー",
+    "romaji": "Cuwawa"
+  },
+  "765": {
+    "ja": "ヤレユータン",
+    "romaji": "Yareyuutan"
+  },
+  "766": {
+    "ja": "ナゲツケサル",
+    "romaji": "Nagetukesaru"
+  },
+  "767": {
+    "ja": "コソクムシ",
+    "romaji": "Kosokumushi"
+  },
+  "768": {
+    "ja": "グソクムシャ",
+    "romaji": "Gusokumusha"
+  },
+  "769": {
+    "ja": "スナバァ",
+    "romaji": "Sunaba"
+  },
+  "770": {
+    "ja": "シロデスナ",
+    "romaji": "Sirodethna"
+  },
+  "771": {
+    "ja": "ナマコブシ",
+    "romaji": "Namakobushi"
+  },
+  "772": {
+    "ja": "タイプ：ヌル",
+    "romaji": "Null"
+  },
+  "773": {
+    "ja": "シルヴァディ",
+    "romaji": "Silvady"
+  },
+  "774": {
+    "ja": "メテノ",
+    "romaji": "Meteno"
+  },
+  "775": {
+    "ja": "ネッコアラ",
+    "romaji": "Nekkoara"
+  },
+  "776": {
+    "ja": "バクガメス",
+    "romaji": "Bakugames"
+  },
+  "777": {
+    "ja": "トゲデマル",
+    "romaji": "Togedemaru"
+  },
+  "778": {
+    "ja": "ミミッキュ",
+    "romaji": "Mimikkyu"
+  },
+  "779": {
+    "ja": "ハギギシリ",
+    "romaji": "Hagigishiri"
+  },
+  "780": {
+    "ja": "ジジーロン",
+    "romaji": "Jijilong"
+  },
+  "781": {
+    "ja": "ダダリン",
+    "romaji": "Dadarin"
+  },
+  "782": {
+    "ja": "ジャラコ",
+    "romaji": "Jyarako"
+  },
+  "783": {
+    "ja": "ジャランゴ",
+    "romaji": "Jyarango"
+  },
+  "784": {
+    "ja": "ジャラランガ",
+    "romaji": "Jyararanga"
+  },
+  "785": {
+    "ja": "カプ・コケコ",
+    "romaji": "Kokeko"
+  },
+  "786": {
+    "ja": "カプ・テテフ",
+    "romaji": "Tetefu"
+  },
+  "787": {
+    "ja": "カプ・ブルル",
+    "romaji": "Bulul"
+  },
+  "788": {
+    "ja": "カプ・レヒレ",
+    "romaji": "Rehire"
+  },
+  "789": {
+    "ja": "コスモッグ",
+    "romaji": "Cosmog"
+  },
+  "790": {
+    "ja": "コスモウム",
+    "romaji": "Cosmovum"
+  },
+  "791": {
+    "ja": "ソルガレオ",
+    "romaji": "Solgaleo"
+  },
+  "792": {
+    "ja": "ルナアーラ",
+    "romaji": "Lunala"
+  },
+  "793": {
+    "ja": "ウツロイド",
+    "romaji": "Uturoid"
+  },
+  "794": {
+    "ja": "マッシブーン",
+    "romaji": "Massivoon"
+  },
+  "795": {
+    "ja": "フェローチェ",
+    "romaji": "Pheroache"
+  },
+  "796": {
+    "ja": "デンジュモク",
+    "romaji": "Denjyumoku"
+  },
+  "797": {
+    "ja": "テッカグヤ",
+    "romaji": "Tekkaguya"
+  },
+  "798": {
+    "ja": "カミツルギ",
+    "romaji": "Kamiturugi"
+  },
+  "799": {
+    "ja": "アクジキング",
+    "romaji": "Akuziking"
+  },
+  "800": {
+    "ja": "ネクロズマ",
+    "romaji": "Necrozma"
+  },
+  "801": {
+    "ja": "マギアナ",
+    "romaji": "Magearna"
+  },
+  "802": {
+    "ja": "マーシャドー",
+    "romaji": "Marshadow"
+  },
+  "803": {
+    "ja": "ベベノム",
+    "romaji": "Bevenom"
+  },
+  "804": {
+    "ja": "アーゴヨン",
+    "romaji": "Agoyon"
+  },
+  "805": {
+    "ja": "ツンデツンデ",
+    "romaji": "Tundetunde"
+  },
+  "806": {
+    "ja": "ズガドーン",
+    "romaji": "Zugadoon"
+  },
+  "807": {
+    "ja": "ゼラオラ",
+    "romaji": "Zeraora"
+  },
+  "808": {
+    "ja": "メルタン",
+    "romaji": "Meltan"
+  },
+  "809": {
+    "ja": "メルメタル",
+    "romaji": "Melmetal"
+  },
+  "810": {
+    "ja": "サルノリ",
+    "romaji": "Sarunori"
+  },
+  "811": {
+    "ja": "バチンキー",
+    "romaji": "Bachinkey"
+  },
+  "812": {
+    "ja": "ゴリランダー",
+    "romaji": "Gorirander"
+  },
+  "813": {
+    "ja": "ヒバニー",
+    "romaji": "Hibanny"
+  },
+  "814": {
+    "ja": "ラビフット",
+    "romaji": "Rabbifuto"
+  },
+  "815": {
+    "ja": "エースバーン",
+    "romaji": "Aceburn"
+  },
+  "816": {
+    "ja": "メッソン",
+    "romaji": "Messon"
+  },
+  "817": {
+    "ja": "ジメレオン",
+    "romaji": "Jimereon"
+  },
+  "818": {
+    "ja": "インテレオン",
+    "romaji": "Intereon"
+  },
+  "819": {
+    "ja": "ホシガリス",
+    "romaji": "Hoshigarisu"
+  },
+  "820": {
+    "ja": "ヨクバリス",
+    "romaji": "Yokubarisu"
+  },
+  "821": {
+    "ja": "ココガラ",
+    "romaji": "Kokogara"
+  },
+  "822": {
+    "ja": "アオガラス",
+    "romaji": "Aogarasu"
+  },
+  "823": {
+    "ja": "アーマーガア",
+    "romaji": "Armorga"
+  },
+  "824": {
+    "ja": "サッチムシ",
+    "romaji": "Sacchimushi"
+  },
+  "825": {
+    "ja": "レドームシ",
+    "romaji": "Redomushi"
+  },
+  "826": {
+    "ja": "イオルブ",
+    "romaji": "Eolb"
+  },
+  "827": {
+    "ja": "クスネ",
+    "romaji": "Kusune"
+  },
+  "828": {
+    "ja": "フォクスライ",
+    "romaji": "Foxly"
+  },
+  "829": {
+    "ja": "ヒメンカ",
+    "romaji": "Himenka"
+  },
+  "830": {
+    "ja": "ワタシラガ",
+    "romaji": "Watashiraga"
+  },
+  "831": {
+    "ja": "ウールー",
+    "romaji": "Wooluu"
+  },
+  "832": {
+    "ja": "バイウールー",
+    "romaji": "Baiwooluu"
+  },
+  "833": {
+    "ja": "カムカメ",
+    "romaji": "Kamukame"
+  },
+  "834": {
+    "ja": "カジリガメ",
+    "romaji": "Kajirigame"
+  },
+  "835": {
+    "ja": "ワンパチ",
+    "romaji": "Wanpachi"
+  },
+  "836": {
+    "ja": "パルスワン",
+    "romaji": "Pulsewan"
+  },
+  "837": {
+    "ja": "タンドン",
+    "romaji": "Tandon"
+  },
+  "838": {
+    "ja": "トロッゴン",
+    "romaji": "Toroggon"
+  },
+  "839": {
+    "ja": "セキタンザン",
+    "romaji": "Sekitanzan"
+  },
+  "840": {
+    "ja": "カジッチュ",
+    "romaji": "Kajicchu"
+  },
+  "841": {
+    "ja": "アップリュー",
+    "romaji": "Appryu"
+  },
+  "842": {
+    "ja": "タルップル",
+    "romaji": "Tarupple"
+  },
+  "843": {
+    "ja": "スナヘビ",
+    "romaji": "Sunahebi"
+  },
+  "844": {
+    "ja": "サダイジャ",
+    "romaji": "Sadaija"
+  },
+  "845": {
+    "ja": "ウッウ",
+    "romaji": "Uu"
+  },
+  "846": {
+    "ja": "サシカマス",
+    "romaji": "Sasikamasu"
+  },
+  "847": {
+    "ja": "カマスジョー",
+    "romaji": "Kamasujaw"
+  },
+  "848": {
+    "ja": "エレズン",
+    "romaji": "Eleson"
+  },
+  "849": {
+    "ja": "ストリンダー",
+    "romaji": "Strinder"
+  },
+  "850": {
+    "ja": "ヤクデ",
+    "romaji": "Yakude"
+  },
+  "851": {
+    "ja": "マルヤクデ",
+    "romaji": "Maruyakude"
+  },
+  "852": {
+    "ja": "タタッコ",
+    "romaji": "Tatakko"
+  },
+  "853": {
+    "ja": "オトスパス",
+    "romaji": "Otosupus"
+  },
+  "854": {
+    "ja": "ヤバチャ",
+    "romaji": "Yabacha"
+  },
+  "855": {
+    "ja": "ポットデス",
+    "romaji": "Potdeath"
+  },
+  "856": {
+    "ja": "ミブリム",
+    "romaji": "Mibrim"
+  },
+  "857": {
+    "ja": "テブリム",
+    "romaji": "Tebrim"
+  },
+  "858": {
+    "ja": "ブリムオン",
+    "romaji": "Brimuon"
+  },
+  "859": {
+    "ja": "ベロバー",
+    "romaji": "Beroba"
+  },
+  "860": {
+    "ja": "ギモー",
+    "romaji": "Gimoh"
+  },
+  "861": {
+    "ja": "オーロンゲ",
+    "romaji": "Ohlonge"
+  },
+  "862": {
+    "ja": "タチフサグマ",
+    "romaji": "Tachifusaguma"
+  },
+  "863": {
+    "ja": "ニャイキング",
+    "romaji": "Nyaiking"
+  },
+  "864": {
+    "ja": "サニゴーン",
+    "romaji": "Sunigoon"
+  },
+  "865": {
+    "ja": "ネギガナイト",
+    "romaji": "Negigaknight"
+  },
+  "866": {
+    "ja": "バリコオル",
+    "romaji": "Barrikohru"
+  },
+  "867": {
+    "ja": "デスバーン",
+    "romaji": "Deathbarn"
+  },
+  "868": {
+    "ja": "マホミル",
+    "romaji": "Mahomil"
+  },
+  "869": {
+    "ja": "マホイップ",
+    "romaji": "Mawhip"
+  },
+  "870": {
+    "ja": "タイレーツ",
+    "romaji": "Tairetsu"
+  },
+  "871": {
+    "ja": "バチンウニ",
+    "romaji": "Bachinuni"
+  },
+  "872": {
+    "ja": "ユキハミ",
+    "romaji": "Yukihami"
+  },
+  "873": {
+    "ja": "モスノウ",
+    "romaji": "Mothnow"
+  },
+  "874": {
+    "ja": "イシヘンジン",
+    "romaji": "Ishihengin"
+  },
+  "875": {
+    "ja": "コオリッポ",
+    "romaji": "Korippo"
+  },
+  "876": {
+    "ja": "イエッサン",
+    "romaji": "Yessan"
+  },
+  "877": {
+    "ja": "モルペコ",
+    "romaji": "Morpeko"
+  },
+  "878": {
+    "ja": "ゾウドウ",
+    "romaji": "Zoudou"
+  },
+  "879": {
+    "ja": "ダイオウドウ",
+    "romaji": "Daioudou"
+  },
+  "880": {
+    "ja": "パッチラゴン",
+    "romaji": "Patchiragon"
+  },
+  "881": {
+    "ja": "パッチルドン",
+    "romaji": "Patchilldon"
+  },
+  "882": {
+    "ja": "ウオノラゴン",
+    "romaji": "Uonoragon"
+  },
+  "883": {
+    "ja": "ウオチルドン",
+    "romaji": "Uochilldon"
+  },
+  "884": {
+    "ja": "ジュラルドン",
+    "romaji": "Duraludon"
+  },
+  "885": {
+    "ja": "ドラメシヤ",
+    "romaji": "Dorameshiya"
+  },
+  "886": {
+    "ja": "ドロンチ",
+    "romaji": "Doronch"
+  },
+  "887": {
+    "ja": "ドラパルト",
+    "romaji": "Dorapult"
+  },
+  "888": {
+    "ja": "ザシアン",
+    "romaji": "Zacian"
+  },
+  "889": {
+    "ja": "ザマゼンタ",
+    "romaji": "Zamazenta"
+  },
+  "890": {
+    "ja": "ムゲンダイナ",
+    "romaji": "Mugendina"
+  },
+  "891": {
+    "ja": "ダクマ",
+    "romaji": "Dakuma"
+  },
+  "892": {
+    "ja": "ウーラオス",
+    "romaji": "Wulaosu"
+  },
+  "893": {
+    "ja": "ザルード",
+    "romaji": "Zarude"
+  },
+  "894": {
+    "ja": "レジエレキ",
+    "romaji": "Regieleki"
+  },
+  "895": {
+    "ja": "レジドラゴ",
+    "romaji": "Regidorago"
+  },
+  "896": {
+    "ja": "ブリザポス",
+    "romaji": "Blizzapos"
+  },
+  "897": {
+    "ja": "レイスポス",
+    "romaji": "Wraithpos"
+  },
+  "898": {
+    "ja": "バドレックス",
+    "romaji": "Budrex"
+  },
+  "899": {
+    "ja": "アヤシシ",
+    "romaji": "Ayashishi"
+  },
+  "900": {
+    "ja": "バサギリ",
+    "romaji": "Basagiri"
+  },
+  "901": {
+    "ja": "ガチグマ",
+    "romaji": "Gachiguma"
+  },
+  "902": {
+    "ja": "イダイトウ",
+    "romaji": "Idaitou"
+  },
+  "903": {
+    "ja": "オオニューラ",
+    "romaji": "Oonyura"
+  },
+  "904": {
+    "ja": "ハリーマン",
+    "romaji": "Hariman"
+  },
+  "905": {
+    "ja": "ラブトロス",
+    "romaji": "Lovetolos"
+  },
+  "906": {
+    "ja": "ニャオハ",
+    "romaji": "Nyahoja"
+  },
+  "907": {
+    "ja": "ニャローテ",
+    "romaji": "Nyarote"
+  },
+  "908": {
+    "ja": "マスカーニャ",
+    "romaji": "Masquernya"
+  },
+  "909": {
+    "ja": "ホゲータ",
+    "romaji": "Hogator"
+  },
+  "910": {
+    "ja": "アチゲータ",
+    "romaji": "Achigator"
+  },
+  "911": {
+    "ja": "ラウドボーン",
+    "romaji": "Laudbon"
+  },
+  "912": {
+    "ja": "クワッス",
+    "romaji": "Kuwassu"
+  },
+  "913": {
+    "ja": "ウェルカモ",
+    "romaji": "Welkamo"
+  },
+  "914": {
+    "ja": "ウェーニバル",
+    "romaji": "Wanival"
+  },
+  "915": {
+    "ja": "グルトン",
+    "romaji": "Gourton"
+  },
+  "916": {
+    "ja": "パフュートン",
+    "romaji": "Perfuton"
+  },
+  "917": {
+    "ja": "タマンチュラ",
+    "romaji": "Tamantula"
+  },
+  "918": {
+    "ja": "ワナイダー",
+    "romaji": "Wanaider"
+  },
+  "919": {
+    "ja": "マメバッタ",
+    "romaji": "Mamebatta"
+  },
+  "920": {
+    "ja": "エクスレッグ",
+    "romaji": "Exleg"
+  },
+  "921": {
+    "ja": "パモ",
+    "romaji": "Pamo"
+  },
+  "922": {
+    "ja": "パモット",
+    "romaji": "Pamot"
+  },
+  "923": {
+    "ja": "パーモット",
+    "romaji": "Parmot"
+  },
+  "924": {
+    "ja": "ワッカネズミ",
+    "romaji": "Wakkanezumi"
+  },
+  "925": {
+    "ja": "イッカネズミ",
+    "romaji": "Ikkanezumi"
+  },
+  "926": {
+    "ja": "パピモッチ",
+    "romaji": "Pupimocchi"
+  },
+  "927": {
+    "ja": "バウッツェル",
+    "romaji": "Bowtzel"
+  },
+  "928": {
+    "ja": "ミニーブ",
+    "romaji": "Minive"
+  },
+  "929": {
+    "ja": "オリーニョ",
+    "romaji": "Olinyo"
+  },
+  "930": {
+    "ja": "オリーヴァ",
+    "romaji": "Oliva"
+  },
+  "931": {
+    "ja": "イキリンコ",
+    "romaji": "Ikirinko"
+  },
+  "932": {
+    "ja": "コジオ",
+    "romaji": "Kojio"
+  },
+  "933": {
+    "ja": "ジオヅム",
+    "romaji": "Jiodumu"
+  },
+  "934": {
+    "ja": "キョジオーン",
+    "romaji": "Kyojiohn"
+  },
+  "935": {
+    "ja": "カルボウ",
+    "romaji": "Carbou"
+  },
+  "936": {
+    "ja": "グレンアルマ",
+    "romaji": "Gurenarma"
+  },
+  "937": {
+    "ja": "ソウブレイズ",
+    "romaji": "Soublades"
+  },
+  "938": {
+    "ja": "ズピカ",
+    "romaji": "Zupika"
+  },
+  "939": {
+    "ja": "ハラバリー",
+    "romaji": "Harabarie"
+  },
+  "940": {
+    "ja": "カイデン",
+    "romaji": "Kaiden"
+  },
+  "941": {
+    "ja": "タイカイデン",
+    "romaji": "Taikaiden"
+  },
+  "942": {
+    "ja": "オラチフ",
+    "romaji": "Orachifu"
+  },
+  "943": {
+    "ja": "マフィティフ",
+    "romaji": "Mafitiff"
+  },
+  "944": {
+    "ja": "シルシュルー",
+    "romaji": "Shirushrew"
+  },
+  "945": {
+    "ja": "タギングル",
+    "romaji": "Taggingru"
+  },
+  "946": {
+    "ja": "アノクサ",
+    "romaji": "Anokusa"
+  },
+  "947": {
+    "ja": "アノホラグサ",
+    "romaji": "Anohoragusa"
+  },
+  "948": {
+    "ja": "ノノクラゲ",
+    "romaji": "Nonokurage"
+  },
+  "949": {
+    "ja": "リククラゲ",
+    "romaji": "Rikukurage"
+  },
+  "950": {
+    "ja": "ガケガニ",
+    "romaji": "Gakegani"
+  },
+  "951": {
+    "ja": "カプサイジ",
+    "romaji": "Capsaiji"
+  },
+  "952": {
+    "ja": "スコヴィラン",
+    "romaji": "Scovillain"
+  },
+  "953": {
+    "ja": "シガロコ",
+    "romaji": "Shigaroko"
+  },
+  "954": {
+    "ja": "ベラカス",
+    "romaji": "Beracas"
+  },
+  "955": {
+    "ja": "ヒラヒナ",
+    "romaji": "Hirahina"
+  },
+  "956": {
+    "ja": "クエスパトラ",
+    "romaji": "Cuespatra"
+  },
+  "957": {
+    "ja": "カヌチャン",
+    "romaji": "Kanuchan"
+  },
+  "958": {
+    "ja": "ナカヌチャン",
+    "romaji": "Nakanuchan"
+  },
+  "959": {
+    "ja": "デカヌチャン",
+    "romaji": "Dekanuchan"
+  },
+  "960": {
+    "ja": "ウミディグダ",
+    "romaji": "Umidigda"
+  },
+  "961": {
+    "ja": "ウミトリオ",
+    "romaji": "Umitrio"
+  },
+  "962": {
+    "ja": "オトシドリ",
+    "romaji": "Otoshidori"
+  },
+  "963": {
+    "ja": "ナミイルカ",
+    "romaji": "Namiiruka"
+  },
+  "964": {
+    "ja": "イルカマン",
+    "romaji": "Irukaman"
+  },
+  "965": {
+    "ja": "ブロロン",
+    "romaji": "Buroron"
+  },
+  "966": {
+    "ja": "ブロロローム",
+    "romaji": "Burororoom"
+  },
+  "967": {
+    "ja": "モトトカゲ",
+    "romaji": "Mototokage"
+  },
+  "968": {
+    "ja": "ミミズズ",
+    "romaji": "Mimizuzu"
+  },
+  "969": {
+    "ja": "キラーメ",
+    "romaji": "Kirame"
+  },
+  "970": {
+    "ja": "キラフロル",
+    "romaji": "Kiraflor"
+  },
+  "971": {
+    "ja": "ボチ",
+    "romaji": "Bochi"
+  },
+  "972": {
+    "ja": "ハカドッグ",
+    "romaji": "Hakadog"
+  },
+  "973": {
+    "ja": "カラミンゴ",
+    "romaji": "Karamingo"
+  },
+  "974": {
+    "ja": "アルクジラ",
+    "romaji": "Arukujira"
+  },
+  "975": {
+    "ja": "ハルクジラ",
+    "romaji": "Hulkujira"
+  },
+  "976": {
+    "ja": "ミガルーサ",
+    "romaji": "Migalusa"
+  },
+  "977": {
+    "ja": "ヘイラッシャ",
+    "romaji": "Heyrusher"
+  },
+  "978": {
+    "ja": "シャリタツ",
+    "romaji": "Syaritatsu"
+  },
+  "979": {
+    "ja": "コノヨザル",
+    "romaji": "Konoyozaru"
+  },
+  "980": {
+    "ja": "ドオー",
+    "romaji": "Dooh"
+  },
+  "981": {
+    "ja": "リキキリン",
+    "romaji": "Rikikirin"
+  },
+  "982": {
+    "ja": "ノココッチ",
+    "romaji": "Nokokocchi"
+  },
+  "983": {
+    "ja": "ドドゲザン",
+    "romaji": "Dodogezan"
+  },
+  "984": {
+    "ja": "イダイナキバ",
+    "romaji": "Idainakiba"
+  },
+  "985": {
+    "ja": "サケブシッポ",
+    "romaji": "Sakebushippo"
+  },
+  "986": {
+    "ja": "アラブルタケ",
+    "romaji": "Araburutake"
+  },
+  "987": {
+    "ja": "ハバタクカミ",
+    "romaji": "Habatakukami"
+  },
+  "988": {
+    "ja": "チヲハウハネ",
+    "romaji": "Chiwohauhane"
+  },
+  "989": {
+    "ja": "スナノケガワ",
+    "romaji": "Sunanokegawa"
+  },
+  "990": {
+    "ja": "テツノワダチ",
+    "romaji": "Tetsunowadachi"
+  },
+  "991": {
+    "ja": "テツノツツミ",
+    "romaji": "Tetsunotsutsumi"
+  },
+  "992": {
+    "ja": "テツノカイナ",
+    "romaji": "Tetsunokaina"
+  },
+  "993": {
+    "ja": "テツノコウベ",
+    "romaji": "Tetsunokoube"
+  },
+  "994": {
+    "ja": "テツノドクガ",
+    "romaji": "Tetsunodokuga"
+  },
+  "995": {
+    "ja": "テツノイバラ",
+    "romaji": "Tetsunoibara"
+  },
+  "996": {
+    "ja": "セビエ",
+    "romaji": "Sebie"
+  },
+  "997": {
+    "ja": "セゴール",
+    "romaji": "Segohru"
+  },
+  "998": {
+    "ja": "セグレイブ",
+    "romaji": "Seglaive"
+  },
+  "999": {
+    "ja": "コレクレー",
+    "romaji": "Collecurei"
+  },
+  "1000": {
+    "ja": "サーフゴー",
+    "romaji": "Surfugo"
+  },
+  "1001": {
+    "ja": "チオンジェン",
+    "romaji": "Chionjen"
+  },
+  "1002": {
+    "ja": "パオジアン",
+    "romaji": "Paojian"
+  },
+  "1003": {
+    "ja": "ディンルー",
+    "romaji": "Dinlu"
+  },
+  "1004": {
+    "ja": "イーユイ",
+    "romaji": "Yiyui"
+  },
+  "1005": {
+    "ja": "トドロクツキ",
+    "romaji": "Todorokutsuki"
+  },
+  "1006": {
+    "ja": "テツノブジン",
+    "romaji": "Tetsunobujin"
+  },
+  "1007": {
+    "ja": "コライドン",
+    "romaji": "Koraidon"
+  },
+  "1008": {
+    "ja": "ミライドン",
+    "romaji": "Miraidon"
+  },
+  "1009": {
+    "ja": "ウネルミナモ",
+    "romaji": "Uneruminamo"
+  },
+  "1010": {
+    "ja": "テツノイサハ",
+    "romaji": "Tetsunoisaha"
+  },
+  "1011": {
+    "ja": "カミッチュ",
+    "romaji": null
+  },
+  "1012": {
+    "ja": "チャデス",
+    "romaji": null
+  },
+  "1013": {
+    "ja": "ヤバソチャ",
+    "romaji": null
+  },
+  "1014": {
+    "ja": "イイネイヌ",
+    "romaji": null
+  },
+  "1015": {
+    "ja": "マシマシラ",
+    "romaji": null
+  },
+  "1016": {
+    "ja": "キチキギス",
+    "romaji": null
+  },
+  "1017": {
+    "ja": "オーガポン",
+    "romaji": null
+  },
+  "1018": {
+    "ja": "ブリジュラス",
+    "romaji": null
+  },
+  "1019": {
+    "ja": "カミツオロチ",
+    "romaji": null
+  },
+  "1020": {
+    "ja": "ウガツホムラ",
+    "romaji": null
+  },
+  "1021": {
+    "ja": "タケルライコ",
+    "romaji": null
+  },
+  "1022": {
+    "ja": "テツノイワオ",
+    "romaji": null
+  },
+  "1023": {
+    "ja": "テツノカシラ",
+    "romaji": null
+  },
+  "1024": {
+    "ja": "テラパゴス",
+    "romaji": null
+  },
+  "1025": {
+    "ja": "モモワロウ",
+    "romaji": null
   }
 }

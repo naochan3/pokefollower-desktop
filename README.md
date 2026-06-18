@@ -3,36 +3,20 @@
 マウスカーソルをポケモンが追いかけてくる、Windows / macOS / Linux 向けのデスクトップマスコットです。
 ブラウザ拡張 [pokefollower_cursor_web_plugin](https://github.com/ThinkrDoer/pokefollower_cursor_web_plugin) を、デスクトップ全体で動くアプリ（Electron）に作り変えたものです。
 
-開発状況・ロードマップは [docs/STATUS.md](docs/STATUS.md)、リリース手順は [RELEASING.md](RELEASING.md) を参照してください。
+> スクリーンショットは後で `docs/` などに置いて、ここに貼ると見栄えが良くなります。
 
 ---
 
-## ダウンロード
+## ダウンロード（Windows）
 
-### Windows
-
-**[→ インストーラ（.exe）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/latest/download/PokeFollower-Setup.exe)**
+**[→ PokeFollower-Setup.exe をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/latest/download/PokeFollower-Setup.exe)**
 
 1. 上のリンクから `PokeFollower-Setup.exe` をダウンロード
-2. **ダブルクリック** → 自動でインストールされ、そのまま起動して**タスクトレイ**（画面右下）に常駐（途中の選択画面なし）
-3. タスクトレイのモンスターボールを**右クリック**で、設定 / 有効・無効 / 終了
+2. **ダブルクリック** → 自動でインストールされ、そのまま起動してタスクトレイに常駐します（途中の選択画面なし）
+3. タスクトレイ（画面右下）のモンスターボールを右クリックで、設定 / 有効・無効 / 終了
 
-> 未署名のため、初回は Windows SmartScreen が「WindowsによってPCが保護されました」と表示することがあります。「詳細情報」→「実行」で進めてください。
-
-### macOS（Apple Silicon）
-
-**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.0.1/PokeFollower-1.0.0-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.0.1/PokeFollower-1.0.0-arm64-mac.zip)）
-
-1. 上のリンクから `.dmg` をダウンロード
-2. 開いて `PokeFollower.app` を**アプリケーション**にドラッグ → 起動して**メニューバー**（画面右上）に常駐
-3. メニューバーのモンスターボールを**クリック**で、設定 / 有効・無効 / 終了
-
-> 未署名・未公証のため、初回は Gatekeeper にブロックされます。アプリを**右クリック →「開く」**、または `システム設定 → プライバシーとセキュリティ` の「このまま開く」で実行してください。
-> （macOS 版は contributor がビルドした arm64 バイナリ。全画面アプリの自動非表示は Windows のみ対応です）
-
-> ⚠ macOS 版は現在 **v1.0.1（Electron 31）相当**です。Windows 版の最新セキュリティ更新（Electron 42, v1.0.2）に追従した macOS ビルドは準備中です。
-
-> 最新版は常に[リリースページ](https://github.com/naochan3/pokefollower-desktop/releases/latest)から取得できます（上のリンクも常に最新を指します）。
+> - 未署名のため、初回は Windows SmartScreen が「WindowsによってPCが保護されました」と表示することがあります。その場合は「詳細情報」→「実行」で進めてください。
+> - 最新版は常に[リリースページ](https://github.com/naochan3/pokefollower-desktop/releases/latest)から取得できます（上のリンクも常に最新を指します）。
 
 ---
 
@@ -51,9 +35,9 @@
 
 ### 既知の制限
 
-- macOS 版はビルド対応済みですが、未署名・未公証です。配布する場合は Developer ID で署名し、公証してください。
+- macOS 版はビルド対応済みですが、通常ビルドは未署名です。署名・公証の手順は `docs/RELEASING.md` を参照してください。
 - Linux 版は AppImage のビルド対応までです。デスクトップ環境ごとの常駐・透明オーバーレイ挙動は追加検証が必要です。
-- 全画面の自動判定は Windows のみ対応です。macOS / Linux では全画面アプリ上でも自動非表示にはなりません。
+- 全画面の自動判定は Windows / macOS / Linux に対応します。macOS はアクセシビリティ許可、Linux は `xdotool` / `xprop` が利用できる環境で有効です。
 - Windows の全画面判定は「前面ウィンドウがモニター全体を覆っているか」で行うため、ブラウザを `F11` で全画面にした場合もゲーム同様に隠れます（通常の最大化では出たまま）。
 - モニターごとに表示スケール（DPI）が大きく異なる構成では、位置がわずかにずれる可能性があります。
 
@@ -67,7 +51,7 @@
 
 ## インストール（使う人向け）
 
-上の [ダウンロード](#ダウンロード) からインストーラを取得してダブルクリックするだけです（ワンクリック型なので選択画面なし→自動でインストール→起動→トレイ常駐）。インストール後はログイン時に自動起動し、初回から有効（ポケモンが表示）の状態です。
+上の [ダウンロード](#ダウンロードwindows) からインストーラを取得してダブルクリックするだけです（ワンクリック型なので選択画面なし→自動でインストール→起動→トレイ常駐）。インストール後はログイン時に自動起動し、初回から有効（ポケモンが表示）の状態です。
 
 > 自分でソースからビルドする場合は後述の [ビルド](#ビルド配布物の作成) を参照（`release/` に生成されます）。
 
@@ -97,6 +81,9 @@ npm test
 # Rust 版追従コアの同等性テスト（cargo が必要）
 npm run test:rust
 
+# 追従ループの 8ms / 16ms シミュレーション負荷比較
+npm run bench:sim
+
 # Rust コアを変更したとき：WASM を再ビルドして native/ に反映（cargo + wasm32-unknown-unknown ターゲットが必要）
 npm run build:rust
 ```
@@ -118,13 +105,11 @@ npm run dist:mac
 npm run dist:linux
 ```
 
-生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.0.1.exe`）
+生成物：`release/PokeFollower Setup 1.0.0.exe`
 
-macOS 生成物：`release/PokeFollower-<version>-arm64.dmg` / `release/PokeFollower-<version>-arm64-mac.zip` など（実行環境の CPU により変わります）。
+macOS 生成物：`release/PokeFollower-1.0.0-arm64.dmg` / `release/PokeFollower-1.0.0-arm64-mac.zip` など（実行環境の CPU により変わります）。
 
-Linux 生成物：`release/PokeFollower-<version>.AppImage` など。
-
-> 配布物を Release に上げる手順・担当・アセット命名規則は [RELEASING.md](RELEASING.md) にまとめています。
+Linux 生成物：`release/PokeFollower-1.0.0.AppImage` など。
 
 ---
 
@@ -134,13 +119,13 @@ Linux 生成物：`release/PokeFollower-<version>.AppImage` など。
 
 | 部品 | 役割 |
 |---|---|
-| メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（更新間隔 8ms ≒ 最大120fps）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
+| メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（約60fps）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
 | 追従シム（`src/main/follower-sim.js`） | 追従とアニメーションの計算（グローバル座標）。DOM 非依存・テスト可能 |
 | Rust 追従コア（`crates/follower_core/`） | 追従位置計算の本体。WASM として `native/pokefollower_core.wasm` にビルドされ、Electron 実行時に読み込まれる |
 | オーバーレイ窓（`src/overlay/`） | **モニターごとに1枚**常設。透明・最前面・クリック透過。メインから受け取ったローカル座標でスプライトを描くだけ |
 | 設定窓（`src/settings/`） | タイル選択 UI・日本語検索・各種スライダー |
 | パック読み込み（`src/main/pack-reader.js`） | スプライト定義（パック JSON）と日本語名の読み込み |
-| 全画面検知（`src/main/fullscreen-detect.js`） | Windows の前面ウィンドウ判定。macOS では no-op として動作 |
+| 全画面検知（`src/main/fullscreen-detect.js`） | Windows / macOS / Linux の前面ウィンドウ判定。失敗時は no-op として動作 |
 
 **なぜこの設計か**：当初は「1枚の窓をカーソルの居るモニターへワープさせる」方式でしたが、境界越えで位置が跳ねる・逆走するなどの問題が構造的に発生しました。ポケモンをグローバル座標で連続的に動かし、各モニター窓が自分の領域分だけ描く方式に作り変えることで、境界をなめらかに越えられるようになっています。詳細は `docs/superpowers/specs/` の設計書を参照。
 
@@ -162,22 +147,16 @@ pokefollower-desktop/
 │  │  ├─ overlay.html / overlay.js / overlay-preload.js
 │  └─ settings/              # 設定ウィンドウ
 │     ├─ settings.html / settings.js / settings-preload.js
-├─ crates/follower_core/     # Rust 追従コア（→ WASM）
-├─ native/                   # ビルド済み WASM（pokefollower_core.wasm）
 ├─ assets/                   # スプライト・アイコン・UI素材・日本語名データ
 ├─ tests/                    # Vitest 単体テスト
-├─ docs/
-│  ├─ STATUS.md              # 計画 vs 現状・ロードマップ
-│  └─ superpowers/           # 設計書・実装計画
-├─ RELEASING.md              # リリース手順
+├─ docs/superpowers/         # 設計書・実装計画
 └─ package.json
 ```
 
 ## 技術スタック
 
 - [Electron](https://www.electronjs.org/) — デスクトップアプリ本体
-- [electron-builder](https://www.electron.build/) — 各 OS の配布物生成（Windows NSIS / macOS dmg・zip / Linux AppImage）
-- [Rust](https://www.rust-lang.org/) → WebAssembly — 追従位置計算のコア（`crates/follower_core/`）
+- [electron-builder](https://www.electron.build/) — Windows インストーラ（NSIS）生成
 - [Vitest](https://vitest.dev/) — 単体テスト
 
 ---
@@ -191,9 +170,4 @@ pokefollower-desktop/
 ポケモンおよび関連する名称・キャラクターは © Nintendo / Creatures Inc. / GAME FREAK inc. の登録商標です。
 本プロジェクトは個人的なファン制作物であり、**商用利用は想定していません**。スプライト等の素材は各配布元の規約に従ってください。
 
-## ライセンス
-
-- **ソースコード**：[MIT License](LICENSE)（`src/`・`crates/`・`scripts/`・`tests/`・ビルド設定など）。自由に利用・改変・再配布できます。
-- **素材（MIT対象外）**：ポケモンのスプライト（`assets/`）・名称・モンスターボール/アイコン等の Pokémon 関連素材は **MIT の対象外**です。各権利者（Nintendo / Creatures Inc. / GAME FREAK inc. および素材提供元）に帰属し、非商用の個人的ファン制作物として同梱しているだけです（詳細は [NOTICE](NOTICE)）。
-
-> このリポジトリは「ソース公開のファン制作物」であり、**全体が自由に使える OSS ではありません**。コードは MIT ですが、Pokémon 素材を含めた再配布・商用利用は各権利者の権利を侵害する可能性があります。素材を権利クリアなものに差し替えない限り、完全な OSS 配布はできません。
+コードのライセンスは未設定です。公開・再配布する場合は、必要に応じて `LICENSE` を追加してください。

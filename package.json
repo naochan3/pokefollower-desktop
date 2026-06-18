@@ -1,9 +1,8 @@
 {
   "name": "pokefollower-desktop",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "description": "カーソルを追うポケモンのデスクトップ常駐マスコット (Electron)",
   "author": "naochan3",
-  "license": "MIT",
   "main": "src/main/main.js",
   "type": "commonjs",
   "engines": {
@@ -13,10 +12,13 @@
     "start": "electron .",
     "test": "vitest run",
     "test:rust": "cargo test --manifest-path crates/follower_core/Cargo.toml",
+    "bench:sim": "node scripts/bench-sim-interval.cjs",
     "build:rust": "cargo build --manifest-path crates/follower_core/Cargo.toml --release --target wasm32-unknown-unknown && node scripts/copy-rust-core.cjs",
     "dist": "electron-builder --win --x64",
     "dist:win": "electron-builder --win --x64",
+    "dist:win:signed": "electron-builder --win --x64 --config electron-builder.signed.cjs",
     "dist:mac": "electron-builder --mac",
+    "dist:mac:signed": "electron-builder --mac --config electron-builder.signed.cjs",
     "dist:linux": "electron-builder --linux"
   },
   "devDependencies": {
@@ -46,7 +48,10 @@
         "zip"
       ],
       "category": "public.app-category.entertainment",
-      "icon": "assets/icons/PokeFollower.icns"
+      "icon": "assets/icons/PokeFollower.icns",
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.inherit.plist"
     },
     "linux": {
       "target": [

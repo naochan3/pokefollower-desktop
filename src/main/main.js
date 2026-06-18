@@ -1,4 +1,4 @@
-const { app, BrowserWindow, protocol, net, screen, ipcMain, Tray, Menu, nativeImage } = require("electron");
+const { app, BrowserWindow, protocol, net, screen, ipcMain, Tray, Menu, nativeImage, powerMonitor } = require("electron");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
 const fs = require("node:fs");
@@ -7,6 +7,7 @@ const { createSettingsStore } = require("./settings-store.js");
 const { createFollowerSim } = require("./follower-sim.js");
 const { getForegroundInfo } = require("./fullscreen-detect.js");
 const { resolveAppProtocolPath } = require("./app-protocol-path.js");
+const { getSimIntervalMs } = require("./sim-loop-config.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -19,9 +20,9 @@ let tray = null;
 let currentMeta = null;
 let enabled = false;
 let simTimer = null;
+let simIntervalMs = null;
 let lastStepTs = 0;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
-const SIM_INTERVAL_MS = 8;
 
 // 前面ウィンドウがいずれかのモニター全体を覆っていれば「全画面」とみなす。
 // 最大化（Chrome等）は作業領域までなので一致せず、隠れない。
@@ -31,9 +32,12 @@ const TRAY_ICON_SIZE_PX = 28;
 function checkFullscreen() {
   const info = getForegroundInfo();
   if (!info || SHELL_CLASSES.has(info.cls)) { fullscreenActive = false; return; }
+  if (info.isFullscreen === true) { fullscreenActive = true; return; }
   fullscreenActive = screen.getAllDisplays().some((d) => {
     const sf = d.scaleFactor || 1;
-    return info.w >= d.bounds.width * sf - 2 && info.h >= d.bounds.height * sf - 2;
+    const scaledMatch = info.w >= d.bounds.width * sf - 2 && info.h >= d.bounds.height * sf - 2;
+    const logicalMatch = info.w >= d.bounds.width - 2 && info.h >= d.bounds.height - 2;
+    return scaledMatch || logicalMatch;
   });
 }
 
@@ -140,19 +144,35 @@ function intersects(a, b) {
     a.y + a.height > b.y;
 }
 
+function readBatteryState() {
+  try { return powerMonitor.isOnBatteryPower(); }
+  catch (_) { return false; }
+}
+
+function runSimFrame() {
+  const now = Date.now();
+  const dt = now - lastStepTs;
+  lastStepTs = now;
+  const cursor = screen.getCursorScreenPoint(); // グローバル座標
+  sim.updateCursor(cursor.x, cursor.y, now);
+  // 無効化中 or 前面が全画面アプリ（ゲーム等）なら隠す
+  if (!enabled || fullscreenActive) { broadcastFrame(null); return; }
+  broadcastFrame(sim.step(dt, now));
+}
+
 function startSimLoop() {
   if (simTimer) return;
   lastStepTs = Date.now();
-  simTimer = setInterval(() => {
-    const now = Date.now();
-    const dt = now - lastStepTs;
-    lastStepTs = now;
-    const cursor = screen.getCursorScreenPoint(); // グローバル座標
-    sim.updateCursor(cursor.x, cursor.y, now);
-    // 無効化中 or 前面が全画面アプリ（ゲーム等）なら隠す
-    if (!enabled || fullscreenActive) { broadcastFrame(null); return; }
-    broadcastFrame(sim.step(dt, now));
-  }, SIM_INTERVAL_MS);
+  simIntervalMs = getSimIntervalMs({ isOnBattery: readBatteryState() });
+  simTimer = setInterval(runSimFrame, simIntervalMs);
+}
+
+function refreshSimLoopInterval() {
+  const next = getSimIntervalMs({ isOnBattery: readBatteryState() });
+  if (!simTimer || next === simIntervalMs) return;
+  clearInterval(simTimer);
+  simTimer = null;
+  startSimLoop();
 }
 
 function setEnabled(on) {
@@ -251,6 +271,8 @@ app.whenReady().then(() => {
   screen.on("display-added", buildOverlays);
   screen.on("display-removed", buildOverlays);
   screen.on("display-metrics-changed", buildOverlays);
+  powerMonitor.on("on-ac", refreshSimLoopInterval);
+  powerMonitor.on("on-battery", refreshSimLoopInterval);
 
   startSimLoop();
   setInterval(checkFullscreen, 600); // 全画面アプリ検知（約0.6秒間隔）
