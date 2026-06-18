@@ -27,11 +27,15 @@ expect(
   "startup registration must stay gated behind app.isPackaged",
 );
 expect(
-  /screen\.on\("display-added", buildOverlays\)/.test(main) &&
-    /screen\.on\("display-removed", buildOverlays\)/.test(main) &&
-    /screen\.on\("display-metrics-changed", buildOverlays\)/.test(main),
-  "main.js must rebuild overlays for display add/remove/metrics changes",
+  /screen\.on\("display-added", scheduleBuildOverlays\)/.test(main) &&
+    /screen\.on\("display-removed", scheduleBuildOverlays\)/.test(main) &&
+    /screen\.on\("display-metrics-changed", scheduleBuildOverlays\)/.test(main),
+  "main.js must schedule overlay rebuilds for display add/remove/metrics changes",
 );
+expect(/const DISPLAY_REBUILD_DEBOUNCE_MS = 250;/.test(main), "display rebuild debounce must stay at 250ms");
+expect(/function scheduleBuildOverlays\(\)/.test(main), "main.js must define scheduleBuildOverlays");
+expect(/clearTimeout\(displayRebuildTimer\)/.test(main), "display rebuild scheduler must coalesce rapid display events");
+expect(/setTimeout\(\(\) => \{[\s\S]*buildOverlays\(\);[\s\S]*\}, DISPLAY_REBUILD_DEBOUNCE_MS\)/.test(main), "display rebuild scheduler must rebuild overlays after debounce");
 expect(/powerMonitor/.test(main), "main.js must use powerMonitor for AC/battery interval changes");
 expect(/getSimIntervalMs\(\{ isOnBattery: readBatteryState\(\) \}\)/.test(main), "main.js must use sim-loop-config for interval selection");
 expect(/powerMonitor\.on\("on-ac", refreshSimLoopInterval\)/.test(main), "main.js must refresh sim interval on AC power");

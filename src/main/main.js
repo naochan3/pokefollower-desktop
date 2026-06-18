@@ -28,6 +28,7 @@ let lastStepTs = 0;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
 
 const TRAY_ICON_SIZE_PX = 28;
+const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
 function checkFullscreen() {
   fullscreenActive = isFullscreenForeground(getForegroundInfo(), screen.getAllDisplays());
 }
@@ -77,6 +78,15 @@ function createOverlayWindow(display) {
 function buildOverlays() {
   for (const o of overlays) { if (o.win && !o.win.isDestroyed()) o.win.destroy(); }
   overlays = screen.getAllDisplays().map((d) => ({ win: createOverlayWindow(d), bounds: d.bounds, visible: false }));
+}
+
+let displayRebuildTimer = null;
+function scheduleBuildOverlays() {
+  if (displayRebuildTimer) clearTimeout(displayRebuildTimer);
+  displayRebuildTimer = setTimeout(() => {
+    displayRebuildTimer = null;
+    buildOverlays();
+  }, DISPLAY_REBUILD_DEBOUNCE_MS);
 }
 
 function loadPackIntoSim(packKey) {
@@ -219,9 +229,9 @@ app.whenReady().then(() => {
 
   buildOverlays();
   // ディスプレイ構成が変わったら窓を作り直す（グローバル座標のシムはそのまま）
-  screen.on("display-added", buildOverlays);
-  screen.on("display-removed", buildOverlays);
-  screen.on("display-metrics-changed", buildOverlays);
+  screen.on("display-added", scheduleBuildOverlays);
+  screen.on("display-removed", scheduleBuildOverlays);
+  screen.on("display-metrics-changed", scheduleBuildOverlays);
   powerMonitor.on("on-ac", refreshSimLoopInterval);
   powerMonitor.on("on-battery", refreshSimLoopInterval);
 
