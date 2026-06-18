@@ -8,6 +8,7 @@ const packagePath = path.join(root, "package.json");
 const workflow = fs.readFileSync(workflowPath, "utf8");
 const dependabot = fs.readFileSync(dependabotPath, "utf8");
 const benchDevRuntime = fs.readFileSync(path.join(root, "scripts", "bench-dev-runtime.cjs"), "utf8");
+const benchWinUnpackedRuntime = fs.readFileSync(path.join(root, "scripts", "bench-win-unpacked-runtime.cjs"), "utf8");
 const pkg = JSON.parse(fs.readFileSync(packagePath, "utf8"));
 const errors = [];
 
@@ -116,6 +117,7 @@ if (!pkg.scripts || !pkg.scripts["verify:local"]) {
 for (const [scriptName, scriptCommand] of [
   ["bench:dev-runtime", "node scripts/bench-dev-runtime.cjs"],
   ["bench:pack-list", "node scripts/bench-pack-list.cjs"],
+  ["bench:win-unpacked-runtime", "node scripts/bench-win-unpacked-runtime.cjs"],
 ]) {
   if (pkg.scripts?.[scriptName] !== scriptCommand) {
     errors.push(`package.json ${scriptName} script is missing or changed`);
@@ -134,6 +136,20 @@ for (const text of [
   }
 }
 
+for (const text of [
+  "PF_WIN_UNPACKED_MODES",
+  "PokeFollower.exe",
+  "POKEFOLLOWER_ALLOW_TEST_USER_DATA",
+  "POKEFOLLOWER_TEST_USER_DATA_DIR",
+  "HKCU Run",
+  "restoreRunValues",
+  "restored",
+]) {
+  if (!benchWinUnpackedRuntime.includes(text)) {
+    errors.push(`bench-win-unpacked-runtime must keep isolated packaged runtime measurement support: ${text}`);
+  }
+}
+
 for (const file of [
   ".github/dependabot.yml",
   "src/main/frame-routing.js",
@@ -146,6 +162,7 @@ for (const file of [
   "tests/sim-loop-config.test.js",
   "scripts/bench-dev-runtime.cjs",
   "scripts/bench-pack-list.cjs",
+  "scripts/bench-win-unpacked-runtime.cjs",
   "scripts/verify-dependency-metadata.cjs",
   "scripts/verify-electron-security.cjs",
   "scripts/verify-repo-hygiene.cjs",

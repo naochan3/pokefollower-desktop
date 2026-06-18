@@ -57,9 +57,13 @@ expect(/offset: 70/.test(sim), "follower-sim default offset must be 70");
 expect(/vcp1_offset: 70/.test(settingsUi), "settings UI default offset must be 70");
 expect(
   /function getUserDataPath\(\)/.test(main) &&
+    /process\.env\.POKEFOLLOWER_ALLOW_TEST_USER_DATA === "1"/.test(main) &&
+    /process\.env\.POKEFOLLOWER_TEST_USER_DATA_DIR/.test(main) &&
+    /process\.env\.TEMP \|\| process\.env\.TMPDIR \|\| process\.env\.TMP/.test(main) &&
+    /testUserDataPath\.startsWith\(testRoot \+ path\.sep\)/.test(main) &&
     /!app\.isPackaged && process\.env\.PF_DEV_USER_DATA_DIR/.test(main) &&
     /return app\.getPath\("userData"\);/.test(main),
-  "main.js must keep PF_DEV_USER_DATA_DIR as a development-only userData override",
+  "main.js must keep explicit test userData overrides and the development-only userData override",
 );
 expect(
   /settingsStore = createSettingsStore\(path\.join\(getUserDataPath\(\), "settings\.json"\)\)/.test(main),

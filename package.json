@@ -14,6 +14,7 @@
     "bench:dev-runtime": "node scripts/bench-dev-runtime.cjs",
     "bench:interval": "node scripts/bench-sim-interval.cjs",
     "bench:pack-list": "node scripts/bench-pack-list.cjs",
+    "bench:win-unpacked-runtime": "node scripts/bench-win-unpacked-runtime.cjs",
     "test": "vitest run",
     "verify:assets": "node scripts/verify-assets-consistency.cjs",
     "verify:ci": "node scripts/verify-ci-workflow.cjs",

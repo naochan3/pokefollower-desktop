@@ -49,6 +49,12 @@ function registerAppProtocol() {
 }
 
 function getUserDataPath() {
+  if (process.env.POKEFOLLOWER_ALLOW_TEST_USER_DATA === "1" && process.env.POKEFOLLOWER_TEST_USER_DATA_DIR) {
+    const tempRoot = process.env.TEMP || process.env.TMPDIR || process.env.TMP;
+    const testUserDataPath = path.resolve(process.env.POKEFOLLOWER_TEST_USER_DATA_DIR);
+    const testRoot = tempRoot ? path.resolve(tempRoot) : "";
+    if (testRoot && testUserDataPath.startsWith(testRoot + path.sep)) return testUserDataPath;
+  }
   if (!app.isPackaged && process.env.PF_DEV_USER_DATA_DIR) return process.env.PF_DEV_USER_DATA_DIR;
   return app.getPath("userData");
 }
