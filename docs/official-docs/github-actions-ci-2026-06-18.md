@@ -10,6 +10,8 @@
   - GitHub Docs, Keeping your actions up to date with Dependabot: https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/auto-update-actions
   - GitHub Docs, Dependabot options reference: https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference
   - `actions/setup-node` official action README: https://github.com/actions/setup-node
+  - `actions/checkout` release v5.0.0: https://github.com/actions/checkout/releases/tag/v5.0.0
+  - `actions/setup-node` release v5.0.0: https://github.com/actions/setup-node/releases/tag/v5.0.0
 
 ## Decision
 
@@ -19,6 +21,7 @@ Add `.github/workflows/ci.yml` with:
 - `permissions.contents: read` because the workflow only checks out, installs dependencies, tests, builds, and packages.
 - `concurrency` by workflow and ref to cancel stale runs on the same branch.
 - Node `22.12.0` to match the package engine floor.
+- `actions/checkout@v5` and `actions/setup-node@v5`, because GitHub Actions warned that v4 action runtimes target deprecated Node 20.
 - Dependency metadata checks that keep `package.json`, `package-lock.json`, locked tool versions, and CI Node version aligned.
 - Asset consistency checks that validate the current sprite index, pack JSON metadata, UI PNGs, Japanese names, raw animation sheet references, and direction rows.
 - CI workflow consistency checks that guard the required validation jobs and package smoke matrix from accidental removal.
@@ -64,7 +67,7 @@ Observed local verification on Windows:
 
 - `npm ci`: passed, audit reported 0 vulnerabilities.
 - `npm run verify:assets`: passed for the current 493-entry Gen 1-4 asset set.
-- `npm run verify:ci`: passed, confirming the workflow still contains the expected static checks, unit tests, WASM stale check, package smoke matrix, extracted fullscreen/frame-routing/pack-reader regression test files, dependency metadata, Electron security plus hygiene/IPC/overlay/roadmap/runtime/settings/WASM guard verifiers, weekly npm/GitHub Actions Dependabot config, and that `verify:local` bundles all static gates plus `npm test`.
+- `npm run verify:ci`: passed, confirming the workflow still contains the expected static checks, unit tests, WASM stale check, package smoke matrix, `actions/checkout@v5`, `actions/setup-node@v5`, extracted fullscreen/frame-routing/pack-reader regression test files, dependency metadata, Electron security plus hygiene/IPC/overlay/roadmap/runtime/settings/WASM guard verifiers, weekly npm/GitHub Actions Dependabot config, and that `verify:local` bundles all static gates plus `npm test`.
 - `npm run verify:docs`: passed after updating README / STATUS to v1.0.2 and adding guards for stale Windows installer examples plus RELEASING link-rule drift.
 - `npm run verify:local`: passed locally as the bundled non-runtime validation entrypoint (`verify:assets`, `verify:ci`, `verify:deps`, `verify:docs`, `verify:electron`, `verify:hygiene`, `verify:installer`, `verify:ipc`, `verify:overlay`, `verify:platform`, `verify:roadmap`, `verify:runtime`, `verify:settings`, `verify:signing`, `verify:wasm`, `npm test`).
 - `npm run verify:platform`: passed, confirming docs and code still describe fullscreen detection as Windows-only and Linux as AppImage-build-only / runtime-unverified.

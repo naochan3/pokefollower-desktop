@@ -29,6 +29,8 @@ for (const trigger of ["pull_request:", "push:", "workflow_dispatch:"]) {
 expectIncludes("minimum permissions", "contents: read");
 expectIncludes("concurrency", "cancel-in-progress: true");
 expectIncludes("node version", 'NODE_VERSION: "22.12.0"');
+expectIncludes("checkout action", "uses: actions/checkout@v5");
+expectIncludes("setup-node action", "uses: actions/setup-node@v5");
 
 expectDependabotIncludes("version", "version: 2");
 expectDependabotIncludes("npm ecosystem", 'package-ecosystem: "npm"');
