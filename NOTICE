@@ -1,0 +1,17 @@
+PokéFollower Desktop — asset notice / 素材に関する注意
+
+The MIT License (see the LICENSE file) covers the SOURCE CODE of this project
+only. The following bundled materials are NOT covered by the MIT License and
+remain the property of their respective owners:
+
+- Pokémon sprites under assets/ (provided by PMD Collab / Pokémon DB)
+- Pokémon names and the bundled Japanese name data
+- The Poké Ball / monster-ball icons and any other Pokémon-related imagery
+
+Pokémon and all related names and characters are trademarks of
+Nintendo / Creatures Inc. / GAME FREAK inc.
+
+本プロジェクトは非商用の個人的ファン制作物です。同梱した Pokémon 素材の
+再配布・商用利用は、各権利者の権利を侵害する可能性があります。素材は各提供元
+の規約に従って扱ってください。詳細は README.md の「クレジット・権利表記」
+「ライセンス」を参照。
