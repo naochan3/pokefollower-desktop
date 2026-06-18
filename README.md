@@ -3,7 +3,7 @@
 マウスカーソルをポケモンが追いかけてくる、Windows / macOS / Linux 向けのデスクトップマスコットです。
 ブラウザ拡張 [pokefollower_cursor_web_plugin](https://github.com/ThinkrDoer/pokefollower_cursor_web_plugin) を、デスクトップ全体で動くアプリ（Electron）に作り変えたものです。
 
-> スクリーンショットは後で `docs/` などに置いて、ここに貼ると見栄えが良くなります。
+開発状況・ロードマップは [docs/STATUS.md](docs/STATUS.md)、リリース手順は [RELEASING.md](RELEASING.md) を参照してください。
 
 ---
 
@@ -63,7 +63,7 @@
 
 ## インストール（使う人向け）
 
-上の [ダウンロード](#ダウンロードwindows) からインストーラを取得してダブルクリックするだけです（ワンクリック型なので選択画面なし→自動でインストール→起動→トレイ常駐）。インストール後はログイン時に自動起動し、初回から有効（ポケモンが表示）の状態です。
+上の [ダウンロード](#ダウンロード) からインストーラを取得してダブルクリックするだけです（ワンクリック型なので選択画面なし→自動でインストール→起動→トレイ常駐）。インストール後はログイン時に自動起動し、初回から有効（ポケモンが表示）の状態です。
 
 > 自分でソースからビルドする場合は後述の [ビルド](#ビルド配布物の作成) を参照（`release/` に生成されます）。
 
@@ -114,11 +114,13 @@ npm run dist:mac
 npm run dist:linux
 ```
 
-生成物：`release/PokeFollower Setup 1.0.0.exe`
+生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.0.1.exe`）
 
-macOS 生成物：`release/PokeFollower-1.0.0-arm64.dmg` / `release/PokeFollower-1.0.0-arm64-mac.zip` など（実行環境の CPU により変わります）。
+macOS 生成物：`release/PokeFollower-<version>-arm64.dmg` / `release/PokeFollower-<version>-arm64-mac.zip` など（実行環境の CPU により変わります）。
 
-Linux 生成物：`release/PokeFollower-1.0.0.AppImage` など。
+Linux 生成物：`release/PokeFollower-<version>.AppImage` など。
+
+> 配布物を Release に上げる手順・担当・アセット命名規則は [RELEASING.md](RELEASING.md) にまとめています。
 
 ---
 
@@ -128,7 +130,7 @@ Linux 生成物：`release/PokeFollower-1.0.0.AppImage` など。
 
 | 部品 | 役割 |
 |---|---|
-| メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（約60fps）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
+| メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（更新間隔 8ms ≒ 最大120fps）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
 | 追従シム（`src/main/follower-sim.js`） | 追従とアニメーションの計算（グローバル座標）。DOM 非依存・テスト可能 |
 | Rust 追従コア（`crates/follower_core/`） | 追従位置計算の本体。WASM として `native/pokefollower_core.wasm` にビルドされ、Electron 実行時に読み込まれる |
 | オーバーレイ窓（`src/overlay/`） | **モニターごとに1枚**常設。透明・最前面・クリック透過。メインから受け取ったローカル座標でスプライトを描くだけ |
@@ -156,16 +158,22 @@ pokefollower-desktop/
 │  │  ├─ overlay.html / overlay.js / overlay-preload.js
 │  └─ settings/              # 設定ウィンドウ
 │     ├─ settings.html / settings.js / settings-preload.js
+├─ crates/follower_core/     # Rust 追従コア（→ WASM）
+├─ native/                   # ビルド済み WASM（pokefollower_core.wasm）
 ├─ assets/                   # スプライト・アイコン・UI素材・日本語名データ
 ├─ tests/                    # Vitest 単体テスト
-├─ docs/superpowers/         # 設計書・実装計画
+├─ docs/
+│  ├─ STATUS.md              # 計画 vs 現状・ロードマップ
+│  └─ superpowers/           # 設計書・実装計画
+├─ RELEASING.md              # リリース手順
 └─ package.json
 ```
 
 ## 技術スタック
 
 - [Electron](https://www.electronjs.org/) — デスクトップアプリ本体
-- [electron-builder](https://www.electron.build/) — Windows インストーラ（NSIS）生成
+- [electron-builder](https://www.electron.build/) — 各 OS の配布物生成（Windows NSIS / macOS dmg・zip / Linux AppImage）
+- [Rust](https://www.rust-lang.org/) → WebAssembly — 追従位置計算のコア（`crates/follower_core/`）
 - [Vitest](https://vitest.dev/) — 単体テスト
 
 ---
