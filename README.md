@@ -78,9 +78,14 @@ npm start
 # 単体テスト（Vitest）
 npm test
 
-# Rust 版追従コアの同等性テスト
+# Rust 版追従コアの同等性テスト（cargo が必要）
 npm run test:rust
+
+# Rust コアを変更したとき：WASM を再ビルドして native/ に反映（cargo + wasm32-unknown-unknown ターゲットが必要）
+npm run build:rust
 ```
+
+> 追従計算は Rust→WASM（`native/pokefollower_core.wasm`）をリポジトリに同梱済みです。`npm test` / `npm run dist` は同梱済みの WASM をそのまま使うため、**Rust ツールチェーン無しでも動きます**。Rust ソース（`crates/follower_core/`）を変更したときだけ `npm run build:rust` で再生成してコミットしてください。
 
 > `npm start` は起動時のコードを読み込んだまま動きます（自動リロードなし）。コードを変えたら一度終了して起動し直してください。
 
