@@ -1,4 +1,4 @@
-const { app, BrowserWindow, protocol, net, screen, ipcMain, Tray, Menu, nativeImage } = require("electron");
+const { app, BrowserWindow, protocol, net, screen, ipcMain, Tray, Menu, nativeImage, powerMonitor } = require("electron");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
 const fs = require("node:fs");
@@ -9,6 +9,7 @@ const { frameForOverlay } = require("./frame-routing.js");
 const { getForegroundInfo } = require("./fullscreen-detect.js");
 const { isFullscreenForeground } = require("./fullscreen-policy.js");
 const { resolveAppProtocolPath } = require("./app-protocol-path.js");
+const { getSimIntervalMs } = require("./sim-loop-config.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -21,9 +22,9 @@ let tray = null;
 let currentMeta = null;
 let enabled = false;
 let simTimer = null;
+let simIntervalMs = null;
 let lastStepTs = 0;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
-const SIM_INTERVAL_MS = 8;
 
 const TRAY_ICON_SIZE_PX = 28;
 function checkFullscreen() {
@@ -104,18 +105,34 @@ function broadcastFrame(render) {
   }
 }
 
+function readBatteryState() {
+  try { return powerMonitor.isOnBatteryPower(); }
+  catch (_) { return false; }
+}
+
+function runSimFrame() {
+  const now = Date.now();
+  const dt = now - lastStepTs;
+  lastStepTs = now;
+  if (!enabled || fullscreenActive) { broadcastFrame(null); return; }
+  const cursor = screen.getCursorScreenPoint(); // グローバル座標
+  sim.updateCursor(cursor.x, cursor.y, now);
+  broadcastFrame(sim.step(dt, now));
+}
+
 function startSimLoop() {
   if (simTimer) return;
   lastStepTs = Date.now();
-  simTimer = setInterval(() => {
-    const now = Date.now();
-    const dt = now - lastStepTs;
-    lastStepTs = now;
-    if (!enabled || fullscreenActive) { broadcastFrame(null); return; }
-    const cursor = screen.getCursorScreenPoint(); // グローバル座標
-    sim.updateCursor(cursor.x, cursor.y, now);
-    broadcastFrame(sim.step(dt, now));
-  }, SIM_INTERVAL_MS);
+  simIntervalMs = getSimIntervalMs({ isOnBattery: readBatteryState() });
+  simTimer = setInterval(runSimFrame, simIntervalMs);
+}
+
+function refreshSimLoopInterval() {
+  const next = getSimIntervalMs({ isOnBattery: readBatteryState() });
+  if (!simTimer || next === simIntervalMs) return;
+  clearInterval(simTimer);
+  simTimer = null;
+  startSimLoop();
 }
 
 function setEnabled(on) {
@@ -214,6 +231,8 @@ app.whenReady().then(() => {
   screen.on("display-added", buildOverlays);
   screen.on("display-removed", buildOverlays);
   screen.on("display-metrics-changed", buildOverlays);
+  powerMonitor.on("on-ac", refreshSimLoopInterval);
+  powerMonitor.on("on-battery", refreshSimLoopInterval);
 
   startSimLoop();
   setInterval(checkFullscreen, 600); // 全画面アプリ検知（約0.6秒間隔）

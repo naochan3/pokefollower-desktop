@@ -110,10 +110,12 @@ for (const [scriptName, scriptCommand] of [
 for (const file of [
   "src/main/frame-routing.js",
   "src/main/fullscreen-policy.js",
+  "src/main/sim-loop-config.js",
   "tests/frame-routing.test.js",
   "tests/fullscreen-policy.test.js",
   "tests/pack-reader.test.js",
   "tests/rust-follower-core.test.js",
+  "tests/sim-loop-config.test.js",
   "scripts/bench-dev-runtime.cjs",
   "scripts/bench-pack-list.cjs",
   "scripts/verify-dependency-metadata.cjs",

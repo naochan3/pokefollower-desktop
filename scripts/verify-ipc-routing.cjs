@@ -25,7 +25,7 @@ function extractFunctionBody(source, functionName) {
 const buildOverlays = extractFunctionBody(main, "buildOverlays");
 const broadcastFrame = extractFunctionBody(main, "broadcastFrame");
 const loadPackIntoSim = extractFunctionBody(main, "loadPackIntoSim");
-const startSimLoop = extractFunctionBody(main, "startSimLoop");
+const runSimFrame = extractFunctionBody(main, "runSimFrame") || extractFunctionBody(main, "startSimLoop");
 
 expect(/const \{ frameForOverlay \} = require\("\.\/frame-routing\.js"\);/.test(main), "main.js must use frame-routing helper");
 expect(/visible: false/.test(buildOverlays), "new overlay records must start hidden");
@@ -36,9 +36,9 @@ expect(/if \(o\.visible\) \{[\s\S]*?webContents\.send\("frame", frame\)[\s\S]*?o
 expect(/continue;/.test(broadcastFrame), "broadcastFrame must continue after invisible-frame handling");
 expect(/webContents\.send\("frame", frame\);[\s\S]*?o\.visible = true;/.test(broadcastFrame), "broadcastFrame must send visible frames and mark overlay visible");
 expect(/webContents\.send\("meta", meta\)/.test(loadPackIntoSim), "loadPackIntoSim must broadcast meta to existing overlays");
-expect(/if \(!enabled \|\| fullscreenActive\) \{ broadcastFrame\(null\); return; \}/.test(startSimLoop), "sim loop must hide overlays when disabled or fullscreen-active");
+expect(/if \(!enabled \|\| fullscreenActive\) \{ broadcastFrame\(null\); return; \}/.test(runSimFrame), "sim loop must hide overlays when disabled or fullscreen-active");
 expect(
-  startSimLoop.indexOf("if (!enabled || fullscreenActive)") < startSimLoop.indexOf("screen.getCursorScreenPoint()"),
+  runSimFrame.indexOf("if (!enabled || fullscreenActive)") < runSimFrame.indexOf("screen.getCursorScreenPoint()"),
   "sim loop must avoid cursor polling while disabled or fullscreen-active",
 );
 

@@ -33,10 +33,13 @@
     "verify:signing": "node scripts/verify-signing-status.cjs",
     "verify:wasm": "node scripts/verify-wasm-artifact.cjs",
     "test:rust": "cargo test --manifest-path crates/follower_core/Cargo.toml",
+    "bench:sim": "node scripts/bench-sim-interval.cjs",
     "build:rust": "cargo build --manifest-path crates/follower_core/Cargo.toml --release --target wasm32-unknown-unknown && node scripts/copy-rust-core.cjs",
     "dist": "electron-builder --win --x64",
     "dist:win": "electron-builder --win --x64",
+    "dist:win:signed": "electron-builder --win --x64 --config electron-builder.signed.cjs",
     "dist:mac": "electron-builder --mac",
+    "dist:mac:signed": "electron-builder --mac --config electron-builder.signed.cjs",
     "dist:linux": "electron-builder --linux"
   },
   "devDependencies": {
