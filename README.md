@@ -1,6 +1,6 @@
 # PokéFollower Desktop
 
-マウスカーソルをポケモンが追いかけてくる、Windows 常駐のデスクトップマスコットです。
+マウスカーソルをポケモンが追いかけてくる、Windows / macOS / Linux 向けのデスクトップマスコットです。
 ブラウザ拡張 [pokefollower_cursor_web_plugin](https://github.com/ThinkrDoer/pokefollower_cursor_web_plugin) を、デスクトップ全体で動くアプリ（Electron）に作り変えたものです。
 
 > スクリーンショットは後で `docs/` などに置いて、ここに貼ると見栄えが良くなります。
@@ -35,8 +35,10 @@
 
 ### 既知の制限
 
-- **Windows 専用**（ビルド・挙動とも）。macOS / Linux は未対応。
-- 全画面の判定は「前面ウィンドウがモニター全体を覆っているか」で行うため、ブラウザを `F11` で全画面にした場合もゲーム同様に隠れます（通常の最大化では出たまま）。
+- macOS 版はビルド対応済みですが、未署名・未公証です。配布する場合は Developer ID で署名し、公証してください。
+- Linux 版は AppImage のビルド対応までです。デスクトップ環境ごとの常駐・透明オーバーレイ挙動は追加検証が必要です。
+- 全画面の自動判定は Windows のみ対応です。macOS / Linux では全画面アプリ上でも自動非表示にはなりません。
+- Windows の全画面判定は「前面ウィンドウがモニター全体を覆っているか」で行うため、ブラウザを `F11` で全画面にした場合もゲーム同様に隠れます（通常の最大化では出たまま）。
 - モニターごとに表示スケール（DPI）が大きく異なる構成では、位置がわずかにずれる可能性があります。
 
 ---
@@ -44,6 +46,8 @@
 ## 動作環境
 
 - Windows 10 / 11（x64）
+- macOS（Apple Silicon / Intel）
+- Linux（AppImage）
 
 ## インストール（使う人向け）
 
@@ -73,6 +77,9 @@ npm start
 
 # 単体テスト（Vitest）
 npm test
+
+# Rust 版追従コアの同等性テスト
+npm run test:rust
 ```
 
 > `npm start` は起動時のコードを読み込んだまま動きます（自動リロードなし）。コードを変えたら一度終了して起動し直してください。
@@ -82,9 +89,19 @@ npm test
 ```bash
 # Windows インストーラ (NSIS) を release/ に生成
 npm run dist
+
+# macOS アプリ (DMG / ZIP) を release/ に生成
+npm run dist:mac
+
+# Linux アプリ (AppImage) を release/ に生成
+npm run dist:linux
 ```
 
 生成物：`release/PokeFollower Setup 1.0.0.exe`
+
+macOS 生成物：`release/PokeFollower-1.0.0-arm64.dmg` / `release/PokeFollower-1.0.0-arm64-mac.zip` など（実行環境の CPU により変わります）。
+
+Linux 生成物：`release/PokeFollower-1.0.0.AppImage` など。
 
 ---
 
@@ -96,11 +113,15 @@ npm run dist
 |---|---|
 | メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（約60fps）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
 | 追従シム（`src/main/follower-sim.js`） | 追従とアニメーションの計算（グローバル座標）。DOM 非依存・テスト可能 |
+| Rust 追従コア（`crates/follower_core/`） | 追従位置計算の本体。WASM として `native/pokefollower_core.wasm` にビルドされ、Electron 実行時に読み込まれる |
 | オーバーレイ窓（`src/overlay/`） | **モニターごとに1枚**常設。透明・最前面・クリック透過。メインから受け取ったローカル座標でスプライトを描くだけ |
 | 設定窓（`src/settings/`） | タイル選択 UI・日本語検索・各種スライダー |
 | パック読み込み（`src/main/pack-reader.js`） | スプライト定義（パック JSON）と日本語名の読み込み |
+| 全画面検知（`src/main/fullscreen-detect.js`） | Windows の前面ウィンドウ判定。macOS では no-op として動作 |
 
 **なぜこの設計か**：当初は「1枚の窓をカーソルの居るモニターへワープさせる」方式でしたが、境界越えで位置が跳ねる・逆走するなどの問題が構造的に発生しました。ポケモンをグローバル座標で連続的に動かし、各モニター窓が自分の領域分だけ描く方式に作り変えることで、境界をなめらかに越えられるようになっています。詳細は `docs/superpowers/specs/` の設計書を参照。
+
+マルチモニター時は、スプライトが実際に交差するモニター窓だけへフレームを送り、他の窓には表示状態が変わる時だけ hide を送ります。オーバーレイ側もスプライト画像 URL やサイズ指定をキャッシュし、毎フレームの DOM 更新と GC 負荷を抑えています。
 
 ### プロジェクト構成
 

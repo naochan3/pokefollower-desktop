@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Defaults align with current content.js constants
   const DEFAULTS = {
     vcp1_scale: 1.25,   // SCALE
-    vcp1_offset: 30,    // OFFSET_PX
+    vcp1_offset: 70,    // OFFSET_PX
     vcp1_lerp: 0.20     // LERP_ALPHA (lower = floatier/slower follow)
   };
 

@@ -20,11 +20,13 @@ let enabled = false;
 let simTimer = null;
 let lastStepTs = 0;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
+const SIM_INTERVAL_MS = 8;
 
 // 前面ウィンドウがいずれかのモニター全体を覆っていれば「全画面」とみなす。
 // 最大化（Chrome等）は作業領域までなので一致せず、隠れない。
 // デスクトップ/タスクバー等のシェル窓は画面全体サイズだが全画面アプリではない
 const SHELL_CLASSES = new Set(["Progman", "WorkerW", "Shell_TrayWnd", "Shell_SecondaryTrayWnd", ""]);
+const TRAY_ICON_SIZE_PX = 28;
 function checkFullscreen() {
   const info = getForegroundInfo();
   if (!info || SHELL_CLASSES.has(info.cls)) { fullscreenActive = false; return; }
@@ -78,7 +80,7 @@ function createOverlayWindow(display) {
 
 function buildOverlays() {
   for (const o of overlays) { if (o.win && !o.win.isDestroyed()) o.win.destroy(); }
-  overlays = screen.getAllDisplays().map((d) => ({ win: createOverlayWindow(d), bounds: d.bounds }));
+  overlays = screen.getAllDisplays().map((d) => ({ win: createOverlayWindow(d), bounds: d.bounds, visible: false }));
 }
 
 function loadPackIntoSim(packKey) {
@@ -93,9 +95,16 @@ function loadPackIntoSim(packKey) {
 
 // ポケモンのグローバル座標を、各モニター窓のローカル座標に変換して配信
 function broadcastFrame(render) {
+  const spriteBounds = render ? spriteGlobalBounds(render) : null;
   for (const o of overlays) {
     if (!o.win || o.win.isDestroyed()) continue;
-    if (!render) { o.win.webContents.send("frame", { visible: false }); continue; }
+    if (!render || !intersects(o.bounds, spriteBounds)) {
+      if (o.visible) {
+        o.win.webContents.send("frame", { visible: false });
+        o.visible = false;
+      }
+      continue;
+    }
     o.win.webContents.send("frame", {
       visible: true,
       x: render.x - o.bounds.x,
@@ -105,7 +114,29 @@ function broadcastFrame(render) {
       row: render.row,
       scale: render.scale,
     });
+    o.visible = true;
   }
+}
+
+function spriteGlobalBounds(render) {
+  const st = currentMeta && currentMeta.states ? currentMeta.states[render.state] : null;
+  const frame = st && st.frame ? st.frame : { w: 96, h: 96 };
+  const halfW = (frame.w * render.scale) / 2;
+  const halfH = (frame.h * render.scale) / 2;
+  return {
+    x: render.x - halfW,
+    y: render.y - halfH,
+    width: halfW * 2,
+    height: halfH * 2,
+  };
+}
+
+function intersects(a, b) {
+  return !!a && !!b &&
+    a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y;
 }
 
 function startSimLoop() {
@@ -120,7 +151,7 @@ function startSimLoop() {
     // 無効化中 or 前面が全画面アプリ（ゲーム等）なら隠す
     if (!enabled || fullscreenActive) { broadcastFrame(null); return; }
     broadcastFrame(sim.step(dt, now));
-  }, 16);
+  }, SIM_INTERVAL_MS);
 }
 
 function setEnabled(on) {
@@ -148,7 +179,9 @@ function getSettingsWin() {
 }
 
 function buildTray() {
-  const icon = nativeImage.createFromPath(path.join(ROOT, "assets", "icons", "pokeball-32.png"));
+  const icon = nativeImage
+    .createFromPath(path.join(ROOT, "assets", "icons", "pokeball-32.png"))
+    .resize({ width: TRAY_ICON_SIZE_PX, height: TRAY_ICON_SIZE_PX });
   tray = new Tray(icon);
   tray.setToolTip("PokéFollower");
   refreshTrayMenu();

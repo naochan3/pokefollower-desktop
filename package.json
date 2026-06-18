@@ -2,12 +2,18 @@
   "name": "pokefollower-desktop",
   "version": "1.0.0",
   "description": "カーソルを追うポケモンのデスクトップ常駐マスコット (Electron)",
+  "author": "naochan3",
   "main": "src/main/main.js",
   "type": "commonjs",
   "scripts": {
     "start": "electron .",
-    "test": "vitest run",
-    "dist": "electron-builder --win"
+    "test": "npm run build:rust && vitest run",
+    "test:rust": "cargo test --manifest-path crates/follower_core/Cargo.toml",
+    "build:rust": "cargo build --manifest-path crates/follower_core/Cargo.toml --release --target wasm32-unknown-unknown && node scripts/copy-rust-core.cjs",
+    "dist": "npm run build:rust && electron-builder --win --x64",
+    "dist:win": "npm run build:rust && electron-builder --win --x64",
+    "dist:mac": "npm run build:rust && electron-builder --mac",
+    "dist:linux": "npm run build:rust && electron-builder --linux"
   },
   "devDependencies": {
     "electron": "^31.0.0",
@@ -23,16 +29,33 @@
     "files": [
       "src/**/*",
       "assets/**/*",
+      "native/**/*",
       "package.json"
     ],
     "asarUnpack": [
       "**/node_modules/koffi/**",
       "**/node_modules/@koromix/**"
     ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.entertainment",
+      "icon": "assets/icons/PokeFollower.icns"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Game",
+      "icon": "assets/icons/pokeball-256.png"
+    },
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "icon": "assets/icons/pokeball-256.png"
     },
     "nsis": {
       "oneClick": true,
