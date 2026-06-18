@@ -2,11 +2,11 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const root = path.join(__dirname, "..");
+const targetDir = process.env.CARGO_TARGET_DIR
+  ? path.resolve(root, process.env.CARGO_TARGET_DIR)
+  : path.join(root, "crates", "follower_core", "target");
 const source = path.join(
-  root,
-  "crates",
-  "follower_core",
-  "target",
+  targetDir,
   "wasm32-unknown-unknown",
   "release",
   "pokefollower_core.wasm",

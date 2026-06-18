@@ -18,6 +18,14 @@ describe("app-protocol-path", () => {
     expect(resolveAppProtocolPath(root, "app://bundle/assets/%2e%2e/%2e%2e/secret.txt")).toBe(null);
   });
 
+  it("assets配下ではないroot内ファイルを拒否する", () => {
+    expect(resolveAppProtocolPath(root, "app://bundle/package.json")).toBe(null);
+  });
+
+  it("assetsに似たprefixの別ディレクトリを拒否する", () => {
+    expect(resolveAppProtocolPath(root, "app://bundle/assets-other/025-pikachu.png")).toBe(null);
+  });
+
   it("root境界のprefix一致だけでは許可しない", () => {
     expect(isInsideRoot(root, resolve("/tmp/pokefollower-root-other/file.txt"))).toBe(false);
   });

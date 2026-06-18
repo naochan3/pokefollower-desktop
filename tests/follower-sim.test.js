@@ -1,4 +1,7 @@
 import { describe, it, expect } from "vitest";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { createFollowerSim } from "../src/main/follower-sim.js";
 
 const META = {
@@ -13,6 +16,47 @@ describe("follower-sim", () => {
   it("Rust WASM backend を追従計算に使う", () => {
     const sim = createFollowerSim();
     expect(sim.backend()).toBe("rust-wasm");
+  });
+
+  it("WASM が無い場合は JS backend にfallbackして step できる", () => {
+    const missingRoot = mkdtempSync(join(tmpdir(), "pf-no-wasm-sim-"));
+    const sim = createFollowerSim({ rootDir: missingRoot });
+    expect(sim.backend()).toBe("js");
+    sim.setMeta(META);
+    sim.resetTo(0, 0, 0);
+    sim.updateCursor(800, 0, 16);
+    const r = sim.step(16, 16);
+    expect(r).toMatchObject({ state: "idle" });
+    expect(Number.isFinite(r.x)).toBe(true);
+    expect(Number.isFinite(r.y)).toBe(true);
+  });
+
+  it("固定カーソル軌道で Rust WASM と JS fallback の出力が一致する", () => {
+    const rust = createFollowerSim();
+    const js = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-eq-")) });
+    for (const sim of [rust, js]) {
+      sim.setMeta(META);
+      sim.setConfig({ vcp1_offset: 70, vcp1_lerp: 0.2 });
+      sim.resetTo(100, 100, 0);
+    }
+
+    expect(rust.backend()).toBe("rust-wasm");
+    expect(js.backend()).toBe("js");
+
+    for (let i = 1; i <= 240; i++) {
+      const now = i * 16;
+      const x = 400 + Math.sin(i / 20) * 180;
+      const y = 300 + Math.cos(i / 25) * 120;
+      rust.updateCursor(x, y, now);
+      js.updateCursor(x, y, now);
+      const r = rust.step(16, now);
+      const j = js.step(16, now);
+      expect(r.x).toBeCloseTo(j.x, 10);
+      expect(r.y).toBeCloseTo(j.y, 10);
+      expect(r.state).toBe(j.state);
+      expect(r.frame).toBe(j.frame);
+      expect(r.row).toBe(j.row);
+    }
   });
 
   it("meta未設定なら step は null", () => {
