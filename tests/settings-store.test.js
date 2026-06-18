@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createSettingsStore, DEFAULTS, LIMITS, sanitize } from "../src/main/settings-store.js";
+import { createSettingsStore, DEFAULTS, LIMITS, sanitize, hasStateChange } from "../src/main/settings-store.js";
 
 describe("settings-store", () => {
   let dir, file;
@@ -81,6 +81,27 @@ describe("settings-store", () => {
     const store = createSettingsStore(file);
     store.set(null);
     expect(store.getAll()).toEqual(DEFAULTS);
+  });
+
+  it("同値または無効patchでは永続化を省略する", () => {
+    let writes = 0;
+    const fileSystem = {
+      readFileSync: () => { throw new Error("missing"); },
+      writeFileSync: () => { writes += 1; },
+    };
+    const store = createSettingsStore(file, fileSystem);
+    store.set(null);
+    store.set({ scale: "abc", pack: "../secret" });
+    store.set({ scale: DEFAULTS.scale });
+    expect(writes).toBe(0);
+    store.set({ scale: 2 });
+    expect(writes).toBe(1);
+  });
+
+  it("hasStateChangeは実効差分だけを検出する", () => {
+    expect(hasStateChange(DEFAULTS, {})).toBe(false);
+    expect(hasStateChange(DEFAULTS, { scale: DEFAULTS.scale })).toBe(false);
+    expect(hasStateChange(DEFAULTS, { scale: 2 })).toBe(true);
   });
 
   it("enabledはbooleanとして保存する", () => {

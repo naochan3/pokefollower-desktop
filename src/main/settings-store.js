@@ -38,26 +38,32 @@ function sanitize(patch) {
   return out;
 }
 
-function createSettingsStore(filePath) {
+function hasStateChange(state, patch) {
+  return Object.entries(patch).some(([key, value]) => state[key] !== value);
+}
+
+function createSettingsStore(filePath, fileSystem = fs) {
   let state = { ...DEFAULTS };
   try {
-    const raw = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const raw = JSON.parse(fileSystem.readFileSync(filePath, "utf8"));
     state = { ...DEFAULTS, ...sanitize(raw) };
   } catch (_) {
     state = { ...DEFAULTS };
   }
   function persist() {
-    fs.writeFileSync(filePath, JSON.stringify(state, null, 2), "utf8");
+    fileSystem.writeFileSync(filePath, JSON.stringify(state, null, 2), "utf8");
   }
   return {
     getAll: () => ({ ...state }),
     get: (key) => state[key],
     set: (patch) => {
-      state = { ...state, ...sanitize(patch) };
+      const next = sanitize(patch);
+      if (!hasStateChange(state, next)) return { ...state };
+      state = { ...state, ...next };
       persist();
       return { ...state };
     },
   };
 }
 
-module.exports = { createSettingsStore, DEFAULTS, LIMITS, sanitize };
+module.exports = { createSettingsStore, DEFAULTS, LIMITS, sanitize, hasStateChange };
