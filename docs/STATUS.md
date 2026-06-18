@@ -58,7 +58,7 @@
 | 項目 | 優先度 | issue | メモ |
 |---|---|---|---|
 | **全ポケモン対応（第5〜9世代の追加）** | 中 | [#14](https://github.com/naochan3/pokefollower-desktop/issues/14) | 現状は493種（〜第4世代）。スプライト素材と日本語名データの拡張が必要 |
-| 追従更新間隔 8ms→16ms の見直し | 中 | [#15](https://github.com/naochan3/pokefollower-desktop/issues/15) | 120fps狙いの 8ms は CPU/電力増。Windows のタイマ精度的に効果が薄い可能性。要計測 |
+| 追従更新間隔 8ms→16ms の見直し | 中 | [#15](https://github.com/naochan3/pokefollower-desktop/issues/15) | 既定は16msへ軽量化済み。8ms は `POKEFOLLOWER_SIM_INTERVAL_MS=8` で明示指定可。実機の滑らかさ/電力は継続計測 |
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
 | macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | 現状 Windows のみ。OS別の前面ウィンドウ検知が必要 |
 

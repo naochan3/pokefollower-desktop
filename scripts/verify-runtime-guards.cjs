@@ -49,8 +49,9 @@ expect(/powerMonitor/.test(main), "main.js must use powerMonitor for AC/battery 
 expect(/getSimIntervalMs\(\{ isOnBattery: readBatteryState\(\) \}\)/.test(main), "main.js must use sim-loop-config for interval selection");
 expect(/powerMonitor\.on\("on-ac", refreshSimLoopInterval\)/.test(main), "main.js must refresh sim interval on AC power");
 expect(/powerMonitor\.on\("on-battery", refreshSimLoopInterval\)/.test(main), "main.js must refresh sim interval on battery power");
-expect(simLoopConfig.DEFAULT_AC_INTERVAL_MS === 8, "AC sim interval must default to 8ms");
+expect(simLoopConfig.DEFAULT_AC_INTERVAL_MS === 16, "AC sim interval must default to 16ms");
 expect(simLoopConfig.DEFAULT_BATTERY_INTERVAL_MS === 16, "battery sim interval must default to 16ms");
+expect(simLoopConfig.getSimIntervalMs({ env: { POKEFOLLOWER_SIM_INTERVAL_MS: "8" }, isOnBattery: false }) === 8, "8ms sim interval override must work");
 expect(simLoopConfig.getSimIntervalMs({ env: { POKEFOLLOWER_SIM_INTERVAL_MS: "12" }, isOnBattery: true }) === 12, "sim interval env override must work");
 expect(DEFAULTS.offset === 70, "settings-store DEFAULTS.offset must be 70");
 expect(/offset: 70/.test(sim), "follower-sim default offset must be 70");

@@ -16,7 +16,7 @@ expect(status.includes("現在含まれているもの（v1.0.2）"), "STATUS mu
 
 for (const issue of [
   ["#14", "全ポケモン対応（第5〜9世代の追加）", "現状は493種（〜第4世代）"],
-  ["#15", "追従更新間隔 8ms→16ms の見直し", "要計測"],
+  ["#15", "追従更新間隔 8ms→16ms の見直し", "既定は16msへ軽量化済み"],
   ["#16", "配布物の署名・公証（Win/Mac）", "SmartScreen / Gatekeeper"],
   ["#17", "macOS / Linux の全画面自動非表示・Linux 実機検証", "現状 Windows のみ"],
 ]) {
