@@ -7,7 +7,9 @@
 
 ---
 
-## ダウンロード（Windows）
+## ダウンロード
+
+### Windows
 
 **[→ PokeFollower-Setup.exe をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/latest/download/PokeFollower-Setup.exe)**
 
@@ -16,7 +18,17 @@
 3. タスクトレイ（画面右下）のモンスターボールを右クリックで、設定 / 有効・無効 / 終了
 
 > - 未署名のため、初回は Windows SmartScreen が「WindowsによってPCが保護されました」と表示することがあります。その場合は「詳細情報」→「実行」で進めてください。
-> - 最新版は常に[リリースページ](https://github.com/naochan3/pokefollower-desktop/releases/latest)から取得できます（上のリンクも常に最新を指します）。
+
+### macOS（Apple Silicon）
+
+**[→ .dmg をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/latest/download/PokeFollower-1.0.0-arm64.dmg)** ／ **[.zip](https://github.com/naochan3/pokefollower-desktop/releases/latest/download/PokeFollower-1.0.0-arm64-mac.zip)**
+
+1. `.dmg` を開いて `PokeFollower.app` を Applications にドラッグ
+2. 初回は**未署名・未公証のため Gatekeeper にブロックされます**。`システム設定 → プライバシーとセキュリティ` で「このまま開く」を選ぶか、アプリを右クリック →「開く」で実行してください。
+
+> - macOS 版は contributor がビルドした Apple Silicon（arm64）向けバイナリです。全画面アプリの自動非表示は Windows のみ対応（macOS では効きません）。
+
+> 最新版は常に[リリースページ](https://github.com/naochan3/pokefollower-desktop/releases/latest)から取得できます（上のリンクも常に最新を指します）。
 
 ---
 

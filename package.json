@@ -1,6 +1,6 @@
 {
   "name": "pokefollower-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "カーソルを追うポケモンのデスクトップ常駐マスコット (Electron)",
   "author": "naochan3",
   "main": "src/main/main.js",
