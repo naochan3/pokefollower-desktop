@@ -3,8 +3,10 @@ const path = require("node:path");
 
 const root = path.join(__dirname, "..");
 const workflowPath = path.join(root, ".github", "workflows", "ci.yml");
+const dependabotPath = path.join(root, ".github", "dependabot.yml");
 const packagePath = path.join(root, "package.json");
 const workflow = fs.readFileSync(workflowPath, "utf8");
+const dependabot = fs.readFileSync(dependabotPath, "utf8");
 const pkg = JSON.parse(fs.readFileSync(packagePath, "utf8"));
 const errors = [];
 
@@ -16,6 +18,10 @@ function expectFile(relativePath) {
   if (!fs.existsSync(path.join(root, relativePath))) errors.push(`required file missing: ${relativePath}`);
 }
 
+function expectDependabotIncludes(label, text) {
+  if (!dependabot.includes(text)) errors.push(`dependabot ${label} missing: ${text}`);
+}
+
 for (const trigger of ["pull_request:", "push:", "workflow_dispatch:"]) {
   expectIncludes("workflow trigger", trigger);
 }
@@ -23,6 +29,12 @@ for (const trigger of ["pull_request:", "push:", "workflow_dispatch:"]) {
 expectIncludes("minimum permissions", "contents: read");
 expectIncludes("concurrency", "cancel-in-progress: true");
 expectIncludes("node version", 'NODE_VERSION: "22.12.0"');
+
+expectDependabotIncludes("version", "version: 2");
+expectDependabotIncludes("npm ecosystem", 'package-ecosystem: "npm"');
+expectDependabotIncludes("actions ecosystem", 'package-ecosystem: "github-actions"');
+expectDependabotIncludes("root directory", 'directory: "/"');
+expectDependabotIncludes("weekly schedule", 'interval: "weekly"');
 
 for (const job of ["static-checks:", "unit-tests:", "rust-wasm-artifact:", "package-smoke:"]) {
   expectIncludes("required job", job);
@@ -108,6 +120,7 @@ for (const [scriptName, scriptCommand] of [
 }
 
 for (const file of [
+  ".github/dependabot.yml",
   "src/main/frame-routing.js",
   "src/main/fullscreen-policy.js",
   "src/main/sim-loop-config.js",
