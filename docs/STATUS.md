@@ -36,14 +36,15 @@
 - **Linux (AppImage) ビルドターゲット**（PR #11）
 - **マルチモニターの IPC 削減**（スプライトが交差する窓だけにフレーム配信）＋オーバーレイの描画キャッシュ（PR #11）
 - **`npm test` / `npm run dist` を Rust ツールチェーン非依存に**（同梱 WASM 使用）
-- **Windows 配布物に zip ターゲット追加**（PR #12・マージ済み）。`npm run dist:win` で `.exe` と `.zip` を生成。v1.0.2 以降のリリースに同梱。
+- **Windows 配布物に zip ターゲット追加**（PR #12）。`npm run dist:win` で `.exe` と `.zip` を生成。v1.0.2 リリースに同梱済み
+- **Electron セキュリティ更新**（PR #18）：Electron 31→42.4.1、`app://` を assets/ 配下に制限、レンダラ sandbox 有効化、npm audit 0件。Node >=22.12.0 必須
 
 ---
 
 ## 現在含まれているもの（v1.0.2）
 
-- Windows インストーラ / zip（Rust コア同梱、PR #11 の改善込み）
-- macOS arm64 dmg / zip（contributor ビルド）
+- Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18 の改善込み）
+- macOS arm64 dmg / zip（contributor ビルド、Electron 42 / v1.0.2）
 - ポケモン 493 種（第1〜4世代）
 - 日本語表示・日本語検索、タイル選択 UI
 - マルチモニター連続追従、全画面自動非表示（Windows）、ログイン自動起動、クリック透過
