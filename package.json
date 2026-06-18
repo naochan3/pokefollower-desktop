@@ -5,6 +5,9 @@
   "author": "naochan3",
   "main": "src/main/main.js",
   "type": "commonjs",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "start": "electron .",
     "test": "vitest run",
@@ -16,9 +19,9 @@
     "dist:linux": "electron-builder --linux"
   },
   "devDependencies": {
-    "electron": "^31.0.0",
-    "electron-builder": "^24.13.3",
-    "vitest": "^2.0.0"
+    "electron": "^42.4.1",
+    "electron-builder": "^26.15.3",
+    "vitest": "^4.1.9"
   },
   "build": {
     "appId": "com.naochan3.pokefollower",

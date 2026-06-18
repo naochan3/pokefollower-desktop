@@ -6,6 +6,7 @@ const { makePackReader } = require("./pack-reader.js");
 const { createSettingsStore } = require("./settings-store.js");
 const { createFollowerSim } = require("./follower-sim.js");
 const { getForegroundInfo } = require("./fullscreen-detect.js");
+const { resolveAppProtocolPath } = require("./app-protocol-path.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -42,9 +43,8 @@ protocol.registerSchemesAsPrivileged([
 
 function registerAppProtocol() {
   protocol.handle("app", (request) => {
-    const url = new URL(request.url);             // app://bundle/assets/...
-    const rel = decodeURIComponent(url.pathname).replace(/^\/+/, "");
-    const filePath = path.join(ROOT, rel);
+    const filePath = resolveAppProtocolPath(ROOT, request.url);
+    if (!filePath) return new Response(null, { status: 403 });
     if (!fs.existsSync(filePath)) return new Response(null, { status: 404 });
     return net.fetch(pathToFileURL(filePath).toString());
   });
@@ -67,6 +67,7 @@ function createOverlayWindow(display) {
       preload: path.join(__dirname, "..", "overlay", "overlay-preload.js"),
       contextIsolation: true,
       nodeIntegration: false,
+      sandbox: true,
     },
   });
   win.setIgnoreMouseEvents(true, { forward: true });
@@ -170,7 +171,7 @@ function getSettingsWin() {
     width: 400, height: 720, resizable: false, title: "PokéFollower 設定",
     webPreferences: {
       preload: path.join(__dirname, "..", "settings", "settings-preload.js"),
-      contextIsolation: true, nodeIntegration: false,
+      contextIsolation: true, nodeIntegration: false, sandbox: true,
     },
   });
   settingsWin.setMenuBarVisibility(false);
