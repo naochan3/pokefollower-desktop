@@ -21,7 +21,7 @@
 
 ### macOS（Apple Silicon）
 
-**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.0.2/PokeFollower-1.0.2-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.0.2/PokeFollower-1.0.2-arm64-mac.zip)）
+**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.0.3/PokeFollower-1.0.3-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.0.3/PokeFollower-1.0.3-arm64-mac.zip)）
 
 1. 上のリンクから `.dmg` をダウンロード
 2. 開いて `PokeFollower.app` を**アプリケーション**にドラッグ → 起動して**メニューバー**（画面右上）に常駐
@@ -29,6 +29,7 @@
 
 > 未署名・未公証のため、初回は Gatekeeper にブロックされます。アプリを**右クリック →「開く」**、または `システム設定 → プライバシーとセキュリティ` の「このまま開く」で実行してください。
 > （macOS 版は contributor がビルドした arm64 バイナリ。全画面アプリの自動非表示にはアクセシビリティ許可が必要な場合があります）
+> ※ v1.0.3 の macOS ビルドは contributor による添付待ちです（添付後に上記リンクが有効になります）。
 
 > 最新の配布状況は常に[リリースページ](https://github.com/naochan3/pokefollower-desktop/releases/latest)から確認できます。
 
@@ -119,7 +120,7 @@ npm run dist:mac
 npm run dist:linux
 ```
 
-生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.0.2.exe`）
+生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.0.3.exe`）
 
 macOS 生成物：`release/PokeFollower-<version>-arm64.dmg` / `release/PokeFollower-<version>-arm64-mac.zip` など（実行環境の CPU により変わります）。
 
