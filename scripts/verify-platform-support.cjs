@@ -34,12 +34,12 @@ expect(
   "fullscreen-detect should include best-effort macOS foreground detection",
 );
 expect(
-  /process\.platform === "linux"/.test(fullscreenDetect) && /xdotool/.test(fullscreenDetect) && /xprop/.test(fullscreenDetect) && /xwininfo/.test(fullscreenDetect),
+  /process\.platform === "linux"/.test(fullscreenDetect) && /xdotool/.test(fullscreenDetect) && /xprop/.test(fullscreenDetect) && !/xwininfo/.test(fullscreenDetect),
   "fullscreen-detect should include best-effort Linux foreground detection",
 );
 
 expect(
-  readme.includes("全画面の自動判定は Windows では Win32、macOS では System Events / Accessibility、Linux では `xdotool` / `xprop` / `xwininfo` が利用できる環境で動作します。"),
+  readme.includes("全画面の自動判定は Windows では Win32、macOS では System Events / Accessibility、Linux では `xdotool` / `xprop` が利用できる環境で動作します。"),
   "README must describe fullscreen auto-hide platform requirements",
 );
 expect(

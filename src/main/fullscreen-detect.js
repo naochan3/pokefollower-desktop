@@ -75,19 +75,29 @@ if (process.platform === "win32") {
 } else if (process.platform === "linux") {
   getForegroundInfo = () => {
     try {
-      const windowId = execText("xdotool", ["getactivewindow"]);
+      const geometry = execText("xdotool", ["getactivewindow", "getwindowgeometry", "--shell"]);
+      let windowId = "";
+      const windowMatch = geometry.match(/^WINDOW=(\d+)$/m);
+      if (windowMatch) {
+        windowId = windowMatch[1];
+      } else {
+        const firstLine = geometry.split(/\r?\n/).find((line) => /^\d+$/.test(line.trim()));
+        windowId = firstLine ? firstLine.trim() : "";
+      }
       if (!windowId) return null;
-      const state = execText("xprop", ["-id", windowId, "_NET_WM_STATE"]);
-      const wmClass = execText("xprop", ["-id", windowId, "WM_CLASS"]);
-      const geometry = execText("xwininfo", ["-id", windowId]);
-      const widthMatch = geometry.match(/Width:\s+(\d+)/);
-      const heightMatch = geometry.match(/Height:\s+(\d+)/);
-      const classMatch = wmClass.match(/WM_CLASS\(STRING\) = (.+)$/);
+      const props = execText("xprop", ["-id", windowId, "_NET_WM_STATE", "WM_CLASS"]);
+      const xMatch = geometry.match(/^X=(-?\d+)$/m);
+      const yMatch = geometry.match(/^Y=(-?\d+)$/m);
+      const widthMatch = geometry.match(/^WIDTH=(\d+)$/m);
+      const heightMatch = geometry.match(/^HEIGHT=(\d+)$/m);
+      const classMatch = props.match(/^WM_CLASS\(\w+\) = (.+)$/m);
       return {
         cls: classMatch ? classMatch[1] : "",
+        isFullscreen: props.includes("_NET_WM_STATE_FULLSCREEN"),
+        x: xMatch ? parseNumber(xMatch[1]) : 0,
+        y: yMatch ? parseNumber(yMatch[1]) : 0,
         w: widthMatch ? parseNumber(widthMatch[1]) : 0,
         h: heightMatch ? parseNumber(heightMatch[1]) : 0,
-        isFullscreen: state.includes("_NET_WM_STATE_FULLSCREEN"),
       };
     } catch (_) {
       return null;
