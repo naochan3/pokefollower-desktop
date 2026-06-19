@@ -62,7 +62,9 @@
     ],
     "asarUnpack": [
       "**/node_modules/koffi/**",
-      "**/node_modules/@koromix/**"
+      "**/node_modules/@koromix/**",
+      "**/native/macos-frontwindow",
+      "**/native/macos-frontwindow.swift"
     ],
     "mac": {
       "target": [

@@ -30,7 +30,7 @@ expect(
   "fullscreen-detect should keep Win32 code gated behind process.platform === \"win32\"",
 );
 expect(
-  /process\.platform === "darwin"/.test(fullscreenDetect) && /osascript/.test(fullscreenDetect),
+  /process\.platform === "darwin"/.test(fullscreenDetect) && /macos-frontwindow/.test(fullscreenDetect) && /swift/.test(fullscreenDetect),
   "fullscreen-detect should include best-effort macOS foreground detection",
 );
 expect(
