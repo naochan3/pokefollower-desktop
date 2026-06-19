@@ -1,0 +1,65 @@
+const fs = require("node:fs");
+const path = require("node:path");
+
+const root = path.join(__dirname, "..");
+const main = fs.readFileSync(path.join(root, "src", "main", "main.js"), "utf8");
+const settingsPatch = fs.readFileSync(path.join(root, "src", "main", "settings-patch.js"), "utf8");
+const errors = [];
+
+function expect(condition, message) {
+  if (!condition) errors.push(message);
+}
+
+function extractFunctionBody(source, functionName) {
+  const start = source.indexOf(`function ${functionName}`);
+  if (start < 0) return "";
+  const braceStart = source.indexOf("{", start);
+  let depth = 0;
+  for (let i = braceStart; i < source.length; i += 1) {
+    if (source[i] === "{") depth += 1;
+    if (source[i] === "}") depth -= 1;
+    if (depth === 0) return source.slice(braceStart, i + 1);
+  }
+  return "";
+}
+
+const buildOverlays = extractFunctionBody(main, "buildOverlays");
+const broadcastFrame = extractFunctionBody(main, "broadcastFrame");
+const loadPackIntoSim = extractFunctionBody(main, "loadPackIntoSim");
+const runSimFrame = extractFunctionBody(main, "runSimFrame") || extractFunctionBody(main, "startSimLoop");
+
+expect(/const \{ frameForOverlay, frameKey \} = require\("\.\/frame-routing\.js"\);/.test(main), "main.js must use frame-routing helpers");
+expect(/visible: false/.test(buildOverlays), "new overlay records must start hidden");
+expect(/lastFrameKey: "hidden"/.test(buildOverlays), "new overlay records must start with a hidden frame key");
+expect(/frameForOverlay\(render, o\.bounds, currentMeta\)/.test(broadcastFrame), "broadcastFrame must compute per-overlay frame routing");
+expect(/if \(!o\.win \|\| o\.win\.isDestroyed\(\)\) continue;/.test(broadcastFrame), "broadcastFrame must skip destroyed overlays");
+expect(/if \(!frame\.visible\)/.test(broadcastFrame), "broadcastFrame must branch on invisible frames");
+expect(/if \(o\.visible\) \{[\s\S]*?webContents\.send\("frame", frame\)[\s\S]*?o\.visible = false;[\s\S]*?\}/.test(broadcastFrame), "broadcastFrame must send a hide frame only on visible->hidden transition");
+expect(/o\.lastFrameKey = "hidden";/.test(broadcastFrame), "broadcastFrame must reset frame cache on hide");
+expect(/continue;/.test(broadcastFrame), "broadcastFrame must continue after invisible-frame handling");
+expect(/const nextFrameKey = frameKey\(frame\);/.test(broadcastFrame), "broadcastFrame must compute a stable visible frame key");
+expect(/if \(o\.visible && o\.lastFrameKey === nextFrameKey\) continue;/.test(broadcastFrame), "broadcastFrame must skip duplicate visible frames");
+expect(/webContents\.send\("frame", frame\);[\s\S]*?o\.visible = true;/.test(broadcastFrame), "broadcastFrame must send visible frames and mark overlay visible");
+expect(/o\.lastFrameKey = nextFrameKey;/.test(broadcastFrame), "broadcastFrame must remember the last visible frame key");
+expect(/webContents\.send\("meta", meta\)/.test(loadPackIntoSim), "loadPackIntoSim must broadcast meta to existing overlays");
+expect(/if \(!enabled \|\| fullscreenActive\) \{ broadcastFrame\(null\); return; \}/.test(runSimFrame), "sim loop must hide overlays when disabled or fullscreen-active");
+expect(
+  runSimFrame.indexOf("if (!enabled || fullscreenActive)") < runSimFrame.indexOf("screen.getCursorScreenPoint()"),
+  "sim loop must avoid cursor polling while disabled or fullscreen-active",
+);
+expect(/const \{ applySettingsPatch \} = require\("\.\/settings-patch\.js"\);/.test(main), "main.js must route settings IPC through settings-patch helper");
+expect(/function isSettingsSender\(event\) \{[\s\S]*event\.sender === settingsWin\.webContents[\s\S]*\}/.test(main), "main.js must bind settings IPC to the settings window webContents");
+expect(/function requireSettingsSender\(event\) \{[\s\S]*throw new Error\("unauthorized settings IPC sender"\)[\s\S]*\}/.test(main), "main.js must reject unauthorized settings invoke senders");
+expect(/ipcMain\.handle\("settings:get", \(event\) => \{[\s\S]*requireSettingsSender\(event\)[\s\S]*settingsStore\.getAll\(\)/.test(main), "settings:get IPC must require the settings window sender");
+expect(/ipcMain\.handle\("packs:list", \(event\) => \{[\s\S]*requireSettingsSender\(event\)[\s\S]*packReader\.readPackList\(\)/.test(main), "packs:list IPC must require the settings window sender");
+expect(/ipcMain\.on\("settings:set", \(event, patch\) => \{[\s\S]*if \(!isSettingsSender\(event\)\) return;[\s\S]*applySettingsPatch\(patch/.test(main), "settings:set IPC must guard sender and call applySettingsPatch");
+expect(/const safePatch = sanitize\(patch\);/.test(settingsPatch), "settings patch handling must sanitize renderer input first");
+expect(/Object\.keys\(safePatch\)\.length === 0/.test(settingsPatch), "settings patch handling must ignore empty sanitized patches");
+expect(!/"scale" in patch/.test(main), "settings:set IPC must not inspect raw renderer patch with in-operator");
+
+if (errors.length > 0) {
+  for (const error of errors) console.error(`[verify-ipc-routing] ${error}`);
+  process.exit(1);
+}
+
+console.log("[verify-ipc-routing] ok: frame IPC routing and hide-transition invariants are present");

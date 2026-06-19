@@ -1,0 +1,136 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22.12.0"
+  CARGO_TERM_COLOR: always
+
+jobs:
+  static-checks:
+    name: Static checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - run: npm run verify:assets
+      - run: npm run verify:ci
+      - run: npm run verify:deps
+      - run: npm run verify:docs
+      - run: npm run verify:electron
+      - run: npm run verify:hygiene
+      - run: npm run verify:installer
+      - run: npm run verify:ipc
+      - run: npm run verify:overlay
+      - run: npm run verify:platform
+      - run: npm run verify:roadmap
+      - run: npm run verify:runtime
+      - run: npm run verify:settings
+      - run: npm run verify:signing
+      - run: npm run verify:wasm
+
+  unit-tests:
+    name: Unit tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install Rust stable
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:rust
+
+  rust-wasm-artifact:
+    name: Rust WASM artifact consistency
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install Rust stable with WASM target
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+          rustup component add rustfmt
+          rustup target add wasm32-unknown-unknown
+
+      - run: npm ci
+      - run: cargo fmt --manifest-path crates/follower_core/Cargo.toml --check
+      - run: npm run build:rust
+      - name: Verify committed WASM is current
+        run: git diff --exit-code -- native/pokefollower_core.wasm
+
+  package-smoke:
+    name: Package smoke (${{ matrix.os }})
+    needs:
+      - static-checks
+      - unit-tests
+      - rust-wasm-artifact
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            command: npm run dist:win -- --dir
+            platform: win32
+            arch: x64
+          - os: macos-latest
+            command: npm run dist:mac -- --arm64 --dir
+            platform: darwin
+            arch: arm64
+          - os: ubuntu-latest
+            command: npm run dist:linux -- --dir
+            platform: linux
+            arch: x64
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+      - run: ${{ matrix.command }}
+      - run: node scripts/verify-package-smoke.cjs ${{ matrix.platform }} ${{ matrix.arch }}

@@ -10,6 +10,8 @@ let visible = false;
 let appliedState = "";
 let appliedSize = "";
 let appliedBgSize = "";
+let appliedFramePosition = "";
+let appliedTransform = "";
 
 function extUrl(rel) {
   return "app://bundle/" + String(rel).replace(/^\/+/, "");
@@ -39,6 +41,7 @@ function ensureEl() {
     imageRendering: "pixelated",
     backfaceVisibility: "hidden",
     willChange: "transform, background-position, background-image",
+    transformOrigin: "center center",
     display: "none",
   });
   document.documentElement.appendChild(followerEl);
@@ -60,6 +63,8 @@ window.pokeapi.onMeta((m) => {
   appliedState = "";
   appliedSize = "";
   appliedBgSize = "";
+  appliedFramePosition = "";
+  appliedTransform = "";
   ensureEl();
   preloadImages(m);
 });
@@ -106,8 +111,14 @@ window.pokeapi.onFrame((f) => {
       appliedBgSize = bgSize;
     }
   }
-  followerEl.style.backgroundPosition = `${-(f.frame * w)}px ${-(f.row * h)}px`;
-  followerEl.style.transform =
-    `translate3d(${f.x.toFixed(2)}px, ${f.y.toFixed(2)}px, 0) translate(-50%, -50%) scale(${f.scale})`;
-  followerEl.style.transformOrigin = "center center";
+  const framePosition = `${-(f.frame * w)}px ${-(f.row * h)}px`;
+  if (appliedFramePosition !== framePosition) {
+    followerEl.style.backgroundPosition = framePosition;
+    appliedFramePosition = framePosition;
+  }
+  const transform = `translate3d(${f.x.toFixed(2)}px, ${f.y.toFixed(2)}px, 0) translate(-50%, -50%) scale(${f.scale})`;
+  if (appliedTransform !== transform) {
+    followerEl.style.transform = transform;
+    appliedTransform = transform;
+  }
 });

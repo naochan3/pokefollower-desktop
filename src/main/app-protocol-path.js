@@ -6,8 +6,13 @@ function isInsideRoot(root, candidate) {
 }
 
 function resolveAppProtocolPath(root, requestUrl) {
-  const url = new URL(requestUrl);
-  const rel = decodeURIComponent(url.pathname).replace(/^\/+/, "");
+  let rel;
+  try {
+    const url = new URL(requestUrl);
+    rel = decodeURIComponent(url.pathname).replace(/^\/+/, "");
+  } catch (_) {
+    return null;
+  }
   const rootPath = path.resolve(root);
   const assetsRoot = path.join(rootPath, "assets");
   const filePath = path.resolve(rootPath, rel);

@@ -21,16 +21,16 @@
 
 ### macOS（Apple Silicon）
 
-**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/latest/download/PokeFollower-1.0.2-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/latest/download/PokeFollower-1.0.2-arm64-mac.zip)）
+**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.0.2/PokeFollower-1.0.2-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.0.2/PokeFollower-1.0.2-arm64-mac.zip)）
 
 1. 上のリンクから `.dmg` をダウンロード
 2. 開いて `PokeFollower.app` を**アプリケーション**にドラッグ → 起動して**メニューバー**（画面右上）に常駐
 3. メニューバーのモンスターボールを**クリック**で、設定 / 有効・無効 / 終了
 
 > 未署名・未公証のため、初回は Gatekeeper にブロックされます。アプリを**右クリック →「開く」**、または `システム設定 → プライバシーとセキュリティ` の「このまま開く」で実行してください。
-> （macOS 版は contributor がビルドした arm64 バイナリ。全画面アプリの自動非表示は Windows のみ対応です）
+> （macOS 版は contributor がビルドした arm64 バイナリ。全画面アプリの自動非表示にはアクセシビリティ許可が必要な場合があります）
 
-> 最新版は常に[リリースページ](https://github.com/naochan3/pokefollower-desktop/releases/latest)から取得できます（上のリンクも常に最新を指します）。
+> 最新の配布状況は常に[リリースページ](https://github.com/naochan3/pokefollower-desktop/releases/latest)から確認できます。
 
 ---
 
@@ -51,7 +51,7 @@
 
 - macOS 版はビルド対応済みですが、未署名・未公証です。配布する場合は Developer ID で署名し、公証してください。
 - Linux 版は AppImage のビルド対応までです。デスクトップ環境ごとの常駐・透明オーバーレイ挙動は追加検証が必要です。
-- 全画面の自動判定は Windows のみ対応です。macOS / Linux では全画面アプリ上でも自動非表示にはなりません。
+- 全画面の自動判定は Windows では Win32、macOS では System Events / Accessibility、Linux では `xdotool` / `xprop` / `xwininfo` が利用できる環境で動作します。権限やツールが無い環境では自動非表示だけ無効になります。
 - Windows の全画面判定は「前面ウィンドウがモニター全体を覆っているか」で行うため、ブラウザを `F11` で全画面にした場合もゲーム同様に隠れます（通常の最大化では出たまま）。
 - モニターごとに表示スケール（DPI）が大きく異なる構成では、位置がわずかにずれる可能性があります。
 
@@ -60,7 +60,7 @@
 ## 動作環境
 
 - Windows 10 / 11（x64）
-- macOS（Apple Silicon / Intel）
+- macOS（Apple Silicon / arm64）
 - Linux（AppImage）
 
 ## インストール（使う人向け）
@@ -92,6 +92,9 @@ npm start
 # 単体テスト（Vitest）
 npm test
 
+# 実機不要のローカル検証（assets/CI/docs/platform/signing + unit tests）
+npm run verify:local
+
 # Rust 版追従コアの同等性テスト（cargo が必要）
 npm run test:rust
 
@@ -116,7 +119,7 @@ npm run dist:mac
 npm run dist:linux
 ```
 
-生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.0.1.exe`）
+生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.0.2.exe`）
 
 macOS 生成物：`release/PokeFollower-<version>-arm64.dmg` / `release/PokeFollower-<version>-arm64-mac.zip` など（実行環境の CPU により変わります）。
 
@@ -132,13 +135,13 @@ Linux 生成物：`release/PokeFollower-<version>.AppImage` など。
 
 | 部品 | 役割 |
 |---|---|
-| メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（更新間隔 8ms ≒ 最大120fps）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
+| メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（既定 16ms ≒ 最大60fps。`POKEFOLLOWER_SIM_INTERVAL_MS=8` で明示的に 8ms 指定可）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
 | 追従シム（`src/main/follower-sim.js`） | 追従とアニメーションの計算（グローバル座標）。DOM 非依存・テスト可能 |
 | Rust 追従コア（`crates/follower_core/`） | 追従位置計算の本体。WASM として `native/pokefollower_core.wasm` にビルドされ、Electron 実行時に読み込まれる |
 | オーバーレイ窓（`src/overlay/`） | **モニターごとに1枚**常設。透明・最前面・クリック透過。メインから受け取ったローカル座標でスプライトを描くだけ |
 | 設定窓（`src/settings/`） | タイル選択 UI・日本語検索・各種スライダー |
 | パック読み込み（`src/main/pack-reader.js`） | スプライト定義（パック JSON）と日本語名の読み込み |
-| 全画面検知（`src/main/fullscreen-detect.js`） | Windows の前面ウィンドウ判定。macOS では no-op として動作 |
+| 全画面検知（`src/main/fullscreen-detect.js`） | Windows の前面ウィンドウ判定。macOS / Linux は OS 権限・外部コマンドが利用できる場合だけ best-effort で判定 |
 
 **なぜこの設計か**：当初は「1枚の窓をカーソルの居るモニターへワープさせる」方式でしたが、境界越えで位置が跳ねる・逆走するなどの問題が構造的に発生しました。ポケモンをグローバル座標で連続的に動かし、各モニター窓が自分の領域分だけ描く方式に作り変えることで、境界をなめらかに越えられるようになっています。詳細は `docs/superpowers/specs/` の設計書を参照。
 
@@ -152,7 +155,7 @@ pokefollower-desktop/
 │  ├─ main/                  # メインプロセス
 │  │  ├─ main.js             # エントリ・窓/トレイ/IPC・シムループ
 │  │  ├─ follower-sim.js     # 追従＋アニメ計算（グローバル座標）
-│  │  ├─ fullscreen-detect.js# 前面アプリの全画面判定（koffi/Win32）
+│  │  ├─ fullscreen-detect.js# 前面アプリの全画面判定（Win32 / macOS / Linux best-effort）
 │  │  ├─ pack-reader.js      # パック/日本語名の読み込み
 │  │  ├─ asset-path.js       # パックのパス解決
 │  │  └─ settings-store.js   # 設定の永続化（JSON）
