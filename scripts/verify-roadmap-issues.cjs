@@ -18,7 +18,6 @@ expect(status.includes("現在含まれているもの（v1.0.5）"), "STATUS mu
 for (const issue of [
   ["#16", "配布物の署名・公証（Win/Mac）", "SmartScreen / Gatekeeper"],
   ["#17", "macOS / Linux の全画面自動非表示・Linux 実機検証", "macOS / Linux の best-effort 検知は実装済み"],
-  ["#43", "相棒感を強める全体ロードマップ", "#36〜#42/#51 は完了済み"],
 ]) {
   const [num, title, note] = issue;
   const id = num.slice(1);

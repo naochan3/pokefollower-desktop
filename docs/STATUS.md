@@ -68,7 +68,6 @@
 |---|---|---|---|
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
 | macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知は実装済み。Linux AppImage の透明・常駐・クリック透過・最前面は実機検証が必要 |
-| 相棒感を強める全体ロードマップ | 中 | [#43](https://github.com/naochan3/pokefollower-desktop/issues/43) | #36〜#42/#51 は完了済み。残りは配布・実機検証系の #16/#17 |
 
 ---
 
