@@ -6,6 +6,8 @@ let followerEl = null;
 let meta = null;
 const images = {};
 const sheetUrls = {};
+const NOTIFICATION_FALLBACK_WIDTH = 280;
+const NOTIFICATION_FALLBACK_HEIGHT = 110;
 let visible = false;
 let appliedState = "";
 let appliedSize = "";
@@ -17,6 +19,8 @@ let notificationSourceEl = null;
 let notificationTitleEl = null;
 let notificationBodyEl = null;
 let notificationTimer = null;
+let lastFollowerX = 0;
+let lastFollowerY = 0;
 
 function extUrl(rel) {
   return "app://bundle/" + String(rel).replace(/^\/+/, "");
@@ -99,12 +103,11 @@ function showCompanionNotification(n) {
   notificationTitleEl.style.display = n.title ? "block" : "none";
   notificationBodyEl.textContent = n.body || "";
   notificationBodyEl.style.display = n.body ? "block" : "none";
-  const baseX = followerEl && visible ? followerEl.getBoundingClientRect().left : window.innerWidth - 280;
-  const baseY = followerEl && visible ? followerEl.getBoundingClientRect().top : window.innerHeight - 120;
   notificationEl.style.display = "block";
-  const rect = notificationEl.getBoundingClientRect();
-  const bubbleWidth = Math.min(rect.width || 280, Math.max(1, window.innerWidth - 24));
-  const bubbleHeight = Math.min(rect.height || 90, Math.max(1, window.innerHeight - 24));
+  const baseX = visible ? lastFollowerX : window.innerWidth - NOTIFICATION_FALLBACK_WIDTH;
+  const baseY = visible ? lastFollowerY : window.innerHeight - NOTIFICATION_FALLBACK_HEIGHT;
+  const bubbleWidth = Math.min(NOTIFICATION_FALLBACK_WIDTH, Math.max(1, window.innerWidth - 24));
+  const bubbleHeight = Math.min(NOTIFICATION_FALLBACK_HEIGHT, Math.max(1, window.innerHeight - 24));
   const x = Math.max(12, Math.min(window.innerWidth - bubbleWidth - 12, baseX + 18));
   const y = Math.max(12, Math.min(window.innerHeight - bubbleHeight - 12, baseY - 76));
   notificationEl.style.transform = `translate3d(${x.toFixed(0)}px, ${y.toFixed(0)}px, 0)`;
@@ -159,6 +162,8 @@ window.pokeapi.onFrame((f) => {
     followerEl.style.display = "block";
     visible = true;
   }
+  lastFollowerX = f.x;
+  lastFollowerY = f.y;
   const sizeKey = `${w}x${h}`;
   if (appliedSize !== sizeKey) {
     followerEl.style.width = `${w}px`;

@@ -65,4 +65,29 @@ describe("codex-notification-watcher", () => {
     timers.pop()();
     expect(published).toEqual([{ title: "done" }]);
   });
+
+  it("起動時は既存queue本文をパースせずoffsetだけ合わせる", () => {
+    const calls = [];
+    const watcher = createCodexNotificationWatcher({
+      queuePath: "/tmp/pf-codex.jsonl",
+      getSettings: () => ({ notificationCompanionEnabled: true }),
+      publish: () => {},
+      readNewNotifications: () => {
+        throw new Error("start should not parse existing notification bodies");
+      },
+      fsImpl: {
+        existsSync: () => true,
+        mkdirSync: () => {},
+        statSync: () => {
+          calls.push("stat");
+          return { size: 1234 };
+        },
+        watch: () => ({ close: () => {} }),
+      },
+    });
+
+    watcher.sync();
+    watcher.handleChange();
+    expect(calls).toEqual(["stat"]);
+  });
 });

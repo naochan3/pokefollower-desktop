@@ -38,6 +38,7 @@ expect(/willChange: "transform, background-position, background-image"/.test(ove
 expect(/transformOrigin: "center center"/.test(overlay), "overlay should set transform-origin once");
 expect(/translate3d\(/.test(overlay), "overlay should position sprites with translate3d");
 expect(/onCompanionNotification/.test(overlay), "overlay must subscribe to companion notification events");
+expect(!/getBoundingClientRect/.test(overlay), "overlay notification positioning must avoid forced layout reads");
 expect(
   /onMeta: \(cb\) => ipcRenderer\.on\("meta", \(_e, m\) => cb\(m\)\)/.test(preload) &&
     /onFrame: \(cb\) => ipcRenderer\.on\("frame", \(_e, f\) => cb\(f\)\)/.test(preload) &&
