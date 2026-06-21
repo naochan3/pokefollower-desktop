@@ -74,6 +74,20 @@ describe("notification-companion", () => {
     expect(sink.sent).toEqual([]);
   });
 
+  it("force指定では設定OFFでもアプリ内通知を送れる", () => {
+    const sink = makeOverlaySink();
+    sink.overlays[0].visible = true;
+    const companion = createNotificationCompanion({
+      getSettings: () => ({ notificationCompanionEnabled: false }),
+      getOverlays: () => sink.overlays,
+      isSuppressed: () => false,
+      now: () => 2100,
+    });
+
+    expect(companion.publish({ title: "Break" }, { force: true })).toBe(true);
+    expect(sink.sent).toHaveLength(1);
+  });
+
   it("設定ONかつ非抑制時だけ要約通知をoverlayへ送る", () => {
     const sink = makeOverlaySink();
     sink.overlays[0].visible = true;

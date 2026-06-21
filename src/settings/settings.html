@@ -293,6 +293,51 @@
       cursor: pointer;
       min-width: 48px;
     }
+    .workwatch {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      margin: 0 12px;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .workwatch-main {
+      display: inline-grid;
+      grid-template-columns: auto auto 1fr;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+    .workwatch select {
+      border: 1.5px solid #000;
+      border-radius: 6px;
+      background: #fff;
+      color: #000;
+      font: inherit;
+      font-weight: 800;
+      padding: 2px 4px;
+      min-width: 60px;
+    }
+    .workwatch-actions {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .workwatch button {
+      border: 1.5px solid #000;
+      background: #fff;
+      color: #000;
+      font: inherit;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 5px;
+      cursor: pointer;
+    }
+    #workWatch {
+      width: 16px;
+      height: 16px;
+      accent-color: #EF4036;
+    }
   </style>
 </head>
 <body>
@@ -330,6 +375,21 @@
         <span>通知コンパニオン</span>
       </label>
       <button id="testCompanion" type="button">TEST</button>
+    </div>
+    <div class="workwatch">
+      <label class="workwatch-main" for="workWatch">
+        <input id="workWatch" type="checkbox" />
+        <span>作業見守り</span>
+        <select id="workWatchPreset" aria-label="作業見守りプリセット">
+          <option value="25/5">25/5</option>
+          <option value="50/10">50/10</option>
+        </select>
+      </label>
+      <div class="workwatch-actions">
+        <button id="workWatchStart" type="button">START</button>
+        <button id="workWatchStop" type="button">STOP</button>
+        <button id="workWatchReset" type="button">RESET</button>
+      </div>
     </div>
     <div id="grid" class="grid" role="listbox" aria-label="ポケモン一覧"></div>
     <div class="behaviors">

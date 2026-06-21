@@ -35,8 +35,8 @@ function createNotificationCompanion({
 }) {
   let lastSentAt = 0;
 
-  function publish(input) {
-    const enabled = isEnabled ? isEnabled() : !!getSettings().notificationCompanionEnabled;
+  function publish(input, { force = false } = {}) {
+    const enabled = force || (isEnabled ? isEnabled() : !!getSettings().notificationCompanionEnabled);
     if (!enabled) return false;
     if (isSuppressed()) return false;
     const currentTime = now();
