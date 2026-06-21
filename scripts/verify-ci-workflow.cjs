@@ -8,6 +8,7 @@ const packagePath = path.join(root, "package.json");
 const workflow = fs.readFileSync(workflowPath, "utf8");
 const dependabot = fs.readFileSync(dependabotPath, "utf8");
 const benchDevRuntime = fs.readFileSync(path.join(root, "scripts", "bench-dev-runtime.cjs"), "utf8");
+const benchMacUnpackedRuntime = fs.readFileSync(path.join(root, "scripts", "bench-mac-unpacked-runtime.cjs"), "utf8");
 const benchWinUnpackedRuntime = fs.readFileSync(path.join(root, "scripts", "bench-win-unpacked-runtime.cjs"), "utf8");
 const pkg = JSON.parse(fs.readFileSync(packagePath, "utf8"));
 const errors = [];
@@ -75,13 +76,13 @@ for (const os of ["ubuntu-latest", "windows-latest", "macos-latest"]) {
 }
 
 for (const smoke of [
-  "command: npm run dist:win -- --dir",
+  "command: npm run dist:win -- --dir --publish=never",
   "platform: win32",
   "arch: x64",
-  "command: npm run dist:mac -- --arm64 --dir",
+  "command: npm run dist:mac -- --arm64 --dir --publish=never",
   "platform: darwin",
   "arch: arm64",
-  "command: npm run dist:linux -- --dir",
+  "command: npm run dist:linux -- --dir --publish=never",
   "platform: linux",
 ]) {
   expectIncludes("package smoke matrix", smoke);
@@ -116,6 +117,7 @@ if (!pkg.scripts || !pkg.scripts["verify:local"]) {
 
 for (const [scriptName, scriptCommand] of [
   ["bench:dev-runtime", "node scripts/bench-dev-runtime.cjs"],
+  ["bench:mac-unpacked-runtime", "node scripts/bench-mac-unpacked-runtime.cjs"],
   ["bench:pack-list", "node scripts/bench-pack-list.cjs"],
   ["bench:win-unpacked-runtime", "node scripts/bench-win-unpacked-runtime.cjs"],
 ]) {
@@ -135,6 +137,20 @@ for (const text of [
 ]) {
   if (!benchDevRuntime.includes(text)) {
     errors.push(`bench-dev-runtime must keep isolated mode-aware runtime measurement support: ${text}`);
+  }
+}
+
+for (const text of [
+  "PF_MAC_UNPACKED_MODES",
+  "PokeFollower.app",
+  "POKEFOLLOWER_ALLOW_TEST_USER_DATA",
+  "POKEFOLLOWER_TEST_USER_DATA_DIR",
+  "avg ps cpu",
+  "avg rss",
+  "leftover tracked process count after cleanup",
+]) {
+  if (!benchMacUnpackedRuntime.includes(text)) {
+    errors.push(`bench-mac-unpacked-runtime must keep isolated packaged runtime measurement support: ${text}`);
   }
 }
 
@@ -165,6 +181,7 @@ for (const file of [
   "tests/rust-follower-core.test.js",
   "tests/sim-loop-config.test.js",
   "scripts/bench-dev-runtime.cjs",
+  "scripts/bench-mac-unpacked-runtime.cjs",
   "scripts/bench-pack-list.cjs",
   "scripts/bench-win-unpacked-runtime.cjs",
   "scripts/verify-dependency-metadata.cjs",
@@ -172,6 +189,7 @@ for (const file of [
   "scripts/verify-repo-hygiene.cjs",
   "scripts/verify-installer-ux.cjs",
   "scripts/verify-ipc-routing.cjs",
+  "scripts/verify-notification-overlay-render.cjs",
   "scripts/verify-overlay-cache.cjs",
   "scripts/verify-roadmap-issues.cjs",
   "scripts/verify-runtime-guards.cjs",

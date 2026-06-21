@@ -3,13 +3,22 @@ const path = require("node:path");
 const { buildPackCandidates, dexFromSlug, packSlug } = require("./asset-path.js");
 
 // ROOT = プロジェクトルート（assets/ の親）
-function makePackReader(root) {
+function makePackReader(root, fileSystem = fs) {
+  const jsonCache = new Map();
+
+  function readJson(file) {
+    if (!jsonCache.has(file)) {
+      jsonCache.set(file, JSON.parse(fileSystem.readFileSync(file, "utf8")));
+    }
+    return jsonCache.get(file);
+  }
+
   function readPackMeta(packKey) {
     const candidates = buildPackCandidates(packKey);
     for (const cand of candidates) {
       const file = path.join(root, "assets", "packs", `${cand}.json`);
       try {
-        const meta = JSON.parse(fs.readFileSync(file, "utf8"));
+        const meta = readJson(file);
         if (meta && meta.states && meta.states.idle && meta.states.walk) {
           return { resolvedKey: cand, meta };
         }
@@ -19,11 +28,11 @@ function makePackReader(root) {
   }
   function readIndex() {
     const file = path.join(root, "assets", "packs", "index.json");
-    return JSON.parse(fs.readFileSync(file, "utf8"));
+    return readJson(file);
   }
   function readJpNames() {
     const file = path.join(root, "assets", "packs", "jp-names.json");
-    return JSON.parse(fs.readFileSync(file, "utf8"));
+    return readJson(file);
   }
   function readPackList() {
     const index = readIndex();

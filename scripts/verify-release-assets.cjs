@@ -1,20 +1,63 @@
 const fs = require("node:fs");
 const https = require("node:https");
 const path = require("node:path");
+const { execFileSync } = require("node:child_process");
 
 const root = path.join(__dirname, "..");
 const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
 const repo = process.env.PF_RELEASE_REPO || "naochan3/pokefollower-desktop";
 const tag = process.env.PF_RELEASE_TAG || `v${pkg.version}`;
+const maxRetries = Number(process.env.PF_RELEASE_VERIFY_RETRIES || 3);
+const expectLinuxAppImage = process.env.PF_EXPECT_LINUX_APPIMAGE === "1";
 const expectedAssets = [
   "PokeFollower-Setup.exe",
   `PokeFollower-${pkg.version}-win.zip`,
   `PokeFollower-${pkg.version}-arm64.dmg`,
   `PokeFollower-${pkg.version}-arm64-mac.zip`,
 ];
+if (expectLinuxAppImage) expectedAssets.push(`PokeFollower-${pkg.version}.AppImage`);
 
-function requestJson(url) {
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function requestJson(url) {
+  let lastError = null;
+  for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
+    try {
+      return await requestJsonOnce(url);
+    } catch (error) {
+      lastError = error;
+      if (!/\b(502|503|504)\b/.test(String(error && error.message))) throw error;
+      if (attempt < maxRetries) await sleep(500 * attempt);
+    }
+  }
+  try {
+    return requestJsonWithGh(url);
+  } catch (_) {
+    // Prefer the original API error so failures still show the HTTP status/body that triggered fallback.
+  }
+  throw lastError;
+}
+
+function requestJsonWithGh(url) {
+  const parsed = new URL(url);
+  const marker = `/repos/${repo}/releases/`;
+  const idx = parsed.pathname.indexOf(marker);
+  if (idx < 0) throw new Error(`unsupported GitHub API fallback URL: ${url}`);
+  const suffix = parsed.pathname.slice(idx + marker.length);
+  const apiPath = suffix === "latest"
+    ? `repos/${repo}/releases/latest`
+    : suffix.startsWith("tags/")
+      ? `repos/${repo}/releases/tags/${suffix.slice("tags/".length)}`
+      : null;
+  if (!apiPath) throw new Error(`unsupported GitHub release fallback URL: ${url}`);
+  const output = execFileSync("gh", ["api", apiPath], { encoding: "utf8" });
+  return JSON.parse(output);
+}
+
+function requestJsonOnce(url) {
   return new Promise((resolve, reject) => {
     const headers = {
       Accept: "application/vnd.github+json",
@@ -82,13 +125,16 @@ function expectReadmeLink(assetName, url) {
     `PokeFollower-${pkg.version}-arm64-mac.zip`,
     `https://github.com/${repo}/releases/download/${tag}/PokeFollower-${pkg.version}-arm64-mac.zip`,
   );
-
-  const linuxAssets = [...assets.keys()].filter((name) => /appimage/i.test(name));
-  if (linuxAssets.length > 0) {
-    fail(`unexpected Linux AppImage asset present while Linux runtime remains unverified: ${linuxAssets.join(", ")}`);
+  if (expectLinuxAppImage) {
+    expectReadmeLink(
+      `PokeFollower-${pkg.version}.AppImage`,
+      `https://github.com/${repo}/releases/download/${tag}/PokeFollower-${pkg.version}.AppImage`,
+    );
+  } else if (!readme.includes(`${tag} の Release には AppImage asset をまだ添付していない`)) {
+    fail(`README must state ${tag} has no Linux AppImage release asset yet`);
   }
 
   console.log(
-    `[verify-release-assets] ok: ${repo} ${tag} is latest and has ${expectedAssets.length} expected assets with sha256 digests, README links, and no Linux AppImage`,
+    `[verify-release-assets] ok: ${repo} ${tag} is latest and has ${expectedAssets.length} expected assets with sha256 digests and README links`,
   );
 })();

@@ -195,6 +195,25 @@ describe("follower-sim", () => {
     expect(r.y).toBeLessThan(880);
   });
 
+  it("前面ウィンドウ矩形があれば静止後にウィンドウ端を休憩候補にする", () => {
+    const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-window-edge-")) });
+    sim.setMeta(META);
+    sim.setDisplayBounds([{ x: 0, y: 0, width: 1000, height: 800 }]);
+    sim.setRestSurfaces([{ kind: "window", x: 200, y: 150, width: 500, height: 360 }]);
+    sim.resetTo(420, 220, 0);
+    let now = 0;
+    let r = null;
+    while (now < 12000) {
+      now += 16;
+      sim.updateCursor(420, 220, now);
+      r = sim.step(16, now);
+    }
+    expect(r.x).toBeGreaterThan(220);
+    expect(r.x).toBeLessThan(680);
+    expect(r.y).toBeLessThan(150);
+    expect(r.y).toBeGreaterThan(20);
+  });
+
   it("offsetが小さくてもカーソル直下を避ける", () => {
     const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-avoid-")) });
     sim.setMeta(META);
@@ -223,6 +242,51 @@ describe("follower-sim", () => {
       r = sim.step(16, now);
     }
     expect(Math.hypot(r.x - 400, r.y - 300)).toBeLessThan(5);
+  });
+
+  it("カーソル退避強度strongはnormalより大きく離れる", () => {
+    const normal = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-avoid-normal-")) });
+    const strong = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-avoid-strong-")) });
+    for (const sim of [normal, strong]) {
+      sim.setMeta(META);
+      sim.setConfig({ vcp1_offset: 0, vcp1_lerp: 0.5, vcp1_edgeRest: false });
+      sim.resetTo(400, 300, 0);
+    }
+    strong.setConfig({ vcp1_avoidCursorStrength: "strong" });
+    let now = 0;
+    let n = null;
+    let s = null;
+    for (let i = 0; i < 160; i++) {
+      now += 16;
+      normal.updateCursor(400, 300, now);
+      strong.updateCursor(400, 300, now);
+      n = normal.step(16, now);
+      s = strong.step(16, now);
+    }
+    expect(Math.hypot(s.x - 400, s.y - 300)).toBeGreaterThan(Math.hypot(n.x - 400, n.y - 300) + 20);
+  });
+
+  it("作業見守りのreactionModeは作業中に距離を広げ、休憩時に近づける", () => {
+    const calm = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-reaction-calm-")) });
+    const breakMode = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-reaction-break-")) });
+    for (const sim of [calm, breakMode]) {
+      sim.setMeta(META);
+      sim.setConfig({ vcp1_edgeRest: false, vcp1_avoidCursor: false, vcp1_offset: 70, vcp1_lerp: 0.5 });
+      sim.resetTo(400, 300, 0);
+    }
+    calm.setConfig({ vcp1_reactionMode: "calm" });
+    breakMode.setConfig({ vcp1_reactionMode: "break" });
+    let now = 0;
+    let c = null;
+    let b = null;
+    for (let i = 0; i < 160; i++) {
+      now += 16;
+      calm.updateCursor(400, 300, now);
+      breakMode.updateCursor(400, 300, now);
+      c = calm.step(16, now);
+      b = breakMode.step(16, now);
+    }
+    expect(Math.hypot(c.x - 400, c.y - 300)).toBeGreaterThan(Math.hypot(b.x - 400, b.y - 300));
   });
 
   it("性格プリセット friendly は標準より近い距離へ寄る", () => {

@@ -6,6 +6,7 @@ const root = path.join(__dirname, "..");
 const releaseDir = path.join(root, "release");
 const targetPlatform = process.argv[2] || process.platform;
 const targetArch = process.argv[3] || process.arch;
+const isCrossPlatformPackage = process.platform !== targetPlatform || process.arch !== targetArch;
 const expectedNativePackage = `/node_modules/@koromix/koffi-${targetPlatform}-${targetArch}`;
 const rootPackage = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 const nativeSubdir = targetPlatform === "win32" ? `win32_${targetArch}` : `${targetPlatform}_${targetArch}`;
@@ -70,11 +71,18 @@ if (!fileSet.has("/native/pokefollower_core.wasm")) {
 }
 for (const requiredSource of [
   "/src/main/main.js",
+  "/src/main/app-reactions.js",
+  "/src/main/favorite-rotation.js",
   "/src/main/app-protocol-path.js",
   "/src/main/asset-path.js",
+  "/src/main/codex-notify-cli.js",
   "/src/main/frame-routing.js",
   "/src/main/fullscreen-policy.js",
+  "/src/main/codex-notification-watcher.js",
+  "/src/main/notification-companion.js",
+  "/src/main/notification-queue.js",
   "/src/main/pack-reader.js",
+  "/src/main/work-watch.js",
   "/src/overlay/overlay.js",
   "/src/overlay/overlay-preload.js",
   "/src/overlay/overlay.html",
@@ -115,7 +123,7 @@ if (!uniqueNativeDeps.includes(expectedNativePackage)) {
 }
 
 const wrongNativeDeps = uniqueNativeDeps.filter((dep) => dep !== expectedNativePackage);
-if (wrongNativeDeps.length > 0) {
+if (!isCrossPlatformPackage && wrongNativeDeps.length > 0) {
   fail(`unexpected native dependencies for ${targetPlatform}-${targetArch}: ${wrongNativeDeps.join(", ")}`);
 }
 
@@ -129,5 +137,5 @@ if (!unpackedNativeStat.isFile() || unpackedNativeStat.size <= 0) {
 }
 
 console.log(
-  `[verify-package-smoke] ok: ${path.relative(root, appAsar)} contains v${packagedPackage.version}, WASM, and ${expectedNativePackage}; unpacked ${expectedUnpackedNative}`,
+  `[verify-package-smoke] ok: ${path.relative(root, appAsar)} contains v${packagedPackage.version}, WASM, and ${expectedNativePackage}; unpacked ${expectedUnpackedNative}${wrongNativeDeps.length ? `; cross-build extras: ${wrongNativeDeps.join(", ")}` : ""}`,
 );

@@ -15,6 +15,14 @@ describe("settings-store", () => {
     const store = createSettingsStore(file);
     expect(store.getAll()).toEqual(DEFAULTS);
     expect(store.get("offset")).toBe(70);
+    expect(store.get("favoritePacks")).toEqual([]);
+    expect(store.get("rotationEnabled")).toBe(false);
+    expect(store.get("rotationIntervalMinutes")).toBe(15);
+    expect(store.get("avoidCursorStrength")).toBe("normal");
+    expect(store.get("notificationCompanionEnabled")).toBe(false);
+    expect(store.get("appReactionsEnabled")).toBe(false);
+    expect(store.get("workWatchEnabled")).toBe(false);
+    expect(store.get("workWatchPreset")).toBe("25/5");
   });
 
   it("既存 settings.json の offset を新デフォルトで上書きしない", () => {
@@ -26,11 +34,12 @@ describe("settings-store", () => {
 
   it("set した値が get で返り、再読込でも保持される", () => {
     const store = createSettingsStore(file);
-    store.set({ pack: "retro/gen-1/025-pikachu", scale: 2 });
+    store.set({ pack: "retro/gen-1/025-pikachu", scale: 2, favoritePacks: ["retro/gen-1/025-pikachu"] });
     expect(store.get("pack")).toBe("retro/gen-1/025-pikachu");
     const reopened = createSettingsStore(file);
     expect(reopened.get("scale")).toBe(2);
     expect(reopened.get("pack")).toBe("retro/gen-1/025-pikachu");
+    expect(reopened.get("favoritePacks")).toEqual(["retro/gen-1/025-pikachu"]);
   });
 
   it("既存互換の短縮pack IDは保持する", () => {
@@ -67,11 +76,12 @@ describe("settings-store", () => {
 
   it("set時も未知キーと空packと不正packを永続化しない", () => {
     const store = createSettingsStore(file);
-    store.set({ pack: "", offset: 55, debug: true });
+    store.set({ pack: "", offset: 55, debug: true, notificationCompanionEnabled: true });
     store.set({ pack: "retro/../../secret" });
     const reopened = createSettingsStore(file);
     expect(reopened.get("pack")).toBe(DEFAULTS.pack);
     expect(reopened.get("offset")).toBe(55);
+    expect(reopened.get("notificationCompanionEnabled")).toBe(true);
     expect(reopened.getAll()).not.toHaveProperty("debug");
   });
 
@@ -110,6 +120,35 @@ describe("settings-store", () => {
     expect(store.get("enabled")).toBe(false);
     store.set({ enabled: "yes" });
     expect(store.get("enabled")).toBe(true);
+    store.set({ notificationCompanionEnabled: 1 });
+    expect(store.get("notificationCompanionEnabled")).toBe(true);
+    store.set({ appReactionsEnabled: 1 });
+    expect(store.get("appReactionsEnabled")).toBe(true);
+    store.set({ workWatchEnabled: 1 });
+    expect(store.get("workWatchEnabled")).toBe(true);
+    store.set({ rotationEnabled: 1 });
+    expect(store.get("rotationEnabled")).toBe(true);
+  });
+
+  it("favoritePacksは安全なpackだけを重複排除して最大12件保存する", () => {
+    const store = createSettingsStore(file);
+    store.set({
+      favoritePacks: [
+        "retro/gen-1/025-pikachu",
+        "../secret",
+        "retro/gen-1/025-pikachu",
+        "retro/gen-1/001-bulbasaur",
+      ],
+    });
+    expect(store.get("favoritePacks")).toEqual(["retro/gen-1/025-pikachu", "retro/gen-1/001-bulbasaur"]);
+  });
+
+  it("rotationIntervalMinutesは1〜120分にclampする", () => {
+    const store = createSettingsStore(file);
+    store.set({ rotationIntervalMinutes: 0 });
+    expect(store.get("rotationIntervalMinutes")).toBe(1);
+    store.set({ rotationIntervalMinutes: 999 });
+    expect(store.get("rotationIntervalMinutes")).toBe(120);
   });
 
   it("edgeRestはbooleanとして保存する", () => {
@@ -128,6 +167,17 @@ describe("settings-store", () => {
     expect(store.get("avoidCursor")).toBe(false);
     store.set({ avoidCursor: "yes" });
     expect(store.get("avoidCursor")).toBe(true);
+  });
+
+  it("avoidCursorStrengthは許可された強度だけを保存する", () => {
+    const store = createSettingsStore(file);
+    expect(store.get("avoidCursorStrength")).toBe("normal");
+    store.set({ avoidCursorStrength: "strong" });
+    expect(store.get("avoidCursorStrength")).toBe("strong");
+    store.set({ avoidCursorStrength: "../bad" });
+    expect(store.get("avoidCursorStrength")).toBe("strong");
+    store.set({ avoidCursorStrength: "normal" });
+    expect(store.get("avoidCursorStrength")).toBe("normal");
   });
 
   it("personalityは許可されたプリセットだけを保存する", () => {
@@ -150,5 +200,14 @@ describe("settings-store", () => {
     expect(store.get("mode")).toBe("roam");
     store.set({ mode: "follow" });
     expect(store.get("mode")).toBe("follow");
+  });
+
+  it("workWatchPresetは許可されたプリセットだけを保存する", () => {
+    const store = createSettingsStore(file);
+    expect(store.get("workWatchPreset")).toBe("25/5");
+    store.set({ workWatchPreset: "50/10" });
+    expect(store.get("workWatchPreset")).toBe("50/10");
+    store.set({ workWatchPreset: "../bad" });
+    expect(store.get("workWatchPreset")).toBe("50/10");
   });
 });

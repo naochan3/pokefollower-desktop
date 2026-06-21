@@ -4,4 +4,5 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("pokeapi", {
   onMeta: (cb) => ipcRenderer.on("meta", (_e, m) => cb(m)),
   onFrame: (cb) => ipcRenderer.on("frame", (_e, f) => cb(f)),
+  onCompanionNotification: (cb) => ipcRenderer.on("companion-notification", (_e, n) => cb(n)),
 });

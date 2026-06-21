@@ -121,11 +121,27 @@
     #enabled:checked { background: #EF4036; }
     #enabled:checked::after { left: calc(100% - 18px); }
     /* Card body */
-    .card { padding: 10px 16px 0; flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; }
+    .card {
+      padding: 8px 14px 0;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      gap: 6px;
+      position: relative;
+      z-index: 1;
+    }
 
     /* Controls layout: three columns */
-    .triples { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; margin-top: 6px; }
-    .triple h4 { font-size: 12px; letter-spacing: .02em; margin: 8px 0 8px; font-weight: 800; }
+    .triples {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      text-align: center;
+      flex: 0 0 auto;
+      margin-top: 0;
+    }
+    .triple h4 { font-size: 11px; letter-spacing: .02em; margin: 5px 0 6px; font-weight: 800; }
 
     /* Row: vertical arrows + underline input */
     .controlRow { display: flex; align-items: flex-start; justify-content: center; gap: 10px; }
@@ -173,7 +189,7 @@
       overflow: hidden; clip: rect(0, 0, 1px, 1px); white-space: nowrap; border: 0;
     }
 
-    .search { margin: 8px 14px 6px; }
+    .search { margin: 0 12px; flex: 0 0 auto; }
     .search input {
       width: 100%; box-sizing: border-box; padding: 7px 10px;
       border: 1.5px solid #000; border-radius: 8px; font-size: 13px; font-weight: 600; outline: none;
@@ -186,7 +202,7 @@
     .gen-chip:hover { background: #f5f5f5; }
     .gen-chip.active { background: #EF4036; color: #fff; border-color: #EF4036; }
     .grid {
-      margin: 0 12px; padding: 4px; flex: 1 1 auto; min-height: 0; overflow-y: auto;
+      margin: 0 12px; padding: 4px; flex: 1 1 280px; min-height: 160px; overflow-y: auto;
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-content: start;
       border: 1.5px solid #000; border-radius: 8px; background: #fafafa;
     }
@@ -197,6 +213,18 @@
     }
     .tile:hover { background: #f0f0f0; }
     .tile.selected { border-color: #EF4036; background: #fff4f3; }
+    .tile.favorite::after {
+      content: "★";
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      color: #EF4036;
+      font-size: 10px;
+      font-weight: 900;
+    }
+    .tile {
+      position: relative;
+    }
     .tile img { width: 48px; height: 48px; image-rendering: pixelated; object-fit: contain; }
     .tile .name { font-size: 11px; font-weight: 700; line-height: 1.1; word-break: break-all; }
     .tile .num { font-size: 10px; color: #888; }
@@ -206,7 +234,18 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 8px;
+    }
+    .behavior select {
+      border: 1.5px solid #000;
+      border-radius: 6px;
+      background: #fff;
+      color: #000;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 4px;
+      max-width: 76px;
     }
     .behavior {
       display: flex;
@@ -233,7 +272,136 @@
       font-weight: 700;
       padding: 3px 6px;
     }
-    #edgeRest, #avoidCursor {
+    #edgeRest, #avoidCursor, #appReactions {
+      width: 16px;
+      height: 16px;
+      accent-color: #EF4036;
+    }
+    .companion {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      margin: 0 12px;
+      padding: 5px 8px;
+      border: 2px solid #000;
+      background: #fff;
+      box-shadow: 2px 2px 0 #000;
+      box-sizing: border-box;
+      flex: 0 0 auto;
+    }
+    .companion label {
+      display: inline-grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 800;
+      min-width: 0;
+    }
+    .companion input {
+      width: 16px;
+      height: 16px;
+      accent-color: #EF4036;
+    }
+    .companion button {
+      border: 2px solid #000;
+      background: #EF4036;
+      color: #fff;
+      box-shadow: 2px 2px 0 #000;
+      font: inherit;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 7px;
+      cursor: pointer;
+      min-width: 48px;
+    }
+    .workwatch {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      margin: 0 12px;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .team {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      margin: 0 12px;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .team-main {
+      display: inline-grid;
+      grid-template-columns: auto auto auto;
+      gap: 5px;
+      align-items: center;
+      min-width: 0;
+    }
+    .team-actions {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .team button {
+      border: 1.5px solid #000;
+      background: #fff;
+      color: #000;
+      font: inherit;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 5px;
+      cursor: pointer;
+    }
+    .team input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #EF4036;
+    }
+    .team input[type="number"] {
+      width: 34px;
+      border: 0;
+      border-bottom: 1.5px solid #000;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      background: transparent;
+    }
+    .workwatch-main {
+      display: inline-grid;
+      grid-template-columns: auto auto 1fr;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+    .workwatch select {
+      border: 1.5px solid #000;
+      border-radius: 6px;
+      background: #fff;
+      color: #000;
+      font: inherit;
+      font-weight: 800;
+      padding: 2px 4px;
+      min-width: 60px;
+    }
+    .workwatch-actions {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .workwatch button {
+      border: 1.5px solid #000;
+      background: #fff;
+      color: #000;
+      font: inherit;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 5px;
+      cursor: pointer;
+    }
+    #workWatch {
       width: 16px;
       height: 16px;
       accent-color: #EF4036;
@@ -272,6 +440,40 @@
       <button type="button" class="gen-chip" data-gen="8">8</button>
       <button type="button" class="gen-chip" data-gen="9">9</button>
     </div>
+    <div class="companion">
+      <label for="notificationCompanion">
+        <input id="notificationCompanion" type="checkbox" />
+        <span>通知コンパニオン</span>
+      </label>
+      <button id="testCompanion" type="button">TEST</button>
+    </div>
+    <div class="workwatch">
+      <label class="workwatch-main" for="workWatch">
+        <input id="workWatch" type="checkbox" />
+        <span>作業見守り</span>
+        <select id="workWatchPreset" aria-label="作業見守りプリセット">
+          <option value="25/5">25/5</option>
+          <option value="50/10">50/10</option>
+        </select>
+      </label>
+      <div class="workwatch-actions">
+        <button id="workWatchStart" type="button">START</button>
+        <button id="workWatchStop" type="button">STOP</button>
+        <button id="workWatchReset" type="button">RESET</button>
+      </div>
+    </div>
+    <div class="team">
+      <label class="team-main" for="rotationEnabled">
+        <input id="rotationEnabled" type="checkbox" />
+        <span>待機列 <span id="favoriteCount">0</span></span>
+        <input id="rotationInterval" type="number" min="1" max="120" step="1" aria-label="交代間隔（分）" />
+      </label>
+      <div class="team-actions">
+        <button id="favoriteAdd" type="button">ADD</button>
+        <button id="favoriteNext" type="button">NEXT</button>
+        <button id="favoriteClear" type="button">CLR</button>
+      </div>
+    </div>
     <div id="grid" class="grid" role="listbox" aria-label="ポケモン一覧"></div>
     <div class="behaviors">
       <label class="behavior" for="edgeRest">
@@ -281,6 +483,17 @@
       <label class="behavior" for="avoidCursor">
         <input id="avoidCursor" type="checkbox" />
         <span>Avoid Cursor</span>
+      </label>
+      <label class="behavior" for="avoidCursorStrength">
+        <span>Avoid</span>
+        <select id="avoidCursorStrength" aria-label="カーソル退避強度">
+          <option value="normal">Normal</option>
+          <option value="strong">Strong</option>
+        </select>
+      </label>
+      <label class="behavior" for="appReactions">
+        <input id="appReactions" type="checkbox" />
+        <span>App React</span>
       </label>
     </div>
     <label class="select-row" for="mode">

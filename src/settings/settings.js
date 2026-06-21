@@ -2,13 +2,21 @@ function mapKeys(obj) {
   const m = {
     vcp1_enabled: "enabled",
     vcp1_pack: "pack",
+    vcp1_favorite_packs: "favoritePacks",
+    vcp1_rotation_enabled: "rotationEnabled",
+    vcp1_rotation_interval_minutes: "rotationIntervalMinutes",
     vcp1_scale: "scale",
     vcp1_offset: "offset",
     vcp1_lerp: "lerp",
     vcp1_edgeRest: "edgeRest",
     vcp1_avoidCursor: "avoidCursor",
+    vcp1_avoid_cursor_strength: "avoidCursorStrength",
     vcp1_personality: "personality",
     vcp1_mode: "mode",
+    vcp1_app_reactions: "appReactionsEnabled",
+    vcp1_notification_companion: "notificationCompanionEnabled",
+    vcp1_work_watch: "workWatchEnabled",
+    vcp1_work_watch_preset: "workWatchPreset",
   };
   const out = {};
   for (const [k, v] of Object.entries(obj)) out[m[k] || k] = v;
@@ -27,8 +35,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   const enabledEl = document.getElementById("enabled");
   const edgeRestEl = document.getElementById("edgeRest");
   const avoidCursorEl = document.getElementById("avoidCursor");
+  const avoidCursorStrengthEl = document.getElementById("avoidCursorStrength");
   const personalityEl = document.getElementById("personality");
   const modeEl = document.getElementById("mode");
+  const notificationCompanionEl = document.getElementById("notificationCompanion");
+  const appReactionsEl = document.getElementById("appReactions");
+  const testCompanionEl = document.getElementById("testCompanion");
+  const workWatchEl = document.getElementById("workWatch");
+  const workWatchPresetEl = document.getElementById("workWatchPreset");
+  const workWatchStartEl = document.getElementById("workWatchStart");
+  const workWatchStopEl = document.getElementById("workWatchStop");
+  const workWatchResetEl = document.getElementById("workWatchReset");
+  const favoriteAddEl = document.getElementById("favoriteAdd");
+  const favoriteNextEl = document.getElementById("favoriteNext");
+  const favoriteClearEl = document.getElementById("favoriteClear");
+  const favoriteCountEl = document.getElementById("favoriteCount");
+  const rotationEnabledEl = document.getElementById("rotationEnabled");
+  const rotationIntervalEl = document.getElementById("rotationInterval");
 
   // Sliders + readouts
   const scaleEl   = document.getElementById("scale");
@@ -46,8 +69,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     vcp1_lerp: 0.20,    // LERP_ALPHA (lower = floatier/slower follow)
     vcp1_edgeRest: true,
     vcp1_avoidCursor: true,
+    vcp1_avoid_cursor_strength: "normal",
     vcp1_personality: "standard",
-    vcp1_mode: "follow"
+    vcp1_mode: "follow",
+    vcp1_favorite_packs: [],
+    vcp1_rotation_interval_minutes: 15,
+    vcp1_work_watch_preset: "25/5"
   };
 
   // Forward live config patches to the overlay via the settings API
@@ -63,8 +90,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       enabledEl.checked = !!res.enabled;
       if (edgeRestEl) edgeRestEl.checked = res.edgeRest !== false;
       if (avoidCursorEl) avoidCursorEl.checked = res.avoidCursor !== false;
+      if (avoidCursorStrengthEl) avoidCursorStrengthEl.value = typeof res.avoidCursorStrength === "string" ? res.avoidCursorStrength : DEFAULTS.vcp1_avoid_cursor_strength;
       if (personalityEl) personalityEl.value = typeof res.personality === "string" ? res.personality : DEFAULTS.vcp1_personality;
       if (modeEl) modeEl.value = typeof res.mode === "string" ? res.mode : DEFAULTS.vcp1_mode;
+      if (notificationCompanionEl) notificationCompanionEl.checked = !!res.notificationCompanionEnabled;
+      if (appReactionsEl) appReactionsEl.checked = !!res.appReactionsEnabled;
+      if (workWatchEl) workWatchEl.checked = !!res.workWatchEnabled;
+      if (workWatchPresetEl) workWatchPresetEl.value = typeof res.workWatchPreset === "string" ? res.workWatchPreset : DEFAULTS.vcp1_work_watch_preset;
+      if (rotationEnabledEl) rotationEnabledEl.checked = !!res.rotationEnabled;
+      if (rotationIntervalEl) rotationIntervalEl.value = String(typeof res.rotationIntervalMinutes === "number" ? res.rotationIntervalMinutes : DEFAULTS.vcp1_rotation_interval_minutes);
 
       const scale  = (typeof res.scale  === "number") ? res.scale  : DEFAULTS.vcp1_scale;
       const offset = (typeof res.offset === "number") ? res.offset : DEFAULTS.vcp1_offset;
@@ -99,6 +133,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       save({ vcp1_avoidCursor: avoidCursorEl.checked });
     });
   }
+  if (avoidCursorStrengthEl) {
+    avoidCursorStrengthEl.addEventListener("change", () => {
+      save({ vcp1_avoid_cursor_strength: avoidCursorStrengthEl.value });
+    });
+  }
   if (personalityEl) {
     personalityEl.addEventListener("change", () => {
       save({ vcp1_personality: personalityEl.value });
@@ -107,6 +146,44 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (modeEl) {
     modeEl.addEventListener("change", () => {
       save({ vcp1_mode: modeEl.value });
+    });
+  }
+  if (notificationCompanionEl) {
+    notificationCompanionEl.addEventListener("change", () => {
+      save({ vcp1_notification_companion: notificationCompanionEl.checked });
+    });
+  }
+  if (appReactionsEl) {
+    appReactionsEl.addEventListener("change", () => {
+      save({ vcp1_app_reactions: appReactionsEl.checked });
+    });
+  }
+  if (testCompanionEl) {
+    testCompanionEl.addEventListener("click", () => {
+      window.settingsApi.testCompanionNotification();
+    });
+  }
+  if (workWatchEl) {
+    workWatchEl.addEventListener("change", () => {
+      save({ vcp1_work_watch: workWatchEl.checked });
+    });
+  }
+  if (workWatchPresetEl) {
+    workWatchPresetEl.addEventListener("change", () => {
+      save({ vcp1_work_watch_preset: workWatchPresetEl.value });
+    });
+  }
+  if (workWatchStartEl) workWatchStartEl.addEventListener("click", () => window.settingsApi.startWorkWatch());
+  if (workWatchStopEl) workWatchStopEl.addEventListener("click", () => window.settingsApi.stopWorkWatch());
+  if (workWatchResetEl) workWatchResetEl.addEventListener("click", () => window.settingsApi.resetWorkWatch());
+  if (rotationEnabledEl) {
+    rotationEnabledEl.addEventListener("change", () => {
+      save({ vcp1_rotation_enabled: rotationEnabledEl.checked });
+    });
+  }
+  if (rotationIntervalEl) {
+    rotationIntervalEl.addEventListener("change", () => {
+      save({ vcp1_rotation_interval_minutes: Number(rotationIntervalEl.value) });
     });
   }
 
@@ -128,6 +205,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!gridEl) return;
     const packs = await window.settingsApi.listPacks();
     let selectedId = res.pack;
+    let favoriteIds = Array.isArray(res.favoritePacks) ? res.favoritePacks.slice(0, 12) : [];
 
     // フィルタ状態
     let selectedKind = 'normal';
@@ -151,6 +229,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const frag = document.createDocumentFragment();
     const tiles = [];
+    function updateFavoriteUi() {
+      for (const t of tiles) t.classList.toggle("favorite", favoriteIds.includes(t.dataset.id));
+      if (favoriteCountEl) favoriteCountEl.textContent = String(favoriteIds.length);
+    }
+    function selectPack(packId) {
+      if (!packId || packId === selectedId) return;
+      selectedId = packId;
+      for (const t of tiles) t.classList.toggle("selected", t.dataset.id === selectedId);
+      window.settingsApi.setSettings({ pack: packId });
+    }
+    function saveFavorites() {
+      save({ vcp1_favorite_packs: favoriteIds });
+      updateFavoriteUi();
+    }
     for (const p of packs) {
       // UIイメージディレクトリを一般化: 通常=gen-1, フォルム=forms/alola
       const parts = p.id.split("/");
@@ -158,7 +250,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const slug = p.id.split("/").pop();
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "tile" + (p.id === selectedId ? " selected" : "");
+      btn.className = "tile" + (p.id === selectedId ? " selected" : "") + (favoriteIds.includes(p.id) ? " favorite" : "");
       btn.dataset.id = p.id;
       btn.dataset.region = p.region || "";
       btn.dataset.search = tileSearchText(p);
@@ -188,15 +280,32 @@ document.addEventListener("DOMContentLoaded", async () => {
       num.textContent = numStr ? "#" + numStr : "";
       btn.append(img, name, num);
       btn.addEventListener("click", () => {
-        if (p.id === selectedId) return;
-        selectedId = p.id;
-        for (const t of tiles) t.classList.toggle("selected", t.dataset.id === selectedId);
-        window.settingsApi.setSettings({ pack: p.id });
+        selectPack(p.id);
       });
       tiles.push(btn);
       frag.appendChild(btn);
     }
     gridEl.appendChild(frag);
+    updateFavoriteUi();
+    if (favoriteAddEl) {
+      favoriteAddEl.addEventListener("click", () => {
+        if (!selectedId || favoriteIds.includes(selectedId)) return;
+        favoriteIds = [...favoriteIds, selectedId].slice(0, 12);
+        saveFavorites();
+      });
+    }
+    if (favoriteNextEl) {
+      favoriteNextEl.addEventListener("click", async () => {
+        const nextPack = await window.settingsApi.nextFavorite();
+        if (nextPack) selectPack(nextPack);
+      });
+    }
+    if (favoriteClearEl) {
+      favoriteClearEl.addEventListener("click", () => {
+        favoriteIds = [];
+        saveFavorites();
+      });
+    }
 
     // 初期選択をスクロールして見せる
     const sel = tiles.find((t) => t.classList.contains("selected"));

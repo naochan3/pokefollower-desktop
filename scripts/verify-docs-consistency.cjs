@@ -28,6 +28,11 @@ expectIncludes(
   readme,
   `releases/download/${tag}/PokeFollower-${version}-arm64-mac.zip`,
 );
+expectIncludes(
+  "README Linux AppImage unavailable note",
+  readme,
+  `${tag} の Release には AppImage asset をまだ添付していない`,
+);
 expectIncludes("STATUS current version", status, `現在のバージョン: **${tag}**`);
 expectIncludes("STATUS included version", status, `現在含まれているもの（${tag}）`);
 expectIncludes("README Windows installer example", readme, `... ${version}.exe`);
@@ -45,6 +50,11 @@ expectIncludes(
   "RELEASING macOS versioned rule",
   releasing,
   "macOS はアセット名にバージョンが入るため、README では `releases/download/v<ver>/...`",
+);
+expectIncludes(
+  "RELEASING Linux AppImage asset rule",
+  releasing,
+  `PokeFollower-<ver>.AppImage`,
 );
 
 if (/macOS 版は現在 \*\*v\d+\.\d+\.\d+/.test(readme)) {

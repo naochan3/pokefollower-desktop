@@ -4,12 +4,21 @@
 // - 最大化（Chrome等）は作業領域までしか覆わない → 全画面と判定されない
 // - デスクトップ/タスクバー等のシェル窓は画面全体サイズだが「クラス名」で除外する
 
-const { execFileSync } = require("node:child_process");
+const { execFile, execFileSync } = require("node:child_process");
 
 let getForegroundInfo = () => null;
 
 function execText(command, args) {
   return execFileSync(command, args, { encoding: "utf8", timeout: 500, windowsHide: true }).trim();
+}
+
+function execTextAsync(command, args) {
+  return new Promise((resolve) => {
+    execFile(command, args, { encoding: "utf8", timeout: 500, windowsHide: true }, (error, stdout) => {
+      if (error) resolve(null);
+      else resolve(String(stdout || "").trim());
+    });
+  });
 }
 
 function parseNumber(value) {
@@ -34,7 +43,7 @@ if (process.platform === "win32") {
       const buf = Buffer.alloc(256);
       const len = GetClassNameA(h, buf, 256);
       const cls = len > 0 ? buf.toString("latin1", 0, len) : "";
-      return { w: r.right - r.left, h: r.bottom - r.top, cls };
+      return { x: r.left, y: r.top, w: r.right - r.left, h: r.bottom - r.top, cls };
     };
   } catch (e) {
     // koffi が読めない場合は全画面検知を無効化（アプリは通常どおり動く）
@@ -42,56 +51,65 @@ if (process.platform === "win32") {
     console.error("[fullscreen-detect] koffi load failed; 全画面自動隠しは無効:", e && e.message);
   }
 } else if (process.platform === "darwin") {
-  getForegroundInfo = () => {
-    try {
-      const script = [
-        'tell application "System Events"',
-        'set frontApp to first application process whose frontmost is true',
-        'set appName to name of frontApp',
-        'if (count of windows of frontApp) is 0 then return appName & tab & "0" & tab & "0" & tab & "false"',
-        'set frontWindow to window 1 of frontApp',
-        'try',
-        'set isFs to value of attribute "AXFullScreen" of frontWindow',
-        'on error',
-        'set isFs to false',
-        'end try',
-        'try',
-        'set windowSize to size of frontWindow',
-        'set winWidth to item 1 of windowSize',
-        'set winHeight to item 2 of windowSize',
-        'on error',
-        'set winWidth to 0',
-        'set winHeight to 0',
-        'end try',
-        'return appName & tab & winWidth & tab & winHeight & tab & isFs',
-        "end tell",
-      ].join("\n");
-      const [cls, w, h, isFullscreen] = execText("osascript", ["-e", script]).split("\t");
-      return { cls: cls || "", w: parseNumber(w), h: parseNumber(h), isFullscreen: isFullscreen === "true" };
-    } catch (_) {
-      return null;
-    }
+  getForegroundInfo = async () => {
+    const script = [
+      'tell application "System Events"',
+      'set frontApp to first application process whose frontmost is true',
+      'set appName to name of frontApp',
+      'if (count of windows of frontApp) is 0 then return appName & tab & "0" & tab & "0" & tab & "false"',
+      'set frontWindow to window 1 of frontApp',
+      'try',
+      'set isFs to value of attribute "AXFullScreen" of frontWindow',
+      'on error',
+      'set isFs to false',
+      'end try',
+      'try',
+      'set windowPosition to position of frontWindow',
+      'set winX to item 1 of windowPosition',
+      'set winY to item 2 of windowPosition',
+      'on error',
+      'set winX to 0',
+      'set winY to 0',
+      'end try',
+      'try',
+      'set windowSize to size of frontWindow',
+      'set winWidth to item 1 of windowSize',
+      'set winHeight to item 2 of windowSize',
+      'on error',
+      'set winWidth to 0',
+      'set winHeight to 0',
+      'end try',
+      'return appName & tab & winX & tab & winY & tab & winWidth & tab & winHeight & tab & isFs',
+      "end tell",
+    ].join("\n");
+    const output = await execTextAsync("osascript", ["-e", script]);
+    if (!output) return null;
+    const [cls, x, y, w, h, isFullscreen] = output.split("\t");
+    return { cls: cls || "", x: parseNumber(x), y: parseNumber(y), w: parseNumber(w), h: parseNumber(h), isFullscreen: isFullscreen === "true" };
   };
 } else if (process.platform === "linux") {
-  getForegroundInfo = () => {
-    try {
-      const windowId = execText("xdotool", ["getactivewindow"]);
-      if (!windowId) return null;
-      const state = execText("xprop", ["-id", windowId, "_NET_WM_STATE"]);
-      const wmClass = execText("xprop", ["-id", windowId, "WM_CLASS"]);
-      const geometry = execText("xwininfo", ["-id", windowId]);
-      const widthMatch = geometry.match(/Width:\s+(\d+)/);
-      const heightMatch = geometry.match(/Height:\s+(\d+)/);
-      const classMatch = wmClass.match(/WM_CLASS\(STRING\) = (.+)$/);
-      return {
-        cls: classMatch ? classMatch[1] : "",
-        w: widthMatch ? parseNumber(widthMatch[1]) : 0,
-        h: heightMatch ? parseNumber(heightMatch[1]) : 0,
-        isFullscreen: state.includes("_NET_WM_STATE_FULLSCREEN"),
-      };
-    } catch (_) {
-      return null;
-    }
+  getForegroundInfo = async () => {
+    const windowId = await execTextAsync("xdotool", ["getactivewindow"]);
+    if (!windowId) return null;
+    const [state, wmClass, geometry] = await Promise.all([
+      execTextAsync("xprop", ["-id", windowId, "_NET_WM_STATE"]),
+      execTextAsync("xprop", ["-id", windowId, "WM_CLASS"]),
+      execTextAsync("xwininfo", ["-id", windowId]),
+    ]);
+    if (!state || !wmClass || !geometry) return null;
+    const widthMatch = geometry.match(/Width:\s+(\d+)/);
+    const heightMatch = geometry.match(/Height:\s+(\d+)/);
+    const xMatch = geometry.match(/Absolute upper-left X:\s+(-?\d+)/);
+    const yMatch = geometry.match(/Absolute upper-left Y:\s+(-?\d+)/);
+    const classMatch = wmClass.match(/WM_CLASS\(STRING\) = (.+)$/);
+    return {
+      cls: classMatch ? classMatch[1] : "",
+      x: xMatch ? parseNumber(xMatch[1]) : 0,
+      y: yMatch ? parseNumber(yMatch[1]) : 0,
+      w: widthMatch ? parseNumber(widthMatch[1]) : 0,
+      h: heightMatch ? parseNumber(heightMatch[1]) : 0,
+      isFullscreen: state.includes("_NET_WM_STATE_FULLSCREEN"),
+    };
   };
 }
 

@@ -11,6 +11,12 @@ const { isFullscreenForeground } = require("./fullscreen-policy.js");
 const { resolveAppProtocolPath } = require("./app-protocol-path.js");
 const { getSimIntervalMs } = require("./sim-loop-config.js");
 const { applySettingsPatch } = require("./settings-patch.js");
+const { createNotificationCompanion } = require("./notification-companion.js");
+const { createCodexNotificationWatcher } = require("./codex-notification-watcher.js");
+const { defaultNotificationQueuePath } = require("./notification-queue.js");
+const { createWorkWatchSession } = require("./work-watch.js");
+const { reactionModeForForeground } = require("./app-reactions.js");
+const { nextFavoritePack } = require("./favorite-rotation.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -26,13 +32,78 @@ let simTimer = null;
 let simIntervalMs = null;
 let fullscreenTimer = null;
 let lastStepTs = 0;
+let lastRender = null;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
+let fullscreenCheckInFlight = false;
+let lastForegroundInfo = null;
+let currentReactionMode = "normal";
+let notificationCompanion = null;
+let codexNotificationWatcher = null;
+let workWatchSession = null;
+let workWatchTimer = null;
+let favoriteRotationTimer = null;
 
 const TRAY_ICON_SIZE_PX = 28;
 const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
-const FULLSCREEN_POLL_INTERVAL_MS = 600;
+const FULLSCREEN_POLL_INTERVAL_MS = process.platform === "win32" ? 600 : 2000;
+
+function applyFullscreenInfo(info) {
+  lastForegroundInfo = info || null;
+  if (info && Number.isFinite(info.x) && Number.isFinite(info.y) && Number.isFinite(info.w) && Number.isFinite(info.h)) {
+    sim.setRestSurfaces([{ kind: "window", x: info.x, y: info.y, width: info.w, height: info.h }]);
+  } else {
+    sim.setRestSurfaces([]);
+  }
+  const nextFullscreenActive = isFullscreenForeground(info, screen.getAllDisplays());
+  if (nextFullscreenActive === fullscreenActive) return;
+  fullscreenActive = nextFullscreenActive;
+  if (fullscreenActive) {
+    stopSimLoop({ hide: true });
+  } else if (enabled) {
+    lastStepTs = Date.now();
+    startSimLoop();
+    runSimFrame();
+  }
+}
+
+function workWatchPhase() {
+  if (!workWatchSession) return "idle";
+  const state = workWatchSession.snapshot();
+  if (!state.running) return "idle";
+  return state.phase;
+}
+
+function syncReactionMode() {
+  if (!settingsStore) return;
+  const recentlyActive = settingsStore.get("avoidCursor") && (() => {
+    try { return powerMonitor.getSystemIdleTime() <= 1; }
+    catch (_) { return false; }
+  })();
+  const nextMode = reactionModeForForeground(lastForegroundInfo, {
+    enabled: !!settingsStore.get("appReactionsEnabled"),
+    workWatchPhase: workWatchPhase(),
+    recentlyActive,
+  });
+  if (nextMode === currentReactionMode) return;
+  currentReactionMode = nextMode;
+  sim.setConfig({ vcp1_reactionMode: currentReactionMode });
+}
+
 function checkFullscreen() {
-  fullscreenActive = isFullscreenForeground(getForegroundInfo(), screen.getAllDisplays());
+  if (fullscreenCheckInFlight) return;
+  const info = getForegroundInfo();
+  if (!info || typeof info.then !== "function") {
+    applyFullscreenInfo(info);
+    return;
+  }
+  fullscreenCheckInFlight = true;
+  info
+    .then((resolvedInfo) => {
+      applyFullscreenInfo(resolvedInfo);
+    })
+    .finally(() => {
+      fullscreenCheckInFlight = false;
+    });
 }
 
 protocol.registerSchemesAsPrivileged([
@@ -98,7 +169,10 @@ function createOverlayWindow(display) {
   hardenRendererNavigation(win);
   win.loadFile(path.join(__dirname, "..", "overlay", "overlay.html"));
   win.webContents.on("did-finish-load", () => {
-    if (currentMeta && !win.isDestroyed()) win.webContents.send("meta", currentMeta);
+    if (win.isDestroyed()) return;
+    if (currentMeta) win.webContents.send("meta", currentMeta);
+    const overlay = overlays.find((o) => o.win === win);
+    if (overlay) sendFrameToOverlay(overlay, lastRender, true);
   });
   return win;
 }
@@ -128,24 +202,36 @@ function loadPackIntoSim(packKey) {
   return resolvedKey;
 }
 
+function switchPack(packKey) {
+  if (!packKey) return settingsStore.get("pack");
+  const resolved = loadPackIntoSim(packKey);
+  settingsStore.set({ pack: resolved });
+  return resolved;
+}
+
+function sendFrameToOverlay(o, render, force = false) {
+  if (!o.win || o.win.isDestroyed()) return;
+  const frame = frameForOverlay(render, o.bounds, currentMeta);
+  if (!frame.visible) {
+    if (force || o.visible) {
+      o.win.webContents.send("frame", frame);
+      o.visible = false;
+      o.lastFrameKey = "hidden";
+    }
+    return;
+  }
+  const nextFrameKey = frameKey(frame);
+  if (!force && o.visible && o.lastFrameKey === nextFrameKey) return;
+  o.win.webContents.send("frame", frame);
+  o.visible = true;
+  o.lastFrameKey = nextFrameKey;
+}
+
 // ポケモンのグローバル座標を、各モニター窓のローカル座標に変換して配信
 function broadcastFrame(render) {
+  lastRender = render;
   for (const o of overlays) {
-    if (!o.win || o.win.isDestroyed()) continue;
-    const frame = frameForOverlay(render, o.bounds, currentMeta);
-    if (!frame.visible) {
-      if (o.visible) {
-        o.win.webContents.send("frame", frame);
-        o.visible = false;
-        o.lastFrameKey = "hidden";
-      }
-      continue;
-    }
-    const nextFrameKey = frameKey(frame);
-    if (o.visible && o.lastFrameKey === nextFrameKey) continue;
-    o.win.webContents.send("frame", frame);
-    o.visible = true;
-    o.lastFrameKey = nextFrameKey;
+    sendFrameToOverlay(o, render);
   }
 }
 
@@ -159,6 +245,7 @@ function runSimFrame() {
   const dt = now - lastStepTs;
   lastStepTs = now;
   if (!enabled || fullscreenActive) { broadcastFrame(null); return; }
+  syncReactionMode();
   const cursor = screen.getCursorScreenPoint(); // グローバル座標
   sim.updateCursor(cursor.x, cursor.y, now);
   broadcastFrame(sim.step(dt, now));
@@ -171,8 +258,20 @@ function startSimLoop() {
   simTimer = setInterval(runSimFrame, simIntervalMs);
 }
 
+function stopSimLoop({ hide = false } = {}) {
+  if (simTimer) {
+    clearInterval(simTimer);
+    simTimer = null;
+  }
+  if (hide) broadcastFrame(null);
+}
+
 function refreshSimLoopInterval() {
   const next = getSimIntervalMs({ isOnBattery: readBatteryState() });
+  if (!enabled || fullscreenActive) {
+    simIntervalMs = next;
+    return;
+  }
   if (!simTimer || next === simIntervalMs) return;
   clearInterval(simTimer);
   simTimer = null;
@@ -198,16 +297,22 @@ function setEnabled(on) {
     startFullscreenPolling();
     const c = screen.getCursorScreenPoint();
     sim.resetTo(c.x, c.y, Date.now()); // 有効化時はカーソル位置へ出現
+    if (fullscreenActive) {
+      stopSimLoop({ hide: true });
+    } else {
+      startSimLoop();
+      runSimFrame();
+    }
   } else {
     stopFullscreenPolling();
-    broadcastFrame(null);
+    stopSimLoop({ hide: true });
   }
 }
 
 function getSettingsWin() {
   if (settingsWin && !settingsWin.isDestroyed()) { settingsWin.focus(); return settingsWin; }
   settingsWin = new BrowserWindow({
-    width: 400, height: 720, resizable: false, title: "PokéFollower 設定",
+    width: 420, height: 760, resizable: false, title: "PokéFollower 設定",
     webPreferences: {
       preload: path.join(__dirname, "..", "settings", "settings-preload.js"),
       contextIsolation: true, nodeIntegration: false, sandbox: true,
@@ -263,6 +368,71 @@ function refreshTrayMenu() {
   tray.setContextMenu(menu);
 }
 
+function publishWorkWatchEvent(event) {
+  if (!notificationCompanion) return;
+  if (event === "break-started") {
+    notificationCompanion.publish({
+      source: "作業見守り",
+      title: "休憩時間です",
+      body: "少し離れて、目と肩を休ませましょう",
+    }, { force: true });
+  } else if (event === "work-started") {
+    notificationCompanion.publish({
+      source: "作業見守り",
+      title: "作業を再開します",
+      body: "ポケモンが静かに見守ります",
+    }, { force: true });
+  }
+}
+
+function stopWorkWatchTimer() {
+  if (!workWatchTimer) return;
+  clearInterval(workWatchTimer);
+  workWatchTimer = null;
+}
+
+function startWorkWatchTimer() {
+  if (workWatchTimer || !workWatchSession) return;
+  workWatchTimer = setInterval(() => {
+    const { event, state } = workWatchSession.tick(Date.now());
+    if (event) publishWorkWatchEvent(event);
+    if (event) syncReactionMode();
+    if (!state.running) stopWorkWatchTimer();
+  }, 1000);
+}
+
+function syncWorkWatchConfig() {
+  if (!workWatchSession || !settingsStore) return;
+  workWatchSession.setPreset(settingsStore.get("workWatchPreset"));
+  if (!settingsStore.get("workWatchEnabled")) {
+    workWatchSession.stop();
+    stopWorkWatchTimer();
+  }
+  syncReactionMode();
+}
+
+function stopFavoriteRotation() {
+  if (!favoriteRotationTimer) return;
+  clearInterval(favoriteRotationTimer);
+  favoriteRotationTimer = null;
+}
+
+function advanceFavoritePack() {
+  if (!settingsStore) return null;
+  const settings = settingsStore.getAll();
+  const nextPack = nextFavoritePack(settings.pack, settings.favoritePacks);
+  if (!nextPack || nextPack === settings.pack) return settings.pack;
+  return switchPack(nextPack);
+}
+
+function syncFavoriteRotation() {
+  stopFavoriteRotation();
+  if (!settingsStore) return;
+  const settings = settingsStore.getAll();
+  if (!settings.rotationEnabled || settings.favoritePacks.length < 2) return;
+  favoriteRotationTimer = setInterval(advanceFavoritePack, settings.rotationIntervalMinutes * 60 * 1000);
+}
+
 ipcMain.handle("settings:get", (event) => {
   requireSettingsSender(event);
   return settingsStore.getAll();
@@ -271,9 +441,46 @@ ipcMain.handle("packs:list", (event) => {
   requireSettingsSender(event);
   return packReader.readPackList();
 });
+ipcMain.handle("companion:test-notification", (event) => {
+  requireSettingsSender(event);
+  return notificationCompanion.publish({
+    source: "PokéFollower",
+    title: "通知コンパニオン",
+    body: "ポケモンが要約通知を届けます",
+  });
+});
+ipcMain.handle("work-watch:start", (event) => {
+  requireSettingsSender(event);
+  settingsStore.set({ workWatchEnabled: true });
+  syncWorkWatchConfig();
+  const state = workWatchSession.start(Date.now());
+  syncReactionMode();
+  startWorkWatchTimer();
+  return state;
+});
+ipcMain.handle("work-watch:stop", (event) => {
+  requireSettingsSender(event);
+  const state = workWatchSession.stop();
+  stopWorkWatchTimer();
+  syncReactionMode();
+  return state;
+});
+ipcMain.handle("work-watch:reset", (event) => {
+  requireSettingsSender(event);
+  const state = workWatchSession.stop();
+  stopWorkWatchTimer();
+  syncReactionMode();
+  return state;
+});
+ipcMain.handle("favorites:next", (event) => {
+  requireSettingsSender(event);
+  return advanceFavoritePack();
+});
 ipcMain.on("settings:set", (event, patch) => {
   if (!isSettingsSender(event)) return;
-  applySettingsPatch(patch, { settingsStore, sim, loadPackIntoSim, setEnabled, refreshTrayMenu });
+  applySettingsPatch(patch, { settingsStore, sim, loadPackIntoSim, setEnabled, refreshTrayMenu, syncFavoriteRotation });
+  if (codexNotificationWatcher) codexNotificationWatcher.sync();
+  syncWorkWatchConfig();
 });
 
 // 二重起動を禁止（複数インスタンスが同時にカーソルを追って競合するのを防ぐ）。
@@ -282,6 +489,17 @@ const gotSingleInstanceLock = app.requestSingleInstanceLock();
 app.whenReady().then(() => {
   if (!gotSingleInstanceLock) { app.quit(); return; }
   settingsStore = createSettingsStore(path.join(getUserDataPath(), "settings.json"));
+  notificationCompanion = createNotificationCompanion({
+    isEnabled: () => !!settingsStore.get("notificationCompanionEnabled"),
+    getOverlays: () => overlays,
+    isSuppressed: () => !enabled || fullscreenActive || currentReactionMode === "busy",
+  });
+  codexNotificationWatcher = createCodexNotificationWatcher({
+    queuePath: defaultNotificationQueuePath(),
+    getSettings: () => settingsStore.getAll(),
+    publish: (notification) => notificationCompanion.publish(notification),
+  });
+  workWatchSession = createWorkWatchSession({ preset: settingsStore.get("workWatchPreset") });
   const s = settingsStore.getAll();
   // 自動起動はインストール版のみ登録（開発起動でRunキーにゴミをためないようisPackagedで限定）
   if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: true });
@@ -294,8 +512,10 @@ app.whenReady().then(() => {
     vcp1_lerp: s.lerp,
     vcp1_edgeRest: s.edgeRest,
     vcp1_avoidCursor: s.avoidCursor,
+    vcp1_avoidCursorStrength: s.avoidCursorStrength,
     vcp1_personality: s.personality,
     vcp1_mode: s.mode,
+    vcp1_reactionMode: currentReactionMode,
   });
   try { loadPackIntoSim(s.pack); }
   catch (_) { try { loadPackIntoSim("retro/gen-1/009-blastoise"); } catch (_e) { /* noop */ } }
@@ -308,11 +528,17 @@ app.whenReady().then(() => {
   powerMonitor.on("on-ac", refreshSimLoopInterval);
   powerMonitor.on("on-battery", refreshSimLoopInterval);
 
-  startSimLoop();
   setEnabled(s.enabled);
+  syncFavoriteRotation();
+  codexNotificationWatcher.sync();
   buildTray();
 });
 
 app.on("window-all-closed", () => {
   // トレイ常駐のため終了しない（「終了」メニューでのみ quit）
+});
+
+app.on("before-quit", () => {
+  if (codexNotificationWatcher) codexNotificationWatcher.stop();
+  stopFavoriteRotation();
 });

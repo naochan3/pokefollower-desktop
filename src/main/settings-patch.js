@@ -10,6 +10,7 @@ function applySettingsPatch(patch, {
   loadPackIntoSim,
   setEnabled,
   refreshTrayMenu,
+  syncFavoriteRotation = () => {},
 }) {
   const safePatch = sanitize(patch);
   const current = settingsStore.getAll();
@@ -22,8 +23,10 @@ function applySettingsPatch(patch, {
     hasOwn(safePatch, "lerp") ||
     hasOwn(safePatch, "edgeRest") ||
     hasOwn(safePatch, "avoidCursor") ||
+    hasOwn(safePatch, "avoidCursorStrength") ||
     hasOwn(safePatch, "personality") ||
-    hasOwn(safePatch, "mode")
+    hasOwn(safePatch, "mode") ||
+    hasOwn(safePatch, "appReactionsEnabled")
   ) {
     sim.setConfig({
       vcp1_scale: next.scale,
@@ -31,6 +34,7 @@ function applySettingsPatch(patch, {
       vcp1_lerp: next.lerp,
       vcp1_edgeRest: next.edgeRest,
       vcp1_avoidCursor: next.avoidCursor,
+      vcp1_avoidCursorStrength: next.avoidCursorStrength,
       vcp1_personality: next.personality,
       vcp1_mode: next.mode,
     });
@@ -40,6 +44,9 @@ function applySettingsPatch(patch, {
       const resolved = loadPackIntoSim(next.pack);
       if (resolved !== next.pack) settingsStore.set({ pack: resolved });
     } catch (_) { /* 解決失敗時は据え置き */ }
+  }
+  if (hasOwn(safePatch, "favoritePacks") || hasOwn(safePatch, "rotationEnabled") || hasOwn(safePatch, "rotationIntervalMinutes")) {
+    syncFavoriteRotation();
   }
   if (hasOwn(safePatch, "enabled")) {
     setEnabled(next.enabled);

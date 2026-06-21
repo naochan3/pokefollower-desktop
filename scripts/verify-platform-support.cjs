@@ -33,6 +33,13 @@ expect(
   /process\.platform === "darwin"/.test(fullscreenDetect) && /osascript/.test(fullscreenDetect),
   "fullscreen-detect should include best-effort macOS foreground detection",
 );
+expect(/x: r\.left/.test(fullscreenDetect), "Win32 foreground info should expose window x coordinate");
+expect(/set windowPosition to position of frontWindow/.test(fullscreenDetect), "macOS foreground info should expose window position when allowed");
+expect(/Absolute upper-left X/.test(fullscreenDetect), "Linux foreground info should expose xwininfo absolute position");
+expect(
+  /execTextAsync/.test(fullscreenDetect) && /getForegroundInfo = async \(\)/.test(fullscreenDetect),
+  "macOS/Linux foreground detection must avoid blocking the Electron main process",
+);
 expect(
   /process\.platform === "linux"/.test(fullscreenDetect) && /xdotool/.test(fullscreenDetect) && /xprop/.test(fullscreenDetect) && /xwininfo/.test(fullscreenDetect),
   "fullscreen-detect should include best-effort Linux foreground detection",

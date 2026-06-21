@@ -45,21 +45,27 @@
 ## 現在含まれているもの（v1.0.5）
 
 - Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21＋ #31/#32 の追従挙動修正＋ #34（待機を移動方向の逆隅に）＋ #35（第5〜9世代追加・世代フィルタ）込み。追従既定 16ms）
-- macOS arm64 dmg / zip（v1.0.5 は contributor によるビルド添付待ち。直近の公開済み安定版は v1.0.4）
+- macOS arm64 dmg / zip（v1.0.5 添付済み）
 - ポケモン 956 種（第1〜9世代。未収録69種は出典素材待ち）
 - 日本語表示・日本語検索、タイル選択 UI、世代フィルタ（全/第1〜9）
 - 待機位置は移動方向の逆隅に留まる（本家拡張準拠）
+- Follow / Roam（散歩）モード切り替え。Roam は画面内の自律移動、idle/sleep 休止、性格プリセット別タイミングを含む
+- Edge Rest（既定 ON）。カーソル静止後に現在ディスプレイの安全な画面端、または取得できた前面ウィンドウ端へ移動
+- 邪魔しない追従（既定 ON）。カーソル直下回避、Normal/Strong の退避強度、最近操作中の busy reaction を含む
+- お気に入り待機列（既定 OFF）。最大12件のお気に入り保存、手動 NEXT、1〜120分の自動ローテーション、空待機列では単体選択を維持
+- 作業見守りモード（既定 OFF）。25/5・50/10 タイマー、開始/停止/リセット、休憩/作業切り替わり通知、作業中/休憩中の控えめな追従リアクションを含む
+- アプリ別リアクション（既定 OFF）。前面アプリ情報が取れる環境では、エディタ/ターミナルで距離を取り、ブラウザ/チャットでは少し近づく軽量ルールを適用
 - マルチモニター連続追従、全画面自動非表示（Windows / macOS / Linux best-effort）、ログイン自動起動、クリック透過
+- 通知コンパニオン基盤（既定 OFF、OS 通知本文は保存しない、Codex notify bridge は短い要約だけを最大64件のローカル queue に保持）
 
 ---
 
 ## 今後の対応予定（ロードマップ）
 
-未着手・検討中の項目。GitHub の [Issues](https://github.com/naochan3/pokefollower-desktop/issues) で管理します。
+未完了・対応中・検討中の項目。GitHub の [Issues](https://github.com/naochan3/pokefollower-desktop/issues) で管理します。
 
 | 項目 | 優先度 | issue | メモ |
 |---|---|---|---|
-| **全ポケモン対応（第5〜9世代の追加）** | 中 | [#14](https://github.com/naochan3/pokefollower-desktop/issues/14) | 第5〜9世代を追加し956種に拡張済み。残り69種はSpriteCollab素材待ち。別フォルム（アローラ等）は今後検討 |
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
 | macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知は実装済み。Linux AppImage の透明・常駐・クリック透過・最前面は実機検証が必要 |
 
@@ -69,5 +75,8 @@
 
 - macOS / Windows とも **未署名**（初回起動時に OS の警告）。
 - 全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。
+- アプリ別リアクションも前面アプリ情報の取得可否に依存し、取得できない場合は通常追従にフォールバックします。
+- 邪魔しない追従は system idle time が取れない環境では、カーソル近傍回避のみで動作します。
+- 通知コンパニオンは OS 全体の通知取得までは未対応です。現在はアプリ内/許可済みイベントと Codex notify payload を表示する軽量基盤で、OS 別の権限境界は [通知コンパニオンの取得境界](notification-capture.md) に整理しています。
 - モニター間で表示スケール（DPI）が大きく異なると、位置がわずかにずれることがある。
 - Linux は AppImage ビルドまで（実機の常駐挙動は未検証）。

@@ -56,6 +56,7 @@ describe("settings-patch", () => {
         vcp1_lerp: 0.5,
         vcp1_edgeRest: true,
         vcp1_avoidCursor: true,
+        vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "standard",
         vcp1_mode: "follow",
       }],
@@ -74,6 +75,7 @@ describe("settings-patch", () => {
         vcp1_lerp: 0.2,
         vcp1_edgeRest: false,
         vcp1_avoidCursor: true,
+        vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "standard",
         vcp1_mode: "follow",
       }],
@@ -92,6 +94,26 @@ describe("settings-patch", () => {
         vcp1_lerp: 0.2,
         vcp1_edgeRest: true,
         vcp1_avoidCursor: false,
+        vcp1_avoidCursorStrength: "normal",
+        vcp1_personality: "standard",
+        vcp1_mode: "follow",
+      }],
+    ]);
+  });
+
+  it("avoidCursorStrength patchはsim設定を更新する", () => {
+    const { deps, calls } = makeDeps();
+    const next = applySettingsPatch({ avoidCursorStrength: "strong" }, deps);
+    expect(next.avoidCursorStrength).toBe("strong");
+    expect(calls).toEqual([
+      ["settings:set", { avoidCursorStrength: "strong" }],
+      ["sim:setConfig", {
+        vcp1_scale: 1.25,
+        vcp1_offset: 70,
+        vcp1_lerp: 0.2,
+        vcp1_edgeRest: true,
+        vcp1_avoidCursor: true,
+        vcp1_avoidCursorStrength: "strong",
         vcp1_personality: "standard",
         vcp1_mode: "follow",
       }],
@@ -110,6 +132,7 @@ describe("settings-patch", () => {
         vcp1_lerp: 0.2,
         vcp1_edgeRest: true,
         vcp1_avoidCursor: true,
+        vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "friendly",
         vcp1_mode: "follow",
       }],
@@ -128,6 +151,7 @@ describe("settings-patch", () => {
         vcp1_lerp: 0.2,
         vcp1_edgeRest: true,
         vcp1_avoidCursor: true,
+        vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "standard",
         vcp1_mode: "roam",
       }],
@@ -141,6 +165,24 @@ describe("settings-patch", () => {
       ["settings:set", { pack: "retro/025-pikachu" }],
       ["pack:load", "retro/025-pikachu"],
       ["settings:set", { pack: "retro/gen-1/025-pikachu" }],
+    ]);
+  });
+
+  it("favorite/rotation patchはrotation同期だけを走らせる", () => {
+    const { deps, calls } = makeDeps();
+    let synced = 0;
+    applySettingsPatch({
+      favoritePacks: ["retro/gen-1/025-pikachu"],
+      rotationEnabled: true,
+      rotationIntervalMinutes: 5,
+    }, { ...deps, syncFavoriteRotation: () => { synced += 1; } });
+    expect(synced).toBe(1);
+    expect(calls).toEqual([
+      ["settings:set", {
+        favoritePacks: ["retro/gen-1/025-pikachu"],
+        rotationEnabled: true,
+        rotationIntervalMinutes: 5,
+      }],
     ]);
   });
 

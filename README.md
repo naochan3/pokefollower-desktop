@@ -29,7 +29,22 @@
 
 > 未署名・未公証のため、初回は Gatekeeper にブロックされます。アプリを**右クリック →「開く」**、または `システム設定 → プライバシーとセキュリティ` の「このまま開く」で実行してください。
 > （macOS 版は contributor がビルドした arm64 バイナリ。全画面アプリの自動非表示にはアクセシビリティ許可が必要な場合があります）
-> ※ v1.0.5 の macOS ビルドは contributor による添付待ちです（添付後に上記リンクが有効になります）。
+
+### Linux
+
+Linux は AppImage のビルド対応までです。v1.0.5 の Release には AppImage asset をまだ添付していないため、利用する場合はソースからビルドしてください。
+
+1. ソースから `npm run dist:linux` を実行
+2. 生成された `.AppImage` に実行権限を付けて起動
+3. タスクトレイのモンスターボールを**右クリック**で、設定 / 有効・無効 / 終了
+
+```bash
+npm run dist:linux
+chmod +x release/*.AppImage
+./release/*.AppImage
+```
+
+> Linux 版は AppImage のパッケージ検証までです。デスクトップ環境ごとの常駐・透明オーバーレイ挙動は追加検証が必要です。
 
 > 最新の配布状況は常に[リリースページ](https://github.com/naochan3/pokefollower-desktop/releases/latest)から確認できます。
 
@@ -44,6 +59,12 @@
 - **見た目の調整** — サイズ（SCALE）・カーソルからの距離（DISTANCE）・追従速度（SPEED）を変更可能。
 - **トレイ常駐** — タスクトレイのモンスターボールから、設定・有効/無効・自動起動・終了を操作。
 - **設定の永続化** — 選んだポケモンや各設定は再起動後も保持されます。
+- **通知コンパニオン（任意）** — 設定で ON にすると、許可された通知イベントを短く要約し、ポケモンの近くへドット風の吹き出しとして表示します。既定は OFF です。OS 通知本文は保存せず、Codex notify bridge は本文そのものではなく短い要約だけを最大64件のローカル queue に保持します。
+- **作業見守り（任意）** — 25/5 または 50/10 の作業/休憩タイマーを開始し、切り替わり時に控えめな通知と追従リアクションを出します。
+- **アプリ別リアクション（任意）** — 前面アプリ名を best-effort で分類し、エディタでは距離を取り、ブラウザ/チャットでは少し近づく控えめな反応に切り替えます。
+- **画面端/ウィンドウ端で休憩** — カーソルが止まると、安全な画面端または取得できた前面ウィンドウ端へ移動します。
+- **邪魔しない追従** — カーソル直下を避け、退避強度を Normal / Strong から選べます。最近操作中は距離を広げて動きを抑えます。
+- **お気に入り待機列** — 複数のポケモンをお気に入り登録し、手動 NEXT または指定分数ごとの自動交代ができます。
 - **ログイン時の自動起動**（インストール版のみ）。
 - **全画面アプリで自動的に隠れる** — ゲーム等が全画面で前面にあるときはポケモンを自動で隠し、抜けると戻ります。Chrome の最大化やデスクトップ表示では隠れません。
 - **クリック透過** — 透明・最前面のオーバーレイなので、下のアプリ操作の邪魔をしません。
@@ -53,7 +74,10 @@
 - macOS 版はビルド対応済みですが、未署名・未公証です。配布する場合は Developer ID で署名し、公証してください。
 - Linux 版は AppImage のビルド対応までです。デスクトップ環境ごとの常駐・透明オーバーレイ挙動は追加検証が必要です。
 - 全画面の自動判定は Windows では Win32、macOS では System Events / Accessibility、Linux では `xdotool` / `xprop` / `xwininfo` が利用できる環境で動作します。権限やツールが無い環境では自動非表示だけ無効になります。
+- アプリ別リアクションは全画面検知と同じ前面ウィンドウ情報を使うため、macOS では Accessibility/System Events、Linux では `xdotool` / `xprop` / `xwininfo` の可否に依存します。取得できない場合は通常追従に戻ります。
+- 邪魔しない追従は Electron の system idle time とカーソル位置を使うため、キー入力/ドラッグを個別に記録しません。取得できない環境ではカーソル近傍回避だけにフォールバックします。
 - Windows の全画面判定は「前面ウィンドウがモニター全体を覆っているか」で行うため、ブラウザを `F11` で全画面にした場合もゲーム同様に隠れます（通常の最大化では出たまま）。
+- 通知コンパニオンは表示基盤とテスト通知までです。OS 全体の通知取得は [通知コンパニオンの取得境界](docs/notification-capture.md) に沿って、明示的に許可された範囲だけを後続実装します。
 - モニターごとに表示スケール（DPI）が大きく異なる構成では、位置がわずかにずれる可能性があります。
 
 ---
@@ -62,7 +86,7 @@
 
 - Windows 10 / 11（x64）
 - macOS（Apple Silicon / arm64）
-- Linux（AppImage）
+- Linux（AppImage ビルド対応。v1.0.5 の Release asset は未添付）
 
 ## インストール（使う人向け）
 
@@ -78,6 +102,19 @@
   - **自動起動** — ログイン時の自動起動の ON / OFF
   - **終了** — アプリを終了
 - 設定画面では、検索ボックスに `ピカチュウ` / `ぴかちゅう` / `pikachu` / `25` などを入力して絞り込めます。
+- 通知コンパニオンは設定画面で ON / OFF できます。Codex の `notify` と連携する場合は、既存の Codex pet helper を残すために chain mode を使います。
+
+```toml
+notify = [
+  "node",
+  "/absolute/path/to/pokefollower-desktop/scripts/pokefollower-codex-notify.cjs",
+  "--forward",
+  "/Users/<you>/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient",
+  "turn-ended"
+]
+```
+
+> Codex は `notify` に JSON payload を渡します。PokéFollower は `input-messages` を保存せず、`last-assistant-message` を短く要約して `~/.pokefollower/notifications/codex.jsonl` に最大64件だけ保持します。キュー監視は通知コンパニオン ON の間だけ `fs.watch` で動きます。OS 通知取得の境界は [docs/notification-capture.md](docs/notification-capture.md) にまとめています。
 
 ---
 
@@ -176,6 +213,11 @@ Linux 生成物：`release/PokeFollower-<version>.AppImage` など。
 | 部品 | 役割 |
 |---|---|
 | メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（既定 16ms ≒ 最大60fps。`POKEFOLLOWER_SIM_INTERVAL_MS=8` で明示的に 8ms 指定可）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
+| 通知コンパニオン（`src/main/notification-companion.js`） | 設定 ON 時だけ、許可された通知イベントを短く正規化して overlay へ配信。ポーリングせず、全画面/無効時は抑制 |
+| Codex 通知ブリッジ（`src/main/notification-queue.js` / `src/main/codex-notification-watcher.js`） | Codex `notify` から渡された JSON payload を軽量 JSONL queue として受け、設定 ON の間だけ `fs.watch` で新着分を読む |
+| 作業見守り（`src/main/work-watch.js`） | 25/5・50/10 のタイマー状態機械。停止中は追従に影響せず、実行中だけ通知と reaction mode を更新 |
+| アプリ別リアクション（`src/main/app-reactions.js`） | 前面アプリ名を軽量分類し、通常/集中/親しみ/作業/休憩の reaction mode を決める。取得失敗時は通常へフォールバック |
+| お気に入り待機列（`src/main/favorite-rotation.js`） | 保存済み favoritePacks から次のポケモンを決める純粋ロジック。待機列が空なら単体選択を維持 |
 | 追従シム（`src/main/follower-sim.js`） | 追従とアニメーションの計算（グローバル座標）。DOM 非依存・テスト可能 |
 | Rust 追従コア（`crates/follower_core/`） | 追従位置計算の本体。WASM として `native/pokefollower_core.wasm` にビルドされ、Electron 実行時に読み込まれる |
 | オーバーレイ窓（`src/overlay/`） | **モニターごとに1枚**常設。透明・最前面・クリック透過。メインから受け取ったローカル座標でスプライトを描くだけ |
