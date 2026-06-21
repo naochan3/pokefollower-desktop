@@ -153,7 +153,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tiles = [];
     for (const p of packs) {
       // UIイメージディレクトリを一般化: 通常=gen-1, フォルム=forms/alola
-      const dir = p.id.split("/").slice(1, -1).join("/");
+      const parts = p.id.split("/");
+      const dir = parts.slice(1, -1).join("/") || parts[1] || "gen-1";
       const slug = p.id.split("/").pop();
       const btn = document.createElement("button");
       btn.type = "button";
