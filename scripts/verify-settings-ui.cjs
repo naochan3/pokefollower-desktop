@@ -93,6 +93,10 @@ expect(/const lerpUI = lerp \* 10;/.test(js), "settings.js must expose lerp as x
 expect(/const lerp = normalized \/ 10;/.test(js), "settings.js must convert speed UI back to internal lerp");
 expect(/toHira/.test(js) && /romaji/.test(js) && /#"\s*\+\s*padded/.test(js), "settings search must include kana, romaji, and dex number terms");
 expect(/stepUp\(\)/.test(js) && /stepDown\(\)/.test(js), "settings arrows must use native number input stepping");
+expect(/width: 420, height: 760/.test(fs.readFileSync(path.join(root, "src", "main", "main.js"), "utf8")), "settings window must leave room for notification controls");
+expect(/flex: 1 1 280px/.test(html), "pack grid must keep flexible vertical space");
+expect(/min-height: 160px/.test(html), "pack grid must keep a usable minimum height");
+expect(/grid-template-columns: 1fr auto/.test(html), "notification companion row must keep compact action layout");
 
 for (const surface of [
   'getSettings: () => ipcRenderer.invoke("settings:get")',
