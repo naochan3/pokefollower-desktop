@@ -30,8 +30,8 @@ function createRustFollowerCore(rootDir) {
     if (!required.every((name) => typeof e[name] === "function")) return null;
     return {
       backend: "rust-wasm",
-      setConfig({ offset, lerp }) {
-        e.pf_set_config(offset, lerp);
+      setConfig({ offset, lerp, avoidCursor = true }) {
+        e.pf_set_config(offset, lerp, avoidCursor ? 1 : 0);
       },
       resetTo(x, y, now) {
         e.pf_reset_to(x, y, now);

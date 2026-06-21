@@ -194,6 +194,36 @@ describe("follower-sim", () => {
     expect(r.y).toBeGreaterThan(700);
     expect(r.y).toBeLessThan(880);
   });
+
+  it("offsetが小さくてもカーソル直下を避ける", () => {
+    const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-avoid-")) });
+    sim.setMeta(META);
+    sim.setConfig({ vcp1_offset: 0, vcp1_lerp: 0.5, vcp1_edgeRest: false });
+    sim.resetTo(400, 300, 0);
+    let now = 0;
+    let r = null;
+    for (let i = 0; i < 120; i++) {
+      now += 16;
+      sim.updateCursor(400, 300, now);
+      r = sim.step(16, now);
+    }
+    expect(Math.hypot(r.x - 400, r.y - 300)).toBeGreaterThan(40);
+  });
+
+  it("カーソル回避は設定OFFで無効化できる", () => {
+    const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-avoid-off-")) });
+    sim.setMeta(META);
+    sim.setConfig({ vcp1_offset: 0, vcp1_lerp: 0.5, vcp1_edgeRest: false, vcp1_avoidCursor: false });
+    sim.resetTo(400, 300, 0);
+    let now = 0;
+    let r = null;
+    for (let i = 0; i < 120; i++) {
+      now += 16;
+      sim.updateCursor(400, 300, now);
+      r = sim.step(16, now);
+    }
+    expect(Math.hypot(r.x - 400, r.y - 300)).toBeLessThan(5);
+  });
 });
 
 // Issue #30: 向きはカーソル速度でなくポケモン自身の進行方向に従う／無操作で sleep する
