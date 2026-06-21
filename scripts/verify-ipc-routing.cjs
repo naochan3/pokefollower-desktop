@@ -53,6 +53,9 @@ expect(
   runSimFrame.indexOf("if (!enabled || fullscreenActive)") < runSimFrame.indexOf("screen.getCursorScreenPoint()"),
   "sim loop must avoid cursor polling while disabled or fullscreen-active",
 );
+expect(/function stopSimLoop\(\{ hide = false \} = \{\}\)/.test(main), "main.js must define a stoppable sim loop helper");
+expect(/if \(fullscreenActive\) \{[\s\S]*stopSimLoop\(\{ hide: true \}\)/.test(main), "fullscreen suppression must stop the sim loop instead of ticking hidden frames");
+expect(/else if \(enabled\) \{[\s\S]*startSimLoop\(\);[\s\S]*runSimFrame\(\);/.test(main), "fullscreen exit must restart the sim loop and publish a fresh frame");
 expect(/const \{ applySettingsPatch \} = require\("\.\/settings-patch\.js"\);/.test(main), "main.js must route settings IPC through settings-patch helper");
 expect(/function isSettingsSender\(event\) \{[\s\S]*event\.sender === settingsWin\.webContents[\s\S]*\}/.test(main), "main.js must bind settings IPC to the settings window webContents");
 expect(/function requireSettingsSender\(event\) \{[\s\S]*throw new Error\("unauthorized settings IPC sender"\)[\s\S]*\}/.test(main), "main.js must reject unauthorized settings invoke senders");

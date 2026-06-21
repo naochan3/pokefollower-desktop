@@ -38,7 +38,16 @@ const TRAY_ICON_SIZE_PX = 28;
 const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
 const FULLSCREEN_POLL_INTERVAL_MS = 600;
 function checkFullscreen() {
-  fullscreenActive = isFullscreenForeground(getForegroundInfo(), screen.getAllDisplays());
+  const nextFullscreenActive = isFullscreenForeground(getForegroundInfo(), screen.getAllDisplays());
+  if (nextFullscreenActive === fullscreenActive) return;
+  fullscreenActive = nextFullscreenActive;
+  if (fullscreenActive) {
+    stopSimLoop({ hide: true });
+  } else if (enabled) {
+    lastStepTs = Date.now();
+    startSimLoop();
+    runSimFrame();
+  }
 }
 
 protocol.registerSchemesAsPrivileged([
@@ -185,8 +194,20 @@ function startSimLoop() {
   simTimer = setInterval(runSimFrame, simIntervalMs);
 }
 
+function stopSimLoop({ hide = false } = {}) {
+  if (simTimer) {
+    clearInterval(simTimer);
+    simTimer = null;
+  }
+  if (hide) broadcastFrame(null);
+}
+
 function refreshSimLoopInterval() {
   const next = getSimIntervalMs({ isOnBattery: readBatteryState() });
+  if (!enabled || fullscreenActive) {
+    simIntervalMs = next;
+    return;
+  }
   if (!simTimer || next === simIntervalMs) return;
   clearInterval(simTimer);
   simTimer = null;
@@ -212,10 +233,15 @@ function setEnabled(on) {
     startFullscreenPolling();
     const c = screen.getCursorScreenPoint();
     sim.resetTo(c.x, c.y, Date.now()); // 有効化時はカーソル位置へ出現
-    runSimFrame();
+    if (fullscreenActive) {
+      stopSimLoop({ hide: true });
+    } else {
+      startSimLoop();
+      runSimFrame();
+    }
   } else {
     stopFullscreenPolling();
-    broadcastFrame(null);
+    stopSimLoop({ hide: true });
   }
 }
 
@@ -342,7 +368,6 @@ app.whenReady().then(() => {
   powerMonitor.on("on-ac", refreshSimLoopInterval);
   powerMonitor.on("on-battery", refreshSimLoopInterval);
 
-  startSimLoop();
   setEnabled(s.enabled);
   codexNotificationWatcher.sync();
   buildTray();

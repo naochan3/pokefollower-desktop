@@ -13,6 +13,8 @@ function expect(condition, message) {
   if (!condition) errors.push(message);
 }
 
+const readyBlock = main.slice(main.indexOf("app.whenReady().then(() => {"));
+
 const lockIndex = main.indexOf("app.requestSingleInstanceLock()");
 const readyIndex = main.indexOf("app.whenReady()");
 expect(lockIndex >= 0, "main.js must request a single instance lock");
@@ -40,12 +42,16 @@ expect(/const FULLSCREEN_POLL_INTERVAL_MS = 600;/.test(main), "fullscreen pollin
 expect(/let fullscreenTimer = null;/.test(main), "main.js must track fullscreen polling timer");
 expect(/function startFullscreenPolling\(\)/.test(main), "main.js must define startFullscreenPolling");
 expect(/function stopFullscreenPolling\(\)/.test(main), "main.js must define stopFullscreenPolling");
+expect(/function stopSimLoop\(\{ hide = false \} = \{\}\)/.test(main), "main.js must define a stoppable sim loop helper");
 expect(/fullscreenTimer = setInterval\(checkFullscreen, FULLSCREEN_POLL_INTERVAL_MS\)/.test(main), "fullscreen polling must use a tracked interval");
 expect(/clearInterval\(fullscreenTimer\)/.test(main), "fullscreen polling must be stoppable");
+expect(/clearInterval\(simTimer\)/.test(main), "sim loop must be stoppable while disabled or fullscreen-suppressed");
 expect(!/setInterval\(checkFullscreen, 600\)/.test(main), "main.js must not leave fullscreen polling as an untracked always-on interval");
 expect(/if \(enabled\) \{[\s\S]*startFullscreenPolling\(\)/.test(main), "setEnabled(true) must start fullscreen polling");
-expect(/sim\.resetTo\(c\.x, c\.y, Date\.now\(\)\);[\s\S]*runSimFrame\(\);/.test(main), "setEnabled(true) must publish the first sim frame immediately");
+expect(/sim\.resetTo\(c\.x, c\.y, Date\.now\(\)\);[\s\S]*startSimLoop\(\);[\s\S]*runSimFrame\(\);/.test(main), "setEnabled(true) must start the sim loop and publish the first sim frame immediately");
 expect(/else \{[\s\S]*stopFullscreenPolling\(\)/.test(main), "setEnabled(false) must stop fullscreen polling");
+expect(/else \{[\s\S]*stopFullscreenPolling\(\);[\s\S]*stopSimLoop\(\{ hide: true \}\)/.test(main), "setEnabled(false) must stop the sim loop and hide overlays");
+expect(!/startSimLoop\(\);[\s\S]*setEnabled\(s\.enabled\)/.test(readyBlock), "startup must not start the sim loop before reading the saved enabled state");
 expect(/powerMonitor/.test(main), "main.js must use powerMonitor for AC/battery interval changes");
 expect(/getSimIntervalMs\(\{ isOnBattery: readBatteryState\(\) \}\)/.test(main), "main.js must use sim-loop-config for interval selection");
 expect(/powerMonitor\.on\("on-ac", refreshSimLoopInterval\)/.test(main), "main.js must refresh sim interval on AC power");
