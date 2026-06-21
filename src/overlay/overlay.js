@@ -6,8 +6,8 @@ let followerEl = null;
 let meta = null;
 const images = {};
 const sheetUrls = {};
-const NOTIFICATION_FALLBACK_WIDTH = 280;
-const NOTIFICATION_FALLBACK_HEIGHT = 110;
+const NOTIFICATION_FALLBACK_WIDTH = 292;
+const NOTIFICATION_FALLBACK_HEIGHT = 124;
 let visible = false;
 let appliedState = "";
 let appliedSize = "";
@@ -65,14 +65,15 @@ function ensureNotificationEl() {
     left: "0px",
     top: "0px",
     boxSizing: "border-box",
-    maxWidth: "min(260px, calc(100vw - 24px))",
-    padding: "8px 10px",
-    border: "3px solid #111",
+    width: "min(292px, calc(100vw - 24px))",
+    minHeight: "86px",
+    padding: "0 0 10px",
+    border: "4px solid #000",
     borderRadius: "0",
     background: "#fff",
-    color: "#111",
-    boxShadow: "4px 4px 0 #111",
-    font: "700 12px/1.35 system-ui, -apple-system, Segoe UI, sans-serif",
+    color: "#000",
+    boxShadow: "6px 6px 0 #000",
+    font: "800 12px/1.35 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
     imageRendering: "pixelated",
     pointerEvents: "none",
     zIndex: "2147483647",
@@ -81,15 +82,32 @@ function ensureNotificationEl() {
   });
   notificationSourceEl = document.createElement("div");
   Object.assign(notificationSourceEl.style, {
+    display: "block",
+    boxSizing: "border-box",
+    minHeight: "22px",
+    padding: "4px 9px 3px",
+    borderBottom: "4px solid #000",
+    background: "#EF4036",
     fontSize: "10px",
-    color: "#ef4036",
-    marginBottom: "3px",
+    lineHeight: "1.2",
+    color: "#fff",
+    letterSpacing: "0",
+    textTransform: "uppercase",
   });
   notificationTitleEl = document.createElement("div");
+  Object.assign(notificationTitleEl.style, {
+    padding: "9px 10px 0",
+    fontSize: "13px",
+    lineHeight: "1.3",
+    color: "#000",
+  });
   notificationBodyEl = document.createElement("div");
   Object.assign(notificationBodyEl.style, {
-    fontWeight: "600",
-    marginTop: "3px",
+    padding: "4px 10px 0",
+    color: "#222",
+    fontSize: "11px",
+    fontWeight: "700",
+    lineHeight: "1.35",
   });
   notificationEl.append(notificationSourceEl, notificationTitleEl, notificationBodyEl);
   document.documentElement.appendChild(notificationEl);
