@@ -44,6 +44,23 @@ for (const text of [
   "`xdotool` / `xprop` / `xwininfo` 出力不足時は、前面ウィンドウ情報を `null` として扱います",
   "`main.js` は `null` の前面ウィンドウ情報を全画面扱いにせず",
   "実際の見え方と操作感は、引き続き実機目視で確認します",
+  "手動 GUI 検証の証跡チェックリスト",
+  "検証対象 artifact",
+  "Release URL",
+  "sha256",
+  "常駐 UI",
+  "スクリーンショット",
+  "短い動画",
+  "fullscreen 前",
+  "fullscreen 中",
+  "解除後",
+  "saved pack restore",
+  "NG/未確認項目",
+  "未確認を PASS と書かず",
+  "証跡ファイル",
+  "WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません",
+  "machine-check",
+  "human-check",
   "記録テンプレート",
 ]) {
   expect(validation.includes(text), `platform-runtime-validation.md missing: ${text}`);
@@ -62,7 +79,7 @@ for (const command of [
 }
 
 expect(
-  readme.includes("デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。"),
+  readme.includes("WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。"),
   "README must keep Linux visual runtime validation limitation",
 );
 expect(
@@ -70,7 +87,7 @@ expect(
   "STATUS must keep Linux visual runtime validation roadmap item",
 );
 expect(
-  status.includes("Linux は AppImage 配布と WSLg 起動 smoke まで（実機の tray・透明・クリック透過・最前面は未検証）。"),
+  status.includes("Linux は AppImage 配布と WSLg 起動 smoke まで（WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。実機の tray・透明・クリック透過・最前面は未検証）。"),
   "STATUS must keep Linux visual runtime known limitation",
 );
 
