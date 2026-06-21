@@ -16,6 +16,7 @@
     "bench:linux-unpacked-runtime": "node scripts/bench-linux-unpacked-runtime.cjs",
     "bench:mac-unpacked-runtime": "node scripts/bench-mac-unpacked-runtime.cjs",
     "bench:pack-list": "node scripts/bench-pack-list.cjs",
+    "bench:search": "node scripts/bench-search-index.cjs",
     "bench:win-unpacked-runtime": "node scripts/bench-win-unpacked-runtime.cjs",
     "test": "vitest run",
     "verify:assets": "node scripts/verify-assets-consistency.cjs",

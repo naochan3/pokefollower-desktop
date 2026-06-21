@@ -34,6 +34,14 @@ function makePackReader(root, fileSystem = fs) {
     const file = path.join(root, "assets", "packs", "jp-names.json");
     return readJson(file);
   }
+  function readSearchMetadata() {
+    const file = path.join(root, "assets", "packs", "search-metadata.json");
+    try {
+      return readJson(file);
+    } catch (_) {
+      return { schemaVersion: 0, facets: {}, entries: {} };
+    }
+  }
   function readPackList() {
     const index = readIndex();
     const jp = readJpNames();
@@ -54,7 +62,7 @@ function makePackReader(root, fileSystem = fs) {
     list.sort((a, b) => (a.num ?? 9999) - (b.num ?? 9999));
     return list;
   }
-  return { readPackMeta, readIndex, readJpNames, readPackList };
+  return { readPackMeta, readIndex, readJpNames, readPackList, readSearchMetadata };
 }
 
 module.exports = { makePackReader };
