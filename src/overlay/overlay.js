@@ -8,6 +8,8 @@ const images = {};
 const sheetUrls = {};
 const NOTIFICATION_FALLBACK_WIDTH = 292;
 const NOTIFICATION_FALLBACK_HEIGHT = 124;
+const NOTIFICATION_SIDE_MARGIN = 24;
+const NOTIFICATION_BOTTOM_MARGIN = 96;
 let visible = false;
 let appliedState = "";
 let appliedSize = "";
@@ -19,8 +21,6 @@ let notificationSourceEl = null;
 let notificationTitleEl = null;
 let notificationBodyEl = null;
 let notificationTimer = null;
-let lastFollowerX = 0;
-let lastFollowerY = 0;
 
 function extUrl(rel) {
   return "app://bundle/" + String(rel).replace(/^\/+/, "");
@@ -66,7 +66,7 @@ function ensureNotificationEl() {
     top: "0px",
     boxSizing: "border-box",
     width: "min(292px, calc(100vw - 24px))",
-    minHeight: "86px",
+    height: "124px",
     padding: "0 0 10px",
     border: "4px solid #000",
     borderRadius: "0",
@@ -122,12 +122,14 @@ function showCompanionNotification(n) {
   notificationBodyEl.textContent = n.body || "";
   notificationBodyEl.style.display = n.body ? "block" : "none";
   notificationEl.style.display = "block";
-  const baseX = visible ? lastFollowerX : window.innerWidth - NOTIFICATION_FALLBACK_WIDTH;
-  const baseY = visible ? lastFollowerY : window.innerHeight - NOTIFICATION_FALLBACK_HEIGHT;
   const bubbleWidth = Math.min(NOTIFICATION_FALLBACK_WIDTH, Math.max(1, window.innerWidth - 24));
   const bubbleHeight = Math.min(NOTIFICATION_FALLBACK_HEIGHT, Math.max(1, window.innerHeight - 24));
-  const x = Math.max(12, Math.min(window.innerWidth - bubbleWidth - 12, baseX + 18));
-  const y = Math.max(12, Math.min(window.innerHeight - bubbleHeight - 12, baseY - 76));
+  const corner = n.corner === "bottom-left" || n.position === "bottom-left" ? "bottom-left" : "bottom-right";
+  const sideMargin = Math.min(NOTIFICATION_SIDE_MARGIN, Math.max(0, window.innerWidth - bubbleWidth));
+  const bottomMargin = Math.min(NOTIFICATION_BOTTOM_MARGIN, Math.max(0, window.innerHeight - bubbleHeight));
+  const maxX = Math.max(sideMargin, window.innerWidth - bubbleWidth - sideMargin);
+  const x = corner === "bottom-left" ? sideMargin : maxX;
+  const y = Math.max(0, window.innerHeight - bubbleHeight - bottomMargin);
   notificationEl.style.transform = `translate3d(${x.toFixed(0)}px, ${y.toFixed(0)}px, 0)`;
   notificationTimer = setTimeout(() => {
     notificationEl.style.display = "none";
@@ -180,8 +182,6 @@ window.pokeapi.onFrame((f) => {
     followerEl.style.display = "block";
     visible = true;
   }
-  lastFollowerX = f.x;
-  lastFollowerY = f.y;
   const sizeKey = `${w}x${h}`;
   if (appliedSize !== sizeKey) {
     followerEl.style.width = `${w}px`;
