@@ -17,6 +17,7 @@ expect(pkg.scripts?.["verify:local"]?.includes("npm run verify:runtime-validatio
 
 for (const text of [
   "Issue #17",
+  "自動検証で担保している範囲",
   "macOS smoke",
   "Linux AppImage smoke",
   "Accessibility / System Events",
@@ -36,6 +37,11 @@ for (const text of [
   "bench:linux-unpacked-runtime",
   "PF_LINUX_UNPACKED_ARGS=--no-sandbox",
   "AppImage 終了後、PokeFollower の残プロセスが 0",
+  "Electron main process をブロックしません",
+  "System Events 実行失敗時は、前面ウィンドウ情報を `null` として扱います",
+  "`xdotool` / `xprop` / `xwininfo` 出力不足時は、前面ウィンドウ情報を `null` として扱います",
+  "`main.js` は `null` の前面ウィンドウ情報を全画面扱いにせず",
+  "実際の見え方と操作感は、引き続き実機目視で確認します",
   "記録テンプレート",
 ]) {
   expect(validation.includes(text), `platform-runtime-validation.md missing: ${text}`);
