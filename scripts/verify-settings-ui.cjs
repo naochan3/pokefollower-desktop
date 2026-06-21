@@ -22,7 +22,7 @@ function inputAttrs(id) {
   return attrs;
 }
 
-for (const id of ["enabled", "edgeRest", "avoidCursor", "personality", "mode", "notificationCompanion", "testCompanion", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
+for (const id of ["enabled", "edgeRest", "avoidCursor", "personality", "mode", "notificationCompanion", "testCompanion", "workWatch", "workWatchPreset", "workWatchStart", "workWatchStop", "workWatchReset", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
   expect(html.includes(`id="${id}"`), `settings.html missing id="${id}"`);
   expect(js.includes(`getElementById("${id}")`) || ["scaleVal", "offsetVal", "lerpVal"].includes(id), `settings.js should query #${id}`);
 }
@@ -53,6 +53,11 @@ for (const mode of ["follow", "roam"]) {
   expect(html.includes(`value="${mode}"`), `mode select must include ${mode}`);
 }
 expect(inputAttrs("notificationCompanion")?.type === "checkbox", "notification companion input must be a checkbox");
+expect(inputAttrs("workWatch")?.type === "checkbox", "work watch input must be a checkbox");
+expect(html.includes('<select id="workWatchPreset"'), "work watch preset select must exist");
+for (const preset of ["25/5", "50/10"]) {
+  expect(html.includes(`value="${preset}"`), `work watch preset select must include ${preset}`);
+}
 expect(inputAttrs("search")?.type === "text", "search input must be text");
 expect(inputAttrs("scale")?.type === "number", "scale input must be number");
 expect(inputAttrs("scale")?.min === "0.5", "scale min must be 0.5");
@@ -78,6 +83,8 @@ for (const mapping of [
   "vcp1_personality: \"personality\"",
   "vcp1_mode: \"mode\"",
   "vcp1_notification_companion: \"notificationCompanionEnabled\"",
+  "vcp1_work_watch: \"workWatchEnabled\"",
+  "vcp1_work_watch_preset: \"workWatchPreset\"",
 ]) {
   expect(js.includes(mapping), `settings.js missing key mapping ${mapping}`);
 }
@@ -103,6 +110,9 @@ for (const surface of [
   'setSettings: (patch) => ipcRenderer.send("settings:set", patch)',
   'listPacks: () => ipcRenderer.invoke("packs:list")',
   'testCompanionNotification: () => ipcRenderer.invoke("companion:test-notification")',
+  'startWorkWatch: () => ipcRenderer.invoke("work-watch:start")',
+  'stopWorkWatch: () => ipcRenderer.invoke("work-watch:stop")',
+  'resetWorkWatch: () => ipcRenderer.invoke("work-watch:reset")',
 ]) {
   expect(preload.includes(surface), `settings preload missing surface: ${surface}`);
 }

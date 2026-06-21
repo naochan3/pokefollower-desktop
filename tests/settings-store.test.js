@@ -16,6 +16,8 @@ describe("settings-store", () => {
     expect(store.getAll()).toEqual(DEFAULTS);
     expect(store.get("offset")).toBe(70);
     expect(store.get("notificationCompanionEnabled")).toBe(false);
+    expect(store.get("workWatchEnabled")).toBe(false);
+    expect(store.get("workWatchPreset")).toBe("25/5");
   });
 
   it("既存 settings.json の offset を新デフォルトで上書きしない", () => {
@@ -114,6 +116,8 @@ describe("settings-store", () => {
     expect(store.get("enabled")).toBe(true);
     store.set({ notificationCompanionEnabled: 1 });
     expect(store.get("notificationCompanionEnabled")).toBe(true);
+    store.set({ workWatchEnabled: 1 });
+    expect(store.get("workWatchEnabled")).toBe(true);
   });
 
   it("edgeRestはbooleanとして保存する", () => {
@@ -154,5 +158,14 @@ describe("settings-store", () => {
     expect(store.get("mode")).toBe("roam");
     store.set({ mode: "follow" });
     expect(store.get("mode")).toBe("follow");
+  });
+
+  it("workWatchPresetは許可されたプリセットだけを保存する", () => {
+    const store = createSettingsStore(file);
+    expect(store.get("workWatchPreset")).toBe("25/5");
+    store.set({ workWatchPreset: "50/10" });
+    expect(store.get("workWatchPreset")).toBe("50/10");
+    store.set({ workWatchPreset: "../bad" });
+    expect(store.get("workWatchPreset")).toBe("50/10");
   });
 });

@@ -12,10 +12,13 @@ const DEFAULTS = {
   personality: "standard",
   mode: "follow",
   notificationCompanionEnabled: false,
+  workWatchEnabled: false,
+  workWatchPreset: "25/5",
 };
 
 const PERSONALITIES = new Set(["standard", "active", "relaxed", "friendly"]);
 const MODES = new Set(["follow", "roam"]);
+const WORK_WATCH_PRESETS = new Set(["25/5", "50/10"]);
 
 const LIMITS = {
   scale: { min: 0.5, max: 5.0 },
@@ -32,7 +35,7 @@ function sanitize(patch) {
   if (!patch || typeof patch !== "object" || Array.isArray(patch)) return out;
   for (const [k, v] of Object.entries(patch)) {
     if (!(k in DEFAULTS)) continue;
-    if (k === "enabled" || k === "edgeRest" || k === "avoidCursor" || k === "notificationCompanionEnabled") { out[k] = !!v; continue; }
+    if (k === "enabled" || k === "edgeRest" || k === "avoidCursor" || k === "notificationCompanionEnabled" || k === "workWatchEnabled") { out[k] = !!v; continue; }
     if (k === "personality") {
       const personality = typeof v === "string" ? v.trim() : "";
       if (PERSONALITIES.has(personality)) out.personality = personality;
@@ -41,6 +44,11 @@ function sanitize(patch) {
     if (k === "mode") {
       const mode = typeof v === "string" ? v.trim() : "";
       if (MODES.has(mode)) out.mode = mode;
+      continue;
+    }
+    if (k === "workWatchPreset") {
+      const workWatchPreset = typeof v === "string" ? v.trim() : "";
+      if (WORK_WATCH_PRESETS.has(workWatchPreset)) out.workWatchPreset = workWatchPreset;
       continue;
     }
     if (k === "pack") {

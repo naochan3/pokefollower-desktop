@@ -80,6 +80,7 @@ for (const requiredSource of [
   "/src/main/notification-companion.js",
   "/src/main/notification-queue.js",
   "/src/main/pack-reader.js",
+  "/src/main/work-watch.js",
   "/src/overlay/overlay.js",
   "/src/overlay/overlay-preload.js",
   "/src/overlay/overlay.html",

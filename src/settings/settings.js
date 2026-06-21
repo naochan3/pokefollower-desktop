@@ -10,6 +10,8 @@ function mapKeys(obj) {
     vcp1_personality: "personality",
     vcp1_mode: "mode",
     vcp1_notification_companion: "notificationCompanionEnabled",
+    vcp1_work_watch: "workWatchEnabled",
+    vcp1_work_watch_preset: "workWatchPreset",
   };
   const out = {};
   for (const [k, v] of Object.entries(obj)) out[m[k] || k] = v;
@@ -32,6 +34,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const modeEl = document.getElementById("mode");
   const notificationCompanionEl = document.getElementById("notificationCompanion");
   const testCompanionEl = document.getElementById("testCompanion");
+  const workWatchEl = document.getElementById("workWatch");
+  const workWatchPresetEl = document.getElementById("workWatchPreset");
+  const workWatchStartEl = document.getElementById("workWatchStart");
+  const workWatchStopEl = document.getElementById("workWatchStop");
+  const workWatchResetEl = document.getElementById("workWatchReset");
 
   // Sliders + readouts
   const scaleEl   = document.getElementById("scale");
@@ -50,7 +57,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     vcp1_edgeRest: true,
     vcp1_avoidCursor: true,
     vcp1_personality: "standard",
-    vcp1_mode: "follow"
+    vcp1_mode: "follow",
+    vcp1_work_watch_preset: "25/5"
   };
 
   // Forward live config patches to the overlay via the settings API
@@ -69,6 +77,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (personalityEl) personalityEl.value = typeof res.personality === "string" ? res.personality : DEFAULTS.vcp1_personality;
       if (modeEl) modeEl.value = typeof res.mode === "string" ? res.mode : DEFAULTS.vcp1_mode;
       if (notificationCompanionEl) notificationCompanionEl.checked = !!res.notificationCompanionEnabled;
+      if (workWatchEl) workWatchEl.checked = !!res.workWatchEnabled;
+      if (workWatchPresetEl) workWatchPresetEl.value = typeof res.workWatchPreset === "string" ? res.workWatchPreset : DEFAULTS.vcp1_work_watch_preset;
 
       const scale  = (typeof res.scale  === "number") ? res.scale  : DEFAULTS.vcp1_scale;
       const offset = (typeof res.offset === "number") ? res.offset : DEFAULTS.vcp1_offset;
@@ -123,6 +133,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.settingsApi.testCompanionNotification();
     });
   }
+  if (workWatchEl) {
+    workWatchEl.addEventListener("change", () => {
+      save({ vcp1_work_watch: workWatchEl.checked });
+    });
+  }
+  if (workWatchPresetEl) {
+    workWatchPresetEl.addEventListener("change", () => {
+      save({ vcp1_work_watch_preset: workWatchPresetEl.value });
+    });
+  }
+  if (workWatchStartEl) workWatchStartEl.addEventListener("click", () => window.settingsApi.startWorkWatch());
+  if (workWatchStopEl) workWatchStopEl.addEventListener("click", () => window.settingsApi.stopWorkWatch());
+  if (workWatchResetEl) workWatchResetEl.addEventListener("click", () => window.settingsApi.resetWorkWatch());
 
   // --- カタカナ⇄ひらがな正規化（検索用） ---
   function toHira(s) {

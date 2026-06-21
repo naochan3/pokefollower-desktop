@@ -14,6 +14,7 @@ const { applySettingsPatch } = require("./settings-patch.js");
 const { createNotificationCompanion } = require("./notification-companion.js");
 const { createCodexNotificationWatcher } = require("./codex-notification-watcher.js");
 const { defaultNotificationQueuePath } = require("./notification-queue.js");
+const { createWorkWatchSession } = require("./work-watch.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -33,6 +34,8 @@ let lastRender = null;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
 let notificationCompanion = null;
 let codexNotificationWatcher = null;
+let workWatchSession = null;
+let workWatchTimer = null;
 
 const TRAY_ICON_SIZE_PX = 28;
 const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
@@ -304,6 +307,47 @@ function refreshTrayMenu() {
   tray.setContextMenu(menu);
 }
 
+function publishWorkWatchEvent(event) {
+  if (!notificationCompanion) return;
+  if (event === "break-started") {
+    notificationCompanion.publish({
+      source: "作業見守り",
+      title: "休憩時間です",
+      body: "少し離れて、目と肩を休ませましょう",
+    }, { force: true });
+  } else if (event === "work-started") {
+    notificationCompanion.publish({
+      source: "作業見守り",
+      title: "作業を再開します",
+      body: "ポケモンが静かに見守ります",
+    }, { force: true });
+  }
+}
+
+function stopWorkWatchTimer() {
+  if (!workWatchTimer) return;
+  clearInterval(workWatchTimer);
+  workWatchTimer = null;
+}
+
+function startWorkWatchTimer() {
+  if (workWatchTimer || !workWatchSession) return;
+  workWatchTimer = setInterval(() => {
+    const { event, state } = workWatchSession.tick(Date.now());
+    if (event) publishWorkWatchEvent(event);
+    if (!state.running) stopWorkWatchTimer();
+  }, 1000);
+}
+
+function syncWorkWatchConfig() {
+  if (!workWatchSession || !settingsStore) return;
+  workWatchSession.setPreset(settingsStore.get("workWatchPreset"));
+  if (!settingsStore.get("workWatchEnabled")) {
+    workWatchSession.stop();
+    stopWorkWatchTimer();
+  }
+}
+
 ipcMain.handle("settings:get", (event) => {
   requireSettingsSender(event);
   return settingsStore.getAll();
@@ -320,10 +364,31 @@ ipcMain.handle("companion:test-notification", (event) => {
     body: "ポケモンが要約通知を届けます",
   });
 });
+ipcMain.handle("work-watch:start", (event) => {
+  requireSettingsSender(event);
+  settingsStore.set({ workWatchEnabled: true });
+  syncWorkWatchConfig();
+  const state = workWatchSession.start(Date.now());
+  startWorkWatchTimer();
+  return state;
+});
+ipcMain.handle("work-watch:stop", (event) => {
+  requireSettingsSender(event);
+  const state = workWatchSession.stop();
+  stopWorkWatchTimer();
+  return state;
+});
+ipcMain.handle("work-watch:reset", (event) => {
+  requireSettingsSender(event);
+  const state = workWatchSession.stop();
+  stopWorkWatchTimer();
+  return state;
+});
 ipcMain.on("settings:set", (event, patch) => {
   if (!isSettingsSender(event)) return;
   applySettingsPatch(patch, { settingsStore, sim, loadPackIntoSim, setEnabled, refreshTrayMenu });
   if (codexNotificationWatcher) codexNotificationWatcher.sync();
+  syncWorkWatchConfig();
 });
 
 // 二重起動を禁止（複数インスタンスが同時にカーソルを追って競合するのを防ぐ）。
@@ -342,6 +407,7 @@ app.whenReady().then(() => {
     getSettings: () => settingsStore.getAll(),
     publish: (notification) => notificationCompanion.publish(notification),
   });
+  workWatchSession = createWorkWatchSession({ preset: settingsStore.get("workWatchPreset") });
   const s = settingsStore.getAll();
   // 自動起動はインストール版のみ登録（開発起動でRunキーにゴミをためないようisPackagedで限定）
   if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: true });
