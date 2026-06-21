@@ -60,7 +60,8 @@ function ensureNotificationEl() {
     position: "fixed",
     left: "0px",
     top: "0px",
-    maxWidth: "260px",
+    boxSizing: "border-box",
+    maxWidth: "min(260px, calc(100vw - 24px))",
     padding: "8px 10px",
     border: "3px solid #111",
     borderRadius: "0",
@@ -100,10 +101,13 @@ function showCompanionNotification(n) {
   notificationBodyEl.style.display = n.body ? "block" : "none";
   const baseX = followerEl && visible ? followerEl.getBoundingClientRect().left : window.innerWidth - 280;
   const baseY = followerEl && visible ? followerEl.getBoundingClientRect().top : window.innerHeight - 120;
-  const x = Math.max(12, Math.min(window.innerWidth - 280, baseX + 18));
-  const y = Math.max(12, Math.min(window.innerHeight - 120, baseY - 76));
-  notificationEl.style.transform = `translate3d(${x.toFixed(0)}px, ${y.toFixed(0)}px, 0)`;
   notificationEl.style.display = "block";
+  const rect = notificationEl.getBoundingClientRect();
+  const bubbleWidth = Math.min(rect.width || 280, Math.max(1, window.innerWidth - 24));
+  const bubbleHeight = Math.min(rect.height || 90, Math.max(1, window.innerHeight - 24));
+  const x = Math.max(12, Math.min(window.innerWidth - bubbleWidth - 12, baseX + 18));
+  const y = Math.max(12, Math.min(window.innerHeight - bubbleHeight - 12, baseY - 76));
+  notificationEl.style.transform = `translate3d(${x.toFixed(0)}px, ${y.toFixed(0)}px, 0)`;
   notificationTimer = setTimeout(() => {
     notificationEl.style.display = "none";
     notificationTimer = null;
