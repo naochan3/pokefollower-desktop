@@ -14,6 +14,7 @@ function expect(condition, message) {
 
 expect(pkg.scripts?.["verify:runtime-validation"] === "node scripts/verify-platform-runtime-validation.cjs", "package.json must expose verify:runtime-validation");
 expect(pkg.scripts?.["verify:local"]?.includes("npm run verify:runtime-validation"), "verify:local must include runtime validation docs guard");
+expect(pkg.scripts?.["evidence:mac-gui"] === "node scripts/capture-mac-gui-evidence.cjs", "package.json must expose evidence:mac-gui");
 
 for (const text of [
   "Issue #17",
@@ -37,6 +38,16 @@ for (const text of [
   "bench:linux-unpacked-runtime",
   "PF_LINUX_UNPACKED_ARGS=--no-sandbox",
   "PF_MAC_UNPACKED_PACK=retro/gen-1/025-pikachu",
+  "PF_MAC_GUI_PACK=retro/gen-1/025-pikachu",
+  "npm run evidence:mac-gui",
+  "status=blocked",
+  "status=candidate",
+  "visible pixel ratio",
+  "視覚 PASS 証跡として扱いません",
+  "人間の確認なしに視覚 PASS 証跡として扱いません",
+  "macOS arm64 GUI screenshot attempt",
+  "baseline / app capture とも `3600x2338`、non-black pixel `0`、changed ratio `0`",
+  "アプリ未起動時の `screencapture` も全面黒を返しました",
   "PF_LINUX_UNPACKED_PACK=retro/gen-1/025-pikachu",
   "AppImage 終了後、PokeFollower の残プロセスが 0",
   "Electron main process をブロックしません",
