@@ -75,13 +75,13 @@ for (const os of ["ubuntu-latest", "windows-latest", "macos-latest"]) {
 }
 
 for (const smoke of [
-  "command: npm run dist:win -- --dir --publish never",
+  "command: npm run dist:win -- --dir --publish=never",
   "platform: win32",
   "arch: x64",
-  "command: npm run dist:mac -- --arm64 --dir --publish never",
+  "command: npm run dist:mac -- --arm64 --dir --publish=never",
   "platform: darwin",
   "arch: arm64",
-  "command: npm run dist:linux -- --dir --publish never",
+  "command: npm run dist:linux -- --dir --publish=never",
   "platform: linux",
 ]) {
   expectIncludes("package smoke matrix", smoke);
