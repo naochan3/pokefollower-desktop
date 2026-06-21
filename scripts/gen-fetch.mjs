@@ -10,8 +10,12 @@ async function dl(url, dest) {
   return true;
 }
 
-function pokedbSlug(slug) {
-  return slug.toLowerCase().replace(/[ _.']/g, '-').replace(/--+/g, '-');
+export function pokedbSlug(slug) {
+  return slug.toLowerCase()
+    .replace(/['’]/g, '')       // apostrophe removal (U+0027, U+2019)
+    .replace(/[ _.]/g, '-')          // space/underscore/dot -> hyphen
+    .replace(/-{2,}/g, '-')          // collapse repeated hyphens
+    .replace(/^-|-$/g, '');          // strip leading/trailing hyphens
 }
 
 export async function fetchPokemon(dex, slug, destDir) {
@@ -24,7 +28,7 @@ export async function fetchPokemon(dex, slug, destDir) {
   got.idle  = await dl(`${SC}/${d4}/Idle-Anim.png`,   path.join(destDir, 'Idle-Anim.png'));
   got.sleep = await dl(`${SC}/${d4}/Sleep-Anim.png`,  path.join(destDir, 'Sleep-Anim.png'));
 
-  // タイル: pokemondb BWスプライト優先、404なら後段タスクで PMD Idle から生成
+  // tile: pokemondb BW sprite preferred, 404 -> fallback generated from PMD Idle in later task
   const pdb = `https://img.pokemondb.net/sprites/black-white/normal/${pokedbSlug(slug)}.png`;
   got.tile = (await dl(pdb, path.join(destDir, 'tile.png'))) ? 'pokemondb' : 'none';
 
