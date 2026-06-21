@@ -307,7 +307,7 @@ app.whenReady().then(() => {
   if (!gotSingleInstanceLock) { app.quit(); return; }
   settingsStore = createSettingsStore(path.join(getUserDataPath(), "settings.json"));
   notificationCompanion = createNotificationCompanion({
-    getSettings: () => settingsStore.getAll(),
+    isEnabled: () => !!settingsStore.get("notificationCompanionEnabled"),
     getOverlays: () => overlays,
     isSuppressed: () => !enabled || fullscreenActive,
   });

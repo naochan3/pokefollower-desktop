@@ -27,6 +27,7 @@ function normalizeCompanionNotification(input, { now = Date.now() } = {}) {
 
 function createNotificationCompanion({
   getSettings,
+  isEnabled,
   getOverlays,
   isSuppressed,
   now = Date.now,
@@ -35,8 +36,8 @@ function createNotificationCompanion({
   let lastSentAt = 0;
 
   function publish(input) {
-    const settings = getSettings();
-    if (!settings.notificationCompanionEnabled) return false;
+    const enabled = isEnabled ? isEnabled() : !!getSettings().notificationCompanionEnabled;
+    if (!enabled) return false;
     if (isSuppressed()) return false;
     const currentTime = now();
     if (lastSentAt && currentTime - lastSentAt < minIntervalMs) return false;

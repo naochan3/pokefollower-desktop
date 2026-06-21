@@ -45,8 +45,7 @@ function createCodexNotificationWatcher({
     if (watcher) return;
     fsImpl.mkdirSync(path.dirname(queuePath), { recursive: true });
     if (fsImpl.existsSync(queuePath)) {
-      const result = readQueue(queuePath, { offset: 0 });
-      offset = result.offset;
+      offset = fsImpl.statSync(queuePath).size;
     }
     watcher = fsImpl.watch(path.dirname(queuePath), { persistent: false }, (eventType, filename) => {
       if (filename && path.basename(filename) !== path.basename(queuePath)) return;
