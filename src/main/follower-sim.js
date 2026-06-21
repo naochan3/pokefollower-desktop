@@ -47,6 +47,7 @@ function createFollowerSim(options = {}) {
   const CONFIG = { scale: 1.25, offset: 70, lerp: 0.20, edgeRest: true, avoidCursor: true, personality: "standard", mode: "follow", reactionMode: "normal" };
   const rustCore = createRustFollowerCore(options.rootDir || path.join(__dirname, "..", ".."));
   let displayBounds = [];
+  let restSurfaces = [];
   let meta = null;
   const R = {
     anim: { name: "idle", frame: 0, row: 0, accMs: 0 },
@@ -139,6 +140,8 @@ function createFollowerSim(options = {}) {
     const bounds = displayForPoint(R.lastMouse.x, R.lastMouse.y);
     if (!bounds) return null;
     const size = frameSizeForCurrentState();
+    const windowTarget = computeWindowEdgeRestTarget(bounds, size);
+    if (windowTarget) return windowTarget;
     const halfW = size.w / 2;
     const halfH = size.h / 2;
     const left = bounds.x + halfW + EDGE_REST_PADDING_PX;
@@ -150,6 +153,31 @@ function createFollowerSim(options = {}) {
     return {
       x: clamp(R.lastMouse.x, left, right),
       y: R.lastMouse.y < midY ? bottom : top,
+    };
+  }
+
+  function computeWindowEdgeRestTarget(display, size) {
+    const halfW = size.w / 2;
+    const halfH = size.h / 2;
+    const candidates = restSurfaces
+      .filter((s) => s && s.kind === "window" && Number.isFinite(s.x) && Number.isFinite(s.y) && Number.isFinite(s.width) && Number.isFinite(s.height))
+      .filter((s) => s.width > size.w + EDGE_REST_PADDING_PX * 2 && s.height > size.h + EDGE_REST_PADDING_PX * 2)
+      .filter((s) => R.lastMouse.x >= s.x && R.lastMouse.x <= s.x + s.width && R.lastMouse.y >= s.y && R.lastMouse.y <= s.y + s.height);
+    if (candidates.length === 0) return null;
+    const surface = candidates[0];
+    const displayLeft = display.x + halfW + EDGE_REST_PADDING_PX;
+    const displayRight = display.x + display.width - halfW - EDGE_REST_PADDING_PX;
+    const displayTop = display.y + halfH + EDGE_REST_PADDING_PX;
+    const displayBottom = display.y + display.height - halfH - EDGE_REST_PADDING_PX;
+    const left = clamp(surface.x + halfW + EDGE_REST_PADDING_PX, displayLeft, displayRight);
+    const right = clamp(surface.x + surface.width - halfW - EDGE_REST_PADDING_PX, displayLeft, displayRight);
+    if (right < left) return null;
+    const topCandidate = clamp(surface.y - halfH, displayTop, displayBottom);
+    const bottomCandidate = clamp(surface.y + surface.height + halfH, displayTop, displayBottom);
+    const y = R.lastMouse.y < surface.y + surface.height / 2 ? topCandidate : bottomCandidate;
+    return {
+      x: clamp(R.lastMouse.x, left, right),
+      y,
     };
   }
 
@@ -309,6 +337,11 @@ function createFollowerSim(options = {}) {
       displayBounds = bounds
         .filter((b) => b && Number.isFinite(b.x) && Number.isFinite(b.y) && Number.isFinite(b.width) && Number.isFinite(b.height))
         .map((b) => ({ x: b.x, y: b.y, width: b.width, height: b.height }));
+    },
+    setRestSurfaces(surfaces = []) {
+      restSurfaces = surfaces
+        .filter((s) => s && Number.isFinite(s.x) && Number.isFinite(s.y) && Number.isFinite(s.width) && Number.isFinite(s.height))
+        .map((s) => ({ kind: s.kind || "window", x: s.x, y: s.y, width: s.width, height: s.height }));
     },
     hasMeta() { return !!meta; },
     // 有効化時などにカーソル位置へ配置

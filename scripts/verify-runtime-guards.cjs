@@ -39,6 +39,7 @@ expect(/const DISPLAY_REBUILD_DEBOUNCE_MS = 250;/.test(main), "display rebuild d
 expect(/function scheduleBuildOverlays\(\)/.test(main), "main.js must define scheduleBuildOverlays");
 expect(/clearTimeout\(displayRebuildTimer\)/.test(main), "display rebuild scheduler must coalesce rapid display events");
 expect(/setTimeout\(\(\) => \{[\s\S]*buildOverlays\(\);[\s\S]*\}, DISPLAY_REBUILD_DEBOUNCE_MS\)/.test(main), "display rebuild scheduler must rebuild overlays after debounce");
+expect(/sim\.setRestSurfaces\(\[\{ kind: "window", x: info\.x, y: info\.y, width: info\.w, height: info\.h \}\]\)/.test(main), "main.js must pass foreground window bounds to edge rest");
 expect(/const FULLSCREEN_POLL_INTERVAL_MS = process\.platform === "win32" \? 600 : 2000;/.test(main), "fullscreen polling must keep fast Win32 checks and slower external-command checks elsewhere");
 expect(/let fullscreenTimer = null;/.test(main), "main.js must track fullscreen polling timer");
 expect(/let fullscreenCheckInFlight = false;/.test(main), "main.js must prevent overlapping async fullscreen checks");
@@ -77,6 +78,8 @@ expect(
 expect(/reactionModeForForeground/.test(main), "main.js must derive app/work-watch reaction mode from foreground context");
 expect(/workWatchPhase\(\)/.test(main), "main.js must let work watch override app reaction mode");
 expect(/vcp1_reactionMode/.test(sim), "follower-sim must accept runtime reaction mode");
+expect(/setRestSurfaces\(surfaces = \[\]\)/.test(sim), "follower-sim must accept foreground window rest surfaces");
+expect(/function computeWindowEdgeRestTarget/.test(sim), "follower-sim must use foreground window edges as rest candidates");
 expect(/classifyForegroundApp/.test(appReactions), "app-reactions must expose a pure foreground classifier");
 expect(
   /function getUserDataPath\(\)/.test(main) &&

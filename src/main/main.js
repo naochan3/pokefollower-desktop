@@ -47,6 +47,11 @@ const FULLSCREEN_POLL_INTERVAL_MS = process.platform === "win32" ? 600 : 2000;
 
 function applyFullscreenInfo(info) {
   lastForegroundInfo = info || null;
+  if (info && Number.isFinite(info.x) && Number.isFinite(info.y) && Number.isFinite(info.w) && Number.isFinite(info.h)) {
+    sim.setRestSurfaces([{ kind: "window", x: info.x, y: info.y, width: info.w, height: info.h }]);
+  } else {
+    sim.setRestSurfaces([]);
+  }
   const nextFullscreenActive = isFullscreenForeground(info, screen.getAllDisplays());
   if (nextFullscreenActive === fullscreenActive) return;
   fullscreenActive = nextFullscreenActive;
