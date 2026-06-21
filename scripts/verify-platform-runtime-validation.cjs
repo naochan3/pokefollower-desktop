@@ -31,6 +31,9 @@ for (const text of [
   "全画面アプリ前面時",
   "通常追従へ戻る",
   "残プロセス",
+  "POKEFOLLOWER_ALLOW_TEST_USER_DATA",
+  "POKEFOLLOWER_TEST_USER_DATA_DIR",
+  "AppImage 終了後、PokeFollower の残プロセスが 0",
   "記録テンプレート",
 ]) {
   expect(validation.includes(text), `platform-runtime-validation.md missing: ${text}`);

@@ -27,6 +27,14 @@ node scripts/verify-package-smoke.cjs darwin arm64
 PF_MAC_UNPACKED_MODES=both PF_MAC_UNPACKED_WARMUP_MS=3000 PF_MAC_UNPACKED_SAMPLE_MS=5000 PF_MAC_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:mac-unpacked-runtime
 ```
 
+手動の UI 確認で起動する場合:
+
+```bash
+PF_MAC_USER_DATA="$(mktemp -d -t pf-mac-runtime-XXXXXX)"
+POKEFOLLOWER_ALLOW_TEST_USER_DATA=1 POKEFOLLOWER_TEST_USER_DATA_DIR="$PF_MAC_USER_DATA" release/mac-arm64/PokeFollower.app/Contents/MacOS/PokeFollower
+rm -rf "$PF_MAC_USER_DATA"
+```
+
 実機確認:
 
 - メニューバーに常駐アイコンが出る。
@@ -54,6 +62,14 @@ npm run dist:linux -- --publish=never
 chmod +x release/*.AppImage
 ```
 
+手動の UI 確認で起動する場合:
+
+```bash
+PF_LINUX_USER_DATA="$(mktemp -d -t pf-linux-runtime-XXXXXX)"
+POKEFOLLOWER_ALLOW_TEST_USER_DATA=1 POKEFOLLOWER_TEST_USER_DATA_DIR="$PF_LINUX_USER_DATA" ./release/*.AppImage
+rm -rf "$PF_LINUX_USER_DATA"
+```
+
 実機確認:
 
 - AppImage が起動する。
@@ -63,6 +79,7 @@ chmod +x release/*.AppImage
 - always-on-top が通常ウィンドウの前に維持される。
 - X11 で `xdotool` / `xprop` / `xwininfo` が揃う場合、全画面アプリ前面時に非表示になる。
 - Wayland や必要コマンドなしの環境では、全画面自動非表示だけ無効になり、通常追従は継続する。
+- AppImage 終了後、PokeFollower の残プロセスが 0。
 
 ## 記録テンプレート
 
