@@ -36,6 +36,8 @@ for (const text of [
   "POKEFOLLOWER_TEST_USER_DATA_DIR",
   "bench:linux-unpacked-runtime",
   "PF_LINUX_UNPACKED_ARGS=--no-sandbox",
+  "PF_MAC_UNPACKED_PACK=retro/gen-1/025-pikachu",
+  "PF_LINUX_UNPACKED_PACK=retro/gen-1/025-pikachu",
   "AppImage 終了後、PokeFollower の残プロセスが 0",
   "Electron main process をブロックしません",
   "System Events 実行失敗時は、前面ウィンドウ情報を `null` として扱います",

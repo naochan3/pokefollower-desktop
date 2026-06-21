@@ -9,6 +9,7 @@ const executablePath = path.join(appPath, "Contents", "MacOS", "PokeFollower");
 const warmupMs = Number(process.env.PF_MAC_UNPACKED_WARMUP_MS || 12000);
 const sampleMs = Number(process.env.PF_MAC_UNPACKED_SAMPLE_MS || 30000);
 const sampleIntervalMs = Number(process.env.PF_MAC_UNPACKED_SAMPLE_INTERVAL_MS || 1000);
+const initialPack = process.env.PF_MAC_UNPACKED_PACK || "";
 const modes = (process.env.PF_MAC_UNPACKED_MODES || "enabled")
   .split(",")
   .map((mode) => mode.trim().toLowerCase())
@@ -101,11 +102,11 @@ function summarize(processes, pids) {
   };
 }
 
-function stopProcesses(pids) {
+function stopProcesses(pids, signal = "SIGTERM") {
   const list = [...pids].filter((pid) => pid !== process.pid);
   if (list.length === 0) return;
   try {
-    spawn("kill", ["-TERM", ...list.map(String)], { stdio: "ignore" });
+    spawn("kill", [`-${signal.replace(/^SIG/, "")}`, ...list.map(String)], { stdio: "ignore" });
   } catch (_) {
     // The app can exit by itself while the benchmark is cleaning up.
   }
@@ -120,7 +121,8 @@ function enabledForMode(mode) {
 async function runMode(mode) {
   const enabled = enabledForMode(mode);
   const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), `pf-mac-runtime-${mode}-`));
-  fs.writeFileSync(path.join(userDataDir, "settings.json"), JSON.stringify({ enabled }, null, 2), "utf8");
+  const initialSettings = initialPack ? { enabled, pack: initialPack } : { enabled };
+  fs.writeFileSync(path.join(userDataDir, "settings.json"), JSON.stringify(initialSettings, null, 2), "utf8");
   const child = spawn(executablePath, [], {
     cwd: path.dirname(executablePath),
     stdio: "ignore",
@@ -161,6 +163,7 @@ async function runMode(mode) {
     console.log(`[bench-mac-unpacked-runtime:${mode}] warmup: ${warmupMs}ms`);
     console.log(`[bench-mac-unpacked-runtime:${mode}] sample: ${elapsedSeconds.toFixed(3)}s`);
     console.log(`[bench-mac-unpacked-runtime:${mode}] initial enabled: ${enabled}`);
+    if (initialPack) console.log(`[bench-mac-unpacked-runtime:${mode}] initial pack: ${initialPack}`);
     console.log(`[bench-mac-unpacked-runtime:${mode}] tracked process count: ${after.count}`);
     console.log(`[bench-mac-unpacked-runtime:${mode}] logical CPUs: ${logicalCpuCount}`);
     console.log(`[bench-mac-unpacked-runtime:${mode}] avg ps cpu: ${avgCpuPercent.toFixed(3)}%`);
@@ -176,7 +179,12 @@ async function runMode(mode) {
     stopProcesses(trackedPids);
     child.kill();
     await sleep(1000);
-    const leftovers = summarize(getProcesses(), trackedPids);
+    let leftovers = summarize(getProcesses(), trackedPids);
+    if (leftovers.count > 0) {
+      stopProcesses(trackedPids, "SIGKILL");
+      await sleep(500);
+      leftovers = summarize(getProcesses(), trackedPids);
+    }
     console.log(`[bench-mac-unpacked-runtime:${mode}] leftover tracked process count after cleanup: ${leftovers.count}`);
     fs.rmSync(userDataDir, { recursive: true, force: true });
   }

@@ -145,6 +145,7 @@ for (const text of [
 
 for (const text of [
   "PF_LINUX_UNPACKED_MODES",
+  "PF_LINUX_UNPACKED_PACK",
   "pokefollower-desktop",
   "POKEFOLLOWER_ALLOW_TEST_USER_DATA",
   "POKEFOLLOWER_TEST_USER_DATA_DIR",
@@ -160,6 +161,7 @@ for (const text of [
 
 for (const text of [
   "PF_MAC_UNPACKED_MODES",
+  "PF_MAC_UNPACKED_PACK",
   "PokeFollower.app",
   "POKEFOLLOWER_ALLOW_TEST_USER_DATA",
   "POKEFOLLOWER_TEST_USER_DATA_DIR",
