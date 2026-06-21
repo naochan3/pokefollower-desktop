@@ -9,7 +9,10 @@ const DEFAULTS = {
   lerp: 0.20,
   edgeRest: true,
   avoidCursor: true,
+  personality: "standard",
 };
+
+const PERSONALITIES = new Set(["standard", "active", "relaxed", "friendly"]);
 
 const LIMITS = {
   scale: { min: 0.5, max: 5.0 },
@@ -27,6 +30,11 @@ function sanitize(patch) {
   for (const [k, v] of Object.entries(patch)) {
     if (!(k in DEFAULTS)) continue;
     if (k === "enabled" || k === "edgeRest" || k === "avoidCursor") { out[k] = !!v; continue; }
+    if (k === "personality") {
+      const personality = typeof v === "string" ? v.trim() : "";
+      if (PERSONALITIES.has(personality)) out.personality = personality;
+      continue;
+    }
     if (k === "pack") {
       const pack = typeof v === "string" ? v.trim() : "";
       if (isSafePackKey(pack)) out.pack = pack;

@@ -215,6 +215,24 @@
       font-size: 12px;
       font-weight: 700;
     }
+    .personality {
+      margin: 7px 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .personality select {
+      border: 1.5px solid #000;
+      border-radius: 6px;
+      background: #fff;
+      color: #000;
+      font: inherit;
+      font-weight: 700;
+      padding: 3px 6px;
+    }
     #edgeRest, #avoidCursor {
       width: 16px;
       height: 16px;
@@ -262,6 +280,15 @@
         <span>Avoid Cursor</span>
       </label>
     </div>
+    <label class="personality" for="personality">
+      <span>Personality</span>
+      <select id="personality">
+        <option value="standard">Standard</option>
+        <option value="active">Active</option>
+        <option value="relaxed">Relaxed</option>
+        <option value="friendly">Friendly</option>
+      </select>
+    </label>
 
     <!-- Triple controls -->
     <div class="triples">

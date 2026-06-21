@@ -7,6 +7,7 @@ function mapKeys(obj) {
     vcp1_lerp: "lerp",
     vcp1_edgeRest: "edgeRest",
     vcp1_avoidCursor: "avoidCursor",
+    vcp1_personality: "personality",
   };
   const out = {};
   for (const [k, v] of Object.entries(obj)) out[m[k] || k] = v;
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const enabledEl = document.getElementById("enabled");
   const edgeRestEl = document.getElementById("edgeRest");
   const avoidCursorEl = document.getElementById("avoidCursor");
+  const personalityEl = document.getElementById("personality");
 
   // Sliders + readouts
   const scaleEl   = document.getElementById("scale");
@@ -41,7 +43,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     vcp1_offset: 70,    // OFFSET_PX
     vcp1_lerp: 0.20,    // LERP_ALPHA (lower = floatier/slower follow)
     vcp1_edgeRest: true,
-    vcp1_avoidCursor: true
+    vcp1_avoidCursor: true,
+    vcp1_personality: "standard"
   };
 
   // Forward live config patches to the overlay via the settings API
@@ -57,6 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       enabledEl.checked = !!res.enabled;
       if (edgeRestEl) edgeRestEl.checked = res.edgeRest !== false;
       if (avoidCursorEl) avoidCursorEl.checked = res.avoidCursor !== false;
+      if (personalityEl) personalityEl.value = typeof res.personality === "string" ? res.personality : DEFAULTS.vcp1_personality;
 
       const scale  = (typeof res.scale  === "number") ? res.scale  : DEFAULTS.vcp1_scale;
       const offset = (typeof res.offset === "number") ? res.offset : DEFAULTS.vcp1_offset;
@@ -89,6 +93,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (avoidCursorEl) {
     avoidCursorEl.addEventListener("change", () => {
       save({ vcp1_avoidCursor: avoidCursorEl.checked });
+    });
+  }
+  if (personalityEl) {
+    personalityEl.addEventListener("change", () => {
+      save({ vcp1_personality: personalityEl.value });
     });
   }
 
