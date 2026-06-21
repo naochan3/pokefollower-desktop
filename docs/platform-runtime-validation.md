@@ -103,6 +103,20 @@ rm -rf "$PF_LINUX_USER_DATA"
 - 備考:
 ```
 
+## 検証記録
+
+### 2026-06-22 macOS arm64 package smoke
+
+- OS: macOS 26.5.1 / arm64
+- PokeFollower commit: `4487ea6`
+- package version: `v1.0.5`
+- 生成コマンド: `npm run dist:mac -- --arm64 --dir --publish=never`
+- package smoke: `node scripts/verify-package-smoke.cjs darwin arm64` passed
+- runtime smoke: `PF_MAC_UNPACKED_MODES=both PF_MAC_UNPACKED_WARMUP_MS=3000 PF_MAC_UNPACKED_SAMPLE_MS=5000 PF_MAC_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:mac-unpacked-runtime` passed
+- enabled mode: tracked process count 4、avg ps cpu 3.360%、max ps cpu 4.600%、avg rss 375.5 MB、残プロセス 0
+- disabled mode: tracked process count 4、avg ps cpu 0.000%、max ps cpu 0.000%、avg rss 355.7 MB、残プロセス 0
+- 備考: builder は Developer ID Application 証明書を見つけられず未署名で package しました。これは #16 の既知制限と一致します。
+
 ## Issue #17 の完了条件
 
 - macOS の権限あり/なし両方でクラッシュせず、全画面判定の可否が説明できる。
