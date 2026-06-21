@@ -7,6 +7,7 @@ const sim = fs.readFileSync(path.join(root, "src", "main", "follower-sim.js"), "
 const settingsUi = fs.readFileSync(path.join(root, "src", "settings", "settings.js"), "utf8");
 const { DEFAULTS } = require(path.join(root, "src", "main", "settings-store.js"));
 const simLoopConfig = require(path.join(root, "src", "main", "sim-loop-config.js"));
+const appReactions = fs.readFileSync(path.join(root, "src", "main", "app-reactions.js"), "utf8");
 const errors = [];
 
 function expect(condition, message) {
@@ -73,6 +74,10 @@ expect(
     /codexNotificationWatcher\.stop\(\)/.test(main),
   "Codex notification watcher must sync with settings and stop before quit",
 );
+expect(/reactionModeForForeground/.test(main), "main.js must derive app/work-watch reaction mode from foreground context");
+expect(/workWatchPhase\(\)/.test(main), "main.js must let work watch override app reaction mode");
+expect(/vcp1_reactionMode/.test(sim), "follower-sim must accept runtime reaction mode");
+expect(/classifyForegroundApp/.test(appReactions), "app-reactions must expose a pure foreground classifier");
 expect(
   /function getUserDataPath\(\)/.test(main) &&
     /process\.env\.POKEFOLLOWER_ALLOW_TEST_USER_DATA === "1"/.test(main) &&

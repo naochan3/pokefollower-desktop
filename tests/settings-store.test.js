@@ -16,6 +16,7 @@ describe("settings-store", () => {
     expect(store.getAll()).toEqual(DEFAULTS);
     expect(store.get("offset")).toBe(70);
     expect(store.get("notificationCompanionEnabled")).toBe(false);
+    expect(store.get("appReactionsEnabled")).toBe(false);
     expect(store.get("workWatchEnabled")).toBe(false);
     expect(store.get("workWatchPreset")).toBe("25/5");
   });
@@ -116,6 +117,8 @@ describe("settings-store", () => {
     expect(store.get("enabled")).toBe(true);
     store.set({ notificationCompanionEnabled: 1 });
     expect(store.get("notificationCompanionEnabled")).toBe(true);
+    store.set({ appReactionsEnabled: 1 });
+    expect(store.get("appReactionsEnabled")).toBe(true);
     store.set({ workWatchEnabled: 1 });
     expect(store.get("workWatchEnabled")).toBe(true);
   });
