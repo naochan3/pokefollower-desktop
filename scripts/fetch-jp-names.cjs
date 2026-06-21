@@ -10,7 +10,7 @@ const path = require('path');
 
 const OUTPUT_PATH = path.join(__dirname, '..', 'assets', 'packs', 'jp-names.json');
 const BASE_URL = 'https://pokeapi.co/api/v2/pokemon-species';
-const TOTAL = 493;
+const TOTAL = 1025;
 const CONCURRENCY = 8;
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1000;
@@ -128,7 +128,7 @@ async function main() {
       process.exit(1);
     }
   } else {
-    console.log('All 493 entries have katakana names.');
+    console.log(`All ${TOTAL} entries have katakana names.`);
   }
 }
 
