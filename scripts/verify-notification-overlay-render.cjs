@@ -25,14 +25,11 @@ async function runElectronMain() {
     },
   });
   await win.loadFile(path.join(root, "src", "overlay", "overlay.html"));
-  win.webContents.send("companion-notification", {
-    source: "Codex",
-    title: "検証完了",
-    body: "通知画面 smoke",
-    ttlMs: 60000,
-  });
-  await new Promise((resolve) => setTimeout(resolve, 120));
-  const result = await win.webContents.executeJavaScript(`(() => {
+
+  async function sampleNotification(notification) {
+    win.webContents.send("companion-notification", notification);
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    return win.webContents.executeJavaScript(`(() => {
     const el = document.getElementById("__pf_notification");
     const source = el?.children?.[0];
     const title = el?.children?.[1];
@@ -64,7 +61,23 @@ async function runElectronMain() {
       bodyText: body?.textContent || "",
     };
   })()`);
+  }
 
+  const rightResult = await sampleNotification({
+    source: "Codex",
+    title: "検証完了",
+    body: "通知画面 smoke",
+    ttlMs: 60000,
+  });
+  const leftResult = await sampleNotification({
+    source: "Codex",
+    title: "左下検証",
+    body: "通知画面 smoke",
+    corner: "bottom-left",
+    ttlMs: 60000,
+  });
+
+  const result = rightResult;
   if (!result.exists) fail("notification element was not created");
   if (result.childCount !== 3) fail(`notification must render source/title/body nodes, got ${result.childCount}`);
   if (result.display !== "block") fail(`notification must be visible, got display=${result.display}`);
@@ -80,11 +93,27 @@ async function runElectronMain() {
     fail(`notification overflowed viewport: ${JSON.stringify(result)}`);
   }
   if (!result.transform || result.transform === "none") fail("notification must be positioned with transform");
+  const sideMargin = 24;
+  const bottomMargin = 96;
+  const expectedRightBottom = result.viewportHeight - Math.min(bottomMargin, Math.max(0, result.viewportHeight - result.height));
+  const expectedLeftBottom = leftResult.viewportHeight - Math.min(bottomMargin, Math.max(0, leftResult.viewportHeight - leftResult.height));
+  if (Math.abs(result.right - (result.viewportWidth - sideMargin)) > 2) {
+    fail(`default notification must be bottom-right aligned: ${JSON.stringify(result)}`);
+  }
+  if (Math.abs(result.bottom - expectedRightBottom) > 2) {
+    fail(`default notification must sit above the bottom margin: ${JSON.stringify(result)}`);
+  }
+  if (Math.abs(leftResult.left - sideMargin) > 2) {
+    fail(`bottom-left notification must align to the left margin: ${JSON.stringify(leftResult)}`);
+  }
+  if (Math.abs(leftResult.bottom - expectedLeftBottom) > 2) {
+    fail(`bottom-left notification must sit above the bottom margin: ${JSON.stringify(leftResult)}`);
+  }
 
   const screenshotPath = path.join(os.tmpdir(), "pokefollower-notification-overlay-smoke.png");
   const image = await win.capturePage();
   fs.writeFileSync(screenshotPath, image.toPNG());
-  console.log(`[verify-notification-overlay-render] ok: notification visible, clamped, pixel-styled; screenshot=${screenshotPath}`);
+  console.log(`[verify-notification-overlay-render] ok: notification visible, bottom-corner clamped, pixel-styled; screenshot=${screenshotPath}`);
   app.quit();
 }
 

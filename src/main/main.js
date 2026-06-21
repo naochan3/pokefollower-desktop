@@ -32,6 +32,7 @@ let fullscreenTimer = null;
 let lastStepTs = 0;
 let lastRender = null;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
+let fullscreenCheckInFlight = false;
 let notificationCompanion = null;
 let codexNotificationWatcher = null;
 let workWatchSession = null;
@@ -39,9 +40,10 @@ let workWatchTimer = null;
 
 const TRAY_ICON_SIZE_PX = 28;
 const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
-const FULLSCREEN_POLL_INTERVAL_MS = 600;
-function checkFullscreen() {
-  const nextFullscreenActive = isFullscreenForeground(getForegroundInfo(), screen.getAllDisplays());
+const FULLSCREEN_POLL_INTERVAL_MS = process.platform === "win32" ? 600 : 2000;
+
+function applyFullscreenInfo(info) {
+  const nextFullscreenActive = isFullscreenForeground(info, screen.getAllDisplays());
   if (nextFullscreenActive === fullscreenActive) return;
   fullscreenActive = nextFullscreenActive;
   if (fullscreenActive) {
@@ -51,6 +53,23 @@ function checkFullscreen() {
     startSimLoop();
     runSimFrame();
   }
+}
+
+function checkFullscreen() {
+  if (fullscreenCheckInFlight) return;
+  const info = getForegroundInfo();
+  if (!info || typeof info.then !== "function") {
+    applyFullscreenInfo(info);
+    return;
+  }
+  fullscreenCheckInFlight = true;
+  info
+    .then((resolvedInfo) => {
+      applyFullscreenInfo(resolvedInfo);
+    })
+    .finally(() => {
+      fullscreenCheckInFlight = false;
+    });
 }
 
 protocol.registerSchemesAsPrivileged([

@@ -38,8 +38,12 @@ expect(/const DISPLAY_REBUILD_DEBOUNCE_MS = 250;/.test(main), "display rebuild d
 expect(/function scheduleBuildOverlays\(\)/.test(main), "main.js must define scheduleBuildOverlays");
 expect(/clearTimeout\(displayRebuildTimer\)/.test(main), "display rebuild scheduler must coalesce rapid display events");
 expect(/setTimeout\(\(\) => \{[\s\S]*buildOverlays\(\);[\s\S]*\}, DISPLAY_REBUILD_DEBOUNCE_MS\)/.test(main), "display rebuild scheduler must rebuild overlays after debounce");
-expect(/const FULLSCREEN_POLL_INTERVAL_MS = 600;/.test(main), "fullscreen polling interval must stay at 600ms");
+expect(/const FULLSCREEN_POLL_INTERVAL_MS = process\.platform === "win32" \? 600 : 2000;/.test(main), "fullscreen polling must keep fast Win32 checks and slower external-command checks elsewhere");
 expect(/let fullscreenTimer = null;/.test(main), "main.js must track fullscreen polling timer");
+expect(/let fullscreenCheckInFlight = false;/.test(main), "main.js must prevent overlapping async fullscreen checks");
+expect(/function applyFullscreenInfo\(info\)/.test(main), "main.js must separate fullscreen result application from polling");
+expect(/typeof info\.then !== "function"/.test(main), "main.js must support synchronous Win32 fullscreen checks");
+expect(/fullscreenCheckInFlight = true;[\s\S]*\.finally\(\(\) => \{[\s\S]*fullscreenCheckInFlight = false;/.test(main), "main.js must release async fullscreen in-flight state");
 expect(/function startFullscreenPolling\(\)/.test(main), "main.js must define startFullscreenPolling");
 expect(/function stopFullscreenPolling\(\)/.test(main), "main.js must define stopFullscreenPolling");
 expect(/function stopSimLoop\(\{ hide = false \} = \{\}\)/.test(main), "main.js must define a stoppable sim loop helper");
