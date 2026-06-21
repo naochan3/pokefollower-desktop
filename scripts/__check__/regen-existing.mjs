@@ -25,11 +25,12 @@ for (const [gen, name] of SAMPLES) {
     '--flipX', String(committed.flipX),
   ], { stdio: 'inherit' });
   const regen = load(out);
-  // 構造比較: states キー・各 frame/frames/rows
+  // 構造比較: states キー・各 frame/frames/rows/fps
   for (const st of Object.keys(committed.states)) {
     const c = committed.states[st], r = regen.states[st];
     const eq = r && JSON.stringify(c.frame)===JSON.stringify(r.frame)
-      && c.frames===r.frames && JSON.stringify(c.rows)===JSON.stringify(r.rows);
+      && c.frames===r.frames && JSON.stringify(c.rows)===JSON.stringify(r.rows)
+      && c.fps===r.fps;
     if (!eq) { console.error(`MISMATCH ${name}.${st}`, {c, r}); bad++; }
   }
 }

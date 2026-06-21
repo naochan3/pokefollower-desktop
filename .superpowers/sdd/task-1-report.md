@@ -121,3 +121,63 @@ feat: parse-anim.mjs を移植し既存packで較正 (#14)
 ```
 
 Commit SHA: (see git log)
+
+---
+
+## Fix pass (2026-06-21)
+
+### I-2: 較正に fps を追加
+
+**diff (`scripts/__check__/regen-existing.mjs`)**
+
+```diff
+-  // 構造比較: states キー・各 frame/frames/rows
++  // 構造比較: states キー・各 frame/frames/rows/fps
+   for (const st of Object.keys(committed.states)) {
+     const c = committed.states[st], r = regen.states[st];
+     const eq = r && JSON.stringify(c.frame)===JSON.stringify(r.frame)
+-      && c.frames===r.frames && JSON.stringify(c.rows)===JSON.stringify(r.rows);
++      && c.frames===r.frames && JSON.stringify(c.rows)===JSON.stringify(r.rows)
++      && c.fps===r.fps;
+     if (!eq) { console.error(`MISMATCH ${name}.${st}`, {c, r}); bad++; }
+   }
+```
+
+**較正コマンド + 出力**
+
+```
+$ node scripts/__check__/regen-existing.mjs
+Wrote C:\Users\nekop\AppData\Local\Temp\025-pikachu.json
+Wrote C:\Users\nekop\AppData\Local\Temp\003-venusaur.json
+Wrote C:\Users\nekop\AppData\Local\Temp\470-leafeon.json
+較正OK: 既存packを構造一致で再生成できる
+```
+
+fps を含む全フィールドで一致。ジェネレータのバグなし。
+
+### I-1: lockfile 変更がベニーンであることを確認
+
+**`npm run verify:deps` 出力**
+
+```
+[verify-dependency-metadata] ok: package metadata, lockfile, and CI Node version are consistent
+```
+
+**`npm ls --depth=0` 出力**
+
+```
+pokefollower-desktop@1.0.4
+├── @emnapi/wasi-threads@1.2.1 extraneous
+├── electron-builder@26.15.3
+├── electron@42.4.1
+├── fast-xml-parser@5.9.3
+├── image-size@2.0.2
+├── koffi@3.0.2
+└── vitest@4.1.9
+```
+
+ロックされていた4パッケージ（electron 42.4.1 / electron-builder 26.15.3 / vitest 4.1.9 / koffi 3.0.2）のバージョンに変更なし。新規追加の fast-xml-parser@5.9.3 / image-size@2.0.2 も正しく存在。lockfile の差分は npm の `peer`/`libc` フラグ正規化のみで、依存バージョンは一切変化していない。
+
+### 確認済み
+- I-2: fps 比較追加 → 較正グリーン（ジェネレータ修正不要）
+- I-1: 全ロックバージョン変更なし → benign と判断
