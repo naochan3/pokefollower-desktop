@@ -56,20 +56,20 @@
 - 作業見守りモード（既定 OFF）。25/5・50/10 タイマー、開始/停止/リセット、休憩/作業切り替わり通知、作業中/休憩中の控えめな追従リアクションを含む
 - アプリ別リアクション（既定 OFF）。前面アプリ情報が取れる環境では、エディタ/ターミナルで距離を取り、ブラウザ/チャットでは少し近づく軽量ルールを適用
 - マルチモニター連続追従、全画面自動非表示（Windows / macOS / Linux best-effort）、ログイン自動起動、クリック透過
-- 通知コンパニオン基盤（既定 OFF、通知本文は保存しない、許可されたイベント/Codex notify payload を要約してドット風の吹き出し表示）
+- 通知コンパニオン基盤（既定 OFF、OS 通知本文は保存しない、Codex notify bridge は短い要約だけを最大64件のローカル queue に保持）
 
 ---
 
 ## 今後の対応予定（ロードマップ）
 
-未着手・検討中の項目。GitHub の [Issues](https://github.com/naochan3/pokefollower-desktop/issues) で管理します。
+未完了・対応中・検討中の項目。GitHub の [Issues](https://github.com/naochan3/pokefollower-desktop/issues) で管理します。
 
 | 項目 | 優先度 | issue | メモ |
 |---|---|---|---|
-| **全ポケモン対応（第5〜9世代の追加）** | 中 | [#14](https://github.com/naochan3/pokefollower-desktop/issues/14) | 第5〜9世代を追加し956種に拡張済み。残り69種はSpriteCollab素材待ち。別フォルム（アローラ等）は今後検討 |
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
 | macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知は実装済み。Linux AppImage の透明・常駐・クリック透過・最前面は実機検証が必要 |
-| 通知コンパニオンの OS 通知連携 | 中 | [#42](https://github.com/naochan3/pokefollower-desktop/issues/42) | Codex notify bridge は実装済み。macOS / Windows の OS 通知取得は権限境界を調査し、明示許可の範囲だけ実装する |
+| 通知コンパニオンの OS 通知連携 | 中 | [#42](https://github.com/naochan3/pokefollower-desktop/issues/42) | Codex notify bridge は実装済み。OS 通知取得の権限境界は [通知コンパニオンの権限境界](notification-permission-boundaries.md) に整理済み |
+| 相棒感を強める全体ロードマップ | 中 | [#43](https://github.com/naochan3/pokefollower-desktop/issues/43) | #36〜#41/#51 は完了済み。残りは #42 と配布・実機検証系の #16/#17 |
 
 ---
 
@@ -79,6 +79,6 @@
 - 全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。
 - アプリ別リアクションも前面アプリ情報の取得可否に依存し、取得できない場合は通常追従にフォールバックします。
 - 邪魔しない追従は system idle time が取れない環境では、カーソル近傍回避のみで動作します。
-- 通知コンパニオンは OS 全体の通知取得までは未対応です。現在はアプリ内/許可済みイベントと Codex notify payload を表示する軽量基盤です。
+- 通知コンパニオンは OS 全体の通知取得までは未対応です。現在はアプリ内/許可済みイベントと Codex notify payload を表示する軽量基盤で、OS 別の権限境界は [通知コンパニオンの権限境界](notification-permission-boundaries.md) に整理しています。
 - モニター間で表示スケール（DPI）が大きく異なると、位置がわずかにずれることがある。
 - Linux は AppImage ビルドまで（実機の常駐挙動は未検証）。
