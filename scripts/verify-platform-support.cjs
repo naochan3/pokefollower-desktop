@@ -50,15 +50,18 @@ expect(
   "README must describe fullscreen auto-hide platform requirements",
 );
 expect(
-  readme.includes("Linux 版は AppImage のビルド対応までです。デスクトップ環境ごとの常駐・透明オーバーレイ挙動は追加検証が必要です。"),
-  "README must state Linux runtime behavior still needs validation",
+  readme.includes("Linux 版は AppImage のビルドと WSLg での起動 smoke までです。デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。"),
+  "README must state Linux visual runtime behavior still needs validation",
 );
 expect(readme.includes("macOS（Apple Silicon / arm64）"), "README must describe published macOS support as Apple Silicon / arm64");
 expect(!readme.includes("macOS（Apple Silicon / Intel）"), "README must not imply Intel macOS binaries are currently published");
 expect(status.includes("現在は Windows / macOS(arm64) 向けに配布物を出せる状態。"), "STATUS must describe macOS distribution as arm64");
 expect(status.includes("macOS arm64 dmg / zip"), "STATUS included assets must describe macOS arm64 assets");
 expect(status.includes("全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。"), "STATUS must state macOS/Linux fullscreen auto-hide dependencies");
-expect(status.includes("Linux は AppImage ビルドまで（実機の常駐挙動は未検証）。"), "STATUS must state Linux runtime is unverified");
+expect(
+  status.includes("Linux は AppImage ビルドと WSLg 起動 smoke まで（実機の tray・透明・クリック透過・最前面は未検証）。"),
+  "STATUS must state Linux visual runtime is unverified",
+);
 
 if (errors.length > 0) {
   for (const error of errors) console.error(`[verify-platform-support] ${error}`);

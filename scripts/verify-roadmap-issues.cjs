@@ -17,7 +17,7 @@ expect(status.includes("現在含まれているもの（v1.0.5）"), "STATUS mu
 
 for (const issue of [
   ["#16", "配布物の署名・公証（Win/Mac）", "SmartScreen / Gatekeeper"],
-  ["#17", "macOS / Linux の全画面自動非表示・Linux 実機検証", "macOS / Linux の best-effort 検知は実装済み"],
+  ["#17", "macOS / Linux の全画面自動非表示・Linux 実機検証", "Linux AppImage build/start smoke は確認済み"],
 ]) {
   const [num, title, note] = issue;
   const id = num.slice(1);
@@ -33,7 +33,10 @@ for (const closedIssue of ["#1", "#2", "#3", "#4", "#6", "#7", "#8", "#9", "#10"
   expect(status.includes(closedIssue), `STATUS completed-plan table must keep ${closedIssue}`);
 }
 
-expect(status.includes("Linux は AppImage ビルドまで（実機の常駐挙動は未検証）。"), "STATUS must keep Linux runtime limitation");
+expect(
+  status.includes("Linux は AppImage ビルドと WSLg 起動 smoke まで（実機の tray・透明・クリック透過・最前面は未検証）。"),
+  "STATUS must keep Linux visual runtime limitation",
+);
 expect(status.includes("全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。"), "STATUS must keep macOS/Linux fullscreen dependency limitation");
 expect(status.includes("macOS / Windows とも **未署名**"), "STATUS must keep unsigned limitation");
 expect(status.includes("[通知コンパニオンの取得境界](notification-capture.md)"), "STATUS must link notification capture boundaries");
