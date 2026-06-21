@@ -33,6 +33,8 @@ for (const text of [
   "残プロセス",
   "POKEFOLLOWER_ALLOW_TEST_USER_DATA",
   "POKEFOLLOWER_TEST_USER_DATA_DIR",
+  "bench:linux-unpacked-runtime",
+  "PF_LINUX_UNPACKED_ARGS=--no-sandbox",
   "AppImage 終了後、PokeFollower の残プロセスが 0",
   "記録テンプレート",
 ]) {
@@ -45,6 +47,7 @@ for (const command of [
   "PF_MAC_UNPACKED_MODES=both",
   "npm run dist:linux -- --dir --publish=never",
   "node scripts/verify-package-smoke.cjs linux x64",
+  "PF_LINUX_UNPACKED_MODES=both",
   "npm run dist:linux -- --publish=never",
 ]) {
   expect(validation.includes(command), `platform-runtime-validation.md missing command: ${command}`);
