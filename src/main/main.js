@@ -448,6 +448,10 @@ ipcMain.handle("packs:list", (event) => {
   requireSettingsSender(event);
   return packReader.readPackList();
 });
+ipcMain.handle("packs:search-metadata", (event) => {
+  requireSettingsSender(event);
+  return packReader.readSearchMetadata();
+});
 ipcMain.handle("companion:test-notification", (event) => {
   requireSettingsSender(event);
   return notificationCompanion.publish({
