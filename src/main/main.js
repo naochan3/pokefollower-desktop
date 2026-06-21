@@ -106,6 +106,7 @@ function createOverlayWindow(display) {
 function buildOverlays() {
   for (const o of overlays) { if (o.win && !o.win.isDestroyed()) o.win.destroy(); }
   overlays = screen.getAllDisplays().map((d) => ({ win: createOverlayWindow(d), bounds: d.bounds, visible: false, lastFrameKey: "hidden" }));
+  sim.setDisplayBounds(overlays.map((o) => o.bounds));
 }
 
 let displayRebuildTimer = null;
@@ -287,7 +288,7 @@ app.whenReady().then(() => {
 
   registerPermissionGuards();
   registerAppProtocol();
-  sim.setConfig({ vcp1_scale: s.scale, vcp1_offset: s.offset, vcp1_lerp: s.lerp });
+  sim.setConfig({ vcp1_scale: s.scale, vcp1_offset: s.offset, vcp1_lerp: s.lerp, vcp1_edgeRest: s.edgeRest });
   try { loadPackIntoSim(s.pack); }
   catch (_) { try { loadPackIntoSim("retro/gen-1/009-blastoise"); } catch (_e) { /* noop */ } }
 

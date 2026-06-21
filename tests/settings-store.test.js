@@ -111,4 +111,13 @@ describe("settings-store", () => {
     store.set({ enabled: "yes" });
     expect(store.get("enabled")).toBe(true);
   });
+
+  it("edgeRestはbooleanとして保存する", () => {
+    const store = createSettingsStore(file);
+    expect(store.get("edgeRest")).toBe(true);
+    store.set({ edgeRest: 0 });
+    expect(store.get("edgeRest")).toBe(false);
+    store.set({ edgeRest: "yes" });
+    expect(store.get("edgeRest")).toBe(true);
+  });
 });

@@ -17,10 +17,13 @@ const IDLE_OFFSET_DIR = { x: 0, y: -1 }; // 待機時はカーソルの真上に
 const MOVE_DIR_MIN_PX = 0.75; // 平滑後の移動量がこれ未満なら front（停止＝正面）
 const MOVE_DIR_SMOOTHING = 0.25; // 向き用移動ベクトルのEMA係数。到着間際のパタつき(ぶるぶる)を抑える
 const IDLE_ANIM_SPEED = 0.7; // 待機(idle)アニメの再生速度倍率（1未満で遅く）
+const EDGE_REST_IDLE_MS = 8000;
+const EDGE_REST_PADDING_PX = 8;
 
 function createFollowerSim(options = {}) {
-  const CONFIG = { scale: 1.25, offset: 70, lerp: 0.20 };
+  const CONFIG = { scale: 1.25, offset: 70, lerp: 0.20, edgeRest: true };
   const rustCore = createRustFollowerCore(options.rootDir || path.join(__dirname, "..", ".."));
+  let displayBounds = [];
   let meta = null;
   const R = {
     anim: { name: "idle", frame: 0, row: 0, accMs: 0 },
@@ -34,6 +37,7 @@ function createFollowerSim(options = {}) {
     velAvg: { x: 0, y: 0 },
     speedAvg: 0,
     moveDir: { x: 0, y: 0 }, // ポケモン自身の進行方向（向き選択に使う。カーソル速度ではない）
+    restTarget: null,
   };
 
   function hasState(name) { return !!(meta && meta.states && meta.states[name]); }
@@ -44,7 +48,69 @@ function createFollowerSim(options = {}) {
     return WALK_SPEED_MIN_PXPS + c * (WALK_SPEED_MAX_PXPS - WALK_SPEED_MIN_PXPS);
   }
 
+  function frameSizeForCurrentState() {
+    const st = meta && meta.states ? meta.states[R.anim.name] : null;
+    const frame = st && st.frame ? st.frame : { w: 96, h: 96 };
+    return { w: frame.w * CONFIG.scale, h: frame.h * CONFIG.scale };
+  }
+
+  function displayForPoint(x, y) {
+    const containing = displayBounds.find((b) =>
+      x >= b.x && x < b.x + b.width && y >= b.y && y < b.y + b.height);
+    if (containing) return containing;
+    let best = displayBounds[0] || null;
+    let bestDist = Infinity;
+    for (const b of displayBounds) {
+      const cx = Math.min(Math.max(x, b.x), b.x + b.width);
+      const cy = Math.min(Math.max(y, b.y), b.y + b.height);
+      const dist = Math.hypot(x - cx, y - cy);
+      if (dist < bestDist) { best = b; bestDist = dist; }
+    }
+    return best;
+  }
+
+  function clamp(n, min, max) {
+    return Math.min(max, Math.max(min, n));
+  }
+
+  function computeEdgeRestTarget() {
+    if (!CONFIG.edgeRest || displayBounds.length === 0) return null;
+    const idleMs = Math.max(0, R.lastMouse.t - R.lastMoveTs);
+    if (idleMs < EDGE_REST_IDLE_MS) return null;
+    const bounds = displayForPoint(R.lastMouse.x, R.lastMouse.y);
+    if (!bounds) return null;
+    const size = frameSizeForCurrentState();
+    const halfW = size.w / 2;
+    const halfH = size.h / 2;
+    const left = bounds.x + halfW + EDGE_REST_PADDING_PX;
+    const right = bounds.x + bounds.width - halfW - EDGE_REST_PADDING_PX;
+    const top = bounds.y + halfH + EDGE_REST_PADDING_PX;
+    const bottom = bounds.y + bounds.height - halfH - EDGE_REST_PADDING_PX;
+    if (right < left || bottom < top) return null;
+    const midY = bounds.y + bounds.height / 2;
+    return {
+      x: clamp(R.lastMouse.x, left, right),
+      y: R.lastMouse.y < midY ? bottom : top,
+    };
+  }
+
+  function setCoreRestTarget(target) {
+    R.restTarget = target;
+    if (!rustCore) return;
+    if (target) rustCore.setRestTarget(target.x, target.y);
+    else rustCore.clearRestTarget();
+  }
+
+  function refreshRestTarget() {
+    setCoreRestTarget(computeEdgeRestTarget());
+  }
+
   function computeTarget() {
+    if (R.restTarget) {
+      R.target.x = R.restTarget.x;
+      R.target.y = R.restTarget.y;
+      return;
+    }
     const speed = R.speedAvg || 0;
     const hasDir = speed > 40;
     const OFFSET = CONFIG.offset;
@@ -93,13 +159,20 @@ function createFollowerSim(options = {}) {
     if (typeof obj.vcp1_scale === "number" && !Number.isNaN(obj.vcp1_scale)) CONFIG.scale = obj.vcp1_scale;
     if (typeof obj.vcp1_offset === "number" && !Number.isNaN(obj.vcp1_offset)) CONFIG.offset = obj.vcp1_offset;
     if (typeof obj.vcp1_lerp === "number" && !Number.isNaN(obj.vcp1_lerp)) CONFIG.lerp = obj.vcp1_lerp;
+    if (typeof obj.vcp1_edgeRest === "boolean") CONFIG.edgeRest = obj.vcp1_edgeRest;
     if (rustCore) rustCore.setConfig({ offset: CONFIG.offset, lerp: CONFIG.lerp });
+    if (!CONFIG.edgeRest) setCoreRestTarget(null);
   }
 
   return {
     backend() { return rustCore ? rustCore.backend : "js"; },
     setConfig: applyConfigPatch,
     setMeta(m) { meta = m; R.anim = { name: "idle", frame: 0, row: 0, accMs: 0 }; },
+    setDisplayBounds(bounds = []) {
+      displayBounds = bounds
+        .filter((b) => b && Number.isFinite(b.x) && Number.isFinite(b.y) && Number.isFinite(b.width) && Number.isFinite(b.height))
+        .map((b) => ({ x: b.x, y: b.y, width: b.width, height: b.height }));
+    },
     hasMeta() { return !!meta; },
     // 有効化時などにカーソル位置へ配置
     resetTo(x, y, now) {
@@ -108,6 +181,7 @@ function createFollowerSim(options = {}) {
       R.offsetDir.x = IDLE_OFFSET_DIR.x; R.offsetDir.y = IDLE_OFFSET_DIR.y;
       R.velAvg.x = 0; R.velAvg.y = 0; R.speedAvg = 0; R.lastMoveTs = now;
       R.moveDir.x = 0; R.moveDir.y = 0;
+      setCoreRestTarget(null);
       if (rustCore) rustCore.resetTo(x, y, now);
     },
     updateCursor(x, y, now) {
@@ -123,7 +197,10 @@ function createFollowerSim(options = {}) {
       R.velAvg.y = R.velAvg.y * (1 - S) + vy * S;
       R.speedAvg = Math.hypot(R.velAvg.x, R.velAvg.y);
       R.lastMouse.x = x; R.lastMouse.y = y; R.lastMouse.t = now;
-      if (moved) R.lastMoveTs = now;
+      if (moved) {
+        R.lastMoveTs = now;
+        setCoreRestTarget(null);
+      }
       if (rustCore) rustCore.updateCursor(x, y, now);
     },
     // 1フレーム進める。グローバル座標の描画情報を返す（meta未設定なら null）。
@@ -146,6 +223,7 @@ function createFollowerSim(options = {}) {
 
       const prevX = R.pos.x;
       const prevY = R.pos.y;
+      refreshRestTarget();
 
       if (rustCore) {
         const next = rustCore.step(dtMs);
