@@ -1,6 +1,6 @@
 # プロジェクト状況（計画 vs 現状）
 
-最終更新: 2026-06-21 / 現在のバージョン: **v1.0.4**
+最終更新: 2026-06-22 / 現在のバージョン: **v1.0.5**
 
 このドキュメントは「当初の計画に対して、今どこまで出来ているか」を一覧で把握するためのものです。
 詳細な設計・実装計画は `docs/superpowers/plans/` と `docs/superpowers/specs/` を参照。
@@ -42,12 +42,13 @@
 
 ---
 
-## 現在含まれているもの（v1.0.4）
+## 現在含まれているもの（v1.0.5）
 
-- Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21 の改善＋ #31/#32 の追従挙動修正（向き・sleep・着地ぶるぶる・待機減速）込み。追従既定 16ms）
-- macOS arm64 dmg / zip（v1.0.4 は contributor によるビルド添付待ち。直近の公開済み安定版は v1.0.3）
-- ポケモン 956 種（第1〜9世代）
-- 日本語表示・日本語検索、タイル選択 UI
+- Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21＋ #31/#32 の追従挙動修正＋ #34（待機を移動方向の逆隅に）＋ #35（第5〜9世代追加・世代フィルタ）込み。追従既定 16ms）
+- macOS arm64 dmg / zip（v1.0.5 は contributor によるビルド添付待ち。直近の公開済み安定版は v1.0.4）
+- ポケモン 956 種（第1〜9世代。未収録69種は出典素材待ち）
+- 日本語表示・日本語検索、タイル選択 UI、世代フィルタ（全/第1〜9）
+- 待機位置は移動方向の逆隅に留まる（本家拡張準拠）
 - マルチモニター連続追従、全画面自動非表示（Windows / macOS / Linux best-effort）、ログイン自動起動、クリック透過
 
 ---
@@ -58,7 +59,7 @@
 
 | 項目 | 優先度 | issue | メモ |
 |---|---|---|---|
-| **全ポケモン対応（第5〜9世代の追加）** | 中 | [#14](https://github.com/naochan3/pokefollower-desktop/issues/14) | 現状は493種（〜第4世代）。スプライト素材と日本語名データの拡張が必要 |
+| **全ポケモン対応（第5〜9世代の追加）** | 中 | [#14](https://github.com/naochan3/pokefollower-desktop/issues/14) | 第5〜9世代を追加し956種に拡張済み。残り69種はSpriteCollab素材待ち。別フォルム（アローラ等）は今後検討 |
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
 | macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知は実装済み。Linux AppImage の透明・常駐・クリック透過・最前面は実機検証が必要 |
 
