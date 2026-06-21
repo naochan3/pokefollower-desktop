@@ -36,7 +36,8 @@ function makePackReader(root) {
       return {
         id: item.id,
         num: num,
-        ja: jpEntry.ja || null,
+        region: item.region || null,
+        ja: item.ja || jpEntry.ja || null,
         romaji: jpEntry.romaji || null,
         en: en || slug,
       };

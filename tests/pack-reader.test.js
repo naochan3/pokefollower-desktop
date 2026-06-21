@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { resolve } from "node:path";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { makePackReader } from "../src/main/pack-reader.js";
 
 describe("pack-reader", () => {
@@ -41,5 +44,40 @@ describe("pack-reader", () => {
 
   it("不正なpack keyではroot外候補を探索しない", () => {
     expect(() => reader.readPackMeta("retro/../../secret")).toThrow(/pack not found/);
+  });
+});
+
+describe("pack-reader: region / form ja (temp fixtures)", () => {
+  let tmpRoot;
+
+  function setupTempRoot(indexRetro, jpNames) {
+    tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "pokefollower-test-"));
+    const packsDir = path.join(tmpRoot, "assets", "packs");
+    fs.mkdirSync(packsDir, { recursive: true });
+    fs.writeFileSync(path.join(packsDir, "index.json"), JSON.stringify({ retro: indexRetro }));
+    fs.writeFileSync(path.join(packsDir, "jp-names.json"), JSON.stringify(jpNames));
+  }
+
+  it("readPackList が region とフォルムja を返す", () => {
+    setupTempRoot(
+      [
+        { id: "retro/gen-1/025-pikachu", name: "025-Pikachu" },
+        { id: "retro/forms/alola/026-raichu", name: "026-Raichu-Alola", region: "alola", ja: "アローラライチュウ" },
+      ],
+      {
+        "25": { ja: "ピカチュウ", romaji: "Pikachu" },
+        "26": { ja: "ライチュウ", romaji: "Raichu" },
+      }
+    );
+
+    const list = makePackReader(tmpRoot).readPackList();
+
+    const normal = list.find((p) => p.id === "retro/gen-1/025-pikachu");
+    expect(normal.region).toBeNull();
+    expect(normal.ja).toBe("ピカチュウ");
+
+    const form = list.find((p) => p.id === "retro/forms/alola/026-raichu");
+    expect(form.region).toBe("alola");
+    expect(form.ja).toBe("アローラライチュウ");
   });
 });
