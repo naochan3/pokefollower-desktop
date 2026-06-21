@@ -4,6 +4,7 @@ const path = require("node:path");
 const root = path.join(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "src", "settings", "settings.html"), "utf8");
 const js = fs.readFileSync(path.join(root, "src", "settings", "settings.js"), "utf8");
+const generationLabels = fs.readFileSync(path.join(root, "src", "settings", "generation-labels.js"), "utf8");
 const preload = fs.readFileSync(path.join(root, "src", "settings", "settings-preload.js"), "utf8");
 const errors = [];
 
@@ -30,9 +31,26 @@ for (const id of ["enabled", "edgeRest", "avoidCursor", "avoidCursorStrength", "
 // 世代フィルタ
 expect(html.includes('id="genChips"'), 'settings.html must contain id="genChips" chip row');
 expect(html.includes('data-gen="all"'), 'settings.html must contain "全" chip with data-gen="all"');
-for (let g = 1; g <= 9; g++) {
+for (const [g, short, titleNeedle] of [
+  [1, "赤緑", "赤・緑 / 青 / ピカチュウ"],
+  [2, "金銀", "金・銀 / クリスタル"],
+  [3, "RS", "ルビー・サファイア / エメラルド"],
+  [4, "DP", "ダイヤモンド・パール / プラチナ"],
+  [5, "BW", "ブラック・ホワイト / B2W2"],
+  [6, "XY", "X・Y"],
+  [7, "SM", "サン・ムーン / USUM"],
+  [8, "剣盾", "ソード・シールド / Legends アルセウス"],
+  [9, "SV", "スカーレット・バイオレット"],
+]) {
   expect(html.includes(`data-gen="${g}"`), `settings.html must contain chip data-gen="${g}"`);
+  expect(html.includes(`>${short}</button>`), `settings.html must render short generation label ${short}`);
+  expect(html.includes(titleNeedle), `settings.html must expose generation tooltip text: ${titleNeedle}`);
+  expect(generationLabels.includes(`gen: ${g}`), `generation-labels.js must define generation ${g}`);
+  expect(generationLabels.includes(`short: "${short}"`), `generation-labels.js must define short label ${short}`);
 }
+expect(html.includes('<script src="generation-labels.js"></script>'), "settings.html must load generation labels before settings.js");
+expect(js.includes("window.PokeFollowerGenerationLabels"), "settings.js must read canonical generation labels");
+expect(js.includes("generationLabelFor(g)"), "settings.js must render generation chips from generation labels");
 expect(js.includes('genOfDex'), 'settings.js must reference genOfDex for generation filter');
 expect(js.includes('selectedGen'), 'settings.js must maintain selectedGen state');
 
