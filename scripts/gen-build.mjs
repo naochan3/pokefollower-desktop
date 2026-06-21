@@ -17,7 +17,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { XMLParser } from 'fast-xml-parser';
 import sharp from 'sharp';
-import { fetchPokemon } from './gen-fetch.mjs';
+import { fetchPokemon, fetchForm } from './gen-fetch.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -166,42 +166,157 @@ async function buildOne(dex, slug, gen) {
   return { mon, skipped: false, tile: got.tile };
 }
 
+/**
+ * Build assets for a single regional form.
+ * @param {{ dex:number, subindex:string, baseSlug:string, region:string, slug:string }} entry
+ * @returns {{ mon:string, skipped:boolean, reason?:string, tile?:string }}
+ */
+async function buildForm(entry) {
+  const { dex, subindex, baseSlug, region, slug } = entry;
+  const mon = slug;
+  const regionSlug = region.toLowerCase();
+
+  console.log(`\n--- form: ${mon} (${regionSlug}) ---`);
+
+  // 1. Fetch into temp dir
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), `pf-form-${mon}-`));
+  let got;
+  try {
+    got = await fetchForm(dex, subindex, baseSlug, regionSlug, tmp);
+  } catch (err) {
+    fs.rmSync(tmp, { recursive: true, force: true });
+    return { mon, skipped: true, reason: `fetch error: ${err.message}` };
+  }
+
+  if (!got.anim || got.sheets.length === 0) {
+    fs.rmSync(tmp, { recursive: true, force: true });
+    return { mon, skipped: true, reason: 'AnimData.xml または -Anim.png シートが取得できなかった' };
+  }
+
+  // 2. raw 配置: all PNG sheets → lossless webp
+  const rawDir = path.join(root, 'assets', 'raw', 'forms', regionSlug, mon);
+  fs.mkdirSync(rawDir, { recursive: true });
+  fs.copyFileSync(path.join(tmp, 'AnimData.xml'), path.join(rawDir, 'AnimData.xml'));
+
+  for (const pngName of got.sheets) {
+    const webpName = pngName.replace(/\.png$/i, '.webp');
+    await toWebp(path.join(tmp, pngName), path.join(rawDir, webpName));
+  }
+
+  // 3. Pack JSON (parse-anim.mjs --all)
+  const generation = `forms/${regionSlug}`;
+  const rawPath = `forms/${regionSlug}/${mon}`;
+  const packDir = path.join(root, 'assets', 'packs', 'retro', 'forms', regionSlug);
+  fs.mkdirSync(packDir, { recursive: true });
+  execFileSync('node', [
+    path.join(__dirname, 'parse-anim.mjs'),
+    '--xml',        path.join(rawDir, 'AnimData.xml'),
+    '--dir',        rawDir,
+    '--name',       mon,
+    '--generation', generation,
+    '--rawPath',    rawPath,
+    '--out',        path.join(packDir, `${mon}.json`),
+    '--flipX',      'true',
+    '--all',
+  ], { stdio: 'inherit' });
+
+  // 4. UI tile (96×96 PNG)
+  const uiDir = path.join(root, 'assets', 'ui', 'forms', regionSlug);
+  fs.mkdirSync(uiDir, { recursive: true });
+  const uiOut = path.join(uiDir, `${mon}.png`);
+
+  if (got.tile === 'pokemondb') {
+    await sharp(path.join(tmp, 'tile.png'))
+      .resize(96, 96, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .png()
+      .toFile(uiOut);
+  } else {
+    // Fallback: extract front frame from Idle-Anim.webp (same as normal Pokémon)
+    const idleWebp = path.join(rawDir, 'Idle-Anim.webp');
+    const xmlPathForTile = path.join(rawDir, 'AnimData.xml');
+    if (fs.existsSync(idleWebp)) {
+      const { w: fw, h: fh } = readIdleFrameSize(xmlPathForTile);
+      console.log(`  PMD tile fallback: extracting ${fw}×${fh} frame from Idle-Anim.webp`);
+      await sharp(idleWebp)
+        .extract({ left: 0, top: 0, width: fw, height: fh })
+        .resize(96, 96, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+        .png()
+        .toFile(uiOut);
+    } else {
+      console.warn(`  Tile fallback failed: Idle-Anim.webp not found in ${rawDir}`);
+    }
+  }
+
+  // 5. Cleanup temp
+  fs.rmSync(tmp, { recursive: true, force: true });
+
+  console.log(`  Done: tile=${got.tile}`);
+  return { mon, skipped: false, tile: got.tile };
+}
+
 // ---- CLI entry point ----
 
+const formsMode = process.argv.includes('--forms');
 const genArg  = arg('gen');
 const dexArg  = arg('dex');
 const slugArg = arg('slug');
 const manifest = arg('manifest');
+const onlyArg = arg('only');  // --only <slug> to process a single form in --forms mode
 
-if (!genArg) {
-  console.error('Usage: --gen N [--dex D --slug S] | [--manifest <path>]');
-  process.exit(1);
-}
+if (formsMode) {
+  // --forms mode: read forms-manifest.json and build regional forms
+  const manifestPath = path.join(root, 'assets', 'packs', 'forms-manifest.json');
+  const raw = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  const list = raw.includable ?? [];
 
-const results = [];
-
-if (dexArg) {
-  // Single mode
-  if (!slugArg) {
-    console.error('Single mode requires --slug');
+  const toProcess = onlyArg ? list.filter(m => m.slug === onlyArg) : list;
+  if (toProcess.length === 0) {
+    console.error(onlyArg ? `--only ${onlyArg} not found in forms-manifest.json` : 'No includable forms in manifest');
     process.exit(1);
   }
-  results.push(await buildOne(Number(dexArg), slugArg, Number(genArg)));
-} else if (manifest) {
-  // Batch mode
-  const raw = JSON.parse(fs.readFileSync(path.resolve(manifest), 'utf8'));
-  const list = Array.isArray(raw) ? raw : (raw.includable ?? raw);
-  const filtered = list.filter(m => String(m.gen) === String(genArg));
-  for (const m of filtered) {
-    results.push(await buildOne(m.dex, m.slug, m.gen));
+
+  const results = [];
+  for (const entry of toProcess) {
+    results.push(await buildForm(entry));
+  }
+
+  const skipped = results.filter(r => r.skipped);
+  console.log(`\n完了: ${results.length - skipped.length} フォルム生成 / スキップ ${skipped.length}`);
+  if (skipped.length) {
+    console.log('スキップ:', skipped.map(s => `${s.mon} (${s.reason})`).join(', '));
   }
 } else {
-  console.error('Specify either --dex/--slug (single) or --manifest (batch)');
-  process.exit(1);
-}
+  // Original mode
+  if (!genArg) {
+    console.error('Usage: --gen N [--dex D --slug S] | [--manifest <path>] | --forms [--only <slug>]');
+    process.exit(1);
+  }
 
-const skipped = results.filter(r => r.skipped);
-console.log(`\n完了: ${results.length - skipped.length} 体生成 / スキップ ${skipped.length}`);
-if (skipped.length) {
-  console.log('スキップ:', skipped.map(s => `${s.mon} (${s.reason})`).join(', '));
+  const results = [];
+
+  if (dexArg) {
+    // Single mode
+    if (!slugArg) {
+      console.error('Single mode requires --slug');
+      process.exit(1);
+    }
+    results.push(await buildOne(Number(dexArg), slugArg, Number(genArg)));
+  } else if (manifest) {
+    // Batch mode
+    const raw = JSON.parse(fs.readFileSync(path.resolve(manifest), 'utf8'));
+    const list = Array.isArray(raw) ? raw : (raw.includable ?? raw);
+    const filtered = list.filter(m => String(m.gen) === String(genArg));
+    for (const m of filtered) {
+      results.push(await buildOne(m.dex, m.slug, m.gen));
+    }
+  } else {
+    console.error('Specify either --dex/--slug (single) or --manifest (batch)');
+    process.exit(1);
+  }
+
+  const skipped = results.filter(r => r.skipped);
+  console.log(`\n完了: ${results.length - skipped.length} 体生成 / スキップ ${skipped.length}`);
+  if (skipped.length) {
+    console.log('スキップ:', skipped.map(s => `${s.mon} (${s.reason})`).join(', '));
+  }
 }
