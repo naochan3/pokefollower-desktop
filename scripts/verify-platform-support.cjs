@@ -33,17 +33,19 @@ expect(
   /process\.platform === "darwin"/.test(fullscreenDetect) && /osascript/.test(fullscreenDetect),
   "fullscreen-detect should include best-effort macOS foreground detection",
 );
+expect(/function createMacForegroundInfoGetter/.test(fullscreenDetect), "fullscreen-detect should expose a testable macOS foreground getter");
 expect(/x: r\.left/.test(fullscreenDetect), "Win32 foreground info should expose window x coordinate");
 expect(/set windowPosition to position of frontWindow/.test(fullscreenDetect), "macOS foreground info should expose window position when allowed");
 expect(/Absolute upper-left X/.test(fullscreenDetect), "Linux foreground info should expose xwininfo absolute position");
 expect(
-  /execTextAsync/.test(fullscreenDetect) && /getForegroundInfo = async \(\)/.test(fullscreenDetect),
+  /execTextAsync/.test(fullscreenDetect) && /createMacForegroundInfoGetter\(execTextAsync\)/.test(fullscreenDetect),
   "macOS/Linux foreground detection must avoid blocking the Electron main process",
 );
 expect(
   /process\.platform === "linux"/.test(fullscreenDetect) && /xdotool/.test(fullscreenDetect) && /xprop/.test(fullscreenDetect) && /xwininfo/.test(fullscreenDetect),
   "fullscreen-detect should include best-effort Linux foreground detection",
 );
+expect(/function createLinuxForegroundInfoGetter/.test(fullscreenDetect), "fullscreen-detect should expose a testable Linux foreground getter");
 
 expect(
   readme.includes("全画面の自動判定は Windows では Win32、macOS では System Events / Accessibility、Linux では `xdotool` / `xprop` / `xwininfo` が利用できる環境で動作します。"),
