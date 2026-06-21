@@ -26,6 +26,29 @@ function parseNumber(value) {
   return Number.isFinite(n) ? n : 0;
 }
 
+function parseMacForegroundInfo(output) {
+  if (!output) return null;
+  const [cls, x, y, w, h, isFullscreen] = String(output).split("\t");
+  return { cls: cls || "", x: parseNumber(x), y: parseNumber(y), w: parseNumber(w), h: parseNumber(h), isFullscreen: isFullscreen === "true" };
+}
+
+function parseLinuxForegroundInfo(state, wmClass, geometry) {
+  if (!state || !wmClass || !geometry) return null;
+  const widthMatch = geometry.match(/Width:\s+(\d+)/);
+  const heightMatch = geometry.match(/Height:\s+(\d+)/);
+  const xMatch = geometry.match(/Absolute upper-left X:\s+(-?\d+)/);
+  const yMatch = geometry.match(/Absolute upper-left Y:\s+(-?\d+)/);
+  const classMatch = wmClass.match(/WM_CLASS\(STRING\) = (.+)$/);
+  return {
+    cls: classMatch ? classMatch[1] : "",
+    x: xMatch ? parseNumber(xMatch[1]) : 0,
+    y: yMatch ? parseNumber(yMatch[1]) : 0,
+    w: widthMatch ? parseNumber(widthMatch[1]) : 0,
+    h: heightMatch ? parseNumber(heightMatch[1]) : 0,
+    isFullscreen: state.includes("_NET_WM_STATE_FULLSCREEN"),
+  };
+}
+
 if (process.platform === "win32") {
   try {
     const koffi = require("koffi");
@@ -83,9 +106,7 @@ if (process.platform === "win32") {
       "end tell",
     ].join("\n");
     const output = await execTextAsync("osascript", ["-e", script]);
-    if (!output) return null;
-    const [cls, x, y, w, h, isFullscreen] = output.split("\t");
-    return { cls: cls || "", x: parseNumber(x), y: parseNumber(y), w: parseNumber(w), h: parseNumber(h), isFullscreen: isFullscreen === "true" };
+    return parseMacForegroundInfo(output);
   };
 } else if (process.platform === "linux") {
   getForegroundInfo = async () => {
@@ -96,21 +117,8 @@ if (process.platform === "win32") {
       execTextAsync("xprop", ["-id", windowId, "WM_CLASS"]),
       execTextAsync("xwininfo", ["-id", windowId]),
     ]);
-    if (!state || !wmClass || !geometry) return null;
-    const widthMatch = geometry.match(/Width:\s+(\d+)/);
-    const heightMatch = geometry.match(/Height:\s+(\d+)/);
-    const xMatch = geometry.match(/Absolute upper-left X:\s+(-?\d+)/);
-    const yMatch = geometry.match(/Absolute upper-left Y:\s+(-?\d+)/);
-    const classMatch = wmClass.match(/WM_CLASS\(STRING\) = (.+)$/);
-    return {
-      cls: classMatch ? classMatch[1] : "",
-      x: xMatch ? parseNumber(xMatch[1]) : 0,
-      y: yMatch ? parseNumber(yMatch[1]) : 0,
-      w: widthMatch ? parseNumber(widthMatch[1]) : 0,
-      h: heightMatch ? parseNumber(heightMatch[1]) : 0,
-      isFullscreen: state.includes("_NET_WM_STATE_FULLSCREEN"),
-    };
+    return parseLinuxForegroundInfo(state, wmClass, geometry);
   };
 }
 
-module.exports = { getForegroundInfo };
+module.exports = { getForegroundInfo, parseLinuxForegroundInfo, parseMacForegroundInfo };
