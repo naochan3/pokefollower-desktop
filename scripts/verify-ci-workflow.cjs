@@ -149,6 +149,7 @@ for (const text of [
   "POKEFOLLOWER_TEST_USER_DATA_DIR",
   "avg ps cpu",
   "avg rss",
+  "proc.commandLine.includes(appPath)",
   "leftover tracked process count after cleanup",
 ]) {
   if (!benchLinuxUnpackedRuntime.includes(text)) {

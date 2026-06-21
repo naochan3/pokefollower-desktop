@@ -121,6 +121,21 @@ rm -rf "$PF_LINUX_USER_DATA"
 - disabled mode: tracked process count 4、avg ps cpu 0.000%、max ps cpu 0.000%、avg rss 355.7 MB、残プロセス 0
 - 備考: builder は Developer ID Application 証明書を見つけられず未署名で package しました。これは #16 の既知制限と一致します。
 
+### 2026-06-22 Linux WSLg unpacked runtime smoke
+
+- OS: Ubuntu 26.04 on WSL2 / WSLg（Windows host: rtx4090）
+- セッション種別: WSLg（`DISPLAY=:0`, `WAYLAND_DISPLAY=wayland-0`）
+- PokeFollower commit: `e56f568` + Linux bench process detection fix
+- package version: `v1.0.5`
+- 追加した実行時依存: `libnspr4`, `libnss3`, `libasound2t64`, `libxss1`, `xdotool`, `x11-utils`
+- 外部コマンド: `xdotool`, `xprop`, `xwininfo` available
+- 生成コマンド: `npm run dist:linux -- --dir --publish=never`
+- package smoke: `node scripts/verify-package-smoke.cjs linux x64` passed
+- runtime smoke: `PF_LINUX_UNPACKED_MODES=both PF_LINUX_UNPACKED_WARMUP_MS=3000 PF_LINUX_UNPACKED_SAMPLE_MS=5000 PF_LINUX_UNPACKED_SAMPLE_INTERVAL_MS=1000 PF_LINUX_UNPACKED_ARGS=--no-sandbox npm run bench:linux-unpacked-runtime` passed
+- enabled mode: tracked process count 7、avg ps cpu 9.860%、max ps cpu 11.500%、avg rss 804.7 MB、残プロセス 0
+- disabled mode: tracked process count 7、avg ps cpu 9.900%、max ps cpu 11.000%、avg rss 760.7 MB、残プロセス 0
+- 備考: `ps comm` が `pokefollower-desktop` を15文字で `pokefollower-de` に切り詰めるため、runtime helper は command line でもプロセス検出します。これは起動・軽量測定・cleanup の証跡であり、AppImage の tray / transparent overlay / click-through / always-on-top 目視確認は引き続き別途必要です。
+
 ## Issue #17 の完了条件
 
 - macOS の権限あり/なし両方でクラッシュせず、全画面判定の可否が説明できる。
