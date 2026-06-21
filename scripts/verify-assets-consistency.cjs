@@ -48,6 +48,7 @@ const entries = index.retro || [];
 const names = readJson(namesPath);
 const seenIds = new Set();
 const seenDex = new Set();
+const seenFormKey = new Set(); // "region:dex" uniqueness for form entries
 const packIds = new Set();
 const uiIds = new Set();
 
@@ -56,6 +57,7 @@ for (const entry of entries) {
   if (seenIds.has(entry.id)) fail(`duplicate index id: ${entry.id}`);
   seenIds.add(entry.id);
 
+  const isForm = Boolean(entry.region);
   const relative = entry.id.replace(/^retro\//, "");
   const packPath = path.join(root, "assets", "packs", "retro", `${relative}.json`);
   if (!exists(packPath)) {
@@ -84,17 +86,28 @@ for (const entry of entries) {
   const dex = dexFromName(slug);
   if (dex === null) fail(`${entry.id}: could not parse dex number`);
   if (dex !== null) {
-    if (seenDex.has(dex)) fail(`${entry.id}: duplicate dex number ${dex}`);
-    seenDex.add(dex);
-    const nameEntry = names[String(dex)];
-    if (!nameEntry) {
-      fail(`${entry.id}: jp-names missing dex ${dex}`);
-    } else {
-      if (typeof nameEntry.ja !== "string" || nameEntry.ja.trim() === "") {
-        fail(`${entry.id}: jp-names dex ${dex} missing ja`);
+    if (isForm) {
+      // フォルムは dex 重複が正当。region+dex の組み合わせで一意性を確認
+      const formKey = `${entry.region}:${dex}`;
+      if (seenFormKey.has(formKey)) fail(`${entry.id}: duplicate form key ${formKey}`);
+      seenFormKey.add(formKey);
+      // jp-names ではなく entry.ja を直接確認
+      if (typeof entry.ja !== "string" || entry.ja.trim() === "") {
+        fail(`${entry.id}: form entry missing ja field`);
       }
-      if (typeof nameEntry.romaji !== "string" || nameEntry.romaji.trim() === "") {
-        fail(`${entry.id}: jp-names dex ${dex} missing romaji`);
+    } else {
+      if (seenDex.has(dex)) fail(`${entry.id}: duplicate dex number ${dex}`);
+      seenDex.add(dex);
+      const nameEntry = names[String(dex)];
+      if (!nameEntry) {
+        fail(`${entry.id}: jp-names missing dex ${dex}`);
+      } else {
+        if (typeof nameEntry.ja !== "string" || nameEntry.ja.trim() === "") {
+          fail(`${entry.id}: jp-names dex ${dex} missing ja`);
+        }
+        if (typeof nameEntry.romaji !== "string" || nameEntry.romaji.trim() === "") {
+          fail(`${entry.id}: jp-names dex ${dex} missing romaji`);
+        }
       }
     }
   }
@@ -124,16 +137,39 @@ for (const entry of entries) {
 
 for (const gen of fs.readdirSync(path.join(root, "assets", "packs", "retro"))) {
   const genDir = path.join(root, "assets", "packs", "retro", gen);
-  for (const file of listFiles(genDir, ".json")) {
-    packIds.add(`retro/${gen}/${file.replace(/\.json$/, "")}`);
+  if (!fs.statSync(genDir).isDirectory()) continue;
+  if (gen === "forms") {
+    // forms/<region>/*.json — 1レベル深い
+    for (const region of fs.readdirSync(genDir)) {
+      const regionDir = path.join(genDir, region);
+      if (!fs.statSync(regionDir).isDirectory()) continue;
+      for (const file of listFiles(regionDir, ".json")) {
+        packIds.add(`retro/forms/${region}/${file.replace(/\.json$/, "")}`);
+      }
+    }
+  } else {
+    for (const file of listFiles(genDir, ".json")) {
+      packIds.add(`retro/${gen}/${file.replace(/\.json$/, "")}`);
+    }
   }
 }
 
 for (const gen of fs.readdirSync(path.join(root, "assets", "ui"))) {
   const genDir = path.join(root, "assets", "ui", gen);
-  if (!fs.statSync(genDir).isDirectory() || !/^gen-\d+$/.test(gen)) continue;
-  for (const file of listFiles(genDir, ".png")) {
-    uiIds.add(`retro/${gen}/${file.replace(/\.png$/, "")}`);
+  if (!fs.statSync(genDir).isDirectory()) continue;
+  if (gen === "forms") {
+    // forms/<region>/*.png — 1レベル深い
+    for (const region of fs.readdirSync(genDir)) {
+      const regionDir = path.join(genDir, region);
+      if (!fs.statSync(regionDir).isDirectory()) continue;
+      for (const file of listFiles(regionDir, ".png")) {
+        uiIds.add(`retro/forms/${region}/${file.replace(/\.png$/, "")}`);
+      }
+    }
+  } else if (/^gen-\d+$/.test(gen)) {
+    for (const file of listFiles(genDir, ".png")) {
+      uiIds.add(`retro/${gen}/${file.replace(/\.png$/, "")}`);
+    }
   }
 }
 
@@ -164,13 +200,17 @@ const GEN_RANGES = {
   "gen-8": [810, 905],
   "gen-9": [906, 1025],
 };
-const dexNumbers = entries.map((entry) => dexFromName(path.basename(entry.id))).filter((dex) => dex !== null);
+// フォルムエントリを除いた通常エントリのみでdex範囲を計算
+const normalEntries = entries.filter((e) => !e.region);
+const dexNumbers = normalEntries.map((entry) => dexFromName(path.basename(entry.id))).filter((dex) => dex !== null);
 const minDex = dexNumbers.length ? Math.min(...dexNumbers) : 0;
 const maxDex = dexNumbers.length ? Math.max(...dexNumbers) : 0;
 
 for (const entry of entries) {
   const relative = entry.id.replace(/^retro\//, "");
-  const gen = path.dirname(relative); // "gen-1", "gen-5" …
+  const gen = path.dirname(relative); // "gen-1", "gen-5" …、フォルムは "forms/alola"
+  // forms/ で始まるエントリはレンジ判定対象外（base Pokémon の gen をまたぐため）
+  if (gen.startsWith("forms/")) continue;
   const dex = dexFromName(path.basename(relative));
   if (dex === null) continue;
   const range = GEN_RANGES[gen];
@@ -186,6 +226,7 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
+const formCount = entries.length - normalEntries.length;
 console.log(
-  `[verify-assets-consistency] ok: ${entries.length} indexed entries, dex ${minDex}-${maxDex}, pack/UI/name/raw references consistent`,
+  `[verify-assets-consistency] ok: ${normalEntries.length} normal entries (dex ${minDex}-${maxDex}), ${formCount} form entries, pack/UI/name/raw references consistent`,
 );

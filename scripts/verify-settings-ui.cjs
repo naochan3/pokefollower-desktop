@@ -52,6 +52,7 @@ expect(html.includes('<select id="mode">'), "mode select must exist");
 for (const mode of ["follow", "roam"]) {
   expect(html.includes(`value="${mode}"`), `mode select must include ${mode}`);
 }
+expect(html.includes('<select id="kind">'), "kind select must exist");
 expect(inputAttrs("search")?.type === "text", "search input must be text");
 expect(inputAttrs("scale")?.type === "number", "scale input must be number");
 expect(inputAttrs("scale")?.min === "0.5", "scale min must be 0.5");
