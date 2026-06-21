@@ -36,7 +36,7 @@ let codexNotificationWatcher = null;
 
 const TRAY_ICON_SIZE_PX = 28;
 const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
-const FULLSCREEN_POLL_INTERVAL_MS = 600;
+const FULLSCREEN_POLL_INTERVAL_MS = process.platform === "win32" ? 600 : 2000;
 function checkFullscreen() {
   const nextFullscreenActive = isFullscreenForeground(getForegroundInfo(), screen.getAllDisplays());
   if (nextFullscreenActive === fullscreenActive) return;
