@@ -8,6 +8,7 @@ const appPath = process.env.PF_LINUX_UNPACKED_EXE || path.join(root, "release", 
 const warmupMs = Number(process.env.PF_LINUX_UNPACKED_WARMUP_MS || 12000);
 const sampleMs = Number(process.env.PF_LINUX_UNPACKED_SAMPLE_MS || 30000);
 const sampleIntervalMs = Number(process.env.PF_LINUX_UNPACKED_SAMPLE_INTERVAL_MS || 1000);
+const initialPack = process.env.PF_LINUX_UNPACKED_PACK || "";
 const extraArgs = (process.env.PF_LINUX_UNPACKED_ARGS || "")
   .split(/\s+/)
   .map((arg) => arg.trim())
@@ -114,7 +115,8 @@ function enabledForMode(mode) {
 async function runMode(mode) {
   const enabled = enabledForMode(mode);
   const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), `pf-linux-runtime-${mode}-`));
-  fs.writeFileSync(path.join(userDataDir, "settings.json"), JSON.stringify({ enabled }, null, 2), "utf8");
+  const initialSettings = initialPack ? { enabled, pack: initialPack } : { enabled };
+  fs.writeFileSync(path.join(userDataDir, "settings.json"), JSON.stringify(initialSettings, null, 2), "utf8");
   const child = spawn(appPath, extraArgs, {
     cwd: path.dirname(appPath),
     stdio: "ignore",
@@ -158,6 +160,7 @@ async function runMode(mode) {
     console.log(`[bench-linux-unpacked-runtime:${mode}] warmup: ${warmupMs}ms`);
     console.log(`[bench-linux-unpacked-runtime:${mode}] sample: ${elapsedSeconds.toFixed(3)}s`);
     console.log(`[bench-linux-unpacked-runtime:${mode}] initial enabled: ${enabled}`);
+    if (initialPack) console.log(`[bench-linux-unpacked-runtime:${mode}] initial pack: ${initialPack}`);
     console.log(`[bench-linux-unpacked-runtime:${mode}] tracked process count: ${after.count}`);
     console.log(`[bench-linux-unpacked-runtime:${mode}] logical CPUs: ${logicalCpuCount}`);
     console.log(`[bench-linux-unpacked-runtime:${mode}] avg ps cpu: ${avgCpuPercent.toFixed(3)}%`);

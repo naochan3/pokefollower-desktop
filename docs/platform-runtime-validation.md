@@ -37,6 +37,12 @@ node scripts/verify-package-smoke.cjs darwin arm64
 PF_MAC_UNPACKED_MODES=both PF_MAC_UNPACKED_WARMUP_MS=3000 PF_MAC_UNPACKED_SAMPLE_MS=5000 PF_MAC_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:mac-unpacked-runtime
 ```
 
+最後に保存したポケモンの復帰を package 起動で smoke する場合:
+
+```bash
+PF_MAC_UNPACKED_PACK=retro/gen-1/025-pikachu PF_MAC_UNPACKED_MODES=enabled PF_MAC_UNPACKED_WARMUP_MS=3000 PF_MAC_UNPACKED_SAMPLE_MS=5000 PF_MAC_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:mac-unpacked-runtime
+```
+
 手動の UI 確認で起動する場合:
 
 ```bash
@@ -71,6 +77,12 @@ node scripts/verify-package-smoke.cjs linux x64
 PF_LINUX_UNPACKED_MODES=both PF_LINUX_UNPACKED_WARMUP_MS=3000 PF_LINUX_UNPACKED_SAMPLE_MS=5000 PF_LINUX_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:linux-unpacked-runtime
 npm run dist:linux -- --publish=never
 chmod +x release/*.AppImage
+```
+
+最後に保存したポケモンの復帰を package 起動で smoke する場合:
+
+```bash
+PF_LINUX_UNPACKED_PACK=retro/gen-1/025-pikachu PF_LINUX_UNPACKED_MODES=enabled PF_LINUX_UNPACKED_WARMUP_MS=3000 PF_LINUX_UNPACKED_SAMPLE_MS=5000 PF_LINUX_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:linux-unpacked-runtime
 ```
 
 `bench:linux-unpacked-runtime` は GUI セッションが必要です。WSLg などの実 GUI ではそのまま実行し、headless VM では `xvfb-run -a npm run bench:linux-unpacked-runtime` のように Xvfb を明示して使います。sandbox 権限で起動できない環境では `PF_LINUX_UNPACKED_ARGS=--no-sandbox` を検証ログに残してから使います。
@@ -112,6 +124,7 @@ rm -rf "$PF_LINUX_USER_DATA"
 - click-through:
 - always-on-top:
 - fullscreen hide/restore:
+- saved pack restore:
 - 権限なし/外部コマンドなし fallback:
 - 残プロセス:
 - 備考:
@@ -144,6 +157,15 @@ rm -rf "$PF_LINUX_USER_DATA"
 - enabled mode: tracked process count 4、avg ps cpu 12.160%、max ps cpu 30.600%、avg rss 374.3 MB、残プロセス 0
 - disabled mode: tracked process count 4、avg ps cpu 0.000%、max ps cpu 0.000%、avg rss 349.7 MB、残プロセス 0
 - 備考: System Events が許可されているこの Mac では foreground info 取得がクラッシュせず通常値を返しました。Accessibility / System Events 権限なし状態そのものは未確認のため、Issue #17 の残タスクとして維持します。builder は Developer ID Application 証明書を見つけられず未署名で package しました。これは #16 の既知制限と一致します。
+
+### 2026-06-22 macOS arm64 saved pack restore smoke
+
+- OS: macOS 26.5.1 / arm64
+- PokeFollower commit: `5a0e174` + saved pack runtime bench support
+- package version: `v1.0.5`
+- saved pack restore: `PF_MAC_UNPACKED_PACK=retro/gen-1/025-pikachu PF_MAC_UNPACKED_MODES=enabled PF_MAC_UNPACKED_WARMUP_MS=2000 PF_MAC_UNPACKED_SAMPLE_MS=3000 PF_MAC_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:mac-unpacked-runtime` passed
+- runtime smoke: `initial pack: retro/gen-1/025-pikachu`、tracked process count 4、avg ps cpu 2.400%、max ps cpu 2.900%、avg rss 369.3 MB、残プロセス 0
+- 備考: 一時 userData の `settings.json` に保存済み pack を入れた packaged app 起動 smoke です。実画面でピカチュウが見えることの目視確認ではありませんが、最後に保存した pack を含む設定で起動・cleanup できることを確認します。
 
 ### 2026-06-22 Linux WSLg unpacked runtime smoke
 
