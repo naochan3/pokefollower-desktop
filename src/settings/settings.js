@@ -2,6 +2,9 @@ function mapKeys(obj) {
   const m = {
     vcp1_enabled: "enabled",
     vcp1_pack: "pack",
+    vcp1_favorite_packs: "favoritePacks",
+    vcp1_rotation_enabled: "rotationEnabled",
+    vcp1_rotation_interval_minutes: "rotationIntervalMinutes",
     vcp1_scale: "scale",
     vcp1_offset: "offset",
     vcp1_lerp: "lerp",
@@ -43,6 +46,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const workWatchStartEl = document.getElementById("workWatchStart");
   const workWatchStopEl = document.getElementById("workWatchStop");
   const workWatchResetEl = document.getElementById("workWatchReset");
+  const favoriteAddEl = document.getElementById("favoriteAdd");
+  const favoriteNextEl = document.getElementById("favoriteNext");
+  const favoriteClearEl = document.getElementById("favoriteClear");
+  const favoriteCountEl = document.getElementById("favoriteCount");
+  const rotationEnabledEl = document.getElementById("rotationEnabled");
+  const rotationIntervalEl = document.getElementById("rotationInterval");
 
   // Sliders + readouts
   const scaleEl   = document.getElementById("scale");
@@ -63,6 +72,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     vcp1_avoid_cursor_strength: "normal",
     vcp1_personality: "standard",
     vcp1_mode: "follow",
+    vcp1_favorite_packs: [],
+    vcp1_rotation_interval_minutes: 15,
     vcp1_work_watch_preset: "25/5"
   };
 
@@ -86,6 +97,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (appReactionsEl) appReactionsEl.checked = !!res.appReactionsEnabled;
       if (workWatchEl) workWatchEl.checked = !!res.workWatchEnabled;
       if (workWatchPresetEl) workWatchPresetEl.value = typeof res.workWatchPreset === "string" ? res.workWatchPreset : DEFAULTS.vcp1_work_watch_preset;
+      if (rotationEnabledEl) rotationEnabledEl.checked = !!res.rotationEnabled;
+      if (rotationIntervalEl) rotationIntervalEl.value = String(typeof res.rotationIntervalMinutes === "number" ? res.rotationIntervalMinutes : DEFAULTS.vcp1_rotation_interval_minutes);
 
       const scale  = (typeof res.scale  === "number") ? res.scale  : DEFAULTS.vcp1_scale;
       const offset = (typeof res.offset === "number") ? res.offset : DEFAULTS.vcp1_offset;
@@ -163,6 +176,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (workWatchStartEl) workWatchStartEl.addEventListener("click", () => window.settingsApi.startWorkWatch());
   if (workWatchStopEl) workWatchStopEl.addEventListener("click", () => window.settingsApi.stopWorkWatch());
   if (workWatchResetEl) workWatchResetEl.addEventListener("click", () => window.settingsApi.resetWorkWatch());
+  if (rotationEnabledEl) {
+    rotationEnabledEl.addEventListener("change", () => {
+      save({ vcp1_rotation_enabled: rotationEnabledEl.checked });
+    });
+  }
+  if (rotationIntervalEl) {
+    rotationIntervalEl.addEventListener("change", () => {
+      save({ vcp1_rotation_interval_minutes: Number(rotationIntervalEl.value) });
+    });
+  }
 
   // --- カタカナ⇄ひらがな正規化（検索用） ---
   function toHira(s) {
@@ -181,18 +204,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!gridEl) return;
     const packs = await window.settingsApi.listPacks();
     let selectedId = res.pack;
+    let favoriteIds = Array.isArray(res.favoritePacks) ? res.favoritePacks.slice(0, 12) : [];
 
     // 世代フィルタ状態（'all' または 1〜9 の数値）
     let selectedGen = 'all';
 
     const frag = document.createDocumentFragment();
     const tiles = [];
+    function updateFavoriteUi() {
+      for (const t of tiles) t.classList.toggle("favorite", favoriteIds.includes(t.dataset.id));
+      if (favoriteCountEl) favoriteCountEl.textContent = String(favoriteIds.length);
+    }
+    function selectPack(packId) {
+      if (!packId || packId === selectedId) return;
+      selectedId = packId;
+      for (const t of tiles) t.classList.toggle("selected", t.dataset.id === selectedId);
+      window.settingsApi.setSettings({ pack: packId });
+    }
+    function saveFavorites() {
+      save({ vcp1_favorite_packs: favoriteIds });
+      updateFavoriteUi();
+    }
     for (const p of packs) {
       const gen = p.id.split("/")[1];               // gen-1
       const slug = p.id.split("/").pop();           // 009-blastoise
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "tile" + (p.id === selectedId ? " selected" : "");
+      btn.className = "tile" + (p.id === selectedId ? " selected" : "") + (favoriteIds.includes(p.id) ? " favorite" : "");
       btn.dataset.id = p.id;
       btn.dataset.search = tileSearchText(p);
       // 世代番号を data 属性に持たせて絞り込みに使う
@@ -221,15 +259,32 @@ document.addEventListener("DOMContentLoaded", async () => {
       num.textContent = numStr ? "#" + numStr : "";
       btn.append(img, name, num);
       btn.addEventListener("click", () => {
-        if (p.id === selectedId) return;
-        selectedId = p.id;
-        for (const t of tiles) t.classList.toggle("selected", t.dataset.id === selectedId);
-        window.settingsApi.setSettings({ pack: p.id });
+        selectPack(p.id);
       });
       tiles.push(btn);
       frag.appendChild(btn);
     }
     gridEl.appendChild(frag);
+    updateFavoriteUi();
+    if (favoriteAddEl) {
+      favoriteAddEl.addEventListener("click", () => {
+        if (!selectedId || favoriteIds.includes(selectedId)) return;
+        favoriteIds = [...favoriteIds, selectedId].slice(0, 12);
+        saveFavorites();
+      });
+    }
+    if (favoriteNextEl) {
+      favoriteNextEl.addEventListener("click", async () => {
+        const nextPack = await window.settingsApi.nextFavorite();
+        if (nextPack) selectPack(nextPack);
+      });
+    }
+    if (favoriteClearEl) {
+      favoriteClearEl.addEventListener("click", () => {
+        favoriteIds = [];
+        saveFavorites();
+      });
+    }
 
     // 初期選択をスクロールして見せる
     const sel = tiles.find((t) => t.classList.contains("selected"));
