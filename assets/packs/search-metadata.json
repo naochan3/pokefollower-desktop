@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "coveragePolicy": {
+    "missingEntry": "Metadata entries are additive. Packs without an entry must remain searchable by name, romaji, English name, and dex number.",
+    "mediaTags": "Media tags are schema-ready but intentionally sparse until source scope is documented per Issue #77."
+  },
+  "facets": {
+    "types": {
+      "electric": { "ja": "でんき", "aliases": ["でんき", "電気", "electric"] },
+      "fire": { "ja": "ほのお", "aliases": ["ほのお", "炎", "fire"] },
+      "flying": { "ja": "ひこう", "aliases": ["ひこう", "飛行", "flying"] },
+      "ghost": { "ja": "ゴースト", "aliases": ["ゴースト", "ghost"] },
+      "grass": { "ja": "くさ", "aliases": ["くさ", "草", "grass"] },
+      "ground": { "ja": "じめん", "aliases": ["じめん", "地面", "ground"] },
+      "ice": { "ja": "こおり", "aliases": ["こおり", "氷", "ice"] },
+      "normal": { "ja": "ノーマル", "aliases": ["ノーマル", "normal"] },
+      "poison": { "ja": "どく", "aliases": ["どく", "毒", "poison"] },
+      "psychic": { "ja": "エスパー", "aliases": ["エスパー", "psychic"] },
+      "steel": { "ja": "はがね", "aliases": ["はがね", "鋼", "steel"] },
+      "water": { "ja": "みず", "aliases": ["みず", "水", "water"] }
+    },
+    "traits": {
+      "starter": { "ja": "御三家", "aliases": ["御三家", "最初の3匹", "starter"] },
+      "legendary": { "ja": "伝説", "aliases": ["伝説", "legendary"] },
+      "mascot": { "ja": "マスコット", "aliases": ["マスコット", "mascot"] },
+      "mouse": { "ja": "ねずみ", "aliases": ["ねずみ", "ネズミ", "mouse"] },
+      "fox": { "ja": "きつね", "aliases": ["きつね", "キツネ", "fox"] },
+      "cat": { "ja": "ねこ", "aliases": ["ねこ", "猫", "cat"] },
+      "regional-form": { "ja": "地方フォルム", "aliases": ["地方フォルム", "リージョンフォーム", "regional"] }
+    },
+    "generations": {
+      "1": { "label": "第1世代", "short": "赤緑", "aliases": ["初代", "赤緑", "赤・緑", "青", "ピカチュウ版", "カントー"] },
+      "7": { "label": "第7世代", "short": "SM", "aliases": ["SM", "サン", "ムーン", "USUM", "アローラ"] },
+      "8": { "label": "第8世代", "short": "剣盾", "aliases": ["剣盾", "ソード", "シールド", "アルセウス", "ガラル", "ヒスイ"] },
+      "9": { "label": "第9世代", "short": "SV", "aliases": ["SV", "スカーレット", "バイオレット", "パルデア"] }
+    },
+    "regions": {
+      "kanto": { "ja": "カントー", "aliases": ["カントー", "kanto"] },
+      "alola": { "ja": "アローラ", "aliases": ["アローラ", "alola"] },
+      "galar": { "ja": "ガラル", "aliases": ["ガラル", "galar"] },
+      "hisui": { "ja": "ヒスイ", "aliases": ["ヒスイ", "hisui"] },
+      "paldea": { "ja": "パルデア", "aliases": ["パルデア", "paldea"] }
+    },
+    "debutGames": {
+      "red-green": { "ja": "赤・緑", "aliases": ["赤緑", "赤・緑", "red-green"] },
+      "blue": { "ja": "青", "aliases": ["青", "blue"] },
+      "yellow": { "ja": "ピカチュウ", "aliases": ["ピカチュウ版", "yellow"] },
+      "sun-moon": { "ja": "サン・ムーン", "aliases": ["サンムーン", "SM", "sun-moon"] },
+      "sword-shield": { "ja": "ソード・シールド", "aliases": ["剣盾", "ソード", "シールド", "sword-shield"] },
+      "legends-arceus": { "ja": "Legends アルセウス", "aliases": ["アルセウス", "ヒスイ", "legends-arceus"] },
+      "scarlet-violet": { "ja": "スカーレット・バイオレット", "aliases": ["SV", "スカーレット", "バイオレット", "scarlet-violet"] }
+    },
+    "mediaTags": {
+      "anime-main": { "ja": "アニメ主要", "aliases": ["アニメ", "anime-main"] },
+      "movie-featured": { "ja": "映画主要", "aliases": ["映画", "movie-featured"], "schemaOnly": true }
+    }
+  },
+  "entries": {
+    "retro/gen-1/001-bulbasaur": {
+      "types": ["grass", "poison"],
+      "traits": ["starter"],
+      "categoryJa": "たねポケモン",
+      "generation": 1,
+      "region": "kanto",
+      "debutGames": ["red-green"],
+      "seriesLabels": ["赤・緑"],
+      "mediaTags": []
+    },
+    "retro/gen-1/004-charmander": {
+      "types": ["fire"],
+      "traits": ["starter"],
+      "categoryJa": "とかげポケモン",
+      "generation": 1,
+      "region": "kanto",
+      "debutGames": ["red-green"],
+      "seriesLabels": ["赤・緑"],
+      "mediaTags": []
+    },
+    "retro/gen-1/007-squirtle": {
+      "types": ["water"],
+      "traits": ["starter"],
+      "categoryJa": "かめのこポケモン",
+      "generation": 1,
+      "region": "kanto",
+      "debutGames": ["red-green"],
+      "seriesLabels": ["赤・緑"],
+      "mediaTags": []
+    },
+    "retro/gen-1/025-pikachu": {
+      "types": ["electric"],
+      "traits": ["mouse", "mascot"],
+      "categoryJa": "ねずみポケモン",
+      "generation": 1,
+      "region": "kanto",
+      "debutGames": ["red-green", "yellow"],
+      "seriesLabels": ["赤・緑", "ピカチュウ"],
+      "mediaTags": ["anime-main"]
+    },
+    "retro/gen-1/133-eevee": {
+      "types": ["normal"],
+      "traits": ["mascot"],
+      "categoryJa": "しんかポケモン",
+      "generation": 1,
+      "region": "kanto",
+      "debutGames": ["red-green"],
+      "seriesLabels": ["赤・緑"],
+      "mediaTags": []
+    },
+    "retro/gen-1/144-articuno": {
+      "types": ["ice", "flying"],
+      "traits": ["legendary"],
+      "categoryJa": "れいとうポケモン",
+      "generation": 1,
+      "region": "kanto",
+      "debutGames": ["red-green"],
+      "seriesLabels": ["赤・緑"],
+      "mediaTags": []
+    },
+    "retro/gen-1/150-mewtwo": {
+      "types": ["psychic"],
+      "traits": ["legendary"],
+      "categoryJa": "いでんしポケモン",
+      "generation": 1,
+      "region": "kanto",
+      "debutGames": ["red-green"],
+      "seriesLabels": ["赤・緑"],
+      "mediaTags": ["movie-featured"]
+    },
+    "retro/gen-1/151-mew": {
+      "types": ["psychic"],
+      "traits": ["legendary"],
+      "categoryJa": "しんしゅポケモン",
+      "generation": 1,
+      "region": "kanto",
+      "debutGames": ["red-green"],
+      "seriesLabels": ["赤・緑"],
+      "mediaTags": ["movie-featured"]
+    },
+    "retro/forms/alola/026-raichu": {
+      "types": ["electric", "psychic"],
+      "traits": ["mouse", "regional-form"],
+      "categoryJa": "ねずみポケモン",
+      "generation": 7,
+      "region": "alola",
+      "debutGames": ["sun-moon"],
+      "seriesLabels": ["サン・ムーン"],
+      "mediaTags": []
+    },
+    "retro/forms/galar/052-meowth": {
+      "types": ["steel"],
+      "traits": ["cat", "regional-form"],
+      "categoryJa": "ばけねこポケモン",
+      "generation": 8,
+      "region": "galar",
+      "debutGames": ["sword-shield"],
+      "seriesLabels": ["ソード・シールド"],
+      "mediaTags": []
+    },
+    "retro/forms/hisui/570-zorua": {
+      "types": ["normal", "ghost"],
+      "traits": ["fox", "regional-form"],
+      "categoryJa": "わるぎつねポケモン",
+      "generation": 8,
+      "region": "hisui",
+      "debutGames": ["legends-arceus"],
+      "seriesLabels": ["Legends アルセウス"],
+      "mediaTags": []
+    },
+    "retro/forms/paldea/194-wooper": {
+      "types": ["poison", "ground"],
+      "traits": ["regional-form"],
+      "categoryJa": "どくうおポケモン",
+      "generation": 9,
+      "region": "paldea",
+      "debutGames": ["scarlet-violet"],
+      "seriesLabels": ["スカーレット・バイオレット"],
+      "mediaTags": []
+    }
+  }
+}
