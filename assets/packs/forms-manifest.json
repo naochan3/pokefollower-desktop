@@ -1,0 +1,430 @@
+{
+  "generatedFrom": "PMDCollab/SpriteCollab tracker.json + contents API",
+  "includable": [
+    {
+      "dex": 19,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "rattata",
+      "slug": "019-rattata"
+    },
+    {
+      "dex": 20,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "raticate",
+      "slug": "020-raticate"
+    },
+    {
+      "dex": 26,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "raichu",
+      "slug": "026-raichu"
+    },
+    {
+      "dex": 27,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "sandshrew",
+      "slug": "027-sandshrew"
+    },
+    {
+      "dex": 28,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "sandslash",
+      "slug": "028-sandslash"
+    },
+    {
+      "dex": 37,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "vulpix",
+      "slug": "037-vulpix"
+    },
+    {
+      "dex": 38,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "ninetales",
+      "slug": "038-ninetales"
+    },
+    {
+      "dex": 50,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "diglett",
+      "slug": "050-diglett"
+    },
+    {
+      "dex": 51,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "dugtrio",
+      "slug": "051-dugtrio"
+    },
+    {
+      "dex": 52,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "meowth",
+      "slug": "052-meowth"
+    },
+    {
+      "dex": 52,
+      "region": "galar",
+      "subindex": "0002",
+      "baseSlug": "meowth",
+      "slug": "052-meowth"
+    },
+    {
+      "dex": 53,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "persian",
+      "slug": "053-persian"
+    },
+    {
+      "dex": 58,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "growlithe",
+      "slug": "058-growlithe"
+    },
+    {
+      "dex": 59,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "arcanine",
+      "slug": "059-arcanine"
+    },
+    {
+      "dex": 74,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "geodude",
+      "slug": "074-geodude"
+    },
+    {
+      "dex": 75,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "graveler",
+      "slug": "075-graveler"
+    },
+    {
+      "dex": 76,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "golem",
+      "slug": "076-golem"
+    },
+    {
+      "dex": 77,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "ponyta",
+      "slug": "077-ponyta"
+    },
+    {
+      "dex": 78,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "rapidash",
+      "slug": "078-rapidash"
+    },
+    {
+      "dex": 79,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "slowpoke",
+      "slug": "079-slowpoke"
+    },
+    {
+      "dex": 80,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "slowbro",
+      "slug": "080-slowbro"
+    },
+    {
+      "dex": 83,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "farfetch-d",
+      "slug": "083-farfetch-d"
+    },
+    {
+      "dex": 88,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "grimer",
+      "slug": "088-grimer"
+    },
+    {
+      "dex": 89,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "muk",
+      "slug": "089-muk"
+    },
+    {
+      "dex": 100,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "voltorb",
+      "slug": "100-voltorb"
+    },
+    {
+      "dex": 101,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "electrode",
+      "slug": "101-electrode"
+    },
+    {
+      "dex": 103,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "exeggutor",
+      "slug": "103-exeggutor"
+    },
+    {
+      "dex": 105,
+      "region": "alola",
+      "subindex": "0001",
+      "baseSlug": "marowak",
+      "slug": "105-marowak"
+    },
+    {
+      "dex": 110,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "weezing",
+      "slug": "110-weezing"
+    },
+    {
+      "dex": 122,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "mr-mime",
+      "slug": "122-mr-mime"
+    },
+    {
+      "dex": 128,
+      "region": "paldea",
+      "subindex": "0001",
+      "baseSlug": "tauros",
+      "slug": "128-tauros"
+    },
+    {
+      "dex": 144,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "articuno",
+      "slug": "144-articuno"
+    },
+    {
+      "dex": 145,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "zapdos",
+      "slug": "145-zapdos"
+    },
+    {
+      "dex": 146,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "moltres",
+      "slug": "146-moltres"
+    },
+    {
+      "dex": 157,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "typhlosion",
+      "slug": "157-typhlosion"
+    },
+    {
+      "dex": 194,
+      "region": "paldea",
+      "subindex": "0002",
+      "baseSlug": "wooper",
+      "slug": "194-wooper"
+    },
+    {
+      "dex": 199,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "slowking",
+      "slug": "199-slowking"
+    },
+    {
+      "dex": 211,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "qwilfish",
+      "slug": "211-qwilfish"
+    },
+    {
+      "dex": 215,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "sneasel",
+      "slug": "215-sneasel"
+    },
+    {
+      "dex": 222,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "corsola",
+      "slug": "222-corsola"
+    },
+    {
+      "dex": 263,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "zigzagoon",
+      "slug": "263-zigzagoon"
+    },
+    {
+      "dex": 264,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "linoone",
+      "slug": "264-linoone"
+    },
+    {
+      "dex": 503,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "samurott",
+      "slug": "503-samurott"
+    },
+    {
+      "dex": 549,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "lilligant",
+      "slug": "549-lilligant"
+    },
+    {
+      "dex": 554,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "darumaka",
+      "slug": "554-darumaka"
+    },
+    {
+      "dex": 555,
+      "region": "galar",
+      "subindex": "0002",
+      "baseSlug": "darmanitan",
+      "slug": "555-darmanitan"
+    },
+    {
+      "dex": 562,
+      "region": "galar",
+      "subindex": "0001",
+      "baseSlug": "yamask",
+      "slug": "562-yamask"
+    },
+    {
+      "dex": 570,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "zorua",
+      "slug": "570-zorua"
+    },
+    {
+      "dex": 571,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "zoroark",
+      "slug": "571-zoroark"
+    },
+    {
+      "dex": 628,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "braviary",
+      "slug": "628-braviary"
+    },
+    {
+      "dex": 705,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "sliggoo",
+      "slug": "705-sliggoo"
+    },
+    {
+      "dex": 706,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "goodra",
+      "slug": "706-goodra"
+    },
+    {
+      "dex": 713,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "avalugg",
+      "slug": "713-avalugg"
+    },
+    {
+      "dex": 724,
+      "region": "hisui",
+      "subindex": "0001",
+      "baseSlug": "decidueye",
+      "slug": "724-decidueye"
+    }
+  ],
+  "missing": [
+    {
+      "dex": 25,
+      "region": "alola",
+      "name": "Alola_Cap"
+    },
+    {
+      "dex": 37,
+      "region": "alola",
+      "name": "Alola_Alternate"
+    },
+    {
+      "dex": 77,
+      "region": "galar",
+      "name": "Galar_Alternate"
+    },
+    {
+      "dex": 80,
+      "region": "galar",
+      "name": "Galar_Alternate"
+    },
+    {
+      "dex": 128,
+      "region": "paldea",
+      "name": "Paldea_Blaze"
+    },
+    {
+      "dex": 128,
+      "region": "paldea",
+      "name": "Paldea_Aqua"
+    },
+    {
+      "dex": 263,
+      "region": "galar",
+      "name": "Galar_Alternate"
+    },
+    {
+      "dex": 555,
+      "region": "galar",
+      "name": "Galar_Zen"
+    },
+    {
+      "dex": 618,
+      "region": "galar",
+      "name": "Galar"
+    }
+  ]
+}
