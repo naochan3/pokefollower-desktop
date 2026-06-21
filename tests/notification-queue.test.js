@@ -31,7 +31,7 @@ describe("notification-queue", () => {
 
   it("queue pathは環境変数で上書きでき、既定はhome配下", () => {
     expect(defaultNotificationQueuePath({ POKEFOLLOWER_NOTIFICATION_QUEUE: "/tmp/pf.jsonl" }, "/home/me")).toBe("/tmp/pf.jsonl");
-    expect(defaultNotificationQueuePath({}, "/home/me")).toBe("/home/me/.pokefollower/notifications/codex.jsonl");
+    expect(defaultNotificationQueuePath({}, "/home/me")).toBe(join("/home/me", ".pokefollower", "notifications", "codex.jsonl"));
   });
 
   it("JSONL queueを書き、読み取りoffset以降だけ返し、最大行数で切り詰める", () => {

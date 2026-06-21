@@ -84,7 +84,7 @@ expect(
   "settings must be loaded from the resolved Electron userData/settings.json",
 );
 expect(
-  /const s = settingsStore\.getAll\(\);[\s\S]*sim\.setConfig\(\{ vcp1_scale: s\.scale, vcp1_offset: s\.offset, vcp1_lerp: s\.lerp \}\);[\s\S]*loadPackIntoSim\(s\.pack\)/.test(main),
+  /const s = settingsStore\.getAll\(\);[\s\S]*sim\.setConfig\(\{[\s\S]*vcp1_scale: s\.scale,[\s\S]*vcp1_offset: s\.offset,[\s\S]*vcp1_lerp: s\.lerp,[\s\S]*vcp1_mode: s\.mode,[\s\S]*\}\);[\s\S]*loadPackIntoSim\(s\.pack\)/.test(main),
   "startup must restore the last saved Pokemon pack from settings before creating overlays",
 );
 expect(
