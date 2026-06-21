@@ -28,7 +28,8 @@ export async function fetchPokemon(dex, slug, destDir) {
   got.idle  = await dl(`${SC}/${d4}/Idle-Anim.png`,   path.join(destDir, 'Idle-Anim.png'));
   got.sleep = await dl(`${SC}/${d4}/Sleep-Anim.png`,  path.join(destDir, 'Sleep-Anim.png'));
 
-  // tile: pokemondb BW sprite preferred, 404 -> fallback generated from PMD Idle in later task
+  // tile: pokemondb BW sprite preferred ('pokemondb'); 404 -> 'none', and gen-build
+  // generates a fallback tile from the PMD Idle frame. So tile is 'pokemondb' | 'none'.
   const pdb = `https://img.pokemondb.net/sprites/black-white/normal/${pokedbSlug(slug)}.png`;
   got.tile = (await dl(pdb, path.join(destDir, 'tile.png'))) ? 'pokemondb' : 'none';
 
