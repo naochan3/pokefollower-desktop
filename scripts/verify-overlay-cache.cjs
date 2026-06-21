@@ -41,12 +41,16 @@ expect(/onCompanionNotification/.test(overlay), "overlay must subscribe to compa
 expect(!/getBoundingClientRect/.test(overlay), "overlay notification positioning must avoid forced layout reads");
 expect(/const NOTIFICATION_FALLBACK_WIDTH = 292;/.test(overlay), "notification fallback width must match the styled pixel bubble width");
 expect(/const NOTIFICATION_FALLBACK_HEIGHT = 124;/.test(overlay), "notification fallback height must leave clamp room for the styled pixel bubble");
+expect(/const NOTIFICATION_SIDE_MARGIN = 24;/.test(overlay), "notification side margin must stay stable");
+expect(/const NOTIFICATION_BOTTOM_MARGIN = 96;/.test(overlay), "notification bottom margin must stay above the macOS Dock area");
 expect(/width: "min\(292px, calc\(100vw - 24px\)\)"/.test(overlay), "notification bubble must use a stable clamped width");
-expect(/minHeight: "86px"/.test(overlay), "notification bubble must reserve enough text height");
+expect(/height: "124px"/.test(overlay), "notification bubble must reserve a stable CleanShot-style height");
 expect(/border: "4px solid #000"/.test(overlay), "notification bubble must keep a crisp 4px pixel border");
 expect(/boxShadow: "6px 6px 0 #000"/.test(overlay), "notification bubble must keep a pixel shadow");
 expect(/ui-monospace/.test(overlay), "notification bubble must use a pixel-like monospace font stack");
 expect(/borderBottom: "4px solid #000"/.test(overlay), "notification source strip must keep a pixel divider");
+expect(/bottom-left/.test(overlay) && /bottom-right/.test(overlay), "notification bubble must support bottom-left and bottom-right corner placement");
+expect(!/lastFollowerX|lastFollowerY/.test(overlay), "notification placement must not depend on follower coordinates");
 expect(
   /onMeta: \(cb\) => ipcRenderer\.on\("meta", \(_e, m\) => cb\(m\)\)/.test(preload) &&
     /onFrame: \(cb\) => ipcRenderer\.on\("frame", \(_e, f\) => cb\(f\)\)/.test(preload) &&
