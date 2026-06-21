@@ -204,6 +204,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const kindEl = document.getElementById("kind");
     if (!gridEl) return;
     const packs = await window.settingsApi.listPacks();
+    const searchMetadata = await window.settingsApi.getSearchMetadata();
+    const searchEngine = window.PokeFollowerSearch;
+    const searchIndex = searchEngine ? searchEngine.buildPokemonSearchIndex(packs, searchMetadata) : [];
     let selectedId = res.pack;
     let favoriteIds = Array.isArray(res.favoritePacks) ? res.favoritePacks.slice(0, 12) : [];
 
@@ -212,8 +215,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     let selectedGen = 'all';
     let selectedRegion = 'all';
 
-    // matchTile — filter.mjs と同一ロジック（パッケージング耐性のためインライン化）
-    // NOTE: src/settings/filter.mjs を変更する場合はここも必ず同期すること
     function matchTile(tile, sel) {
       const isForm = !!tile.region;
       if (sel.kind === "normal" && isForm) return false;
@@ -223,7 +224,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else {
         if (sel.region !== "all" && tile.region !== sel.region) return false;
       }
-      if (sel.q && !tile.search.includes(sel.q)) return false;
+      if (sel.searchIds && !sel.searchIds.has(tile.id)) return false;
+      if (sel.q && !tile.search.includes(sel.q) && !tile.search.includes(toHira(sel.q))) return false;
       return true;
     }
 
@@ -377,11 +379,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     // タイル表示を種類×(世代|地方)×検索で絞り込む共通関数
     function applyFilter() {
       const raw = searchEl ? searchEl.value.trim().toLowerCase() : "";
-      const q = toHira(raw);
+      const searchIds = raw && searchEngine
+        ? new Set(searchEngine.searchPokemon(searchIndex, raw, searchMetadata).map((result) => result.id))
+        : null;
       for (const t of tiles) {
         const visible = matchTile(
-          { region: t.dataset.region, gen: t.dataset.gen, search: t.dataset.search },
-          { kind: selectedKind, gen: String(selectedGen), region: selectedRegion, q: raw || q }
+          { id: t.dataset.id, region: t.dataset.region, gen: t.dataset.gen, search: t.dataset.search },
+          { kind: selectedKind, gen: String(selectedGen), region: selectedRegion, searchIds, q: searchIds ? "" : raw }
         );
         t.classList.toggle("hidden", !visible);
       }
