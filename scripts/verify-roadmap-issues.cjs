@@ -11,11 +11,11 @@ function expect(condition, message) {
 }
 
 expect(readme.includes("[docs/STATUS.md](docs/STATUS.md)"), "README must link to docs/STATUS.md");
-expect(status.includes("現在のバージョン: **v1.0.4**"), "STATUS must state current version v1.0.4");
-expect(status.includes("現在含まれているもの（v1.0.4）"), "STATUS must have included-assets section for v1.0.4");
+expect(status.includes("現在のバージョン: **v1.0.5**"), "STATUS must state current version v1.0.5");
+expect(status.includes("現在含まれているもの（v1.0.5）"), "STATUS must have included-assets section for v1.0.5");
 
 for (const issue of [
-  ["#14", "全ポケモン対応（第5〜9世代の追加）", "現状は493種（〜第4世代）"],
+  ["#14", "全ポケモン対応（第5〜9世代の追加）", "956種に拡張済み"],
   ["#16", "配布物の署名・公証（Win/Mac）", "SmartScreen / Gatekeeper"],
   ["#17", "macOS / Linux の全画面自動非表示・Linux 実機検証", "macOS / Linux の best-effort 検知は実装済み"],
 ]) {
