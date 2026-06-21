@@ -136,7 +136,8 @@ rm -rf "$PF_LINUX_USER_DATA"
 - disabled mode: tracked process count 7、avg ps cpu 9.900%、max ps cpu 11.000%、avg rss 760.7 MB、残プロセス 0
 - AppImage build: `npm run dist:linux -- --publish=never` passed、`release/PokeFollower-1.0.5.AppImage` generated
 - AppImage start smoke: `libfuse2t64` 追加後、`POKEFOLLOWER_ALLOW_TEST_USER_DATA=1 POKEFOLLOWER_TEST_USER_DATA_DIR=<tmp> release/PokeFollower-1.0.5.AppImage --no-sandbox` が10秒以上起動を維持、手動停止後の残プロセス 0
-- 備考: `ps comm` が `pokefollower-desktop` を15文字で `pokefollower-de` に切り詰めるため、runtime helper は command line でもプロセス検出します。これは起動・軽量測定・cleanup の証跡であり、AppImage の tray / transparent overlay / click-through / always-on-top 目視確認は引き続き別途必要です。
+- X11 window probe: `xdotool search --pid <app_pid>` で window を検出。overlay 相当の viewable windows は `Depth: 32`, `Class: InputOutput`, `Override Redirect State: yes`, `Border width: 0`, `WM_CLASS="pokefollower-desktop"`、サイズは `2560x1439` のモニター相当でした。
+- 備考: `ps comm` が `pokefollower-desktop` を15文字で `pokefollower-de` に切り詰めるため、runtime helper は command line でもプロセス検出します。これは起動・軽量測定・cleanup と X11 window 属性の証跡であり、AppImage の tray / transparent overlay / click-through / always-on-top の人間による目視確認は引き続き別途必要です。
 
 ## Issue #17 の完了条件
 
