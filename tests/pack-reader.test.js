@@ -40,4 +40,33 @@ describe("pack-reader", () => {
   it("不正なpack keyではroot外候補を探索しない", () => {
     expect(() => reader.readPackMeta("retro/../../secret")).toThrow(/pack not found/);
   });
+
+  it("同じpack listとmetadataはプロセス内キャッシュから返す", () => {
+    const reads = [];
+    const fileSystem = {
+      readFileSync(file) {
+        reads.push(file);
+        if (file.endsWith("index.json")) {
+          return JSON.stringify({ retro: [{ id: "retro/gen-1/001-bulbasaur", name: "001-Bulbasaur" }] });
+        }
+        if (file.endsWith("jp-names.json")) {
+          return JSON.stringify({ 1: { ja: "フシギダネ", romaji: "fushigidane" } });
+        }
+        if (file.endsWith("001-bulbasaur.json")) {
+          return JSON.stringify({ states: { idle: {}, walk: {} } });
+        }
+        throw new Error(`unexpected read: ${file}`);
+      },
+    };
+    const cachedReader = makePackReader("/app", fileSystem);
+
+    expect(cachedReader.readPackList()).toHaveLength(1);
+    expect(cachedReader.readPackList()).toHaveLength(1);
+    expect(cachedReader.readPackMeta("retro/gen-1/001-bulbasaur").resolvedKey).toBe("retro/gen-1/001-bulbasaur");
+    expect(cachedReader.readPackMeta("retro/gen-1/001-bulbasaur").resolvedKey).toBe("retro/gen-1/001-bulbasaur");
+
+    expect(reads.filter((file) => file.endsWith("index.json"))).toHaveLength(1);
+    expect(reads.filter((file) => file.endsWith("jp-names.json"))).toHaveLength(1);
+    expect(reads.filter((file) => file.endsWith("001-bulbasaur.json"))).toHaveLength(1);
+  });
 });
