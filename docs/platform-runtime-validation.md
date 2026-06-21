@@ -185,6 +185,18 @@ rm -rf "$PF_LINUX_USER_DATA"
 - X11 window probe: `xdotool search --pid <app_pid>` で window を検出。overlay 相当の viewable windows は `Depth: 32`, `Class: InputOutput`, `Override Redirect State: yes`, `Border width: 0`, `WM_CLASS="pokefollower-desktop"`、サイズは `2560x1439` のモニター相当でした。
 - 備考: `ps comm` が `pokefollower-desktop` を15文字で `pokefollower-de` に切り詰めるため、runtime helper は command line でもプロセス検出します。これは起動・軽量測定・cleanup と X11 window 属性の証跡であり、AppImage の tray / transparent overlay / click-through / always-on-top の人間による目視確認は引き続き別途必要です。
 
+### 2026-06-22 Linux WSLg saved pack restore smoke
+
+- OS: Ubuntu 26.04 on WSL2 / WSLg（Windows host: rtx4090）
+- セッション種別: WSLg（`DISPLAY=:0`, `WAYLAND_DISPLAY=wayland-0`）
+- PokeFollower commit: `7a1317a`
+- package version: `v1.0.5`
+- 生成コマンド: `npm run dist:linux -- --dir --publish=never` passed
+- package smoke: `node scripts/verify-package-smoke.cjs linux x64` passed
+- saved pack restore: `PF_LINUX_UNPACKED_PACK=retro/gen-1/025-pikachu PF_LINUX_UNPACKED_MODES=enabled PF_LINUX_UNPACKED_WARMUP_MS=2000 PF_LINUX_UNPACKED_SAMPLE_MS=3000 PF_LINUX_UNPACKED_SAMPLE_INTERVAL_MS=1000 PF_LINUX_UNPACKED_ARGS=--no-sandbox npm run bench:linux-unpacked-runtime` passed
+- runtime smoke: `initial pack: retro/gen-1/025-pikachu`、tracked process count 7、avg ps cpu 12.933%、max ps cpu 15.800%、avg rss 787.4 MB、残プロセス 0
+- 備考: 一時 userData の `settings.json` に保存済み pack を入れた Linux unpacked package 起動 smoke です。実画面でピカチュウが見えることの目視確認ではありませんが、最後に保存した pack を含む設定で起動・cleanup できることを確認します。
+
 ## Issue #17 の完了条件
 
 - macOS の権限あり/なし両方でクラッシュせず、全画面判定の可否が説明できる。
