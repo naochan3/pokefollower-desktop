@@ -187,3 +187,35 @@ All verify:* gates passed. The single pre-existing test failure (`pack listをde
 ```
 
 No verify:* gate regressed due to this change.
+
+## Fix pass (pack-reader test growth)
+
+### Problem
+
+`tests/pack-reader.test.js` の `pack listをdex順・日本語名付きで返す` テストが `expect(list.length).toBe(493)` と `list.at(-1)` で Arceus を固定アサートしていた。gen 5–9 追加でエントリ数が増えると即 FAIL するため、世代拡張に追随できない構造だった。
+
+### Fix — `tests/pack-reader.test.js`
+
+1. **`toBe(493)` → `toBeGreaterThanOrEqual(493)`** — 下限のみ保証し上限を撤廃。
+2. **`list.at(-1)` の Arceus 固定検証を廃止** — 末尾エントリは世代追加のたびに変わる。
+3. **`list.find((item) => item.num === 493)` で Arceus を検索** — dex 番号で一意に引いてオブジェクト構造を確認する。dex 昇順ソートの検証は変更なし。
+
+### Test Results
+
+```
+ RUN  v4.1.9
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Duration  150ms
+```
+
+### Full-Suite Results
+
+```
+ Test Files  10 passed (10)
+      Tests  69 passed (69)
+   Duration  247ms
+```
+
+全69テスト PASS。リグレッションなし。
