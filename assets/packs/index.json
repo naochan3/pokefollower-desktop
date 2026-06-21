@@ -80,7 +80,7 @@
       "id": "retro/forms/alola/019-rattata",
       "name": "019-Rattata-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラコラッタ"
     },
     {
       "id": "retro/gen-1/020-raticate",
@@ -90,7 +90,7 @@
       "id": "retro/forms/alola/020-raticate",
       "name": "020-Raticate-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローララッタ"
     },
     {
       "id": "retro/gen-1/021-spearow",
@@ -120,7 +120,7 @@
       "id": "retro/forms/alola/026-raichu",
       "name": "026-Raichu-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラライチュウ"
     },
     {
       "id": "retro/gen-1/027-sandshrew",
@@ -130,7 +130,7 @@
       "id": "retro/forms/alola/027-sandshrew",
       "name": "027-Sandshrew-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラサンド"
     },
     {
       "id": "retro/gen-1/028-sandslash",
@@ -140,7 +140,7 @@
       "id": "retro/forms/alola/028-sandslash",
       "name": "028-Sandslash-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラサンドパン"
     },
     {
       "id": "retro/gen-1/029-nidoran-f",
@@ -182,7 +182,7 @@
       "id": "retro/forms/alola/037-vulpix",
       "name": "037-Vulpix-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラロコン"
     },
     {
       "id": "retro/gen-1/038-ninetales",
@@ -192,7 +192,7 @@
       "id": "retro/forms/alola/038-ninetales",
       "name": "038-Ninetales-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラキュウコン"
     },
     {
       "id": "retro/gen-1/039-jigglypuff",
@@ -246,7 +246,7 @@
       "id": "retro/forms/alola/050-diglett",
       "name": "050-Diglett-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラディグダ"
     },
     {
       "id": "retro/gen-1/051-dugtrio",
@@ -256,7 +256,7 @@
       "id": "retro/forms/alola/051-dugtrio",
       "name": "051-Dugtrio-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラダグトリオ"
     },
     {
       "id": "retro/gen-1/052-meowth",
@@ -266,13 +266,13 @@
       "id": "retro/forms/alola/052-meowth",
       "name": "052-Meowth-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラニャース"
     },
     {
       "id": "retro/forms/galar/052-meowth",
       "name": "052-Meowth-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルニャース"
     },
     {
       "id": "retro/gen-1/053-persian",
@@ -282,7 +282,7 @@
       "id": "retro/forms/alola/053-persian",
       "name": "053-Persian-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラペルシアン"
     },
     {
       "id": "retro/gen-1/054-psyduck",
@@ -308,7 +308,7 @@
       "id": "retro/forms/hisui/058-growlithe",
       "name": "058-Growlithe-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイガーディ"
     },
     {
       "id": "retro/gen-1/059-arcanine",
@@ -318,7 +318,7 @@
       "id": "retro/forms/hisui/059-arcanine",
       "name": "059-Arcanine-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイウインディ"
     },
     {
       "id": "retro/gen-1/060-poliwag",
@@ -384,7 +384,7 @@
       "id": "retro/forms/alola/074-geodude",
       "name": "074-Geodude-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローライシツブテ"
     },
     {
       "id": "retro/gen-1/075-graveler",
@@ -394,7 +394,7 @@
       "id": "retro/forms/alola/075-graveler",
       "name": "075-Graveler-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラゴローン"
     },
     {
       "id": "retro/gen-1/076-golem",
@@ -404,7 +404,7 @@
       "id": "retro/forms/alola/076-golem",
       "name": "076-Golem-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラゴローニャ"
     },
     {
       "id": "retro/gen-1/077-ponyta",
@@ -414,7 +414,7 @@
       "id": "retro/forms/galar/077-ponyta",
       "name": "077-Ponyta-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルポニータ"
     },
     {
       "id": "retro/gen-1/078-rapidash",
@@ -424,7 +424,7 @@
       "id": "retro/forms/galar/078-rapidash",
       "name": "078-Rapidash-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルギャロップ"
     },
     {
       "id": "retro/gen-1/079-slowpoke",
@@ -434,7 +434,7 @@
       "id": "retro/forms/galar/079-slowpoke",
       "name": "079-Slowpoke-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルヤドン"
     },
     {
       "id": "retro/gen-1/080-slowbro",
@@ -444,7 +444,7 @@
       "id": "retro/forms/galar/080-slowbro",
       "name": "080-Slowbro-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルヤドラン"
     },
     {
       "id": "retro/gen-1/081-magnemite",
@@ -462,7 +462,7 @@
       "id": "retro/forms/galar/083-farfetch-d",
       "name": "083-Farfetch-D-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルカモネギ"
     },
     {
       "id": "retro/gen-1/084-doduo",
@@ -488,7 +488,7 @@
       "id": "retro/forms/alola/088-grimer",
       "name": "088-Grimer-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラベトベター"
     },
     {
       "id": "retro/gen-1/089-muk",
@@ -498,7 +498,7 @@
       "id": "retro/forms/alola/089-muk",
       "name": "089-Muk-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラベトベトン"
     },
     {
       "id": "retro/gen-1/090-shellder",
@@ -548,7 +548,7 @@
       "id": "retro/forms/hisui/100-voltorb",
       "name": "100-Voltorb-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイビリリダマ"
     },
     {
       "id": "retro/gen-1/101-electrode",
@@ -558,7 +558,7 @@
       "id": "retro/forms/hisui/101-electrode",
       "name": "101-Electrode-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイマルマイン"
     },
     {
       "id": "retro/gen-1/102-exeggcute",
@@ -572,7 +572,7 @@
       "id": "retro/forms/alola/103-exeggutor",
       "name": "103-Exeggutor-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラナッシー"
     },
     {
       "id": "retro/gen-1/104-cubone",
@@ -586,7 +586,7 @@
       "id": "retro/forms/alola/105-marowak",
       "name": "105-Marowak-Alola",
       "region": "alola",
-      "ja": "アローラ"
+      "ja": "アローラガラガラ"
     },
     {
       "id": "retro/gen-1/106-hitmonlee",
@@ -612,7 +612,7 @@
       "id": "retro/forms/galar/110-weezing",
       "name": "110-Weezing-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルマタドガス"
     },
     {
       "id": "retro/gen-1/111-rhyhorn",
@@ -666,7 +666,7 @@
       "id": "retro/forms/galar/122-mr-mime",
       "name": "122-Mr-Mime-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルバリヤード"
     },
     {
       "id": "retro/gen-1/123-scyther",
@@ -696,7 +696,7 @@
       "id": "retro/forms/paldea/128-tauros",
       "name": "128-Tauros-Paldea",
       "region": "paldea",
-      "ja": "パルデア"
+      "ja": "パルデアケンタロス"
     },
     {
       "id": "retro/gen-1/129-magikarp",
@@ -766,7 +766,7 @@
       "id": "retro/forms/galar/144-articuno",
       "name": "144-Articuno-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルフリーザー"
     },
     {
       "id": "retro/gen-1/145-zapdos",
@@ -776,7 +776,7 @@
       "id": "retro/forms/galar/145-zapdos",
       "name": "145-Zapdos-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルサンダー"
     },
     {
       "id": "retro/gen-1/146-moltres",
@@ -786,7 +786,7 @@
       "id": "retro/forms/galar/146-moltres",
       "name": "146-Moltres-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルファイヤー"
     },
     {
       "id": "retro/gen-1/147-dratini",
@@ -836,7 +836,7 @@
       "id": "retro/forms/hisui/157-typhlosion",
       "name": "157-Typhlosion-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイバクフーン"
     },
     {
       "id": "retro/gen-2/158-totodile",
@@ -990,7 +990,7 @@
       "id": "retro/forms/paldea/194-wooper",
       "name": "194-Wooper-Paldea",
       "region": "paldea",
-      "ja": "パルデア"
+      "ja": "パルデアウパー"
     },
     {
       "id": "retro/gen-2/195-quagsire",
@@ -1016,7 +1016,7 @@
       "id": "retro/forms/galar/199-slowking",
       "name": "199-Slowking-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルヤドキング"
     },
     {
       "id": "retro/gen-2/200-misdreavus",
@@ -1070,7 +1070,7 @@
       "id": "retro/forms/hisui/211-qwilfish",
       "name": "211-Qwilfish-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイハリーセン"
     },
     {
       "id": "retro/gen-2/212-scizor",
@@ -1092,7 +1092,7 @@
       "id": "retro/forms/hisui/215-sneasel",
       "name": "215-Sneasel-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイニューラ"
     },
     {
       "id": "retro/gen-2/216-teddiursa",
@@ -1126,7 +1126,7 @@
       "id": "retro/forms/galar/222-corsola",
       "name": "222-Corsola-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルサニーゴ"
     },
     {
       "id": "retro/gen-2/223-remoraid",
@@ -1296,7 +1296,7 @@
       "id": "retro/forms/galar/263-zigzagoon",
       "name": "263-Zigzagoon-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルジグザグマ"
     },
     {
       "id": "retro/gen-3/264-linoone",
@@ -1306,7 +1306,7 @@
       "id": "retro/forms/galar/264-linoone",
       "name": "264-Linoone-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルマッスグマ"
     },
     {
       "id": "retro/gen-3/265-wurmple",
@@ -2268,7 +2268,7 @@
       "id": "retro/forms/hisui/503-samurott",
       "name": "503-Samurott-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイダイケンキ"
     },
     {
       "id": "retro/gen-5/504-patrat",
@@ -2434,7 +2434,7 @@
       "id": "retro/forms/hisui/549-lilligant",
       "name": "549-Lilligant-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイドレディア"
     },
     {
       "id": "retro/gen-5/550-basculin",
@@ -2460,7 +2460,7 @@
       "id": "retro/forms/galar/554-darumaka",
       "name": "554-Darumaka-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルダルマッカ"
     },
     {
       "id": "retro/gen-5/555-darmanitan",
@@ -2470,7 +2470,7 @@
       "id": "retro/forms/galar/555-darmanitan",
       "name": "555-Darmanitan-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルヒヒダルマ"
     },
     {
       "id": "retro/gen-5/556-maractus",
@@ -2500,7 +2500,7 @@
       "id": "retro/forms/galar/562-yamask",
       "name": "562-Yamask-Galar",
       "region": "galar",
-      "ja": "ガラル"
+      "ja": "ガラルデスマス"
     },
     {
       "id": "retro/gen-5/563-cofagrigus",
@@ -2530,7 +2530,7 @@
       "id": "retro/forms/hisui/570-zorua",
       "name": "570-Zorua-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイゾロア"
     },
     {
       "id": "retro/gen-5/571-zoroark",
@@ -2540,7 +2540,7 @@
       "id": "retro/forms/hisui/571-zoroark",
       "name": "571-Zoroark-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイゾロアーク"
     },
     {
       "id": "retro/gen-5/572-minccino",
@@ -2750,7 +2750,7 @@
       "id": "retro/forms/hisui/628-braviary",
       "name": "628-Braviary-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイウォーグル"
     },
     {
       "id": "retro/gen-5/629-vullaby",
@@ -3056,7 +3056,7 @@
       "id": "retro/forms/hisui/705-sliggoo",
       "name": "705-Sliggoo-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイヌメイル"
     },
     {
       "id": "retro/gen-6/706-goodra",
@@ -3066,7 +3066,7 @@
       "id": "retro/forms/hisui/706-goodra",
       "name": "706-Goodra-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイヌメルゴン"
     },
     {
       "id": "retro/gen-6/707-klefki",
@@ -3100,7 +3100,7 @@
       "id": "retro/forms/hisui/713-avalugg",
       "name": "713-Avalugg-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイクレベース"
     },
     {
       "id": "retro/gen-6/714-noibat",
@@ -3150,7 +3150,7 @@
       "id": "retro/forms/hisui/724-decidueye",
       "name": "724-Decidueye-Hisui",
       "region": "hisui",
-      "ja": "ヒスイ"
+      "ja": "ヒスイジュナイパー"
     },
     {
       "id": "retro/gen-7/725-litten",

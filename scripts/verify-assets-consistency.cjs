@@ -46,6 +46,13 @@ function dexFromName(name) {
 const index = readJson(indexPath);
 const entries = index.retro || [];
 const names = readJson(namesPath);
+const REGION_JA = {
+  alola: "アローラ",
+  galar: "ガラル",
+  hisui: "ヒスイ",
+  paldea: "パルデア",
+};
+
 const seenIds = new Set();
 const seenDex = new Set();
 const seenFormKey = new Set(); // "region:dex" uniqueness for form entries
@@ -94,6 +101,18 @@ for (const entry of entries) {
       // jp-names ではなく entry.ja を直接確認
       if (typeof entry.ja !== "string" || entry.ja.trim() === "") {
         fail(`${entry.id}: form entry missing ja field`);
+      } else {
+        // ja がリージョンプレフィックスだけでないことを確認（ベース名が含まれているか）
+        const regionPrefix = REGION_JA[entry.region];
+        if (regionPrefix) {
+          if (!entry.ja.startsWith(regionPrefix)) {
+            fail(`${entry.id}: form entry ja "${entry.ja}" does not start with region prefix "${regionPrefix}"`);
+          } else if (entry.ja === regionPrefix) {
+            fail(`${entry.id}: form entry ja "${entry.ja}" is only the region prefix — base Pokémon name is missing`);
+          } else if (entry.ja.length <= regionPrefix.length) {
+            fail(`${entry.id}: form entry ja "${entry.ja}" has no base name beyond region prefix "${regionPrefix}"`);
+          }
+        }
       }
     } else {
       if (seenDex.has(dex)) fail(`${entry.id}: duplicate dex number ${dex}`);

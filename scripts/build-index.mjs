@@ -162,7 +162,7 @@ for (const entry of fs.readdirSync(base).sort()) {
 
 // Load jp-names for ja composition
 let jp = {};
-const jpPath = path.join(root, 'assets', 'jp-names.json');
+const jpPath = path.join(root, 'assets', 'packs', 'jp-names.json');
 if (fs.existsSync(jpPath)) {
   try {
     jp = JSON.parse(fs.readFileSync(jpPath, 'utf8'));
