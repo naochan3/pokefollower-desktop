@@ -201,13 +201,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     const gridEl = document.getElementById("grid");
     const searchEl = document.getElementById("search");
     const genChipsEl = document.getElementById("genChips");
+    const kindEl = document.getElementById("kind");
     if (!gridEl) return;
     const packs = await window.settingsApi.listPacks();
     let selectedId = res.pack;
     let favoriteIds = Array.isArray(res.favoritePacks) ? res.favoritePacks.slice(0, 12) : [];
 
-    // 世代フィルタ状態（'all' または 1〜9 の数値）
+    // フィルタ状態
+    let selectedKind = 'normal';
     let selectedGen = 'all';
+    let selectedRegion = 'all';
+
+    // matchTile — filter.mjs と同一ロジック（パッケージング耐性のためインライン化）
+    // NOTE: src/settings/filter.mjs を変更する場合はここも必ず同期すること
+    function matchTile(tile, sel) {
+      const isForm = !!tile.region;
+      if (sel.kind === "normal" && isForm) return false;
+      if (sel.kind === "forms" && !isForm) return false;
+      if (sel.kind === "normal") {
+        if (sel.gen !== "all" && String(tile.gen) !== String(sel.gen)) return false;
+      } else {
+        if (sel.region !== "all" && tile.region !== sel.region) return false;
+      }
+      if (sel.q && !tile.search.includes(sel.q)) return false;
+      return true;
+    }
 
     const frag = document.createDocumentFragment();
     const tiles = [];
@@ -226,12 +244,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateFavoriteUi();
     }
     for (const p of packs) {
-      const gen = p.id.split("/")[1];               // gen-1
-      const slug = p.id.split("/").pop();           // 009-blastoise
+      // UIイメージディレクトリを一般化: 通常=gen-1, フォルム=forms/alola
+      const parts = p.id.split("/");
+      const dir = parts.slice(1, -1).join("/") || parts[1] || "gen-1";
+      const slug = p.id.split("/").pop();
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "tile" + (p.id === selectedId ? " selected" : "") + (favoriteIds.includes(p.id) ? " favorite" : "");
       btn.dataset.id = p.id;
+      btn.dataset.region = p.region || "";
       btn.dataset.search = tileSearchText(p);
       // 世代番号を data 属性に持たせて絞り込みに使う
       btn.dataset.gen = p.num != null ? String(genOfDex(p.num)) : "0";
@@ -240,7 +261,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const nameOnly = slug.replace(/^[0-9]+-?/, "");
       const imgCandidates = [slug, slugCompact, nameOnly]
         .filter((v, i, a) => v && a.indexOf(v) === i)
-        .map((n) => `app://bundle/assets/ui/${gen}/${n}.png`);
+        .map((n) => `app://bundle/assets/ui/${dir}/${n}.png`);
       let imgCi = 0;
       const img = document.createElement("img");
       img.loading = "lazy";
@@ -290,31 +311,100 @@ document.addEventListener("DOMContentLoaded", async () => {
     const sel = tiles.find((t) => t.classList.contains("selected"));
     if (sel) gridEl.scrollTop = Math.max(0, sel.offsetTop - gridEl.clientHeight / 2);
 
-    // タイル表示を検索 AND 世代で絞り込む共通関数
-    function applyFilter() {
-      const q = toHira((searchEl ? searchEl.value.trim().toLowerCase() : ""));
-      const raw = searchEl ? searchEl.value.trim().toLowerCase() : "";
-      for (const t of tiles) {
-        const hay = t.dataset.search;
-        const searchMatch = !raw || hay.includes(raw) || hay.includes(q);
-        const genMatch = selectedGen === 'all' || t.dataset.gen === String(selectedGen);
-        t.classList.toggle("hidden", !(searchMatch && genMatch));
+    // チップ行を種類に応じて再描画する
+    function renderChips() {
+      if (!genChipsEl) return;
+      genChipsEl.innerHTML = "";
+      if (selectedKind === "normal") {
+        genChipsEl.setAttribute("aria-label", "世代フィルタ");
+        const allBtn = document.createElement("button");
+        allBtn.type = "button";
+        allBtn.className = "gen-chip active";
+        allBtn.dataset.gen = "all";
+        allBtn.textContent = "全";
+        genChipsEl.appendChild(allBtn);
+        for (let g = 1; g <= 9; g++) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "gen-chip";
+          btn.dataset.gen = String(g);
+          btn.textContent = String(g);
+          genChipsEl.appendChild(btn);
+        }
+      } else {
+        genChipsEl.setAttribute("aria-label", "地方フィルタ");
+        // フォルムパックに存在するリージョンを収集（順序固定）
+        const ORDER = ["alola", "galar", "hisui", "paldea"];
+        const present = new Set(tiles.map((t) => t.dataset.region).filter(Boolean));
+        const regions = ORDER.filter((r) => present.has(r));
+        const allBtn = document.createElement("button");
+        allBtn.type = "button";
+        allBtn.className = "gen-chip active";
+        allBtn.dataset.region = "all";
+        allBtn.textContent = "全";
+        genChipsEl.appendChild(allBtn);
+        const REGION_LABEL = { alola: "アローラ", galar: "ガラル", hisui: "ヒスイ", paldea: "パルデア" };
+        for (const r of regions) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "gen-chip";
+          btn.dataset.region = r;
+          btn.textContent = REGION_LABEL[r] || r;
+          genChipsEl.appendChild(btn);
+        }
       }
     }
+
+    // タイル表示を種類×(世代|地方)×検索で絞り込む共通関数
+    function applyFilter() {
+      const raw = searchEl ? searchEl.value.trim().toLowerCase() : "";
+      const q = toHira(raw);
+      for (const t of tiles) {
+        const visible = matchTile(
+          { region: t.dataset.region, gen: t.dataset.gen, search: t.dataset.search },
+          { kind: selectedKind, gen: String(selectedGen), region: selectedRegion, q: raw || q }
+        );
+        t.classList.toggle("hidden", !visible);
+      }
+    }
+
+    // 初期チップ描画
+    renderChips();
 
     if (searchEl) {
       searchEl.addEventListener("input", applyFilter);
     }
 
-    // 世代チップのクリック処理
+    // 種類セレクタ変更
+    if (kindEl) {
+      kindEl.addEventListener("change", () => {
+        selectedKind = kindEl.value;
+        selectedGen = 'all';
+        selectedRegion = 'all';
+        renderChips();
+        applyFilter();
+      });
+    }
+
+    // チップのクリック処理（世代チップ・地方チップ共通）
     if (genChipsEl) {
       genChipsEl.addEventListener("click", (e) => {
         const chip = e.target.closest(".gen-chip");
         if (!chip) return;
-        const val = chip.dataset.gen;
-        selectedGen = val === "all" ? "all" : Number(val);
-        for (const c of genChipsEl.querySelectorAll(".gen-chip")) {
-          c.classList.toggle("active", c.dataset.gen === val);
+        if (selectedKind === "normal") {
+          const val = chip.dataset.gen;
+          if (!val) return;
+          selectedGen = val === "all" ? "all" : Number(val);
+          for (const c of genChipsEl.querySelectorAll(".gen-chip")) {
+            c.classList.toggle("active", c.dataset.gen === val);
+          }
+        } else {
+          const val = chip.dataset.region;
+          if (val === undefined) return;
+          selectedRegion = val;
+          for (const c of genChipsEl.querySelectorAll(".gen-chip")) {
+            c.classList.toggle("active", c.dataset.region === val);
+          }
         }
         applyFilter();
       });

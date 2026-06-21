@@ -174,6 +174,8 @@ function createState({ anim, fileRel, rowBase, fpsArg, fallbackFps }) {
   };
 }
 
+const emitAll = process.argv.includes('--all');
+
 // Build states
 const out = {
   name,
@@ -188,53 +190,70 @@ const out = {
   states: {}
 };
 
-// IDLE
-const idleAnim = pickAnim(['idle', 'stand', 'breath']) || pickAnim(['rotate']) || anims[0];
-if (idleAnim) {
-  out.states.idle = createState({
-    anim: idleAnim,
-    fileRel: idleFile,
-    rowBase: idleRow,
-    fpsArg: fpsIdleArg,
-    fallbackFps: 6
-  });
-} else {
-  console.warn('No idle-like anim found in XML; skipping idle.');
-}
-
-// WALK
-const walkAnim = pickAnim(['walk', 'run', 'move']) || anims[0];
-if (walkAnim) {
-  out.states.walk = createState({
-    anim: walkAnim,
-    fileRel: walkFile,
-    rowBase: walkRow,
-    fpsArg: fpsWalkArg,
-    fallbackFps: 9
-  });
-} else {
-  console.warn('No walk-like anim found in XML; skipping walk.');
-}
-
-// SLEEP
-const sleepAnim = pickAnim(['sleep', 'rest', 'nap']);
-if (sleepAnim && fs.existsSync(path.resolve(baseDir, sleepFile))) {
-  try {
-    const state = createState({
-      anim: sleepAnim,
-      fileRel: sleepFile,
-      rowBase: sleepRow,
-      fpsArg: fpsSleepArg,
-      fallbackFps: 1
-    });
-    if (state) out.states.sleep = state;
-  } catch (err) {
-    console.warn('Sleep state skipped:', err.message);
+if (emitAll) {
+  // --all: XML の全 Anim を走査し、<Name>-Anim.webp が存在するものだけ state 化する。
+  for (const anim of anims) {
+    const nm = String(anim.Name || '').trim();
+    if (!nm) continue;
+    const sheetFile = `${nm}-Anim.webp`;
+    if (!fs.existsSync(path.resolve(baseDir, sheetFile))) continue;
+    try {
+      const state = createState({ anim: resolveCopy(anim), fileRel: sheetFile, rowBase: 0, fpsArg: undefined, fallbackFps: 6 });
+      if (state) out.states[nm.toLowerCase()] = state;
+    } catch (err) {
+      console.warn(`Skipping ${nm}:`, err.message);
+    }
   }
-} else if (sleepAnim) {
-  console.warn('Sleep animation found but sheet missing:', sleepFile);
 } else {
-  console.warn('No sleep-like anim found in XML; skipping sleep.');
+  // 既存パス（idle/walk/sleep 個別指定）
+  // IDLE
+  const idleAnim = pickAnim(['idle', 'stand', 'breath']) || pickAnim(['rotate']) || anims[0];
+  if (idleAnim) {
+    out.states.idle = createState({
+      anim: idleAnim,
+      fileRel: idleFile,
+      rowBase: idleRow,
+      fpsArg: fpsIdleArg,
+      fallbackFps: 6
+    });
+  } else {
+    console.warn('No idle-like anim found in XML; skipping idle.');
+  }
+
+  // WALK
+  const walkAnim = pickAnim(['walk', 'run', 'move']) || anims[0];
+  if (walkAnim) {
+    out.states.walk = createState({
+      anim: walkAnim,
+      fileRel: walkFile,
+      rowBase: walkRow,
+      fpsArg: fpsWalkArg,
+      fallbackFps: 9
+    });
+  } else {
+    console.warn('No walk-like anim found in XML; skipping walk.');
+  }
+
+  // SLEEP
+  const sleepAnim = pickAnim(['sleep', 'rest', 'nap']);
+  if (sleepAnim && fs.existsSync(path.resolve(baseDir, sleepFile))) {
+    try {
+      const state = createState({
+        anim: sleepAnim,
+        fileRel: sleepFile,
+        rowBase: sleepRow,
+        fpsArg: fpsSleepArg,
+        fallbackFps: 1
+      });
+      if (state) out.states.sleep = state;
+    } catch (err) {
+      console.warn('Sleep state skipped:', err.message);
+    }
+  } else if (sleepAnim) {
+    console.warn('Sleep animation found but sheet missing:', sleepFile);
+  } else {
+    console.warn('No sleep-like anim found in XML; skipping sleep.');
+  }
 }
 
 // Ensure output dir exists

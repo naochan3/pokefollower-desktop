@@ -1,6 +1,6 @@
 const DEFAULT_PACK = "retro/gen-1/009-blastoise";
 const GENERATION_DIRS = ["gen-1","gen-2","gen-3","gen-4","gen-5","gen-6","gen-7","gen-8","gen-9"];
-const PACK_KEY_PATTERN = /^retro\/(?:gen-[1-9]\/)?[0-9]{3,4}-[a-z0-9-]+$/;
+const PACK_KEY_PATTERN = /^retro\/(?:gen-[1-9]\/|forms\/[a-z]+\/)?[0-9]{3,4}-[a-z0-9-]+$/;
 
 function packSlug(packKey) {
   const parts = String(packKey || "").split("/");
@@ -33,6 +33,8 @@ function buildPackCandidates(packKey) {
   const clean = typeof packKey === "string" ? packKey.trim().replace(/^\/+|\/+$/g, "") : "";
   if (!clean) return [DEFAULT_PACK];
   if (!isSafePackKey(clean)) return [];
+  // フォルムは完全修飾。gen 推定を行わずそのまま返す。
+  if (clean.startsWith("retro/forms/")) return [clean];
   const candidates = [clean];
   if (!clean.includes("/gen-")) {
     const parts = clean.split("/");

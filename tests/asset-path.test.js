@@ -78,4 +78,16 @@ describe("asset-path", () => {
     expect(isSafePackKey("retro/../../secret")).toBe(false);
     expect(buildPackCandidates("retro/../../secret")).toEqual([]);
   });
+
+  it("forms key is safe and resolves to itself only", () => {
+    const key = "retro/forms/alola/026-raichu";
+    expect(isSafePackKey(key)).toBe(true);
+    expect(buildPackCandidates(key)).toEqual([key]);
+  });
+
+  it("forms key rejects traversal and bad region", () => {
+    expect(isSafePackKey("retro/forms/../gen-1/026-raichu")).toBe(false);
+    expect(isSafePackKey("retro/forms/Alola/026-raichu")).toBe(false); // 大文字不可
+    expect(isSafePackKey("retro/forms/alola/")).toBe(false);
+  });
 });

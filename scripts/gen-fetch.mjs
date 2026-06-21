@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const SC = 'https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/sprite';
 
@@ -16,6 +17,56 @@ export function pokedbSlug(slug) {
     .replace(/[ _.]/g, '-')          // space/underscore/dot -> hyphen
     .replace(/-{2,}/g, '-')          // collapse repeated hyphens
     .replace(/^-|-$/g, '');          // strip leading/trailing hyphens
+}
+
+/** Returns the sprite subdirectory path for a regional form, e.g. "0026/0001" */
+export function formSpriteDir(dex, subindex) {
+  return `${String(dex).padStart(4, '0')}/${subindex}`;
+}
+
+/**
+ * Enumerate all *-Anim.png filenames in sprite/<dir>/ via the GitHub Contents API.
+ * Throws on gh/network/auth failure to enforce fail-fast.
+ * Returns empty list only if gh succeeds but the directory has no -Anim.png files.
+ */
+async function listAnimSheets(dir) {
+  try {
+    const out = execFileSync(
+      'gh',
+      ['api', `repos/PMDCollab/SpriteCollab/contents/sprite/${dir}`, '--jq', '.[].name'],
+      { encoding: 'utf8' }
+    );
+    return out.split('\n').map(s => s.trim()).filter(n => n.endsWith('-Anim.png'));
+  } catch (err) {
+    throw new Error(`listAnimSheets(${dir}): gh api failed — ${err.message}`);
+  }
+}
+
+/**
+ * Fetch all assets for a regional form.
+ * @param {number} dex       Pokédex number
+ * @param {string} subindex  Subindex string (e.g. "0001")
+ * @param {string} baseSlug  Base Pokémon slug (e.g. "raichu")
+ * @param {string} region    Region slug (alola|galar|hisui|paldea)
+ * @param {string} destDir   Destination directory (created if absent)
+ * @returns {{ anim:boolean, sheets:string[], tile:string }}
+ */
+export async function fetchForm(dex, subindex, baseSlug, region, destDir) {
+  fs.mkdirSync(destDir, { recursive: true });
+  const dir = formSpriteDir(dex, subindex);
+  const got = { anim: false, sheets: [], tile: 'none' };
+
+  got.anim = await dl(`${SC}/${dir}/AnimData.xml`, path.join(destDir, 'AnimData.xml'));
+
+  const names = await listAnimSheets(dir);
+  for (const n of names) {
+    if (await dl(`${SC}/${dir}/${n}`, path.join(destDir, n))) got.sheets.push(n);
+  }
+
+  const pdb = `https://img.pokemondb.net/sprites/black-white/normal/${pokedbSlug(baseSlug)}-${region}.png`;
+  got.tile = (await dl(pdb, path.join(destDir, 'tile.png'))) ? 'pokemondb' : 'none';
+
+  return got;
 }
 
 export async function fetchPokemon(dex, slug, destDir) {

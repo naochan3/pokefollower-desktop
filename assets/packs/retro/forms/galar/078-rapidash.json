@@ -1,0 +1,236 @@
+{
+  "name": "078-rapidash",
+  "generation": "forms/galar",
+  "rawPath": "forms/galar/078-rapidash",
+  "flipX": true,
+  "states": {
+    "walk": {
+      "sheet": "Walk-Anim.webp",
+      "frame": {
+        "w": 40,
+        "h": 56
+      },
+      "fps": 6.67,
+      "frames": 4,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "attack": {
+      "sheet": "Attack-Anim.webp",
+      "frame": {
+        "w": 72,
+        "h": 88
+      },
+      "fps": 28.57,
+      "frames": 10,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "shoot": {
+      "sheet": "Shoot-Anim.webp",
+      "frame": {
+        "w": 48,
+        "h": 72
+      },
+      "fps": 26.67,
+      "frames": 12,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "rearup": {
+      "sheet": "RearUp-Anim.webp",
+      "frame": {
+        "w": 40,
+        "h": 72
+      },
+      "fps": 18.33,
+      "frames": 11,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "sleep": {
+      "sheet": "Sleep-Anim.webp",
+      "frame": {
+        "w": 32,
+        "h": 32
+      },
+      "fps": 1.85,
+      "frames": 2,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "hurt": {
+      "sheet": "Hurt-Anim.webp",
+      "frame": {
+        "w": 48,
+        "h": 72
+      },
+      "fps": 12,
+      "frames": 2,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "idle": {
+      "sheet": "Idle-Anim.webp",
+      "frame": {
+        "w": 40,
+        "h": 56
+      },
+      "fps": 8.24,
+      "frames": 14,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "swing": {
+      "sheet": "Swing-Anim.webp",
+      "frame": {
+        "w": 80,
+        "h": 88
+      },
+      "fps": 33.75,
+      "frames": 9,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "double": {
+      "sheet": "Double-Anim.webp",
+      "frame": {
+        "w": 64,
+        "h": 80
+      },
+      "fps": 26.67,
+      "frames": 16,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "hop": {
+      "sheet": "Hop-Anim.webp",
+      "frame": {
+        "w": 40,
+        "h": 104
+      },
+      "fps": 25,
+      "frames": 10,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "charge": {
+      "sheet": "Charge-Anim.webp",
+      "frame": {
+        "w": 40,
+        "h": 56
+      },
+      "fps": 30,
+      "frames": 10,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "rotate": {
+      "sheet": "Rotate-Anim.webp",
+      "frame": {
+        "w": 40,
+        "h": 56
+      },
+      "fps": 30,
+      "frames": 9,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    }
+  }
+}

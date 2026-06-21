@@ -57,6 +57,7 @@ expect(html.includes('<select id="mode">'), "mode select must exist");
 for (const mode of ["follow", "roam"]) {
   expect(html.includes(`value="${mode}"`), `mode select must include ${mode}`);
 }
+expect(html.includes('<select id="kind">'), "kind select must exist");
 expect(inputAttrs("notificationCompanion")?.type === "checkbox", "notification companion input must be a checkbox");
 expect(inputAttrs("workWatch")?.type === "checkbox", "work watch input must be a checkbox");
 expect(inputAttrs("rotationEnabled")?.type === "checkbox", "rotation enabled input must be a checkbox");
