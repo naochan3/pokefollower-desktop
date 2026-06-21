@@ -1,0 +1,64 @@
+name: Release macOS assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to upload macOS assets to, for example v1.0.5"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-macos-${{ inputs.tag }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: "22.12.0"
+
+jobs:
+  build-upload:
+    name: Build and upload macOS arm64 assets
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check release tag matches package version
+        id: version
+        shell: bash
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          expected="v${version}"
+          if [ "${{ inputs.tag }}" != "$expected" ]; then
+            echo "Input tag ${{ inputs.tag }} does not match package version ${expected}" >&2
+            exit 1
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - run: npm run dist:mac -- --arm64 --publish never
+
+      - run: node scripts/verify-package-smoke.cjs darwin arm64
+
+      - name: Upload macOS assets to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          gh release upload "${{ inputs.tag }}" \
+            "release/PokeFollower-${version}-arm64.dmg" \
+            "release/PokeFollower-${version}-arm64-mac.zip" \
+            --clobber \
+            --repo "${{ github.repository }}"
