@@ -9,13 +9,14 @@ const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
 const repo = process.env.PF_RELEASE_REPO || "naochan3/pokefollower-desktop";
 const tag = process.env.PF_RELEASE_TAG || `v${pkg.version}`;
 const maxRetries = Number(process.env.PF_RELEASE_VERIFY_RETRIES || 3);
+const expectLinuxAppImage = process.env.PF_EXPECT_LINUX_APPIMAGE === "1";
 const expectedAssets = [
   "PokeFollower-Setup.exe",
   `PokeFollower-${pkg.version}-win.zip`,
   `PokeFollower-${pkg.version}-arm64.dmg`,
   `PokeFollower-${pkg.version}-arm64-mac.zip`,
-  `PokeFollower-${pkg.version}.AppImage`,
 ];
+if (expectLinuxAppImage) expectedAssets.push(`PokeFollower-${pkg.version}.AppImage`);
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -124,10 +125,14 @@ function expectReadmeLink(assetName, url) {
     `PokeFollower-${pkg.version}-arm64-mac.zip`,
     `https://github.com/${repo}/releases/download/${tag}/PokeFollower-${pkg.version}-arm64-mac.zip`,
   );
-  expectReadmeLink(
-    `PokeFollower-${pkg.version}.AppImage`,
-    `https://github.com/${repo}/releases/download/${tag}/PokeFollower-${pkg.version}.AppImage`,
-  );
+  if (expectLinuxAppImage) {
+    expectReadmeLink(
+      `PokeFollower-${pkg.version}.AppImage`,
+      `https://github.com/${repo}/releases/download/${tag}/PokeFollower-${pkg.version}.AppImage`,
+    );
+  } else if (!readme.includes(`${tag} の Release には AppImage asset をまだ添付していない`)) {
+    fail(`README must state ${tag} has no Linux AppImage release asset yet`);
+  }
 
   console.log(
     `[verify-release-assets] ok: ${repo} ${tag} is latest and has ${expectedAssets.length} expected assets with sha256 digests and README links`,
