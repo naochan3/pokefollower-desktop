@@ -9,4 +9,6 @@ contextBridge.exposeInMainWorld("settingsApi", {
   stopWorkWatch: () => ipcRenderer.invoke("work-watch:stop"),
   resetWorkWatch: () => ipcRenderer.invoke("work-watch:reset"),
   nextFavorite: () => ipcRenderer.invoke("favorites:next"),
+  addFavorite: (packKey) => ipcRenderer.invoke("favorites:add", packKey),
+  removeFavorite: (packKey) => ipcRenderer.invoke("favorites:remove", packKey),
 });

@@ -61,6 +61,8 @@ expect(/function isSettingsSender\(event\) \{[\s\S]*event\.sender === settingsWi
 expect(/function requireSettingsSender\(event\) \{[\s\S]*throw new Error\("unauthorized settings IPC sender"\)[\s\S]*\}/.test(main), "main.js must reject unauthorized settings invoke senders");
 expect(/ipcMain\.handle\("settings:get", \(event\) => \{[\s\S]*requireSettingsSender\(event\)[\s\S]*settingsStore\.getAll\(\)/.test(main), "settings:get IPC must require the settings window sender");
 expect(/ipcMain\.handle\("packs:list", \(event\) => \{[\s\S]*requireSettingsSender\(event\)[\s\S]*packReader\.readPackList\(\)/.test(main), "packs:list IPC must require the settings window sender");
+expect(/ipcMain\.handle\("favorites:add", \(event, packKey\) => \{[\s\S]*requireSettingsSender\(event\)[\s\S]*saveFavoritePacks\(addFavoritePack/.test(main), "favorites:add IPC must require the settings window sender and persist through settingsStore");
+expect(/ipcMain\.handle\("favorites:remove", \(event, packKey\) => \{[\s\S]*requireSettingsSender\(event\)[\s\S]*saveFavoritePacks\(removeFavoritePack/.test(main), "favorites:remove IPC must require the settings window sender and persist through settingsStore");
 expect(/ipcMain\.on\("settings:set", \(event, patch\) => \{[\s\S]*if \(!isSettingsSender\(event\)\) return;[\s\S]*applySettingsPatch\(patch/.test(main), "settings:set IPC must guard sender and call applySettingsPatch");
 expect(/const safePatch = sanitize\(patch\);/.test(settingsPatch), "settings patch handling must sanitize renderer input first");
 expect(/Object\.keys\(safePatch\)\.length === 0/.test(settingsPatch), "settings patch handling must ignore empty sanitized patches");
