@@ -10,9 +10,10 @@ function classifyForegroundApp(info) {
   return "normal";
 }
 
-function reactionModeForForeground(info, { enabled = false, workWatchPhase = "idle" } = {}) {
+function reactionModeForForeground(info, { enabled = false, workWatchPhase = "idle", recentlyActive = false } = {}) {
   if (workWatchPhase === "break") return "break";
   if (workWatchPhase === "work") return "calm";
+  if (recentlyActive) return "busy";
   if (!enabled) return "normal";
   return classifyForegroundApp(info);
 }

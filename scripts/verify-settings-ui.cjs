@@ -22,7 +22,7 @@ function inputAttrs(id) {
   return attrs;
 }
 
-for (const id of ["enabled", "edgeRest", "avoidCursor", "appReactions", "personality", "mode", "notificationCompanion", "testCompanion", "workWatch", "workWatchPreset", "workWatchStart", "workWatchStop", "workWatchReset", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
+for (const id of ["enabled", "edgeRest", "avoidCursor", "avoidCursorStrength", "appReactions", "personality", "mode", "notificationCompanion", "testCompanion", "workWatch", "workWatchPreset", "workWatchStart", "workWatchStop", "workWatchReset", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
   expect(html.includes(`id="${id}"`), `settings.html missing id="${id}"`);
   expect(js.includes(`getElementById("${id}")`) || ["scaleVal", "offsetVal", "lerpVal"].includes(id), `settings.js should query #${id}`);
 }
@@ -44,6 +44,10 @@ expect(html.includes('<script src="settings.js"></script>'), "settings.html must
 expect(inputAttrs("enabled")?.type === "checkbox", "enabled input must be a checkbox");
 expect(inputAttrs("edgeRest")?.type === "checkbox", "edgeRest input must be a checkbox");
 expect(inputAttrs("avoidCursor")?.type === "checkbox", "avoidCursor input must be a checkbox");
+expect(html.includes('<select id="avoidCursorStrength"'), "avoid cursor strength select must exist");
+for (const strength of ["normal", "strong"]) {
+  expect(html.includes(`value="${strength}"`), `avoid cursor strength select must include ${strength}`);
+}
 expect(inputAttrs("appReactions")?.type === "checkbox", "app reactions input must be a checkbox");
 expect(html.includes('<select id="personality">'), "personality select must exist");
 for (const preset of ["standard", "active", "relaxed", "friendly"]) {
@@ -81,6 +85,7 @@ for (const mapping of [
   "vcp1_lerp: \"lerp\"",
   "vcp1_edgeRest: \"edgeRest\"",
   "vcp1_avoidCursor: \"avoidCursor\"",
+  "vcp1_avoid_cursor_strength: \"avoidCursorStrength\"",
   "vcp1_app_reactions: \"appReactionsEnabled\"",
   "vcp1_personality: \"personality\"",
   "vcp1_mode: \"mode\"",

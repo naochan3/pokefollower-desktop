@@ -7,6 +7,7 @@ function mapKeys(obj) {
     vcp1_lerp: "lerp",
     vcp1_edgeRest: "edgeRest",
     vcp1_avoidCursor: "avoidCursor",
+    vcp1_avoid_cursor_strength: "avoidCursorStrength",
     vcp1_personality: "personality",
     vcp1_mode: "mode",
     vcp1_app_reactions: "appReactionsEnabled",
@@ -31,6 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const enabledEl = document.getElementById("enabled");
   const edgeRestEl = document.getElementById("edgeRest");
   const avoidCursorEl = document.getElementById("avoidCursor");
+  const avoidCursorStrengthEl = document.getElementById("avoidCursorStrength");
   const personalityEl = document.getElementById("personality");
   const modeEl = document.getElementById("mode");
   const notificationCompanionEl = document.getElementById("notificationCompanion");
@@ -58,6 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     vcp1_lerp: 0.20,    // LERP_ALPHA (lower = floatier/slower follow)
     vcp1_edgeRest: true,
     vcp1_avoidCursor: true,
+    vcp1_avoid_cursor_strength: "normal",
     vcp1_personality: "standard",
     vcp1_mode: "follow",
     vcp1_work_watch_preset: "25/5"
@@ -76,6 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       enabledEl.checked = !!res.enabled;
       if (edgeRestEl) edgeRestEl.checked = res.edgeRest !== false;
       if (avoidCursorEl) avoidCursorEl.checked = res.avoidCursor !== false;
+      if (avoidCursorStrengthEl) avoidCursorStrengthEl.value = typeof res.avoidCursorStrength === "string" ? res.avoidCursorStrength : DEFAULTS.vcp1_avoid_cursor_strength;
       if (personalityEl) personalityEl.value = typeof res.personality === "string" ? res.personality : DEFAULTS.vcp1_personality;
       if (modeEl) modeEl.value = typeof res.mode === "string" ? res.mode : DEFAULTS.vcp1_mode;
       if (notificationCompanionEl) notificationCompanionEl.checked = !!res.notificationCompanionEnabled;
@@ -114,6 +118,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (avoidCursorEl) {
     avoidCursorEl.addEventListener("change", () => {
       save({ vcp1_avoidCursor: avoidCursorEl.checked });
+    });
+  }
+  if (avoidCursorStrengthEl) {
+    avoidCursorStrengthEl.addEventListener("change", () => {
+      save({ vcp1_avoid_cursor_strength: avoidCursorStrengthEl.value });
     });
   }
   if (personalityEl) {

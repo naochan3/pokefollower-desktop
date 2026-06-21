@@ -222,7 +222,18 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 8px;
+    }
+    .behavior select {
+      border: 1.5px solid #000;
+      border-radius: 6px;
+      background: #fff;
+      color: #000;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 4px;
+      max-width: 76px;
     }
     .behavior {
       display: flex;
@@ -400,6 +411,13 @@
       <label class="behavior" for="avoidCursor">
         <input id="avoidCursor" type="checkbox" />
         <span>Avoid Cursor</span>
+      </label>
+      <label class="behavior" for="avoidCursorStrength">
+        <span>Avoid</span>
+        <select id="avoidCursorStrength" aria-label="カーソル退避強度">
+          <option value="normal">Normal</option>
+          <option value="strong">Strong</option>
+        </select>
       </label>
       <label class="behavior" for="appReactions">
         <input id="appReactions" type="checkbox" />

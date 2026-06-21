@@ -15,6 +15,7 @@ describe("settings-store", () => {
     const store = createSettingsStore(file);
     expect(store.getAll()).toEqual(DEFAULTS);
     expect(store.get("offset")).toBe(70);
+    expect(store.get("avoidCursorStrength")).toBe("normal");
     expect(store.get("notificationCompanionEnabled")).toBe(false);
     expect(store.get("appReactionsEnabled")).toBe(false);
     expect(store.get("workWatchEnabled")).toBe(false);
@@ -139,6 +140,17 @@ describe("settings-store", () => {
     expect(store.get("avoidCursor")).toBe(false);
     store.set({ avoidCursor: "yes" });
     expect(store.get("avoidCursor")).toBe(true);
+  });
+
+  it("avoidCursorStrengthは許可された強度だけを保存する", () => {
+    const store = createSettingsStore(file);
+    expect(store.get("avoidCursorStrength")).toBe("normal");
+    store.set({ avoidCursorStrength: "strong" });
+    expect(store.get("avoidCursorStrength")).toBe("strong");
+    store.set({ avoidCursorStrength: "../bad" });
+    expect(store.get("avoidCursorStrength")).toBe("strong");
+    store.set({ avoidCursorStrength: "normal" });
+    expect(store.get("avoidCursorStrength")).toBe("normal");
   });
 
   it("personalityは許可されたプリセットだけを保存する", () => {

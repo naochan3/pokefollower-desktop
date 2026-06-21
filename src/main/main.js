@@ -73,9 +73,14 @@ function workWatchPhase() {
 
 function syncReactionMode() {
   if (!settingsStore) return;
+  const recentlyActive = settingsStore.get("avoidCursor") && (() => {
+    try { return powerMonitor.getSystemIdleTime() <= 1; }
+    catch (_) { return false; }
+  })();
   const nextMode = reactionModeForForeground(lastForegroundInfo, {
     enabled: !!settingsStore.get("appReactionsEnabled"),
     workWatchPhase: workWatchPhase(),
+    recentlyActive,
   });
   if (nextMode === currentReactionMode) return;
   currentReactionMode = nextMode;
@@ -472,6 +477,7 @@ app.whenReady().then(() => {
     vcp1_lerp: s.lerp,
     vcp1_edgeRest: s.edgeRest,
     vcp1_avoidCursor: s.avoidCursor,
+    vcp1_avoidCursorStrength: s.avoidCursorStrength,
     vcp1_personality: s.personality,
     vcp1_mode: s.mode,
     vcp1_reactionMode: currentReactionMode,

@@ -14,4 +14,9 @@ describe("app-reactions", () => {
     expect(reactionModeForForeground({ cls: "Code" }, { enabled: true, workWatchPhase: "break" })).toBe("break");
     expect(reactionModeForForeground({ cls: "Code" }, { enabled: false, workWatchPhase: "idle" })).toBe("normal");
   });
+
+  it("最近操作中は入力妨害を避けるbusy反応を優先する", () => {
+    expect(reactionModeForForeground({ cls: "Chrome" }, { enabled: true, recentlyActive: true })).toBe("busy");
+    expect(reactionModeForForeground({ cls: "Code" }, { enabled: false, recentlyActive: true })).toBe("busy");
+  });
 });

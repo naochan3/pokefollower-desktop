@@ -77,6 +77,7 @@ expect(
 );
 expect(/reactionModeForForeground/.test(main), "main.js must derive app/work-watch reaction mode from foreground context");
 expect(/workWatchPhase\(\)/.test(main), "main.js must let work watch override app reaction mode");
+expect(/powerMonitor\.getSystemIdleTime\(\) <= 1/.test(main), "main.js must use system idle time for non-intrusive busy reactions");
 expect(/vcp1_reactionMode/.test(sim), "follower-sim must accept runtime reaction mode");
 expect(/setRestSurfaces\(surfaces = \[\]\)/.test(sim), "follower-sim must accept foreground window rest surfaces");
 expect(/function computeWindowEdgeRestTarget/.test(sim), "follower-sim must use foreground window edges as rest candidates");
