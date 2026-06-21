@@ -11,6 +11,7 @@ const { isFullscreenForeground } = require("./fullscreen-policy.js");
 const { resolveAppProtocolPath } = require("./app-protocol-path.js");
 const { getSimIntervalMs } = require("./sim-loop-config.js");
 const { applySettingsPatch } = require("./settings-patch.js");
+const { createNotificationCompanion } = require("./notification-companion.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -26,7 +27,9 @@ let simTimer = null;
 let simIntervalMs = null;
 let fullscreenTimer = null;
 let lastStepTs = 0;
+let lastRender = null;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
+let notificationCompanion = null;
 
 const TRAY_ICON_SIZE_PX = 28;
 const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
@@ -98,7 +101,10 @@ function createOverlayWindow(display) {
   hardenRendererNavigation(win);
   win.loadFile(path.join(__dirname, "..", "overlay", "overlay.html"));
   win.webContents.on("did-finish-load", () => {
-    if (currentMeta && !win.isDestroyed()) win.webContents.send("meta", currentMeta);
+    if (win.isDestroyed()) return;
+    if (currentMeta) win.webContents.send("meta", currentMeta);
+    const overlay = overlays.find((o) => o.win === win);
+    if (overlay) sendFrameToOverlay(overlay, lastRender, true);
   });
   return win;
 }
@@ -128,24 +134,29 @@ function loadPackIntoSim(packKey) {
   return resolvedKey;
 }
 
+function sendFrameToOverlay(o, render, force = false) {
+  if (!o.win || o.win.isDestroyed()) return;
+  const frame = frameForOverlay(render, o.bounds, currentMeta);
+  if (!frame.visible) {
+    if (force || o.visible) {
+      o.win.webContents.send("frame", frame);
+      o.visible = false;
+      o.lastFrameKey = "hidden";
+    }
+    return;
+  }
+  const nextFrameKey = frameKey(frame);
+  if (!force && o.visible && o.lastFrameKey === nextFrameKey) return;
+  o.win.webContents.send("frame", frame);
+  o.visible = true;
+  o.lastFrameKey = nextFrameKey;
+}
+
 // ポケモンのグローバル座標を、各モニター窓のローカル座標に変換して配信
 function broadcastFrame(render) {
+  lastRender = render;
   for (const o of overlays) {
-    if (!o.win || o.win.isDestroyed()) continue;
-    const frame = frameForOverlay(render, o.bounds, currentMeta);
-    if (!frame.visible) {
-      if (o.visible) {
-        o.win.webContents.send("frame", frame);
-        o.visible = false;
-        o.lastFrameKey = "hidden";
-      }
-      continue;
-    }
-    const nextFrameKey = frameKey(frame);
-    if (o.visible && o.lastFrameKey === nextFrameKey) continue;
-    o.win.webContents.send("frame", frame);
-    o.visible = true;
-    o.lastFrameKey = nextFrameKey;
+    sendFrameToOverlay(o, render);
   }
 }
 
@@ -198,6 +209,7 @@ function setEnabled(on) {
     startFullscreenPolling();
     const c = screen.getCursorScreenPoint();
     sim.resetTo(c.x, c.y, Date.now()); // 有効化時はカーソル位置へ出現
+    runSimFrame();
   } else {
     stopFullscreenPolling();
     broadcastFrame(null);
@@ -271,6 +283,14 @@ ipcMain.handle("packs:list", (event) => {
   requireSettingsSender(event);
   return packReader.readPackList();
 });
+ipcMain.handle("companion:test-notification", (event) => {
+  requireSettingsSender(event);
+  return notificationCompanion.publish({
+    source: "PokéFollower",
+    title: "通知コンパニオン",
+    body: "ポケモンが要約通知を届けます",
+  });
+});
 ipcMain.on("settings:set", (event, patch) => {
   if (!isSettingsSender(event)) return;
   applySettingsPatch(patch, { settingsStore, sim, loadPackIntoSim, setEnabled, refreshTrayMenu });
@@ -282,6 +302,11 @@ const gotSingleInstanceLock = app.requestSingleInstanceLock();
 app.whenReady().then(() => {
   if (!gotSingleInstanceLock) { app.quit(); return; }
   settingsStore = createSettingsStore(path.join(getUserDataPath(), "settings.json"));
+  notificationCompanion = createNotificationCompanion({
+    getSettings: () => settingsStore.getAll(),
+    getOverlays: () => overlays,
+    isSuppressed: () => !enabled || fullscreenActive,
+  });
   const s = settingsStore.getAll();
   // 自動起動はインストール版のみ登録（開発起動でRunキーにゴミをためないようisPackagedで限定）
   if (app.isPackaged) app.setLoginItemSettings({ openAtLogin: true });
