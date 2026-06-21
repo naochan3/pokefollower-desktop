@@ -12,6 +12,8 @@ const { resolveAppProtocolPath } = require("./app-protocol-path.js");
 const { getSimIntervalMs } = require("./sim-loop-config.js");
 const { applySettingsPatch } = require("./settings-patch.js");
 const { createNotificationCompanion } = require("./notification-companion.js");
+const { createCodexNotificationWatcher } = require("./codex-notification-watcher.js");
+const { defaultNotificationQueuePath } = require("./notification-queue.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -30,6 +32,7 @@ let lastStepTs = 0;
 let lastRender = null;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
 let notificationCompanion = null;
+let codexNotificationWatcher = null;
 
 const TRAY_ICON_SIZE_PX = 28;
 const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
@@ -294,6 +297,7 @@ ipcMain.handle("companion:test-notification", (event) => {
 ipcMain.on("settings:set", (event, patch) => {
   if (!isSettingsSender(event)) return;
   applySettingsPatch(patch, { settingsStore, sim, loadPackIntoSim, setEnabled, refreshTrayMenu });
+  if (codexNotificationWatcher) codexNotificationWatcher.sync();
 });
 
 // 二重起動を禁止（複数インスタンスが同時にカーソルを追って競合するのを防ぐ）。
@@ -306,6 +310,11 @@ app.whenReady().then(() => {
     getSettings: () => settingsStore.getAll(),
     getOverlays: () => overlays,
     isSuppressed: () => !enabled || fullscreenActive,
+  });
+  codexNotificationWatcher = createCodexNotificationWatcher({
+    queuePath: defaultNotificationQueuePath(),
+    getSettings: () => settingsStore.getAll(),
+    publish: (notification) => notificationCompanion.publish(notification),
   });
   const s = settingsStore.getAll();
   // 自動起動はインストール版のみ登録（開発起動でRunキーにゴミをためないようisPackagedで限定）
@@ -335,9 +344,14 @@ app.whenReady().then(() => {
 
   startSimLoop();
   setEnabled(s.enabled);
+  codexNotificationWatcher.sync();
   buildTray();
 });
 
 app.on("window-all-closed", () => {
   // トレイ常駐のため終了しない（「終了」メニューでのみ quit）
+});
+
+app.on("before-quit", () => {
+  if (codexNotificationWatcher) codexNotificationWatcher.stop();
 });

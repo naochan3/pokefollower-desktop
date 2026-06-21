@@ -79,6 +79,19 @@
   - **自動起動** — ログイン時の自動起動の ON / OFF
   - **終了** — アプリを終了
 - 設定画面では、検索ボックスに `ピカチュウ` / `ぴかちゅう` / `pikachu` / `25` などを入力して絞り込めます。
+- 通知コンパニオンは設定画面で ON / OFF できます。Codex の `notify` と連携する場合は、既存の Codex pet helper を残すために chain mode を使います。
+
+```toml
+notify = [
+  "node",
+  "/absolute/path/to/pokefollower-desktop/scripts/pokefollower-codex-notify.cjs",
+  "--forward",
+  "/Users/<you>/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient",
+  "turn-ended"
+]
+```
+
+> Codex は `notify` に JSON payload を渡します。PokéFollower は `input-messages` を保存せず、`last-assistant-message` を短く要約して `~/.pokefollower/notifications/codex.jsonl` に最大64件だけ保持します。キュー監視は通知コンパニオン ON の間だけ `fs.watch` で動きます。
 
 ---
 
@@ -151,6 +164,7 @@ Linux 生成物：`release/PokeFollower-<version>.AppImage` など。
 |---|---|
 | メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（既定 16ms ≒ 最大60fps。`POKEFOLLOWER_SIM_INTERVAL_MS=8` で明示的に 8ms 指定可）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
 | 通知コンパニオン（`src/main/notification-companion.js`） | 設定 ON 時だけ、許可された通知イベントを短く正規化して overlay へ配信。ポーリングせず、全画面/無効時は抑制 |
+| Codex 通知ブリッジ（`src/main/notification-queue.js` / `src/main/codex-notification-watcher.js`） | Codex `notify` から渡された JSON payload を軽量 JSONL queue として受け、設定 ON の間だけ `fs.watch` で新着分を読む |
 | 追従シム（`src/main/follower-sim.js`） | 追従とアニメーションの計算（グローバル座標）。DOM 非依存・テスト可能 |
 | Rust 追従コア（`crates/follower_core/`） | 追従位置計算の本体。WASM として `native/pokefollower_core.wasm` にビルドされ、Electron 実行時に読み込まれる |
 | オーバーレイ窓（`src/overlay/`） | **モニターごとに1枚**常設。透明・最前面・クリック透過。メインから受け取ったローカル座標でスプライトを描くだけ |

@@ -58,6 +58,12 @@ expect(DEFAULTS.offset === 70, "settings-store DEFAULTS.offset must be 70");
 expect(/offset: 70/.test(sim), "follower-sim default offset must be 70");
 expect(/vcp1_offset: 70/.test(settingsUi), "settings UI default offset must be 70");
 expect(
+  /createCodexNotificationWatcher/.test(main) &&
+    /codexNotificationWatcher\.sync\(\)/.test(main) &&
+    /codexNotificationWatcher\.stop\(\)/.test(main),
+  "Codex notification watcher must sync with settings and stop before quit",
+);
+expect(
   /function getUserDataPath\(\)/.test(main) &&
     /process\.env\.POKEFOLLOWER_ALLOW_TEST_USER_DATA === "1"/.test(main) &&
     /process\.env\.POKEFOLLOWER_TEST_USER_DATA_DIR/.test(main) &&
