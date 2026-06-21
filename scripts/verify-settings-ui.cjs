@@ -22,7 +22,7 @@ function inputAttrs(id) {
   return attrs;
 }
 
-for (const id of ["enabled", "edgeRest", "avoidCursor", "avoidCursorStrength", "appReactions", "personality", "mode", "notificationCompanion", "testCompanion", "workWatch", "workWatchPreset", "workWatchStart", "workWatchStop", "workWatchReset", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
+for (const id of ["enabled", "edgeRest", "avoidCursor", "avoidCursorStrength", "appReactions", "personality", "mode", "notificationCompanion", "testCompanion", "workWatch", "workWatchPreset", "workWatchStart", "workWatchStop", "workWatchReset", "favoriteAdd", "favoriteNext", "favoriteClear", "favoriteCount", "rotationEnabled", "rotationInterval", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
   expect(html.includes(`id="${id}"`), `settings.html missing id="${id}"`);
   expect(js.includes(`getElementById("${id}")`) || ["scaleVal", "offsetVal", "lerpVal"].includes(id), `settings.js should query #${id}`);
 }
@@ -59,6 +59,10 @@ for (const mode of ["follow", "roam"]) {
 }
 expect(inputAttrs("notificationCompanion")?.type === "checkbox", "notification companion input must be a checkbox");
 expect(inputAttrs("workWatch")?.type === "checkbox", "work watch input must be a checkbox");
+expect(inputAttrs("rotationEnabled")?.type === "checkbox", "rotation enabled input must be a checkbox");
+expect(inputAttrs("rotationInterval")?.type === "number", "rotation interval input must be number");
+expect(inputAttrs("rotationInterval")?.min === "1", "rotation interval min must be 1");
+expect(inputAttrs("rotationInterval")?.max === "120", "rotation interval max must be 120");
 expect(html.includes('<select id="workWatchPreset"'), "work watch preset select must exist");
 for (const preset of ["25/5", "50/10"]) {
   expect(html.includes(`value="${preset}"`), `work watch preset select must include ${preset}`);
@@ -80,6 +84,9 @@ expect(inputAttrs("lerp")?.step === "0.1", "lerp step must be 0.1");
 for (const mapping of [
   "vcp1_enabled: \"enabled\"",
   "vcp1_pack: \"pack\"",
+  "vcp1_favorite_packs: \"favoritePacks\"",
+  "vcp1_rotation_enabled: \"rotationEnabled\"",
+  "vcp1_rotation_interval_minutes: \"rotationIntervalMinutes\"",
   "vcp1_scale: \"scale\"",
   "vcp1_offset: \"offset\"",
   "vcp1_lerp: \"lerp\"",
@@ -103,6 +110,8 @@ expect(/vcp1_edgeRest: true/.test(js), "settings.js default edgeRest must be tru
 expect(/vcp1_avoidCursor: true/.test(js), "settings.js default avoidCursor must be true");
 expect(/vcp1_personality: "standard"/.test(js), "settings.js default personality must be standard");
 expect(/vcp1_mode: "follow"/.test(js), "settings.js default mode must be follow");
+expect(/vcp1_favorite_packs: \[\]/.test(js), "settings.js default favorite packs must be empty");
+expect(/vcp1_rotation_interval_minutes: 15/.test(js), "settings.js default rotation interval must be 15");
 expect(/const lerpUI = lerp \* 10;/.test(js), "settings.js must expose lerp as x10 speed UI");
 expect(/const lerp = normalized \/ 10;/.test(js), "settings.js must convert speed UI back to internal lerp");
 expect(/toHira/.test(js) && /romaji/.test(js) && /#"\s*\+\s*padded/.test(js), "settings search must include kana, romaji, and dex number terms");
@@ -111,6 +120,7 @@ expect(/width: 420, height: 760/.test(fs.readFileSync(path.join(root, "src", "ma
 expect(/flex: 1 1 280px/.test(html), "pack grid must keep flexible vertical space");
 expect(/min-height: 160px/.test(html), "pack grid must keep a usable minimum height");
 expect(/grid-template-columns: 1fr auto/.test(html), "notification companion row must keep compact action layout");
+expect(/\.tile\.favorite::after/.test(html), "favorite Pokemon tiles must show a stable favorite marker");
 
 for (const surface of [
   'getSettings: () => ipcRenderer.invoke("settings:get")',
@@ -120,6 +130,7 @@ for (const surface of [
   'startWorkWatch: () => ipcRenderer.invoke("work-watch:start")',
   'stopWorkWatch: () => ipcRenderer.invoke("work-watch:stop")',
   'resetWorkWatch: () => ipcRenderer.invoke("work-watch:reset")',
+  'nextFavorite: () => ipcRenderer.invoke("favorites:next")',
 ]) {
   expect(preload.includes(surface), `settings preload missing surface: ${surface}`);
 }

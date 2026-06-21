@@ -1,9 +1,13 @@
 const fs = require("node:fs");
 const { isSafePackKey } = require("./asset-path.js");
+const { clampRotationMinutes } = require("./favorite-rotation.js");
 
 const DEFAULTS = {
   enabled: true,
   pack: "retro/gen-1/009-blastoise",
+  favoritePacks: [],
+  rotationEnabled: false,
+  rotationIntervalMinutes: 15,
   scale: 1.25,
   offset: 70,
   lerp: 0.20,
@@ -38,7 +42,22 @@ function sanitize(patch) {
   if (!patch || typeof patch !== "object" || Array.isArray(patch)) return out;
   for (const [k, v] of Object.entries(patch)) {
     if (!(k in DEFAULTS)) continue;
-    if (k === "enabled" || k === "edgeRest" || k === "avoidCursor" || k === "appReactionsEnabled" || k === "notificationCompanionEnabled" || k === "workWatchEnabled") { out[k] = !!v; continue; }
+    if (k === "enabled" || k === "edgeRest" || k === "avoidCursor" || k === "rotationEnabled" || k === "appReactionsEnabled" || k === "notificationCompanionEnabled" || k === "workWatchEnabled") { out[k] = !!v; continue; }
+    if (k === "favoritePacks") {
+      const packs = Array.isArray(v) ? v : [];
+      const safePacks = [];
+      for (const pack of packs) {
+        const safePack = typeof pack === "string" ? pack.trim() : "";
+        if (isSafePackKey(safePack) && !safePacks.includes(safePack)) safePacks.push(safePack);
+        if (safePacks.length >= 12) break;
+      }
+      out.favoritePacks = safePacks;
+      continue;
+    }
+    if (k === "rotationIntervalMinutes") {
+      out.rotationIntervalMinutes = clampRotationMinutes(v);
+      continue;
+    }
     if (k === "personality") {
       const personality = typeof v === "string" ? v.trim() : "";
       if (PERSONALITIES.has(personality)) out.personality = personality;

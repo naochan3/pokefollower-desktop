@@ -63,6 +63,7 @@ chmod +x PokeFollower-1.0.5.AppImage
 - **アプリ別リアクション（任意）** — 前面アプリ名を best-effort で分類し、エディタでは距離を取り、ブラウザ/チャットでは少し近づく控えめな反応に切り替えます。
 - **画面端/ウィンドウ端で休憩** — カーソルが止まると、安全な画面端または取得できた前面ウィンドウ端へ移動します。
 - **邪魔しない追従** — カーソル直下を避け、退避強度を Normal / Strong から選べます。最近操作中は距離を広げて動きを抑えます。
+- **お気に入り待機列** — 複数のポケモンをお気に入り登録し、手動 NEXT または指定分数ごとの自動交代ができます。
 - **ログイン時の自動起動**（インストール版のみ）。
 - **全画面アプリで自動的に隠れる** — ゲーム等が全画面で前面にあるときはポケモンを自動で隠し、抜けると戻ります。Chrome の最大化やデスクトップ表示では隠れません。
 - **クリック透過** — 透明・最前面のオーバーレイなので、下のアプリ操作の邪魔をしません。
@@ -188,6 +189,7 @@ Linux 生成物：`release/PokeFollower-<version>.AppImage` など。
 | Codex 通知ブリッジ（`src/main/notification-queue.js` / `src/main/codex-notification-watcher.js`） | Codex `notify` から渡された JSON payload を軽量 JSONL queue として受け、設定 ON の間だけ `fs.watch` で新着分を読む |
 | 作業見守り（`src/main/work-watch.js`） | 25/5・50/10 のタイマー状態機械。停止中は追従に影響せず、実行中だけ通知と reaction mode を更新 |
 | アプリ別リアクション（`src/main/app-reactions.js`） | 前面アプリ名を軽量分類し、通常/集中/親しみ/作業/休憩の reaction mode を決める。取得失敗時は通常へフォールバック |
+| お気に入り待機列（`src/main/favorite-rotation.js`） | 保存済み favoritePacks から次のポケモンを決める純粋ロジック。待機列が空なら単体選択を維持 |
 | 追従シム（`src/main/follower-sim.js`） | 追従とアニメーションの計算（グローバル座標）。DOM 非依存・テスト可能 |
 | Rust 追従コア（`crates/follower_core/`） | 追従位置計算の本体。WASM として `native/pokefollower_core.wasm` にビルドされ、Electron 実行時に読み込まれる |
 | オーバーレイ窓（`src/overlay/`） | **モニターごとに1枚**常設。透明・最前面・クリック透過。メインから受け取ったローカル座標でスプライトを描くだけ |

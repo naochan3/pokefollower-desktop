@@ -168,6 +168,24 @@ describe("settings-patch", () => {
     ]);
   });
 
+  it("favorite/rotation patchはrotation同期だけを走らせる", () => {
+    const { deps, calls } = makeDeps();
+    let synced = 0;
+    applySettingsPatch({
+      favoritePacks: ["retro/gen-1/025-pikachu"],
+      rotationEnabled: true,
+      rotationIntervalMinutes: 5,
+    }, { ...deps, syncFavoriteRotation: () => { synced += 1; } });
+    expect(synced).toBe(1);
+    expect(calls).toEqual([
+      ["settings:set", {
+        favoritePacks: ["retro/gen-1/025-pikachu"],
+        rotationEnabled: true,
+        rotationIntervalMinutes: 5,
+      }],
+    ]);
+  });
+
   it("enabled patchは状態更新とtray更新だけを走らせる", () => {
     const { deps, calls } = makeDeps();
     applySettingsPatch({ enabled: false }, deps);

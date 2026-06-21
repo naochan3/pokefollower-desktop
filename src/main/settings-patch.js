@@ -10,6 +10,7 @@ function applySettingsPatch(patch, {
   loadPackIntoSim,
   setEnabled,
   refreshTrayMenu,
+  syncFavoriteRotation = () => {},
 }) {
   const safePatch = sanitize(patch);
   const current = settingsStore.getAll();
@@ -43,6 +44,9 @@ function applySettingsPatch(patch, {
       const resolved = loadPackIntoSim(next.pack);
       if (resolved !== next.pack) settingsStore.set({ pack: resolved });
     } catch (_) { /* 解決失敗時は据え置き */ }
+  }
+  if (hasOwn(safePatch, "favoritePacks") || hasOwn(safePatch, "rotationEnabled") || hasOwn(safePatch, "rotationIntervalMinutes")) {
+    syncFavoriteRotation();
   }
   if (hasOwn(safePatch, "enabled")) {
     setEnabled(next.enabled);

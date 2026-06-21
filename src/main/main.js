@@ -16,6 +16,7 @@ const { createCodexNotificationWatcher } = require("./codex-notification-watcher
 const { defaultNotificationQueuePath } = require("./notification-queue.js");
 const { createWorkWatchSession } = require("./work-watch.js");
 const { reactionModeForForeground } = require("./app-reactions.js");
+const { nextFavoritePack } = require("./favorite-rotation.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -40,6 +41,7 @@ let notificationCompanion = null;
 let codexNotificationWatcher = null;
 let workWatchSession = null;
 let workWatchTimer = null;
+let favoriteRotationTimer = null;
 
 const TRAY_ICON_SIZE_PX = 28;
 const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
@@ -198,6 +200,13 @@ function loadPackIntoSim(packKey) {
     if (o.win && !o.win.isDestroyed()) o.win.webContents.send("meta", meta);
   }
   return resolvedKey;
+}
+
+function switchPack(packKey) {
+  if (!packKey) return settingsStore.get("pack");
+  const resolved = loadPackIntoSim(packKey);
+  settingsStore.set({ pack: resolved });
+  return resolved;
 }
 
 function sendFrameToOverlay(o, render, force = false) {
@@ -402,6 +411,28 @@ function syncWorkWatchConfig() {
   syncReactionMode();
 }
 
+function stopFavoriteRotation() {
+  if (!favoriteRotationTimer) return;
+  clearInterval(favoriteRotationTimer);
+  favoriteRotationTimer = null;
+}
+
+function advanceFavoritePack() {
+  if (!settingsStore) return null;
+  const settings = settingsStore.getAll();
+  const nextPack = nextFavoritePack(settings.pack, settings.favoritePacks);
+  if (!nextPack || nextPack === settings.pack) return settings.pack;
+  return switchPack(nextPack);
+}
+
+function syncFavoriteRotation() {
+  stopFavoriteRotation();
+  if (!settingsStore) return;
+  const settings = settingsStore.getAll();
+  if (!settings.rotationEnabled || settings.favoritePacks.length < 2) return;
+  favoriteRotationTimer = setInterval(advanceFavoritePack, settings.rotationIntervalMinutes * 60 * 1000);
+}
+
 ipcMain.handle("settings:get", (event) => {
   requireSettingsSender(event);
   return settingsStore.getAll();
@@ -441,9 +472,13 @@ ipcMain.handle("work-watch:reset", (event) => {
   syncReactionMode();
   return state;
 });
+ipcMain.handle("favorites:next", (event) => {
+  requireSettingsSender(event);
+  return advanceFavoritePack();
+});
 ipcMain.on("settings:set", (event, patch) => {
   if (!isSettingsSender(event)) return;
-  applySettingsPatch(patch, { settingsStore, sim, loadPackIntoSim, setEnabled, refreshTrayMenu });
+  applySettingsPatch(patch, { settingsStore, sim, loadPackIntoSim, setEnabled, refreshTrayMenu, syncFavoriteRotation });
   if (codexNotificationWatcher) codexNotificationWatcher.sync();
   syncWorkWatchConfig();
 });
@@ -494,6 +529,7 @@ app.whenReady().then(() => {
   powerMonitor.on("on-battery", refreshSimLoopInterval);
 
   setEnabled(s.enabled);
+  syncFavoriteRotation();
   codexNotificationWatcher.sync();
   buildTray();
 });
@@ -504,4 +540,5 @@ app.on("window-all-closed", () => {
 
 app.on("before-quit", () => {
   if (codexNotificationWatcher) codexNotificationWatcher.stop();
+  stopFavoriteRotation();
 });

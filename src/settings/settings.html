@@ -213,6 +213,18 @@
     }
     .tile:hover { background: #f0f0f0; }
     .tile.selected { border-color: #EF4036; background: #fff4f3; }
+    .tile.favorite::after {
+      content: "★";
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      color: #EF4036;
+      font-size: 10px;
+      font-weight: 900;
+    }
+    .tile {
+      position: relative;
+    }
     .tile img { width: 48px; height: 48px; image-rendering: pixelated; object-fit: contain; }
     .tile .name { font-size: 11px; font-weight: 700; line-height: 1.1; word-break: break-all; }
     .tile .num { font-size: 10px; color: #888; }
@@ -313,6 +325,51 @@
       font-size: 11px;
       font-weight: 800;
     }
+    .team {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      margin: 0 12px;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .team-main {
+      display: inline-grid;
+      grid-template-columns: auto auto auto;
+      gap: 5px;
+      align-items: center;
+      min-width: 0;
+    }
+    .team-actions {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .team button {
+      border: 1.5px solid #000;
+      background: #fff;
+      color: #000;
+      font: inherit;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 5px;
+      cursor: pointer;
+    }
+    .team input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #EF4036;
+    }
+    .team input[type="number"] {
+      width: 34px;
+      border: 0;
+      border-bottom: 1.5px solid #000;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      background: transparent;
+    }
     .workwatch-main {
       display: inline-grid;
       grid-template-columns: auto auto 1fr;
@@ -400,6 +457,18 @@
         <button id="workWatchStart" type="button">START</button>
         <button id="workWatchStop" type="button">STOP</button>
         <button id="workWatchReset" type="button">RESET</button>
+      </div>
+    </div>
+    <div class="team">
+      <label class="team-main" for="rotationEnabled">
+        <input id="rotationEnabled" type="checkbox" />
+        <span>待機列 <span id="favoriteCount">0</span></span>
+        <input id="rotationInterval" type="number" min="1" max="120" step="1" aria-label="交代間隔（分）" />
+      </label>
+      <div class="team-actions">
+        <button id="favoriteAdd" type="button">ADD</button>
+        <button id="favoriteNext" type="button">NEXT</button>
+        <button id="favoriteClear" type="button">CLR</button>
       </div>
     </div>
     <div id="grid" class="grid" role="listbox" aria-label="ポケモン一覧"></div>

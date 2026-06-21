@@ -15,6 +15,9 @@ describe("settings-store", () => {
     const store = createSettingsStore(file);
     expect(store.getAll()).toEqual(DEFAULTS);
     expect(store.get("offset")).toBe(70);
+    expect(store.get("favoritePacks")).toEqual([]);
+    expect(store.get("rotationEnabled")).toBe(false);
+    expect(store.get("rotationIntervalMinutes")).toBe(15);
     expect(store.get("avoidCursorStrength")).toBe("normal");
     expect(store.get("notificationCompanionEnabled")).toBe(false);
     expect(store.get("appReactionsEnabled")).toBe(false);
@@ -31,11 +34,12 @@ describe("settings-store", () => {
 
   it("set した値が get で返り、再読込でも保持される", () => {
     const store = createSettingsStore(file);
-    store.set({ pack: "retro/gen-1/025-pikachu", scale: 2 });
+    store.set({ pack: "retro/gen-1/025-pikachu", scale: 2, favoritePacks: ["retro/gen-1/025-pikachu"] });
     expect(store.get("pack")).toBe("retro/gen-1/025-pikachu");
     const reopened = createSettingsStore(file);
     expect(reopened.get("scale")).toBe(2);
     expect(reopened.get("pack")).toBe("retro/gen-1/025-pikachu");
+    expect(reopened.get("favoritePacks")).toEqual(["retro/gen-1/025-pikachu"]);
   });
 
   it("既存互換の短縮pack IDは保持する", () => {
@@ -122,6 +126,29 @@ describe("settings-store", () => {
     expect(store.get("appReactionsEnabled")).toBe(true);
     store.set({ workWatchEnabled: 1 });
     expect(store.get("workWatchEnabled")).toBe(true);
+    store.set({ rotationEnabled: 1 });
+    expect(store.get("rotationEnabled")).toBe(true);
+  });
+
+  it("favoritePacksは安全なpackだけを重複排除して最大12件保存する", () => {
+    const store = createSettingsStore(file);
+    store.set({
+      favoritePacks: [
+        "retro/gen-1/025-pikachu",
+        "../secret",
+        "retro/gen-1/025-pikachu",
+        "retro/gen-1/001-bulbasaur",
+      ],
+    });
+    expect(store.get("favoritePacks")).toEqual(["retro/gen-1/025-pikachu", "retro/gen-1/001-bulbasaur"]);
+  });
+
+  it("rotationIntervalMinutesは1〜120分にclampする", () => {
+    const store = createSettingsStore(file);
+    store.set({ rotationIntervalMinutes: 0 });
+    expect(store.get("rotationIntervalMinutes")).toBe(1);
+    store.set({ rotationIntervalMinutes: 999 });
+    expect(store.get("rotationIntervalMinutes")).toBe(120);
   });
 
   it("edgeRestはbooleanとして保存する", () => {
