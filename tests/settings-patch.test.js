@@ -50,7 +50,7 @@ describe("settings-patch", () => {
     expect(next).toMatchObject({ scale: 5, offset: 0, lerp: 0.5 });
     expect(calls).toEqual([
       ["settings:set", { scale: 5, offset: 0, lerp: 0.5 }],
-      ["sim:setConfig", { vcp1_scale: 5, vcp1_offset: 0, vcp1_lerp: 0.5, vcp1_edgeRest: true }],
+      ["sim:setConfig", { vcp1_scale: 5, vcp1_offset: 0, vcp1_lerp: 0.5, vcp1_edgeRest: true, vcp1_avoidCursor: true }],
     ]);
   });
 
@@ -60,7 +60,17 @@ describe("settings-patch", () => {
     expect(next.edgeRest).toBe(false);
     expect(calls).toEqual([
       ["settings:set", { edgeRest: false }],
-      ["sim:setConfig", { vcp1_scale: 1.25, vcp1_offset: 70, vcp1_lerp: 0.2, vcp1_edgeRest: false }],
+      ["sim:setConfig", { vcp1_scale: 1.25, vcp1_offset: 70, vcp1_lerp: 0.2, vcp1_edgeRest: false, vcp1_avoidCursor: true }],
+    ]);
+  });
+
+  it("avoidCursor patchはsim設定を更新する", () => {
+    const { deps, calls } = makeDeps();
+    const next = applySettingsPatch({ avoidCursor: false }, deps);
+    expect(next.avoidCursor).toBe(false);
+    expect(calls).toEqual([
+      ["settings:set", { avoidCursor: false }],
+      ["sim:setConfig", { vcp1_scale: 1.25, vcp1_offset: 70, vcp1_lerp: 0.2, vcp1_edgeRest: true, vcp1_avoidCursor: false }],
     ]);
   });
 

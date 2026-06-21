@@ -288,7 +288,13 @@ app.whenReady().then(() => {
 
   registerPermissionGuards();
   registerAppProtocol();
-  sim.setConfig({ vcp1_scale: s.scale, vcp1_offset: s.offset, vcp1_lerp: s.lerp, vcp1_edgeRest: s.edgeRest });
+  sim.setConfig({
+    vcp1_scale: s.scale,
+    vcp1_offset: s.offset,
+    vcp1_lerp: s.lerp,
+    vcp1_edgeRest: s.edgeRest,
+    vcp1_avoidCursor: s.avoidCursor,
+  });
   try { loadPackIntoSim(s.pack); }
   catch (_) { try { loadPackIntoSim("retro/gen-1/009-blastoise"); } catch (_e) { /* noop */ } }
 

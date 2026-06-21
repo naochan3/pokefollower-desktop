@@ -120,4 +120,13 @@ describe("settings-store", () => {
     store.set({ edgeRest: "yes" });
     expect(store.get("edgeRest")).toBe(true);
   });
+
+  it("avoidCursorはbooleanとして保存する", () => {
+    const store = createSettingsStore(file);
+    expect(store.get("avoidCursor")).toBe(true);
+    store.set({ avoidCursor: 0 });
+    expect(store.get("avoidCursor")).toBe(false);
+    store.set({ avoidCursor: "yes" });
+    expect(store.get("avoidCursor")).toBe(true);
+  });
 });

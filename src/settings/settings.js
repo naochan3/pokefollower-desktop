@@ -1,5 +1,13 @@
 function mapKeys(obj) {
-  const m = { vcp1_enabled: "enabled", vcp1_pack: "pack", vcp1_scale: "scale", vcp1_offset: "offset", vcp1_lerp: "lerp", vcp1_edgeRest: "edgeRest" };
+  const m = {
+    vcp1_enabled: "enabled",
+    vcp1_pack: "pack",
+    vcp1_scale: "scale",
+    vcp1_offset: "offset",
+    vcp1_lerp: "lerp",
+    vcp1_edgeRest: "edgeRest",
+    vcp1_avoidCursor: "avoidCursor",
+  };
   const out = {};
   for (const [k, v] of Object.entries(obj)) out[m[k] || k] = v;
   return out;
@@ -16,6 +24,7 @@ function genOfDex(dex) {
 document.addEventListener("DOMContentLoaded", async () => {
   const enabledEl = document.getElementById("enabled");
   const edgeRestEl = document.getElementById("edgeRest");
+  const avoidCursorEl = document.getElementById("avoidCursor");
 
   // Sliders + readouts
   const scaleEl   = document.getElementById("scale");
@@ -31,7 +40,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     vcp1_scale: 1.25,   // SCALE
     vcp1_offset: 70,    // OFFSET_PX
     vcp1_lerp: 0.20,    // LERP_ALPHA (lower = floatier/slower follow)
-    vcp1_edgeRest: true
+    vcp1_edgeRest: true,
+    vcp1_avoidCursor: true
   };
 
   // Forward live config patches to the overlay via the settings API
@@ -46,6 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   {
       enabledEl.checked = !!res.enabled;
       if (edgeRestEl) edgeRestEl.checked = res.edgeRest !== false;
+      if (avoidCursorEl) avoidCursorEl.checked = res.avoidCursor !== false;
 
       const scale  = (typeof res.scale  === "number") ? res.scale  : DEFAULTS.vcp1_scale;
       const offset = (typeof res.offset === "number") ? res.offset : DEFAULTS.vcp1_offset;
@@ -73,6 +84,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (edgeRestEl) {
     edgeRestEl.addEventListener("change", () => {
       save({ vcp1_edgeRest: edgeRestEl.checked });
+    });
+  }
+  if (avoidCursorEl) {
+    avoidCursorEl.addEventListener("change", () => {
+      save({ vcp1_avoidCursor: avoidCursorEl.checked });
     });
   }
 

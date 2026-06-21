@@ -8,6 +8,7 @@ const DEFAULTS = {
   offset: 70,
   lerp: 0.20,
   edgeRest: true,
+  avoidCursor: true,
 };
 
 const LIMITS = {
@@ -25,7 +26,7 @@ function sanitize(patch) {
   if (!patch || typeof patch !== "object" || Array.isArray(patch)) return out;
   for (const [k, v] of Object.entries(patch)) {
     if (!(k in DEFAULTS)) continue;
-    if (k === "enabled" || k === "edgeRest") { out[k] = !!v; continue; }
+    if (k === "enabled" || k === "edgeRest" || k === "avoidCursor") { out[k] = !!v; continue; }
     if (k === "pack") {
       const pack = typeof v === "string" ? v.trim() : "";
       if (isSafePackKey(pack)) out.pack = pack;

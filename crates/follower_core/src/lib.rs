@@ -7,6 +7,7 @@ const WALK_SPEED_MAX_PXPS: f64 = 640.0;
 const SPEED_CONFIG_MIN: f64 = 0.05;
 const SPEED_CONFIG_MAX: f64 = 0.50;
 const IDLE_OFFSET_DIR: Vec2 = Vec2 { x: 0.0, y: -1.0 }; // 待機時はカーソルの真上に寄る（本家拡張と同じ）
+const CURSOR_CLEARANCE_PX: f64 = 48.0;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Vec2 {
@@ -18,6 +19,7 @@ pub struct Vec2 {
 pub struct Config {
     pub offset: f64,
     pub lerp: f64,
+    pub avoid_cursor: bool,
 }
 
 impl Default for Config {
@@ -25,6 +27,7 @@ impl Default for Config {
         Self {
             offset: 70.0,
             lerp: 0.20,
+            avoid_cursor: true,
         }
     }
 }
@@ -155,6 +158,26 @@ impl FollowerCore {
         }
         self.target.x = self.last_mouse.x + self.offset_dir.x * self.config.offset;
         self.target.y = self.last_mouse.y + self.offset_dir.y * self.config.offset;
+        self.apply_cursor_avoidance();
+    }
+
+    fn apply_cursor_avoidance(&mut self) {
+        if !self.config.avoid_cursor {
+            return;
+        }
+        let dx = self.target.x - self.last_mouse.x;
+        let dy = self.target.y - self.last_mouse.y;
+        let dist = hypot(dx, dy);
+        if dist >= CURSOR_CLEARANCE_PX {
+            return;
+        }
+        let (ux, uy) = if dist > 0.001 {
+            (dx / dist, dy / dist)
+        } else {
+            (self.offset_dir.x, self.offset_dir.y)
+        };
+        self.target.x = self.last_mouse.x + ux * CURSOR_CLEARANCE_PX;
+        self.target.y = self.last_mouse.y + uy * CURSOR_CLEARANCE_PX;
     }
 }
 
@@ -166,6 +189,7 @@ static CORE: Mutex<FollowerCore> = Mutex::new(FollowerCore {
     config: Config {
         offset: 70.0,
         lerp: 0.20,
+        avoid_cursor: true,
     },
     last_mouse: Vec2 { x: 0.0, y: 0.0 },
     last_mouse_t: 0.0,
@@ -182,8 +206,12 @@ static LAST_STEP: Mutex<StepOutput> = Mutex::new(StepOutput {
 });
 
 #[no_mangle]
-pub extern "C" fn pf_set_config(offset: f64, lerp: f64) {
-    CORE.lock().expect("follower core lock").config = Config { offset, lerp };
+pub extern "C" fn pf_set_config(offset: f64, lerp: f64, avoid_cursor: i32) {
+    CORE.lock().expect("follower core lock").config = Config {
+        offset,
+        lerp,
+        avoid_cursor: avoid_cursor != 0,
+    };
 }
 
 #[no_mangle]
@@ -306,5 +334,32 @@ mod tests {
         core.update_cursor(100.0, 100.0, 16.0);
         let out = core.step(16.0);
         assert!(out.position.x < 400.0, "{out:?}");
+    }
+
+    #[test]
+    fn cursor_avoidance_keeps_target_clear_when_offset_is_small() {
+        let mut core = FollowerCore::new(Config {
+            offset: 0.0,
+            lerp: 0.50,
+            avoid_cursor: true,
+        });
+        core.reset_to(100.0, 100.0, 0.0);
+        core.update_cursor(100.0, 100.0, 16.0);
+        let out = core.step(1000.0);
+        assert!(out.position.y < 80.0, "{out:?}");
+    }
+
+    #[test]
+    fn cursor_avoidance_can_be_disabled() {
+        let mut core = FollowerCore::new(Config {
+            offset: 0.0,
+            lerp: 0.50,
+            avoid_cursor: false,
+        });
+        core.reset_to(100.0, 100.0, 0.0);
+        core.update_cursor(100.0, 100.0, 16.0);
+        let out = core.step(1000.0);
+        assert!((out.position.x - 100.0).abs() < 1.0, "{out:?}");
+        assert!((out.position.y - 100.0).abs() < 1.0, "{out:?}");
     }
 }

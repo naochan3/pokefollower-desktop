@@ -16,12 +16,19 @@ function applySettingsPatch(patch, {
   if (Object.keys(safePatch).length === 0 || !hasStateChange(current, safePatch)) return current;
 
   const next = settingsStore.set(safePatch);
-  if (hasOwn(safePatch, "scale") || hasOwn(safePatch, "offset") || hasOwn(safePatch, "lerp") || hasOwn(safePatch, "edgeRest")) {
+  if (
+    hasOwn(safePatch, "scale") ||
+    hasOwn(safePatch, "offset") ||
+    hasOwn(safePatch, "lerp") ||
+    hasOwn(safePatch, "edgeRest") ||
+    hasOwn(safePatch, "avoidCursor")
+  ) {
     sim.setConfig({
       vcp1_scale: next.scale,
       vcp1_offset: next.offset,
       vcp1_lerp: next.lerp,
       vcp1_edgeRest: next.edgeRest,
+      vcp1_avoidCursor: next.avoidCursor,
     });
   }
   if (hasOwn(safePatch, "pack")) {
