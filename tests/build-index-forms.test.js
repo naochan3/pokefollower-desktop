@@ -1,12 +1,10 @@
-test("form entry gets region and composed ja", async () => {
-  const { buildEntries } = await import("../scripts/build-index.mjs");
-  const raichuJa = "\u30e9\u30a4\u30c1\u30e5\u30a6";
+const fs = require("node:fs");
+const path = require("node:path");
+
+test("generated form entry gets region and composed ja", () => {
   const alolaRaichuJa = "\u30a2\u30ed\u30fc\u30e9\u30e9\u30a4\u30c1\u30e5\u30a6";
-  const jp = { "26": { ja: raichuJa, romaji: "Raichu" } };
-  const entries = buildEntries({
-    "gen-1": ["026-raichu"],
-    "forms/alola": ["026-raichu"],
-  }, jp, new Map());
+  const indexPath = path.join(__dirname, "..", "assets", "packs", "index.json");
+  const entries = JSON.parse(fs.readFileSync(indexPath, "utf8")).retro;
   const form = entries.find((e) => e.id === "retro/forms/alola/026-raichu");
   expect(form.region).toBe("alola");
   expect(form.ja).toBe(alolaRaichuJa);
