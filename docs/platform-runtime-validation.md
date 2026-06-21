@@ -58,9 +58,12 @@ rm -rf "$PF_MAC_USER_DATA"
 ```bash
 npm run dist:linux -- --dir --publish=never
 node scripts/verify-package-smoke.cjs linux x64
+PF_LINUX_UNPACKED_MODES=both PF_LINUX_UNPACKED_WARMUP_MS=3000 PF_LINUX_UNPACKED_SAMPLE_MS=5000 PF_LINUX_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:linux-unpacked-runtime
 npm run dist:linux -- --publish=never
 chmod +x release/*.AppImage
 ```
+
+`bench:linux-unpacked-runtime` は GUI セッションが必要です。WSLg などの実 GUI ではそのまま実行し、headless VM では `xvfb-run -a npm run bench:linux-unpacked-runtime` のように Xvfb を明示して使います。sandbox 権限で起動できない環境では `PF_LINUX_UNPACKED_ARGS=--no-sandbox` を検証ログに残してから使います。
 
 手動の UI 確認で起動する場合:
 
@@ -79,6 +82,7 @@ rm -rf "$PF_LINUX_USER_DATA"
 - always-on-top が通常ウィンドウの前に維持される。
 - X11 で `xdotool` / `xprop` / `xwininfo` が揃う場合、全画面アプリ前面時に非表示になる。
 - Wayland や必要コマンドなしの環境では、全画面自動非表示だけ無効になり、通常追従は継続する。
+- `bench:linux-unpacked-runtime` の終了後、残プロセスが 0。
 - AppImage 終了後、PokeFollower の残プロセスが 0。
 
 ## 記録テンプレート
