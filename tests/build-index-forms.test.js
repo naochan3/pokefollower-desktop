@@ -1,7 +1,5 @@
-import { test, expect } from "vitest";
-import { buildEntries } from "../scripts/build-index.mjs";
-
-test("form entry gets region and composed ja", () => {
+test("form entry gets region and composed ja", async () => {
+  const { buildEntries } = await import("../scripts/build-index.mjs");
   const raichuJa = "\u30e9\u30a4\u30c1\u30e5\u30a6";
   const alolaRaichuJa = "\u30a2\u30ed\u30fc\u30e9\u30e9\u30a4\u30c1\u30e5\u30a6";
   const jp = { "26": { ja: raichuJa, romaji: "Raichu" } };
