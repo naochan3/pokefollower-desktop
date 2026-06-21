@@ -176,6 +176,9 @@ async function buildForm(entry) {
   const mon = slug;
   const regionSlug = region.toLowerCase();
 
+  const VALID_REGIONS = new Set(['alola', 'galar', 'hisui', 'paldea']);
+  if (!VALID_REGIONS.has(regionSlug)) throw new Error(`Unknown region: ${regionSlug}`);
+
   console.log(`\n--- form: ${mon} (${regionSlug}) ---`);
 
   // 1. Fetch into temp dir

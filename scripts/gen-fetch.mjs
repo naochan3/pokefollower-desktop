@@ -26,7 +26,8 @@ export function formSpriteDir(dex, subindex) {
 
 /**
  * Enumerate all *-Anim.png filenames in sprite/<dir>/ via the GitHub Contents API.
- * Falls back to an empty list if gh is unavailable or the directory doesn't exist.
+ * Throws on gh/network/auth failure to enforce fail-fast.
+ * Returns empty list only if gh succeeds but the directory has no -Anim.png files.
  */
 async function listAnimSheets(dir) {
   try {
@@ -37,8 +38,7 @@ async function listAnimSheets(dir) {
     );
     return out.split('\n').map(s => s.trim()).filter(n => n.endsWith('-Anim.png'));
   } catch (err) {
-    console.warn(`listAnimSheets(${dir}): gh api failed — ${err.message}`);
-    return [];
+    throw new Error(`listAnimSheets(${dir}): gh api failed — ${err.message}`);
   }
 }
 
