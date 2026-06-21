@@ -4,6 +4,7 @@ const path = require("node:path");
 const root = path.join(__dirname, "..");
 const status = fs.readFileSync(path.join(root, "docs", "STATUS.md"), "utf8");
 const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
+const notificationCapture = fs.readFileSync(path.join(root, "docs", "notification-capture.md"), "utf8");
 const errors = [];
 
 function expect(condition, message) {
@@ -15,9 +16,10 @@ expect(status.includes("現在のバージョン: **v1.0.5**"), "STATUS must sta
 expect(status.includes("現在含まれているもの（v1.0.5）"), "STATUS must have included-assets section for v1.0.5");
 
 for (const issue of [
-  ["#14", "全ポケモン対応（第5〜9世代の追加）", "956種に拡張済み"],
   ["#16", "配布物の署名・公証（Win/Mac）", "SmartScreen / Gatekeeper"],
   ["#17", "macOS / Linux の全画面自動非表示・Linux 実機検証", "macOS / Linux の best-effort 検知は実装済み"],
+  ["#42", "通知コンパニオンの OS 通知連携", "通知コンパニオンの取得境界"],
+  ["#43", "相棒感を強める全体ロードマップ", "#36〜#41/#51 は完了済み"],
 ]) {
   const [num, title, note] = issue;
   const id = num.slice(1);
@@ -36,6 +38,25 @@ for (const closedIssue of ["#1", "#2", "#3", "#4", "#6", "#7", "#8", "#9", "#10"
 expect(status.includes("Linux は AppImage ビルドまで（実機の常駐挙動は未検証）。"), "STATUS must keep Linux runtime limitation");
 expect(status.includes("全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。"), "STATUS must keep macOS/Linux fullscreen dependency limitation");
 expect(status.includes("macOS / Windows とも **未署名**"), "STATUS must keep unsigned limitation");
+expect(status.includes("[通知コンパニオンの取得境界](notification-capture.md)"), "STATUS must link notification capture boundaries");
+expect(readme.includes("[通知コンパニオンの取得境界](docs/notification-capture.md)"), "README must link notification capture boundaries");
+expect(readme.includes("v1.0.5 の Release には AppImage asset をまだ添付していない"), "README must not link a missing v1.0.5 AppImage asset");
+expect(!readme.includes("releases/download/v1.0.5/PokeFollower-1.0.5.AppImage"), "README must not contain the missing v1.0.5 AppImage URL");
+expect(status.includes("未完了・対応中・検討中の項目"), "STATUS roadmap must not describe active work as only unstarted");
+expect(status.includes("OS 通知本文は保存しない"), "STATUS must distinguish OS notification bodies from Codex summaries");
+
+expect(notificationCapture.includes("既定 OFF"), "notification capture boundaries must require default OFF");
+expect(notificationCapture.includes("明示"), "notification capture boundaries must require explicit user permission");
+expect(notificationCapture.includes("通知本文をリポジトリ、Issue、ログ、共有ファイルへ保存しません"), "notification capture boundaries must prohibit storing OS notification bodies");
+expect(notificationCapture.includes("アプリ内イベント") && notificationCapture.includes("Codex notify"), "notification capture boundaries must keep safe input scope");
+expect(notificationCapture.includes("UNUserNotificationCenter"), "notification capture boundaries must document macOS boundary");
+expect(notificationCapture.includes("User Notification Listener capability"), "notification capture boundaries must document Windows listener capability");
+expect(notificationCapture.includes("Desktop Notifications Specification"), "notification capture boundaries must document Linux freedesktop boundary");
+expect(notificationCapture.includes("org.freedesktop.portal.Notification"), "notification capture boundaries must document XDG portal boundary");
+expect(
+  notificationCapture.includes("RemoveNotification") && notificationCapture.includes("ClearNotifications") && notificationCapture.includes("使いません"),
+  "Windows listener boundary must explicitly prohibit destructive notification operations"
+);
 
 if (errors.length > 0) {
   for (const error of errors) console.error(`[verify-roadmap-issues] ${error}`);
