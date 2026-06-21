@@ -295,6 +295,7 @@ app.whenReady().then(() => {
     vcp1_edgeRest: s.edgeRest,
     vcp1_avoidCursor: s.avoidCursor,
     vcp1_personality: s.personality,
+    vcp1_mode: s.mode,
   });
   try { loadPackIntoSim(s.pack); }
   catch (_) { try { loadPackIntoSim("retro/gen-1/009-blastoise"); } catch (_e) { /* noop */ } }

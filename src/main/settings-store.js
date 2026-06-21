@@ -10,9 +10,11 @@ const DEFAULTS = {
   edgeRest: true,
   avoidCursor: true,
   personality: "standard",
+  mode: "follow",
 };
 
 const PERSONALITIES = new Set(["standard", "active", "relaxed", "friendly"]);
+const MODES = new Set(["follow", "roam"]);
 
 const LIMITS = {
   scale: { min: 0.5, max: 5.0 },
@@ -33,6 +35,11 @@ function sanitize(patch) {
     if (k === "personality") {
       const personality = typeof v === "string" ? v.trim() : "";
       if (PERSONALITIES.has(personality)) out.personality = personality;
+      continue;
+    }
+    if (k === "mode") {
+      const mode = typeof v === "string" ? v.trim() : "";
+      if (MODES.has(mode)) out.mode = mode;
       continue;
     }
     if (k === "pack") {
