@@ -26,6 +26,8 @@ function mapKeys(obj) {
 // 世代導出ヘルパ — gen-util.js の ESM 版と同一ロジック（パッケージング耐性のためインライン化）
 // NOTE: gen-util.js の BOUNDS 配列を変更する場合はここも同期すること
 const GEN_BOUNDS = [151, 251, 386, 493, 649, 721, 809, 905, 1025];
+const generationLabelsApi = window.PokeFollowerGenerationLabels || {};
+const generationLabelFor = generationLabelsApi.generationLabelFor || (() => null);
 function genOfDex(dex) {
   for (let i = 0; i < GEN_BOUNDS.length; i++) if (dex <= GEN_BOUNDS[i]) return i + 1;
   return GEN_BOUNDS.length;
@@ -349,7 +351,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           btn.type = "button";
           btn.className = "gen-chip";
           btn.dataset.gen = String(g);
-          btn.textContent = String(g);
+          const label = generationLabelFor(g);
+          btn.textContent = label ? label.short : String(g);
+          if (label) {
+            btn.title = label.title;
+            btn.setAttribute("aria-label", label.title);
+          }
           genChipsEl.appendChild(btn);
         }
       } else {

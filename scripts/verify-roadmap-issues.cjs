@@ -18,6 +18,9 @@ expect(status.includes("現在含まれているもの（v1.0.5）"), "STATUS mu
 for (const issue of [
   ["#16", "配布物の署名・公証（Win/Mac）", "SmartScreen / Gatekeeper"],
   ["#17", "macOS / Linux の全画面自動非表示・Linux 実機検証", "Linux AppImage build/start smoke は確認済み"],
+  ["#77", "検索用ポケモンメタデータ", "metadata schema / verifier"],
+  ["#78", "自然言語風検索", "deterministic parser + index"],
+  ["#79", "世代フィルタのシリーズ名表示", "赤緑/金銀"],
 ]) {
   const [num, title, note] = issue;
   const id = num.slice(1);

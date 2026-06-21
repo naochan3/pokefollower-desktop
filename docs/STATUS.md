@@ -68,6 +68,9 @@
 |---|---|---|---|
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
 | macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知、macOS runtime smoke、Linux AppImage build/start smoke は確認済み。Linux AppImage の tray・透明・クリック透過・最前面は実機目視検証が必要 |
+| 検索用ポケモンメタデータ | 中 | [#77](https://github.com/naochan3/pokefollower-desktop/issues/77) | タイプ・特徴・初出ゲーム・メディアタグ用の metadata schema / verifier を追加する |
+| 自然言語風検索 | 中 | [#78](https://github.com/naochan3/pokefollower-desktop/issues/78) | タイプ/特徴/作品名を deterministic parser + index で絞り込む |
+| 世代フィルタのシリーズ名表示 | 中 | [#79](https://github.com/naochan3/pokefollower-desktop/issues/79) | 世代チップを赤緑/金銀などの短縮シリーズ名にし、tooltip/alias 定義を持つ |
 
 ---
 
