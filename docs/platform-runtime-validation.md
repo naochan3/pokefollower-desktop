@@ -95,6 +95,14 @@ PF_LINUX_UNPACKED_PACK=retro/gen-1/025-pikachu PF_LINUX_UNPACKED_MODES=enabled P
 
 `bench:linux-unpacked-runtime` は GUI セッションが必要です。WSLg などの実 GUI ではそのまま実行し、headless VM では `xvfb-run -a npm run bench:linux-unpacked-runtime` のように Xvfb を明示して使います。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。sandbox 権限で起動できない環境では `PF_LINUX_UNPACKED_ARGS=--no-sandbox` を検証ログに残してから使います。
 
+スクリーンショット、process、X11 window probe 証跡を収集する場合:
+
+```bash
+PF_LINUX_GUI_PACK=retro/gen-1/025-pikachu PF_LINUX_GUI_ARGS=--no-sandbox npm run evidence:linux-gui
+```
+
+`evidence:linux-gui` は実機目視の補助です。`xdotool` / `xwininfo` / `xprop` が使える X11 では window 属性を記録し、利用可能な screenshot command があればスクリーンショットも残します。screenshot backend は `gnome-screenshot` / `grim` / `spectacle` / `scrot` を順に試し、失敗した backend も `attempts` に残します。`status=candidate` でも人間の確認なしに視覚 PASS 証跡として扱いません。process / window / screenshot の証跡が不足する場合は `status=blocked` として終了します。
+
 手動の UI 確認で起動する場合:
 
 ```bash

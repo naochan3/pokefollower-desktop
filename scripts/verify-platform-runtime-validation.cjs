@@ -15,6 +15,7 @@ function expect(condition, message) {
 expect(pkg.scripts?.["verify:runtime-validation"] === "node scripts/verify-platform-runtime-validation.cjs", "package.json must expose verify:runtime-validation");
 expect(pkg.scripts?.["verify:local"]?.includes("npm run verify:runtime-validation"), "verify:local must include runtime validation docs guard");
 expect(pkg.scripts?.["evidence:mac-gui"] === "node scripts/capture-mac-gui-evidence.cjs", "package.json must expose evidence:mac-gui");
+expect(pkg.scripts?.["evidence:linux-gui"] === "node scripts/capture-linux-gui-evidence.cjs", "package.json must expose evidence:linux-gui");
 
 for (const text of [
   "Issue #17",
@@ -37,6 +38,12 @@ for (const text of [
   "POKEFOLLOWER_TEST_USER_DATA_DIR",
   "bench:linux-unpacked-runtime",
   "PF_LINUX_UNPACKED_ARGS=--no-sandbox",
+  "PF_LINUX_GUI_PACK=retro/gen-1/025-pikachu",
+  "PF_LINUX_GUI_ARGS=--no-sandbox",
+  "npm run evidence:linux-gui",
+  "screenshot backend は `gnome-screenshot` / `grim` / `spectacle` / `scrot` を順に試し",
+  "失敗した backend も `attempts` に残します",
+  "process / window / screenshot の証跡が不足する場合は `status=blocked`",
   "PF_MAC_UNPACKED_PACK=retro/gen-1/025-pikachu",
   "PF_MAC_GUI_PACK=retro/gen-1/025-pikachu",
   "npm run evidence:mac-gui",
