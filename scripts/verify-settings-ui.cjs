@@ -56,7 +56,8 @@ expect(js.includes('selectedGen'), 'settings.js must maintain selectedGen state'
 
 expect(html.includes('role="listbox"'), "pack grid must keep listbox role");
 expect(html.includes('aria-label="ポケモン一覧"'), "pack grid must keep Japanese aria label");
-expect(html.includes('placeholder="名前・ローマ字・番号で検索"'), "search placeholder must describe supported search keys");
+expect(html.includes('placeholder="名前・タイプ・作品名で検索"'), "search placeholder must describe supported search keys");
+expect(html.includes('<script src="search-engine.js"></script>'), "settings.html must load search-engine.js before settings.js");
 expect(html.includes('<script src="settings.js"></script>'), "settings.html must load settings.js");
 
 expect(inputAttrs("enabled")?.type === "checkbox", "enabled input must be a checkbox");
@@ -134,6 +135,9 @@ expect(/vcp1_rotation_interval_minutes: 15/.test(js), "settings.js default rotat
 expect(/const lerpUI = lerp \* 10;/.test(js), "settings.js must expose lerp as x10 speed UI");
 expect(/const lerp = normalized \/ 10;/.test(js), "settings.js must convert speed UI back to internal lerp");
 expect(/toHira/.test(js) && /romaji/.test(js) && /#"\s*\+\s*padded/.test(js), "settings search must include kana, romaji, and dex number terms");
+expect(js.includes("window.PokeFollowerSearch"), "settings UI must use shared Pokemon search engine");
+expect(js.includes("getSearchMetadata"), "settings UI must load search metadata through preload IPC");
+expect(js.includes("searchIds ? \"\" : raw"), "settings UI must fall back to tile text search if shared search engine is unavailable");
 expect(/stepUp\(\)/.test(js) && /stepDown\(\)/.test(js), "settings arrows must use native number input stepping");
 expect(/width: 420, height: 760/.test(fs.readFileSync(path.join(root, "src", "main", "main.js"), "utf8")), "settings window must leave room for notification controls");
 expect(/flex: 1 1 280px/.test(html), "pack grid must keep flexible vertical space");
@@ -148,6 +152,7 @@ for (const surface of [
   'getSettings: () => ipcRenderer.invoke("settings:get")',
   'setSettings: (patch) => ipcRenderer.send("settings:set", patch)',
   'listPacks: () => ipcRenderer.invoke("packs:list")',
+  'getSearchMetadata: () => ipcRenderer.invoke("packs:search-metadata")',
   'testCompanionNotification: () => ipcRenderer.invoke("companion:test-notification")',
   'startWorkWatch: () => ipcRenderer.invoke("work-watch:start")',
   'stopWorkWatch: () => ipcRenderer.invoke("work-watch:stop")',
