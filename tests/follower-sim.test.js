@@ -139,6 +139,61 @@ describe("follower-sim", () => {
     const r = sim.step(16, 16);
     expect(r.x).toBeLessThan(0);
   });
+
+  it("静止後は現在ディスプレイの画面端へ休憩移動する", () => {
+    const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-edge-")) });
+    sim.setMeta(META);
+    sim.setDisplayBounds([{ x: 0, y: 0, width: 800, height: 600 }]);
+    sim.resetTo(400, 300, 0);
+    let now = 0;
+    let r = null;
+    while (now < 12000) {
+      now += 16;
+      sim.updateCursor(400, 300, now);
+      r = sim.step(16, now);
+    }
+    expect(r.y).toBeLessThan(120);
+    expect(r.x).toBeGreaterThan(20);
+    expect(r.x).toBeLessThan(780);
+  });
+
+  it("休憩移動は設定OFFで従来のカーソル近傍に留まる", () => {
+    const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-edge-off-")) });
+    sim.setMeta(META);
+    sim.setDisplayBounds([{ x: 0, y: 0, width: 800, height: 600 }]);
+    sim.setConfig({ vcp1_edgeRest: false });
+    sim.resetTo(400, 300, 0);
+    let now = 0;
+    let r = null;
+    while (now < 12000) {
+      now += 16;
+      sim.updateCursor(400, 300, now);
+      r = sim.step(16, now);
+    }
+    expect(r.y).toBeGreaterThan(210);
+    expect(r.y).toBeLessThan(260);
+  });
+
+  it("休憩ターゲットはDPI/負座標を含むディスプレイ内へ収まる", () => {
+    const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-edge-neg-")) });
+    sim.setMeta(META);
+    sim.setDisplayBounds([
+      { x: -1920, y: -200, width: 1920, height: 1080 },
+      { x: 0, y: 0, width: 2560, height: 1440 },
+    ]);
+    sim.resetTo(-100, 100, 0);
+    let now = 0;
+    let r = null;
+    while (now < 12000) {
+      now += 16;
+      sim.updateCursor(-100, 100, now);
+      r = sim.step(16, now);
+    }
+    expect(r.x).toBeLessThan(0);
+    expect(r.x).toBeGreaterThan(-1920);
+    expect(r.y).toBeGreaterThan(700);
+    expect(r.y).toBeLessThan(880);
+  });
 });
 
 // Issue #30: 向きはカーソル速度でなくポケモン自身の進行方向に従う／無操作で sleep する

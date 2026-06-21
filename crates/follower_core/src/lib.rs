@@ -45,6 +45,7 @@ pub struct FollowerCore {
     offset_dir: Vec2,
     velocity_avg: Vec2,
     speed_avg: f64,
+    rest_target: Option<Vec2>,
 }
 
 impl Default for FollowerCore {
@@ -58,6 +59,7 @@ impl Default for FollowerCore {
             offset_dir: IDLE_OFFSET_DIR,
             velocity_avg: Vec2::default(),
             speed_avg: 0.0,
+            rest_target: None,
         }
     }
 }
@@ -78,6 +80,7 @@ impl FollowerCore {
         self.offset_dir = IDLE_OFFSET_DIR;
         self.velocity_avg = Vec2::default();
         self.speed_avg = 0.0;
+        self.rest_target = None;
     }
 
     pub fn update_cursor(&mut self, x: f64, y: f64, now_ms: f64) {
@@ -95,6 +98,14 @@ impl FollowerCore {
         self.speed_avg = hypot(self.velocity_avg.x, self.velocity_avg.y);
         self.last_mouse = Vec2 { x, y };
         self.last_mouse_t = now_ms;
+    }
+
+    pub fn set_rest_target(&mut self, x: f64, y: f64) {
+        self.rest_target = Some(Vec2 { x, y });
+    }
+
+    pub fn clear_rest_target(&mut self) {
+        self.rest_target = None;
     }
 
     pub fn step(&mut self, dt_ms: f64) -> StepOutput {
@@ -129,6 +140,10 @@ impl FollowerCore {
     }
 
     fn compute_target(&mut self) {
+        if let Some(rest_target) = self.rest_target {
+            self.target = rest_target;
+            return;
+        }
         let has_dir = self.speed_avg > 40.0;
         // 移動中だけ offset_dir を進行方向の逆へ更新。停止中は凍結＝直前の隅に留まる。
         if has_dir {
@@ -159,6 +174,7 @@ static CORE: Mutex<FollowerCore> = Mutex::new(FollowerCore {
     offset_dir: IDLE_OFFSET_DIR,
     velocity_avg: Vec2 { x: 0.0, y: 0.0 },
     speed_avg: 0.0,
+    rest_target: None,
 });
 static LAST_STEP: Mutex<StepOutput> = Mutex::new(StepOutput {
     position: Vec2 { x: 0.0, y: 0.0 },
@@ -186,6 +202,18 @@ pub extern "C" fn pf_update_cursor(x: f64, y: f64, now_ms: f64) {
     CORE.lock()
         .expect("follower core lock")
         .update_cursor(x, y, now_ms);
+}
+
+#[no_mangle]
+pub extern "C" fn pf_set_rest_target(x: f64, y: f64) {
+    CORE.lock()
+        .expect("follower core lock")
+        .set_rest_target(x, y);
+}
+
+#[no_mangle]
+pub extern "C" fn pf_clear_rest_target() {
+    CORE.lock().expect("follower core lock").clear_rest_target();
 }
 
 #[no_mangle]
@@ -263,5 +291,20 @@ mod tests {
             out = core.step(16.0);
         }
         assert!(out.position.x > 700.0, "{out:?}");
+    }
+
+    #[test]
+    fn rest_target_override_moves_to_edge_target() {
+        let mut core = FollowerCore::default();
+        core.reset_to(100.0, 100.0, 0.0);
+        core.set_rest_target(400.0, 32.0);
+        let out = core.step(1000.0);
+        assert!(out.walking, "{out:?}");
+        assert!(out.position.x > 100.0, "{out:?}");
+        assert!(out.position.y < 100.0, "{out:?}");
+        core.clear_rest_target();
+        core.update_cursor(100.0, 100.0, 16.0);
+        let out = core.step(16.0);
+        assert!(out.position.x < 400.0, "{out:?}");
     }
 }

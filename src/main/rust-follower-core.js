@@ -16,7 +16,17 @@ function createRustFollowerCore(rootDir) {
     const instance = new WebAssembly.Instance(module, {});
     const e = instance.exports;
     const lastStep = { x: 0, y: 0, walking: false };
-    const required = ["pf_set_config", "pf_reset_to", "pf_update_cursor", "pf_step", "pf_x", "pf_y", "pf_walking"];
+    const required = [
+      "pf_set_config",
+      "pf_reset_to",
+      "pf_update_cursor",
+      "pf_set_rest_target",
+      "pf_clear_rest_target",
+      "pf_step",
+      "pf_x",
+      "pf_y",
+      "pf_walking",
+    ];
     if (!required.every((name) => typeof e[name] === "function")) return null;
     return {
       backend: "rust-wasm",
@@ -28,6 +38,12 @@ function createRustFollowerCore(rootDir) {
       },
       updateCursor(x, y, now) {
         e.pf_update_cursor(x, y, now);
+      },
+      setRestTarget(x, y) {
+        e.pf_set_rest_target(x, y);
+      },
+      clearRestTarget() {
+        e.pf_clear_rest_target();
       },
       step(dtMs) {
         e.pf_step(dtMs);

@@ -201,6 +201,20 @@
     .tile .name { font-size: 11px; font-weight: 700; line-height: 1.1; word-break: break-all; }
     .tile .num { font-size: 10px; color: #888; }
     .tile.hidden { display: none; }
+    .behavior {
+      margin: 7px 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    #edgeRest {
+      width: 16px;
+      height: 16px;
+      accent-color: #EF4036;
+    }
   </style>
 </head>
 <body>
@@ -233,6 +247,10 @@
       <button type="button" class="gen-chip" data-gen="9">9</button>
     </div>
     <div id="grid" class="grid" role="listbox" aria-label="ポケモン一覧"></div>
+    <label class="behavior" for="edgeRest">
+      <input id="edgeRest" type="checkbox" />
+      <span>Edge Rest</span>
+    </label>
 
     <!-- Triple controls -->
     <div class="triples">

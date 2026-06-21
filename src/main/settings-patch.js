@@ -16,8 +16,13 @@ function applySettingsPatch(patch, {
   if (Object.keys(safePatch).length === 0 || !hasStateChange(current, safePatch)) return current;
 
   const next = settingsStore.set(safePatch);
-  if (hasOwn(safePatch, "scale") || hasOwn(safePatch, "offset") || hasOwn(safePatch, "lerp")) {
-    sim.setConfig({ vcp1_scale: next.scale, vcp1_offset: next.offset, vcp1_lerp: next.lerp });
+  if (hasOwn(safePatch, "scale") || hasOwn(safePatch, "offset") || hasOwn(safePatch, "lerp") || hasOwn(safePatch, "edgeRest")) {
+    sim.setConfig({
+      vcp1_scale: next.scale,
+      vcp1_offset: next.offset,
+      vcp1_lerp: next.lerp,
+      vcp1_edgeRest: next.edgeRest,
+    });
   }
   if (hasOwn(safePatch, "pack")) {
     try {
