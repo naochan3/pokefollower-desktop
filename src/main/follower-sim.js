@@ -14,7 +14,9 @@ const WALK_SPEED_MAX_PXPS = 640;
 const SPEED_CONFIG_MIN = 0.05;
 const SPEED_CONFIG_MAX = 0.50;
 const IDLE_OFFSET_DIR = { x: 0.72, y: 0.69 };
-const MOVE_DIR_MIN_PX = 0.75; // これ未満の微小ステップでは向きを変えない（カーソル微振動でのぴくぴく防止）
+const MOVE_DIR_MIN_PX = 0.75; // 平滑後の移動量がこれ未満なら front（停止＝正面）
+const MOVE_DIR_SMOOTHING = 0.25; // 向き用移動ベクトルのEMA係数。到着間際のパタつき(ぶるぶる)を抑える
+const IDLE_ANIM_SPEED = 0.7; // 待機(idle)アニメの再生速度倍率（1未満で遅く）
 
 function createFollowerSim(options = {}) {
   const CONFIG = { scale: 1.25, offset: 70, lerp: 0.20 };
@@ -70,9 +72,10 @@ function createFollowerSim(options = {}) {
     const st = meta && meta.states ? meta.states[stateName] : null;
     if (!st) return 0;
     const rows = st.rows || { front: 0 };
-    // 向きはカーソル速度ではなくポケモン自身の移動方向で決める。
-    // カーソルが止まっても到着まで進行方向を向き、停止中(移動量0)は front で安定する。
-    const dir8 = pickDir8(R.moveDir.x, R.moveDir.y);
+    // 向きはカーソル速度ではなくポケモン自身の(平滑化した)移動方向で決める。
+    // カーソルが止まっても到着まで進行方向を向き、停止中(移動量小)は front で安定する。
+    const mag = Math.hypot(R.moveDir.x, R.moveDir.y);
+    const dir8 = mag < MOVE_DIR_MIN_PX ? "front" : pickDir8(R.moveDir.x, R.moveDir.y);
     if (dir8 in rows) return rows[dir8];
     const fallbackMap = { frontRight: "front", frontLeft: "front", backRight: "back", backLeft: "back" };
     const fb = fallbackMap[dir8] || dir8;
@@ -165,20 +168,17 @@ function createFollowerSim(options = {}) {
         }
       }
 
-      // 向き選択用に、このフレームでポケモンが実際に動いた方向を記録する。
-      // 歩行中でなく、または知覚できない微小ステップなら0（＝front で安定）。
+      // 向き選択用に、ポケモン自身の移動方向をEMAで平滑化して記録する。
+      // 平滑化により、到着間際の極小・不安定な1フレーム移動で向きがパタつくのを防ぐ。
       const moveX = R.pos.x - prevX;
       const moveY = R.pos.y - prevY;
-      if (R.isWalking && Math.hypot(moveX, moveY) >= MOVE_DIR_MIN_PX) {
-        R.moveDir.x = moveX;
-        R.moveDir.y = moveY;
-      } else {
-        R.moveDir.x = 0;
-        R.moveDir.y = 0;
-      }
+      R.moveDir.x += (moveX - R.moveDir.x) * MOVE_DIR_SMOOTHING;
+      R.moveDir.y += (moveY - R.moveDir.y) * MOVE_DIR_SMOOTHING;
 
       const st = meta.states[R.anim.name];
-      const mspf = 1000 / st.fps;
+      // 待機(idle)だけ再生速度を落とす。止まっている時の動きを少しゆっくりに。
+      const animSpeed = R.anim.name === "idle" ? IDLE_ANIM_SPEED : 1;
+      const mspf = (1000 / st.fps) / animSpeed;
       R.anim.accMs += dtMs;
       while (R.anim.accMs >= mspf) { R.anim.accMs -= mspf; R.anim.frame = (R.anim.frame + 1) % st.frames; }
       R.anim.row = pickRowForState(R.anim.name);
