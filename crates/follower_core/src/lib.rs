@@ -6,7 +6,7 @@ const WALK_SPEED_MIN_PXPS: f64 = 80.0;
 const WALK_SPEED_MAX_PXPS: f64 = 640.0;
 const SPEED_CONFIG_MIN: f64 = 0.05;
 const SPEED_CONFIG_MAX: f64 = 0.50;
-const IDLE_OFFSET_DIR: Vec2 = Vec2 { x: 0.72, y: 0.69 };
+const IDLE_OFFSET_DIR: Vec2 = Vec2 { x: 0.0, y: -1.0 }; // 待機時はカーソルの真上に寄る（本家拡張と同じ）
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Vec2 {
@@ -130,17 +130,14 @@ impl FollowerCore {
 
     fn compute_target(&mut self) {
         let has_dir = self.speed_avg > 40.0;
-        let (dx, dy) = if has_dir {
-            (
-                -(self.velocity_avg.x / self.speed_avg.max(1.0)),
-                -(self.velocity_avg.y / self.speed_avg.max(1.0)),
-            )
-        } else {
-            (IDLE_OFFSET_DIR.x, IDLE_OFFSET_DIR.y)
-        };
-        const OFFSET_DIR_LERP: f64 = 0.08;
-        self.offset_dir.x += (dx - self.offset_dir.x) * OFFSET_DIR_LERP;
-        self.offset_dir.y += (dy - self.offset_dir.y) * OFFSET_DIR_LERP;
+        // 移動中だけ offset_dir を進行方向の逆へ更新。停止中は凍結＝直前の隅に留まる。
+        if has_dir {
+            let dx = -(self.velocity_avg.x / self.speed_avg.max(1.0));
+            let dy = -(self.velocity_avg.y / self.speed_avg.max(1.0));
+            const OFFSET_DIR_LERP: f64 = 0.08;
+            self.offset_dir.x += (dx - self.offset_dir.x) * OFFSET_DIR_LERP;
+            self.offset_dir.y += (dy - self.offset_dir.y) * OFFSET_DIR_LERP;
+        }
         self.target.x = self.last_mouse.x + self.offset_dir.x * self.config.offset;
         self.target.y = self.last_mouse.y + self.offset_dir.y * self.config.offset;
     }
@@ -217,15 +214,41 @@ mod tests {
     use super::*;
 
     #[test]
-    fn idle_target_moves_to_lower_right_away_from_cursor_tip() {
+    fn initial_idle_is_above_cursor() {
         let mut core = FollowerCore::default();
         core.reset_to(100.0, 100.0, 0.0);
         let mut out = core.step(16.0);
         for _ in 0..119 {
             out = core.step(16.0);
         }
-        assert!(out.position.x > 145.0, "{out:?}");
-        assert!(out.position.y > 140.0, "{out:?}");
+        // 一度も動かしていなければ初期 offset_dir（真上）のまま。
+        assert!((out.position.x - 100.0).abs() < 10.0, "{out:?}");
+        assert!(out.position.y < 50.0, "{out:?}");
+    }
+
+    #[test]
+    fn idle_after_move_stays_at_trailing_corner() {
+        let mut core = FollowerCore::default();
+        core.reset_to(500.0, 500.0, 0.0);
+        let mut now = 0.0;
+        let (mut cx, mut cy) = (500.0_f64, 500.0_f64);
+        // 右下へ移動 → ペットは左上へ trail。
+        for _ in 0..60 {
+            now += 16.0;
+            cx += 12.0;
+            cy += 12.0;
+            core.update_cursor(cx, cy, now);
+            core.step(16.0);
+        }
+        // 停止して十分待つ。offset_dir は凍結され左上の隅に留まる。
+        let mut out = core.step(16.0);
+        for _ in 0..180 {
+            now += 16.0;
+            core.update_cursor(cx, cy, now);
+            out = core.step(16.0);
+        }
+        assert!(out.position.x - cx < -20.0, "{out:?}");
+        assert!(out.position.y - cy < -20.0, "{out:?}");
     }
 
     #[test]

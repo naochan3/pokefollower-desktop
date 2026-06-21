@@ -13,7 +13,7 @@ const WALK_SPEED_MIN_PXPS = 80;
 const WALK_SPEED_MAX_PXPS = 640;
 const SPEED_CONFIG_MIN = 0.05;
 const SPEED_CONFIG_MAX = 0.50;
-const IDLE_OFFSET_DIR = { x: 0.72, y: 0.69 };
+const IDLE_OFFSET_DIR = { x: 0, y: -1 }; // 待機時はカーソルの真上に寄る（本家拡張と同じ）
 const MOVE_DIR_MIN_PX = 0.75; // 平滑後の移動量がこれ未満なら front（停止＝正面）
 const MOVE_DIR_SMOOTHING = 0.25; // 向き用移動ベクトルのEMA係数。到着間際のパタつき(ぶるぶる)を抑える
 const IDLE_ANIM_SPEED = 0.7; // 待機(idle)アニメの再生速度倍率（1未満で遅く）
@@ -48,12 +48,14 @@ function createFollowerSim(options = {}) {
     const speed = R.speedAvg || 0;
     const hasDir = speed > 40;
     const OFFSET = CONFIG.offset;
-    let dX, dY;
-    if (hasDir) { dX = -(R.velAvg.x / (speed || 1)); dY = -(R.velAvg.y / (speed || 1)); }
-    else { dX = IDLE_OFFSET_DIR.x; dY = IDLE_OFFSET_DIR.y; }
-    const OD_LERP = 0.08;
-    R.offsetDir.x += (dX - R.offsetDir.x) * OD_LERP;
-    R.offsetDir.y += (dY - R.offsetDir.y) * OD_LERP;
+    // 移動中だけ offsetDir を進行方向の逆へ更新。停止中は凍結＝直前の隅に留まる（真上へ戻さない）。
+    if (hasDir) {
+      const dX = -(R.velAvg.x / (speed || 1));
+      const dY = -(R.velAvg.y / (speed || 1));
+      const OD_LERP = 0.08;
+      R.offsetDir.x += (dX - R.offsetDir.x) * OD_LERP;
+      R.offsetDir.y += (dY - R.offsetDir.y) * OD_LERP;
+    }
     R.target.x = R.lastMouse.x + R.offsetDir.x * OFFSET;
     R.target.y = R.lastMouse.y + R.offsetDir.y * OFFSET;
   }

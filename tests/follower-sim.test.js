@@ -91,7 +91,7 @@ describe("follower-sim", () => {
     expect(Math.abs(r.y - 1500)).toBeLessThan(50);
   });
 
-  it("停止中はカーソル先端ではなく右下の離れた位置へ寄る", () => {
+  it("未移動の初期状態ではカーソルの真上に出る", () => {
     const sim = createFollowerSim();
     sim.setMeta(META);
     sim.resetTo(100, 100, 0);
@@ -101,8 +101,35 @@ describe("follower-sim", () => {
       now += 16;
       r = sim.step(16, now);
     }
-    expect(r.x).toBeGreaterThan(145);
-    expect(r.y).toBeGreaterThan(140);
+    // 一度も動かしていなければ初期の offsetDir（真上）のまま。x はほぼ不変、y は上へ離れる。
+    expect(Math.abs(r.x - 100)).toBeLessThan(10);
+    expect(r.y).toBeLessThan(50);
+  });
+
+  it("移動して止めると進行方向の逆隅に留まる（真上へ戻らない）", () => {
+    const sim = createFollowerSim();
+    sim.setMeta(META);
+    sim.resetTo(500, 500, 0);
+    let now = 0;
+    let cx = 500;
+    let cy = 500;
+    let r = null;
+    // 右下へカーソルを動かす → ペットは進行方向の逆＝左上へ寄る。
+    for (let i = 0; i < 60; i++) {
+      now += 16;
+      cx += 12;
+      cy += 12;
+      sim.updateCursor(cx, cy, now);
+      r = sim.step(16, now);
+    }
+    // 停止して十分待つ。offsetDir は凍結され、左上の隅に留まる（真上に戻らない）。
+    for (let i = 0; i < 180; i++) {
+      now += 16;
+      sim.updateCursor(cx, cy, now);
+      r = sim.step(16, now);
+    }
+    expect(r.x - cx).toBeLessThan(-20); // カーソルより左
+    expect(r.y - cy).toBeLessThan(-20); // カーソルより上
   });
 
   it("負の座標（左上にオフセットしたモニター）も扱える", () => {
