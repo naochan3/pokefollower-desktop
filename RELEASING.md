@@ -71,6 +71,14 @@ gh release upload v1.0.2 \
 
 GitHub の Web からでも、Releases → 対象タグ → Edit → ドラッグ&ドロップで添付できます。
 
+macOS 実機での作業ができない場合は、GitHub Actions の `Release macOS assets`
+workflow を手動実行して、macOS runner 上で arm64 dmg/zip を生成して同じ Release に
+アップロードできます。
+
+```bash
+gh workflow run release-macos.yml -f tag=v1.0.2
+```
+
 ### 4. アセット名のルール（重要）
 
 README の Windows ダウンロードリンクは `releases/latest/download/PokeFollower-Setup.exe` で **常に最新を指す** 形にしています。
