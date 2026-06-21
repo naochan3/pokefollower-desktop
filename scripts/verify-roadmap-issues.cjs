@@ -40,15 +40,15 @@ for (const closedIssue of ["#1", "#2", "#3", "#4", "#6", "#7", "#8", "#9", "#10"
 }
 
 expect(
-  status.includes("Linux は AppImage ビルドと WSLg 起動 smoke まで（実機の tray・透明・クリック透過・最前面は未検証）。"),
+  status.includes("Linux は AppImage 配布と WSLg 起動 smoke まで（実機の tray・透明・クリック透過・最前面は未検証）。"),
   "STATUS must keep Linux visual runtime limitation",
 );
 expect(status.includes("全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。"), "STATUS must keep macOS/Linux fullscreen dependency limitation");
 expect(status.includes("macOS / Windows とも **未署名**"), "STATUS must keep unsigned limitation");
 expect(status.includes("[通知コンパニオンの取得境界](notification-capture.md)"), "STATUS must link notification capture boundaries");
 expect(readme.includes("[通知コンパニオンの取得境界](docs/notification-capture.md)"), "README must link notification capture boundaries");
-expect(readme.includes("v1.0.5 の Release には AppImage asset をまだ添付していない"), "README must not link a missing v1.0.5 AppImage asset");
-expect(!readme.includes("releases/download/v1.0.5/PokeFollower-1.0.5.AppImage"), "README must not contain the missing v1.0.5 AppImage URL");
+expect(readme.includes("releases/download/v1.0.5/PokeFollower-1.0.5.AppImage"), "README must link the v1.0.5 Linux AppImage asset");
+expect(!readme.includes("v1.0.5 の Release には AppImage asset をまだ添付していない"), "README must not keep the stale missing Linux AppImage note");
 expect(status.includes("未完了・対応中・検討中の項目"), "STATUS roadmap must not describe active work as only unstarted");
 expect(status.includes("OS 通知本文は保存しない"), "STATUS must distinguish OS notification bodies from Codex summaries");
 
