@@ -69,7 +69,7 @@
 | **全ポケモン対応（第5〜9世代の追加）** | 中 | [#14](https://github.com/naochan3/pokefollower-desktop/issues/14) | 第5〜9世代を追加し956種に拡張済み。残り69種はSpriteCollab素材待ち。別フォルム（アローラ等）は今後検討 |
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
 | macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知は実装済み。Linux AppImage の透明・常駐・クリック透過・最前面は実機検証が必要 |
-| 通知コンパニオンの OS 通知連携 | 中 | [#42](https://github.com/naochan3/pokefollower-desktop/issues/42) | Codex notify bridge は実装済み。macOS / Windows の OS 通知取得は権限境界を調査し、明示許可の範囲だけ実装する |
+| 通知コンパニオンの OS 通知連携 | 中 | [#42](https://github.com/naochan3/pokefollower-desktop/issues/42) | Codex notify bridge とアプリ内イベント表示は実装済み。OS 通知本文取得は `docs/notification-capture.md` の方針どおり、明示許可が設計できるまで未実装 |
 
 ---
 

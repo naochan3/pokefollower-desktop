@@ -113,7 +113,7 @@ notify = [
 ]
 ```
 
-> Codex は `notify` に JSON payload を渡します。PokéFollower は `input-messages` を保存せず、`last-assistant-message` を短く要約して `~/.pokefollower/notifications/codex.jsonl` に最大64件だけ保持します。キュー監視は通知コンパニオン ON の間だけ `fs.watch` で動きます。
+> Codex は `notify` に JSON payload を渡します。PokéFollower は `input-messages` を保存せず、`last-assistant-message` を短く要約して `~/.pokefollower/notifications/codex.jsonl` に最大64件だけ保持します。キュー監視は通知コンパニオン ON の間だけ `fs.watch` で動きます。OS 通知取得の境界は [docs/notification-capture.md](docs/notification-capture.md) にまとめています。
 
 ---
 
