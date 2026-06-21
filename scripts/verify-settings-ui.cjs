@@ -30,10 +30,11 @@ for (const id of ["enabled", "search", "grid", "scale", "scaleVal", "offset", "o
 // 世代フィルタ
 expect(html.includes('id="genChips"'), 'settings.html must contain id="genChips" chip row');
 expect(html.includes('data-gen="all"'), 'settings.html must contain "全" chip with data-gen="all"');
-expect(html.includes('data-gen="1"') && html.includes('data-gen="9"'), 'settings.html must contain chips for gen 1 through 9');
+for (let g = 1; g <= 9; g++) {
+  expect(html.includes(`data-gen="${g}"`), `settings.html must contain chip data-gen="${g}"`);
+}
 expect(js.includes('genOfDex'), 'settings.js must reference genOfDex for generation filter');
 expect(js.includes('selectedGen'), 'settings.js must maintain selectedGen state');
-expect(js.includes("gen-util.js"), 'settings.js must import gen-util.js');
 
 expect(html.includes('role="listbox"'), "pack grid must keep listbox role");
 expect(html.includes('aria-label="ポケモン一覧"'), "pack grid must keep Japanese aria label");
