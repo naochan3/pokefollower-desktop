@@ -14,6 +14,7 @@ const WALK_SPEED_MAX_PXPS = 640;
 const SPEED_CONFIG_MIN = 0.05;
 const SPEED_CONFIG_MAX = 0.50;
 const IDLE_OFFSET_DIR = { x: 0.72, y: 0.69 };
+const MOVE_DIR_MIN_PX = 0.75; // これ未満の微小ステップでは向きを変えない（カーソル微振動でのぴくぴく防止）
 
 function createFollowerSim(options = {}) {
   const CONFIG = { scale: 1.25, offset: 70, lerp: 0.20 };
@@ -30,6 +31,7 @@ function createFollowerSim(options = {}) {
     pendingState: null,
     velAvg: { x: 0, y: 0 },
     speedAvg: 0,
+    moveDir: { x: 0, y: 0 }, // ポケモン自身の進行方向（向き選択に使う。カーソル速度ではない）
   };
 
   function hasState(name) { return !!(meta && meta.states && meta.states[name]); }
@@ -68,7 +70,9 @@ function createFollowerSim(options = {}) {
     const st = meta && meta.states ? meta.states[stateName] : null;
     if (!st) return 0;
     const rows = st.rows || { front: 0 };
-    const dir8 = pickDir8(R.velAvg.x, R.velAvg.y);
+    // 向きはカーソル速度ではなくポケモン自身の移動方向で決める。
+    // カーソルが止まっても到着まで進行方向を向き、停止中(移動量0)は front で安定する。
+    const dir8 = pickDir8(R.moveDir.x, R.moveDir.y);
     if (dir8 in rows) return rows[dir8];
     const fallbackMap = { frontRight: "front", frontLeft: "front", backRight: "back", backLeft: "back" };
     const fb = fallbackMap[dir8] || dir8;
@@ -98,9 +102,14 @@ function createFollowerSim(options = {}) {
       R.lastMouse.x = x; R.lastMouse.y = y; R.lastMouse.t = now;
       R.offsetDir.x = IDLE_OFFSET_DIR.x; R.offsetDir.y = IDLE_OFFSET_DIR.y;
       R.velAvg.x = 0; R.velAvg.y = 0; R.speedAvg = 0; R.lastMoveTs = now;
+      R.moveDir.x = 0; R.moveDir.y = 0;
       if (rustCore) rustCore.resetTo(x, y, now);
     },
     updateCursor(x, y, now) {
+      // 実際にカーソルが動いた時だけ無操作タイマーを更新する。
+      // sim ループは静止中も毎フレーム updateCursor を呼ぶため、無条件更新だと
+      // sleep の無操作判定が永遠に発火しない。
+      const moved = x !== R.lastMouse.x || y !== R.lastMouse.y;
       const dt = Math.max(1, now - (R.lastMouse.t || now));
       const vx = (x - R.lastMouse.x) * (1000 / dt);
       const vy = (y - R.lastMouse.y) * (1000 / dt);
@@ -108,7 +117,8 @@ function createFollowerSim(options = {}) {
       R.velAvg.x = R.velAvg.x * (1 - S) + vx * S;
       R.velAvg.y = R.velAvg.y * (1 - S) + vy * S;
       R.speedAvg = Math.hypot(R.velAvg.x, R.velAvg.y);
-      R.lastMouse.x = x; R.lastMouse.y = y; R.lastMouse.t = now; R.lastMoveTs = now;
+      R.lastMouse.x = x; R.lastMouse.y = y; R.lastMouse.t = now;
+      if (moved) R.lastMoveTs = now;
       if (rustCore) rustCore.updateCursor(x, y, now);
     },
     // 1フレーム進める。グローバル座標の描画情報を返す（meta未設定なら null）。
@@ -128,6 +138,9 @@ function createFollowerSim(options = {}) {
       } else {
         R.pendingState = null;
       }
+
+      const prevX = R.pos.x;
+      const prevY = R.pos.y;
 
       if (rustCore) {
         const next = rustCore.step(dtMs);
@@ -150,6 +163,18 @@ function createFollowerSim(options = {}) {
         } else {
           R.isWalking = false;
         }
+      }
+
+      // 向き選択用に、このフレームでポケモンが実際に動いた方向を記録する。
+      // 歩行中でなく、または知覚できない微小ステップなら0（＝front で安定）。
+      const moveX = R.pos.x - prevX;
+      const moveY = R.pos.y - prevY;
+      if (R.isWalking && Math.hypot(moveX, moveY) >= MOVE_DIR_MIN_PX) {
+        R.moveDir.x = moveX;
+        R.moveDir.y = moveY;
+      } else {
+        R.moveDir.x = 0;
+        R.moveDir.y = 0;
       }
 
       const st = meta.states[R.anim.name];
