@@ -22,7 +22,8 @@ function applySettingsPatch(patch, {
     hasOwn(safePatch, "lerp") ||
     hasOwn(safePatch, "edgeRest") ||
     hasOwn(safePatch, "avoidCursor") ||
-    hasOwn(safePatch, "personality")
+    hasOwn(safePatch, "personality") ||
+    hasOwn(safePatch, "mode")
   ) {
     sim.setConfig({
       vcp1_scale: next.scale,
@@ -31,6 +32,7 @@ function applySettingsPatch(patch, {
       vcp1_edgeRest: next.edgeRest,
       vcp1_avoidCursor: next.avoidCursor,
       vcp1_personality: next.personality,
+      vcp1_mode: next.mode,
     });
   }
   if (hasOwn(safePatch, "pack")) {

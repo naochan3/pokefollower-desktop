@@ -269,6 +269,48 @@ describe("follower-sim", () => {
     expect(s.y).toBeGreaterThan(200);
     expect(r.y).toBeLessThan(180);
   });
+
+  it("散歩モードはカーソルを直接追わず画面内を自律移動する", () => {
+    const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-roam-")) });
+    sim.setMeta(META);
+    sim.setDisplayBounds([{ x: 0, y: 0, width: 800, height: 600 }]);
+    sim.setConfig({ vcp1_mode: "roam", vcp1_lerp: 0.5 });
+    sim.resetTo(400, 300, 0);
+    let now = 0;
+    let r = null;
+    for (let i = 0; i < 240; i++) {
+      now += 16;
+      sim.updateCursor(790, 590, now);
+      r = sim.step(16, now);
+    }
+    expect(r.x).toBeGreaterThan(40);
+    expect(r.x).toBeLessThan(760);
+    expect(r.y).toBeGreaterThan(40);
+    expect(r.y).toBeLessThan(560);
+    expect(Math.hypot(r.x - 790, r.y - 590)).toBeGreaterThan(250);
+  });
+
+  it("散歩モードから追従モードへ戻せる", () => {
+    const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-roam-follow-")) });
+    sim.setMeta(META);
+    sim.setDisplayBounds([{ x: 0, y: 0, width: 800, height: 600 }]);
+    sim.setConfig({ vcp1_mode: "roam", vcp1_lerp: 0.5, vcp1_edgeRest: false });
+    sim.resetTo(400, 300, 0);
+    let now = 0;
+    for (let i = 0; i < 60; i++) {
+      now += 16;
+      sim.updateCursor(790, 590, now);
+      sim.step(16, now);
+    }
+    sim.setConfig({ vcp1_mode: "follow", vcp1_offset: 0, vcp1_avoidCursor: false });
+    let r = null;
+    for (let i = 0; i < 240; i++) {
+      now += 16;
+      sim.updateCursor(790, 590, now);
+      r = sim.step(16, now);
+    }
+    expect(Math.hypot(r.x - 790, r.y - 590)).toBeLessThan(12);
+  });
 });
 
 // Issue #30: 向きはカーソル速度でなくポケモン自身の進行方向に従う／無操作で sleep する
@@ -371,6 +413,24 @@ describe("follower-sim 向き・sleep (Issue #30)", () => {
     let flips = 0;
     for (let k = 1; k < win.length; k++) if (win[k].row !== win[k - 1].row) flips++;
     expect(flips).toBeLessThanOrEqual(1);
+  });
+
+  it("散歩モードは移動先到着後にidle/sleepへ遷移する", () => {
+    const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-roam-sleep-")) });
+    sim.setMeta(META_DIR);
+    sim.setDisplayBounds([{ x: 0, y: 0, width: 260, height: 220 }]);
+    sim.setConfig({ vcp1_mode: "roam", vcp1_lerp: 0.5, vcp1_personality: "relaxed" });
+    sim.resetTo(130, 110, 0);
+    let now = 0;
+    const states = [];
+    for (let i = 0; i < 1500; i++) {
+      now += 16;
+      sim.updateCursor(250, 210, now);
+      states.push(sim.step(16, now).state);
+    }
+    expect(states).toContain("walk");
+    expect(states).toContain("idle");
+    expect(states).toContain("sleep");
   });
 
   it("待機(idle)アニメは公称fpsより遅く再生される", () => {

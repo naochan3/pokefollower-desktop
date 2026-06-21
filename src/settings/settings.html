@@ -215,7 +215,7 @@
       font-size: 12px;
       font-weight: 700;
     }
-    .personality {
+    .select-row {
       margin: 7px 14px 0;
       display: flex;
       align-items: center;
@@ -224,7 +224,7 @@
       font-size: 12px;
       font-weight: 700;
     }
-    .personality select {
+    .select-row select {
       border: 1.5px solid #000;
       border-radius: 6px;
       background: #fff;
@@ -280,7 +280,14 @@
         <span>Avoid Cursor</span>
       </label>
     </div>
-    <label class="personality" for="personality">
+    <label class="select-row" for="mode">
+      <span>Mode</span>
+      <select id="mode">
+        <option value="follow">Follow</option>
+        <option value="roam">Roam</option>
+      </select>
+    </label>
+    <label class="select-row" for="personality">
       <span>Personality</span>
       <select id="personality">
         <option value="standard">Standard</option>

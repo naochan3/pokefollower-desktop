@@ -140,4 +140,15 @@ describe("settings-store", () => {
     store.set({ personality: "../bad" });
     expect(store.get("personality")).toBe("relaxed");
   });
+
+  it("modeはfollow/roamだけを保存する", () => {
+    const store = createSettingsStore(file);
+    expect(store.get("mode")).toBe("follow");
+    store.set({ mode: "roam" });
+    expect(store.get("mode")).toBe("roam");
+    store.set({ mode: "../bad" });
+    expect(store.get("mode")).toBe("roam");
+    store.set({ mode: "follow" });
+    expect(store.get("mode")).toBe("follow");
+  });
 });
