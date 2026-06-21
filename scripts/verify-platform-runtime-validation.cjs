@@ -53,9 +53,18 @@ for (const command of [
   expect(validation.includes(command), `platform-runtime-validation.md missing command: ${command}`);
 }
 
-expect(readme.includes("デスクトップ環境ごとの常駐・透明オーバーレイ挙動は追加検証が必要です。"), "README must keep Linux runtime validation limitation");
-expect(status.includes("Linux AppImage の透明・常駐・クリック透過・最前面は実機検証が必要"), "STATUS must keep Linux runtime validation roadmap item");
-expect(status.includes("Linux は AppImage ビルドまで（実機の常駐挙動は未検証）。"), "STATUS must keep Linux runtime known limitation");
+expect(
+  readme.includes("デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。"),
+  "README must keep Linux visual runtime validation limitation",
+);
+expect(
+  status.includes("Linux AppImage の tray・透明・クリック透過・最前面は実機目視検証が必要"),
+  "STATUS must keep Linux visual runtime validation roadmap item",
+);
+expect(
+  status.includes("Linux は AppImage ビルドと WSLg 起動 smoke まで（実機の tray・透明・クリック透過・最前面は未検証）。"),
+  "STATUS must keep Linux visual runtime known limitation",
+);
 
 if (errors.length > 0) {
   for (const error of errors) console.error(`[verify-platform-runtime-validation] ${error}`);
