@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { parseLinuxForegroundInfo, parseMacForegroundInfo } from "../src/main/fullscreen-detect.js";
+import {
+  createLinuxForegroundInfoGetter,
+  createMacForegroundInfoGetter,
+  parseLinuxForegroundInfo,
+  parseMacForegroundInfo,
+} from "../src/main/fullscreen-detect.js";
 
 describe("fullscreen-detect parsers", () => {
   it("macOS の System Events 出力を前面ウィンドウ情報へ変換する", () => {
@@ -16,6 +21,27 @@ describe("fullscreen-detect parsers", () => {
   it("macOS の権限不足や取得失敗では null に戻す", () => {
     expect(parseMacForegroundInfo("")).toBe(null);
     expect(parseMacForegroundInfo(null)).toBe(null);
+  });
+
+  it("macOS の System Events 実行失敗では null に戻す", async () => {
+    const getForegroundInfo = createMacForegroundInfoGetter(async () => null);
+    await expect(getForegroundInfo()).resolves.toBe(null);
+  });
+
+  it("macOS の System Events 実行結果を前面ウィンドウ情報へ変換する", async () => {
+    const getForegroundInfo = createMacForegroundInfoGetter(async (command, args) => {
+      expect(command).toBe("osascript");
+      expect(args).toHaveLength(2);
+      return "Game\t12\t34\t1920\t1080\ttrue";
+    });
+    await expect(getForegroundInfo()).resolves.toEqual({
+      cls: "Game",
+      x: 12,
+      y: 34,
+      w: 1920,
+      h: 1080,
+      isFullscreen: true,
+    });
   });
 
   it("Linux の X11 出力を前面ウィンドウ情報へ変換する", () => {
@@ -43,5 +69,28 @@ describe("fullscreen-detect parsers", () => {
     expect(parseLinuxForegroundInfo("", 'WM_CLASS(STRING) = "game"', "Width: 100\nHeight: 100")).toBe(null);
     expect(parseLinuxForegroundInfo("_NET_WM_STATE(ATOM) =", "", "Width: 100\nHeight: 100")).toBe(null);
     expect(parseLinuxForegroundInfo("_NET_WM_STATE(ATOM) =", 'WM_CLASS(STRING) = "game"', "")).toBe(null);
+  });
+
+  it("Linux の active window 取得失敗では null に戻す", async () => {
+    const getForegroundInfo = createLinuxForegroundInfoGetter(async () => null);
+    await expect(getForegroundInfo()).resolves.toBe(null);
+  });
+
+  it("Linux の X11 コマンド結果を前面ウィンドウ情報へ変換する", async () => {
+    const getForegroundInfo = createLinuxForegroundInfoGetter(async (command, args) => {
+      if (command === "xdotool") return "123";
+      if (command === "xprop" && args[2] === "_NET_WM_STATE") return "_NET_WM_STATE(ATOM) = _NET_WM_STATE_FULLSCREEN";
+      if (command === "xprop" && args[2] === "WM_CLASS") return 'WM_CLASS(STRING) = "game", "GameWindow"';
+      if (command === "xwininfo") return "Absolute upper-left X: 10\nAbsolute upper-left Y: 20\nWidth: 800\nHeight: 600";
+      throw new Error(`unexpected command: ${command}`);
+    });
+    await expect(getForegroundInfo()).resolves.toEqual({
+      cls: '"game", "GameWindow"',
+      x: 10,
+      y: 20,
+      w: 800,
+      h: 600,
+      isFullscreen: true,
+    });
   });
 });

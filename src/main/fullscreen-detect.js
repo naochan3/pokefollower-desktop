@@ -32,6 +32,40 @@ function parseMacForegroundInfo(output) {
   return { cls: cls || "", x: parseNumber(x), y: parseNumber(y), w: parseNumber(w), h: parseNumber(h), isFullscreen: isFullscreen === "true" };
 }
 
+function createMacForegroundInfoGetter(runCommand = execTextAsync) {
+  const script = [
+    'tell application "System Events"',
+    'set frontApp to first application process whose frontmost is true',
+    'set appName to name of frontApp',
+    'if (count of windows of frontApp) is 0 then return appName & tab & "0" & tab & "0" & tab & "false"',
+    'set frontWindow to window 1 of frontApp',
+    'try',
+    'set isFs to value of attribute "AXFullScreen" of frontWindow',
+    'on error',
+    'set isFs to false',
+    'end try',
+    'try',
+    'set windowPosition to position of frontWindow',
+    'set winX to item 1 of windowPosition',
+    'set winY to item 2 of windowPosition',
+    'on error',
+    'set winX to 0',
+    'set winY to 0',
+    'end try',
+    'try',
+    'set windowSize to size of frontWindow',
+    'set winWidth to item 1 of windowSize',
+    'set winHeight to item 2 of windowSize',
+    'on error',
+    'set winWidth to 0',
+    'set winHeight to 0',
+    'end try',
+    'return appName & tab & winX & tab & winY & tab & winWidth & tab & winHeight & tab & isFs',
+    "end tell",
+  ].join("\n");
+  return async () => parseMacForegroundInfo(await runCommand("osascript", ["-e", script]));
+}
+
 function parseLinuxForegroundInfo(state, wmClass, geometry) {
   if (!state || !wmClass || !geometry) return null;
   const widthMatch = geometry.match(/Width:\s+(\d+)/);
@@ -46,6 +80,19 @@ function parseLinuxForegroundInfo(state, wmClass, geometry) {
     w: widthMatch ? parseNumber(widthMatch[1]) : 0,
     h: heightMatch ? parseNumber(heightMatch[1]) : 0,
     isFullscreen: state.includes("_NET_WM_STATE_FULLSCREEN"),
+  };
+}
+
+function createLinuxForegroundInfoGetter(runCommand = execTextAsync) {
+  return async () => {
+    const windowId = await runCommand("xdotool", ["getactivewindow"]);
+    if (!windowId) return null;
+    const [state, wmClass, geometry] = await Promise.all([
+      runCommand("xprop", ["-id", windowId, "_NET_WM_STATE"]),
+      runCommand("xprop", ["-id", windowId, "WM_CLASS"]),
+      runCommand("xwininfo", ["-id", windowId]),
+    ]);
+    return parseLinuxForegroundInfo(state, wmClass, geometry);
   };
 }
 
@@ -74,51 +121,15 @@ if (process.platform === "win32") {
     console.error("[fullscreen-detect] koffi load failed; 全画面自動隠しは無効:", e && e.message);
   }
 } else if (process.platform === "darwin") {
-  getForegroundInfo = async () => {
-    const script = [
-      'tell application "System Events"',
-      'set frontApp to first application process whose frontmost is true',
-      'set appName to name of frontApp',
-      'if (count of windows of frontApp) is 0 then return appName & tab & "0" & tab & "0" & tab & "false"',
-      'set frontWindow to window 1 of frontApp',
-      'try',
-      'set isFs to value of attribute "AXFullScreen" of frontWindow',
-      'on error',
-      'set isFs to false',
-      'end try',
-      'try',
-      'set windowPosition to position of frontWindow',
-      'set winX to item 1 of windowPosition',
-      'set winY to item 2 of windowPosition',
-      'on error',
-      'set winX to 0',
-      'set winY to 0',
-      'end try',
-      'try',
-      'set windowSize to size of frontWindow',
-      'set winWidth to item 1 of windowSize',
-      'set winHeight to item 2 of windowSize',
-      'on error',
-      'set winWidth to 0',
-      'set winHeight to 0',
-      'end try',
-      'return appName & tab & winX & tab & winY & tab & winWidth & tab & winHeight & tab & isFs',
-      "end tell",
-    ].join("\n");
-    const output = await execTextAsync("osascript", ["-e", script]);
-    return parseMacForegroundInfo(output);
-  };
+  getForegroundInfo = createMacForegroundInfoGetter(execTextAsync);
 } else if (process.platform === "linux") {
-  getForegroundInfo = async () => {
-    const windowId = await execTextAsync("xdotool", ["getactivewindow"]);
-    if (!windowId) return null;
-    const [state, wmClass, geometry] = await Promise.all([
-      execTextAsync("xprop", ["-id", windowId, "_NET_WM_STATE"]),
-      execTextAsync("xprop", ["-id", windowId, "WM_CLASS"]),
-      execTextAsync("xwininfo", ["-id", windowId]),
-    ]);
-    return parseLinuxForegroundInfo(state, wmClass, geometry);
-  };
+  getForegroundInfo = createLinuxForegroundInfoGetter(execTextAsync);
 }
 
-module.exports = { getForegroundInfo, parseLinuxForegroundInfo, parseMacForegroundInfo };
+module.exports = {
+  createLinuxForegroundInfoGetter,
+  createMacForegroundInfoGetter,
+  getForegroundInfo,
+  parseLinuxForegroundInfo,
+  parseMacForegroundInfo,
+};
