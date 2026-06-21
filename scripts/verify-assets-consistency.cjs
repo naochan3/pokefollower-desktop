@@ -148,11 +148,28 @@ for (const id of uiIds) {
   if (!seenIds.has(id)) fail(`UI PNG not listed in index: ${id}`);
 }
 
+// Per-generation contiguity check: no gaps are allowed within a single gen-N group.
+// Gaps between generations are expected (e.g. gen-4 ends at 493, gen-5 may start mid-range).
 const dexNumbers = entries.map((entry) => dexFromName(path.basename(entry.id))).filter((dex) => dex !== null);
-const minDex = Math.min(...dexNumbers);
-const maxDex = Math.max(...dexNumbers);
-for (let dex = minDex; dex <= maxDex; dex++) {
-  if (!dexNumbers.includes(dex)) fail(`missing dex number in current range: ${dex}`);
+const minDex = dexNumbers.length ? Math.min(...dexNumbers) : 0;
+const maxDex = dexNumbers.length ? Math.max(...dexNumbers) : 0;
+
+/** @type {Map<string, number[]>} gen-dir → sorted dex list */
+const dexByGen = new Map();
+for (const entry of entries) {
+  const gen = path.dirname(entry.id.replace(/^retro\//, "")); // "gen-1", "gen-5" …
+  const dex = dexFromName(path.basename(entry.id));
+  if (dex === null) continue;
+  if (!dexByGen.has(gen)) dexByGen.set(gen, []);
+  dexByGen.get(gen).push(dex);
+}
+for (const [gen, dexes] of dexByGen) {
+  dexes.sort((a, b) => a - b);
+  for (let i = 1; i < dexes.length; i++) {
+    if (dexes[i] !== dexes[i - 1] + 1) {
+      fail(`${gen}: gap between dex ${dexes[i - 1]} and ${dexes[i]} (missing ${dexes[i - 1] + 1}–${dexes[i] - 1})`);
+    }
+  }
 }
 
 if (errors.length > 0) {
