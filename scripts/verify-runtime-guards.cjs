@@ -13,6 +13,8 @@ function expect(condition, message) {
   if (!condition) errors.push(message);
 }
 
+const readyBlock = main.slice(main.indexOf("app.whenReady().then(() => {"));
+
 const lockIndex = main.indexOf("app.requestSingleInstanceLock()");
 const readyIndex = main.indexOf("app.whenReady()");
 expect(lockIndex >= 0, "main.js must request a single instance lock");
@@ -40,11 +42,16 @@ expect(/const FULLSCREEN_POLL_INTERVAL_MS = 600;/.test(main), "fullscreen pollin
 expect(/let fullscreenTimer = null;/.test(main), "main.js must track fullscreen polling timer");
 expect(/function startFullscreenPolling\(\)/.test(main), "main.js must define startFullscreenPolling");
 expect(/function stopFullscreenPolling\(\)/.test(main), "main.js must define stopFullscreenPolling");
+expect(/function stopSimLoop\(\{ hide = false \} = \{\}\)/.test(main), "main.js must define a stoppable sim loop helper");
 expect(/fullscreenTimer = setInterval\(checkFullscreen, FULLSCREEN_POLL_INTERVAL_MS\)/.test(main), "fullscreen polling must use a tracked interval");
 expect(/clearInterval\(fullscreenTimer\)/.test(main), "fullscreen polling must be stoppable");
+expect(/clearInterval\(simTimer\)/.test(main), "sim loop must be stoppable while disabled or fullscreen-suppressed");
 expect(!/setInterval\(checkFullscreen, 600\)/.test(main), "main.js must not leave fullscreen polling as an untracked always-on interval");
 expect(/if \(enabled\) \{[\s\S]*startFullscreenPolling\(\)/.test(main), "setEnabled(true) must start fullscreen polling");
+expect(/sim\.resetTo\(c\.x, c\.y, Date\.now\(\)\);[\s\S]*startSimLoop\(\);[\s\S]*runSimFrame\(\);/.test(main), "setEnabled(true) must start the sim loop and publish the first sim frame immediately");
 expect(/else \{[\s\S]*stopFullscreenPolling\(\)/.test(main), "setEnabled(false) must stop fullscreen polling");
+expect(/else \{[\s\S]*stopFullscreenPolling\(\);[\s\S]*stopSimLoop\(\{ hide: true \}\)/.test(main), "setEnabled(false) must stop the sim loop and hide overlays");
+expect(!/startSimLoop\(\);[\s\S]*setEnabled\(s\.enabled\)/.test(readyBlock), "startup must not start the sim loop before reading the saved enabled state");
 expect(/powerMonitor/.test(main), "main.js must use powerMonitor for AC/battery interval changes");
 expect(/getSimIntervalMs\(\{ isOnBattery: readBatteryState\(\) \}\)/.test(main), "main.js must use sim-loop-config for interval selection");
 expect(/powerMonitor\.on\("on-ac", refreshSimLoopInterval\)/.test(main), "main.js must refresh sim interval on AC power");
@@ -56,6 +63,12 @@ expect(simLoopConfig.getSimIntervalMs({ env: { POKEFOLLOWER_SIM_INTERVAL_MS: "12
 expect(DEFAULTS.offset === 70, "settings-store DEFAULTS.offset must be 70");
 expect(/offset: 70/.test(sim), "follower-sim default offset must be 70");
 expect(/vcp1_offset: 70/.test(settingsUi), "settings UI default offset must be 70");
+expect(
+  /createCodexNotificationWatcher/.test(main) &&
+    /codexNotificationWatcher\.sync\(\)/.test(main) &&
+    /codexNotificationWatcher\.stop\(\)/.test(main),
+  "Codex notification watcher must sync with settings and stop before quit",
+);
 expect(
   /function getUserDataPath\(\)/.test(main) &&
     /process\.env\.POKEFOLLOWER_ALLOW_TEST_USER_DATA === "1"/.test(main) &&
@@ -69,6 +82,14 @@ expect(
 expect(
   /settingsStore = createSettingsStore\(path\.join\(getUserDataPath\(\), "settings\.json"\)\)/.test(main),
   "settings must be loaded from the resolved Electron userData/settings.json",
+);
+expect(
+  /const s = settingsStore\.getAll\(\);[\s\S]*sim\.setConfig\(\{[\s\S]*vcp1_scale: s\.scale,[\s\S]*vcp1_offset: s\.offset,[\s\S]*vcp1_lerp: s\.lerp,[\s\S]*vcp1_mode: s\.mode,[\s\S]*\}\);[\s\S]*loadPackIntoSim\(s\.pack\)/.test(main),
+  "startup must restore the last saved Pokemon pack from settings before creating overlays",
+);
+expect(
+  /catch \(_\) \{ try \{ loadPackIntoSim\("retro\/gen-1\/009-blastoise"\); \}/.test(main),
+  "startup must fall back to Blastoise only when the saved Pokemon pack cannot be loaded",
 );
 
 if (errors.length > 0) {

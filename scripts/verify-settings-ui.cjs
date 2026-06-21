@@ -22,7 +22,7 @@ function inputAttrs(id) {
   return attrs;
 }
 
-for (const id of ["enabled", "edgeRest", "avoidCursor", "personality", "mode", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
+for (const id of ["enabled", "edgeRest", "avoidCursor", "personality", "mode", "notificationCompanion", "testCompanion", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
   expect(html.includes(`id="${id}"`), `settings.html missing id="${id}"`);
   expect(js.includes(`getElementById("${id}")`) || ["scaleVal", "offsetVal", "lerpVal"].includes(id), `settings.js should query #${id}`);
 }
@@ -52,6 +52,7 @@ expect(html.includes('<select id="mode">'), "mode select must exist");
 for (const mode of ["follow", "roam"]) {
   expect(html.includes(`value="${mode}"`), `mode select must include ${mode}`);
 }
+expect(inputAttrs("notificationCompanion")?.type === "checkbox", "notification companion input must be a checkbox");
 expect(inputAttrs("search")?.type === "text", "search input must be text");
 expect(inputAttrs("scale")?.type === "number", "scale input must be number");
 expect(inputAttrs("scale")?.min === "0.5", "scale min must be 0.5");
@@ -76,6 +77,7 @@ for (const mapping of [
   "vcp1_avoidCursor: \"avoidCursor\"",
   "vcp1_personality: \"personality\"",
   "vcp1_mode: \"mode\"",
+  "vcp1_notification_companion: \"notificationCompanionEnabled\"",
 ]) {
   expect(js.includes(mapping), `settings.js missing key mapping ${mapping}`);
 }
@@ -91,11 +93,16 @@ expect(/const lerpUI = lerp \* 10;/.test(js), "settings.js must expose lerp as x
 expect(/const lerp = normalized \/ 10;/.test(js), "settings.js must convert speed UI back to internal lerp");
 expect(/toHira/.test(js) && /romaji/.test(js) && /#"\s*\+\s*padded/.test(js), "settings search must include kana, romaji, and dex number terms");
 expect(/stepUp\(\)/.test(js) && /stepDown\(\)/.test(js), "settings arrows must use native number input stepping");
+expect(/width: 420, height: 760/.test(fs.readFileSync(path.join(root, "src", "main", "main.js"), "utf8")), "settings window must leave room for notification controls");
+expect(/flex: 1 1 280px/.test(html), "pack grid must keep flexible vertical space");
+expect(/min-height: 160px/.test(html), "pack grid must keep a usable minimum height");
+expect(/grid-template-columns: 1fr auto/.test(html), "notification companion row must keep compact action layout");
 
 for (const surface of [
   'getSettings: () => ipcRenderer.invoke("settings:get")',
   'setSettings: (patch) => ipcRenderer.send("settings:set", patch)',
   'listPacks: () => ipcRenderer.invoke("packs:list")',
+  'testCompanionNotification: () => ipcRenderer.invoke("companion:test-notification")',
 ]) {
   expect(preload.includes(surface), `settings preload missing surface: ${surface}`);
 }

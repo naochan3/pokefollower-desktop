@@ -75,13 +75,13 @@ for (const os of ["ubuntu-latest", "windows-latest", "macos-latest"]) {
 }
 
 for (const smoke of [
-  "command: npm run dist:win -- --dir",
+  "command: npm run dist:win -- --dir --publish=never",
   "platform: win32",
   "arch: x64",
-  "command: npm run dist:mac -- --arm64 --dir",
+  "command: npm run dist:mac -- --arm64 --dir --publish=never",
   "platform: darwin",
   "arch: arm64",
-  "command: npm run dist:linux -- --dir",
+  "command: npm run dist:linux -- --dir --publish=never",
   "platform: linux",
 ]) {
   expectIncludes("package smoke matrix", smoke);
@@ -172,6 +172,7 @@ for (const file of [
   "scripts/verify-repo-hygiene.cjs",
   "scripts/verify-installer-ux.cjs",
   "scripts/verify-ipc-routing.cjs",
+  "scripts/verify-notification-overlay-render.cjs",
   "scripts/verify-overlay-cache.cjs",
   "scripts/verify-roadmap-issues.cjs",
   "scripts/verify-runtime-guards.cjs",

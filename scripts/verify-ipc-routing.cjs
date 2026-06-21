@@ -25,28 +25,37 @@ function extractFunctionBody(source, functionName) {
 
 const buildOverlays = extractFunctionBody(main, "buildOverlays");
 const broadcastFrame = extractFunctionBody(main, "broadcastFrame");
+const createOverlayWindow = extractFunctionBody(main, "createOverlayWindow");
+const sendFrameToOverlay = extractFunctionBody(main, "sendFrameToOverlay");
 const loadPackIntoSim = extractFunctionBody(main, "loadPackIntoSim");
 const runSimFrame = extractFunctionBody(main, "runSimFrame") || extractFunctionBody(main, "startSimLoop");
 
 expect(/const \{ frameForOverlay, frameKey \} = require\("\.\/frame-routing\.js"\);/.test(main), "main.js must use frame-routing helpers");
 expect(/visible: false/.test(buildOverlays), "new overlay records must start hidden");
 expect(/lastFrameKey: "hidden"/.test(buildOverlays), "new overlay records must start with a hidden frame key");
-expect(/frameForOverlay\(render, o\.bounds, currentMeta\)/.test(broadcastFrame), "broadcastFrame must compute per-overlay frame routing");
-expect(/if \(!o\.win \|\| o\.win\.isDestroyed\(\)\) continue;/.test(broadcastFrame), "broadcastFrame must skip destroyed overlays");
-expect(/if \(!frame\.visible\)/.test(broadcastFrame), "broadcastFrame must branch on invisible frames");
-expect(/if \(o\.visible\) \{[\s\S]*?webContents\.send\("frame", frame\)[\s\S]*?o\.visible = false;[\s\S]*?\}/.test(broadcastFrame), "broadcastFrame must send a hide frame only on visible->hidden transition");
-expect(/o\.lastFrameKey = "hidden";/.test(broadcastFrame), "broadcastFrame must reset frame cache on hide");
-expect(/continue;/.test(broadcastFrame), "broadcastFrame must continue after invisible-frame handling");
-expect(/const nextFrameKey = frameKey\(frame\);/.test(broadcastFrame), "broadcastFrame must compute a stable visible frame key");
-expect(/if \(o\.visible && o\.lastFrameKey === nextFrameKey\) continue;/.test(broadcastFrame), "broadcastFrame must skip duplicate visible frames");
-expect(/webContents\.send\("frame", frame\);[\s\S]*?o\.visible = true;/.test(broadcastFrame), "broadcastFrame must send visible frames and mark overlay visible");
-expect(/o\.lastFrameKey = nextFrameKey;/.test(broadcastFrame), "broadcastFrame must remember the last visible frame key");
+expect(/let lastRender = null;/.test(main), "main.js must remember the last rendered frame for newly loaded overlays");
+expect(/sendFrameToOverlay\(overlay, lastRender, true\)/.test(createOverlayWindow), "overlay load must force-send the latest frame after meta");
+expect(/frameForOverlay\(render, o\.bounds, currentMeta\)/.test(sendFrameToOverlay), "sendFrameToOverlay must compute per-overlay frame routing");
+expect(/if \(!o\.win \|\| o\.win\.isDestroyed\(\)\) return;/.test(sendFrameToOverlay), "sendFrameToOverlay must skip destroyed overlays");
+expect(/if \(!frame\.visible\)/.test(sendFrameToOverlay), "sendFrameToOverlay must branch on invisible frames");
+expect(/if \(force \|\| o\.visible\) \{[\s\S]*?webContents\.send\("frame", frame\)[\s\S]*?o\.visible = false;[\s\S]*?\}/.test(sendFrameToOverlay), "sendFrameToOverlay must force-send hide frames for newly loaded overlays");
+expect(/o\.lastFrameKey = "hidden";/.test(sendFrameToOverlay), "sendFrameToOverlay must reset frame cache on hide");
+expect(/return;/.test(sendFrameToOverlay), "sendFrameToOverlay must return after invisible-frame handling");
+expect(/const nextFrameKey = frameKey\(frame\);/.test(sendFrameToOverlay), "sendFrameToOverlay must compute a stable visible frame key");
+expect(/if \(!force && o\.visible && o\.lastFrameKey === nextFrameKey\) return;/.test(sendFrameToOverlay), "sendFrameToOverlay must skip duplicate visible frames unless forced");
+expect(/webContents\.send\("frame", frame\);[\s\S]*?o\.visible = true;/.test(sendFrameToOverlay), "sendFrameToOverlay must send visible frames and mark overlay visible");
+expect(/o\.lastFrameKey = nextFrameKey;/.test(sendFrameToOverlay), "sendFrameToOverlay must remember the last visible frame key");
+expect(/lastRender = render;/.test(broadcastFrame), "broadcastFrame must cache the latest render for overlay load replay");
+expect(/sendFrameToOverlay\(o, render\)/.test(broadcastFrame), "broadcastFrame must route frames through sendFrameToOverlay");
 expect(/webContents\.send\("meta", meta\)/.test(loadPackIntoSim), "loadPackIntoSim must broadcast meta to existing overlays");
 expect(/if \(!enabled \|\| fullscreenActive\) \{ broadcastFrame\(null\); return; \}/.test(runSimFrame), "sim loop must hide overlays when disabled or fullscreen-active");
 expect(
   runSimFrame.indexOf("if (!enabled || fullscreenActive)") < runSimFrame.indexOf("screen.getCursorScreenPoint()"),
   "sim loop must avoid cursor polling while disabled or fullscreen-active",
 );
+expect(/function stopSimLoop\(\{ hide = false \} = \{\}\)/.test(main), "main.js must define a stoppable sim loop helper");
+expect(/if \(fullscreenActive\) \{[\s\S]*stopSimLoop\(\{ hide: true \}\)/.test(main), "fullscreen suppression must stop the sim loop instead of ticking hidden frames");
+expect(/else if \(enabled\) \{[\s\S]*startSimLoop\(\);[\s\S]*runSimFrame\(\);/.test(main), "fullscreen exit must restart the sim loop and publish a fresh frame");
 expect(/const \{ applySettingsPatch \} = require\("\.\/settings-patch\.js"\);/.test(main), "main.js must route settings IPC through settings-patch helper");
 expect(/function isSettingsSender\(event\) \{[\s\S]*event\.sender === settingsWin\.webContents[\s\S]*\}/.test(main), "main.js must bind settings IPC to the settings window webContents");
 expect(/function requireSettingsSender\(event\) \{[\s\S]*throw new Error\("unauthorized settings IPC sender"\)[\s\S]*\}/.test(main), "main.js must reject unauthorized settings invoke senders");

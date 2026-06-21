@@ -15,6 +15,7 @@ describe("settings-store", () => {
     const store = createSettingsStore(file);
     expect(store.getAll()).toEqual(DEFAULTS);
     expect(store.get("offset")).toBe(70);
+    expect(store.get("notificationCompanionEnabled")).toBe(false);
   });
 
   it("既存 settings.json の offset を新デフォルトで上書きしない", () => {
@@ -67,11 +68,12 @@ describe("settings-store", () => {
 
   it("set時も未知キーと空packと不正packを永続化しない", () => {
     const store = createSettingsStore(file);
-    store.set({ pack: "", offset: 55, debug: true });
+    store.set({ pack: "", offset: 55, debug: true, notificationCompanionEnabled: true });
     store.set({ pack: "retro/../../secret" });
     const reopened = createSettingsStore(file);
     expect(reopened.get("pack")).toBe(DEFAULTS.pack);
     expect(reopened.get("offset")).toBe(55);
+    expect(reopened.get("notificationCompanionEnabled")).toBe(true);
     expect(reopened.getAll()).not.toHaveProperty("debug");
   });
 
@@ -110,6 +112,8 @@ describe("settings-store", () => {
     expect(store.get("enabled")).toBe(false);
     store.set({ enabled: "yes" });
     expect(store.get("enabled")).toBe(true);
+    store.set({ notificationCompanionEnabled: 1 });
+    expect(store.get("notificationCompanionEnabled")).toBe(true);
   });
 
   it("edgeRestはbooleanとして保存する", () => {

@@ -9,6 +9,7 @@ function mapKeys(obj) {
     vcp1_avoidCursor: "avoidCursor",
     vcp1_personality: "personality",
     vcp1_mode: "mode",
+    vcp1_notification_companion: "notificationCompanionEnabled",
   };
   const out = {};
   for (const [k, v] of Object.entries(obj)) out[m[k] || k] = v;
@@ -29,6 +30,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const avoidCursorEl = document.getElementById("avoidCursor");
   const personalityEl = document.getElementById("personality");
   const modeEl = document.getElementById("mode");
+  const notificationCompanionEl = document.getElementById("notificationCompanion");
+  const testCompanionEl = document.getElementById("testCompanion");
 
   // Sliders + readouts
   const scaleEl   = document.getElementById("scale");
@@ -65,6 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (avoidCursorEl) avoidCursorEl.checked = res.avoidCursor !== false;
       if (personalityEl) personalityEl.value = typeof res.personality === "string" ? res.personality : DEFAULTS.vcp1_personality;
       if (modeEl) modeEl.value = typeof res.mode === "string" ? res.mode : DEFAULTS.vcp1_mode;
+      if (notificationCompanionEl) notificationCompanionEl.checked = !!res.notificationCompanionEnabled;
 
       const scale  = (typeof res.scale  === "number") ? res.scale  : DEFAULTS.vcp1_scale;
       const offset = (typeof res.offset === "number") ? res.offset : DEFAULTS.vcp1_offset;
@@ -107,6 +111,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (modeEl) {
     modeEl.addEventListener("change", () => {
       save({ vcp1_mode: modeEl.value });
+    });
+  }
+  if (notificationCompanionEl) {
+    notificationCompanionEl.addEventListener("change", () => {
+      save({ vcp1_notification_companion: notificationCompanionEl.checked });
+    });
+  }
+  if (testCompanionEl) {
+    testCompanionEl.addEventListener("click", () => {
+      window.settingsApi.testCompanionNotification();
     });
   }
 

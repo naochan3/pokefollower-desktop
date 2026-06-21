@@ -45,11 +45,13 @@
 ## 現在含まれているもの（v1.0.5）
 
 - Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21＋ #31/#32 の追従挙動修正＋ #34（待機を移動方向の逆隅に）＋ #35（第5〜9世代追加・世代フィルタ）込み。追従既定 16ms）
-- macOS arm64 dmg / zip（v1.0.5 は contributor によるビルド添付待ち。直近の公開済み安定版は v1.0.4）
+- macOS arm64 dmg / zip（v1.0.5 添付済み）
 - ポケモン 956 種（第1〜9世代。未収録69種は出典素材待ち）
 - 日本語表示・日本語検索、タイル選択 UI、世代フィルタ（全/第1〜9）
 - 待機位置は移動方向の逆隅に留まる（本家拡張準拠）
+- Follow / Roam（散歩）モード切り替え。Roam は画面内の自律移動、idle/sleep 休止、性格プリセット別タイミングを含む
 - マルチモニター連続追従、全画面自動非表示（Windows / macOS / Linux best-effort）、ログイン自動起動、クリック透過
+- 通知コンパニオン基盤（既定 OFF、通知本文は保存しない、許可されたイベント/Codex notify payload を要約してドット風の吹き出し表示）
 
 ---
 
@@ -62,6 +64,7 @@
 | **全ポケモン対応（第5〜9世代の追加）** | 中 | [#14](https://github.com/naochan3/pokefollower-desktop/issues/14) | 第5〜9世代を追加し956種に拡張済み。残り69種はSpriteCollab素材待ち。別フォルム（アローラ等）は今後検討 |
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
 | macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知は実装済み。Linux AppImage の透明・常駐・クリック透過・最前面は実機検証が必要 |
+| 通知コンパニオンの OS 通知連携 | 中 | [#42](https://github.com/naochan3/pokefollower-desktop/issues/42) | Codex notify bridge は実装済み。macOS / Windows の OS 通知取得は権限境界を調査し、明示許可の範囲だけ実装する |
 
 ---
 
@@ -69,5 +72,6 @@
 
 - macOS / Windows とも **未署名**（初回起動時に OS の警告）。
 - 全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。
+- 通知コンパニオンは OS 全体の通知取得までは未対応です。現在はアプリ内/許可済みイベントと Codex notify payload を表示する軽量基盤です。
 - モニター間で表示スケール（DPI）が大きく異なると、位置がわずかにずれることがある。
 - Linux は AppImage ビルドまで（実機の常駐挙動は未検証）。
