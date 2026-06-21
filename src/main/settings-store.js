@@ -9,6 +9,7 @@ const DEFAULTS = {
   lerp: 0.20,
   edgeRest: true,
   avoidCursor: true,
+  avoidCursorStrength: "normal",
   personality: "standard",
   mode: "follow",
   appReactionsEnabled: false,
@@ -19,6 +20,7 @@ const DEFAULTS = {
 
 const PERSONALITIES = new Set(["standard", "active", "relaxed", "friendly"]);
 const MODES = new Set(["follow", "roam"]);
+const AVOID_CURSOR_STRENGTHS = new Set(["normal", "strong"]);
 const WORK_WATCH_PRESETS = new Set(["25/5", "50/10"]);
 
 const LIMITS = {
@@ -45,6 +47,11 @@ function sanitize(patch) {
     if (k === "mode") {
       const mode = typeof v === "string" ? v.trim() : "";
       if (MODES.has(mode)) out.mode = mode;
+      continue;
+    }
+    if (k === "avoidCursorStrength") {
+      const avoidCursorStrength = typeof v === "string" ? v.trim() : "";
+      if (AVOID_CURSOR_STRENGTHS.has(avoidCursorStrength)) out.avoidCursorStrength = avoidCursorStrength;
       continue;
     }
     if (k === "workWatchPreset") {

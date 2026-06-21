@@ -22,6 +22,7 @@ function applySettingsPatch(patch, {
     hasOwn(safePatch, "lerp") ||
     hasOwn(safePatch, "edgeRest") ||
     hasOwn(safePatch, "avoidCursor") ||
+    hasOwn(safePatch, "avoidCursorStrength") ||
     hasOwn(safePatch, "personality") ||
     hasOwn(safePatch, "mode") ||
     hasOwn(safePatch, "appReactionsEnabled")
@@ -32,6 +33,7 @@ function applySettingsPatch(patch, {
       vcp1_lerp: next.lerp,
       vcp1_edgeRest: next.edgeRest,
       vcp1_avoidCursor: next.avoidCursor,
+      vcp1_avoidCursorStrength: next.avoidCursorStrength,
       vcp1_personality: next.personality,
       vcp1_mode: next.mode,
     });

@@ -20,6 +20,7 @@ const IDLE_ANIM_SPEED = 0.7; // 待機(idle)アニメの再生速度倍率（1�
 const EDGE_REST_IDLE_MS = 8000;
 const EDGE_REST_PADDING_PX = 8;
 const CURSOR_CLEARANCE_PX = 48;
+const CURSOR_CLEARANCE_STRONG_PX = 88;
 const ROAM_PADDING_PX = 24;
 const ROAM_ARRIVE_RADIUS_PX = 12;
 const ROAM_POINTS = [
@@ -40,11 +41,12 @@ const REACTION_MODES = {
   calm: { offset: 1.18, lerp: 0.82, idleAnim: 0.78, edgeRestIdle: 0.75 },
   break: { offset: 0.66, lerp: 1.18, idleAnim: 1.18, edgeRestIdle: 1.2 },
   focus: { offset: 1.35, lerp: 0.72, idleAnim: 0.72, edgeRestIdle: 0.65 },
+  busy: { offset: 1.45, lerp: 0.70, idleAnim: 0.68, edgeRestIdle: 0.55 },
   friendly: { offset: 0.78, lerp: 1.08, idleAnim: 1.08, edgeRestIdle: 1.0 },
 };
 
 function createFollowerSim(options = {}) {
-  const CONFIG = { scale: 1.25, offset: 70, lerp: 0.20, edgeRest: true, avoidCursor: true, personality: "standard", mode: "follow", reactionMode: "normal" };
+  const CONFIG = { scale: 1.25, offset: 70, lerp: 0.20, edgeRest: true, avoidCursor: true, avoidCursorStrength: "normal", personality: "standard", mode: "follow", reactionMode: "normal" };
   const rustCore = createRustFollowerCore(options.rootDir || path.join(__dirname, "..", ".."));
   let displayBounds = [];
   let restSurfaces = [];
@@ -98,6 +100,10 @@ function createFollowerSim(options = {}) {
 
   function effectiveEdgeRestIdleMs() {
     return EDGE_REST_IDLE_MS * personalityPreset().edgeRestIdle * reactionPreset().edgeRestIdle;
+  }
+
+  function effectiveCursorClearance() {
+    return CONFIG.avoidCursorStrength === "strong" ? CURSOR_CLEARANCE_STRONG_PX : CURSOR_CLEARANCE_PX;
   }
 
   function effectiveRoamIdleMs() {
@@ -267,11 +273,12 @@ function createFollowerSim(options = {}) {
       const dx = R.target.x - R.lastMouse.x;
       const dy = R.target.y - R.lastMouse.y;
       const dist = Math.hypot(dx, dy);
-      if (dist < CURSOR_CLEARANCE_PX) {
+      const clearance = effectiveCursorClearance();
+      if (dist < clearance) {
         const ux = dist > 0.001 ? dx / dist : R.offsetDir.x;
         const uy = dist > 0.001 ? dy / dist : R.offsetDir.y;
-        R.target.x = R.lastMouse.x + ux * CURSOR_CLEARANCE_PX;
-        R.target.y = R.lastMouse.y + uy * CURSOR_CLEARANCE_PX;
+        R.target.x = R.lastMouse.x + ux * clearance;
+        R.target.y = R.lastMouse.y + uy * clearance;
       }
     }
   }
@@ -316,6 +323,7 @@ function createFollowerSim(options = {}) {
     if (typeof obj.vcp1_lerp === "number" && !Number.isNaN(obj.vcp1_lerp)) CONFIG.lerp = obj.vcp1_lerp;
     if (typeof obj.vcp1_edgeRest === "boolean") CONFIG.edgeRest = obj.vcp1_edgeRest;
     if (typeof obj.vcp1_avoidCursor === "boolean") CONFIG.avoidCursor = obj.vcp1_avoidCursor;
+    if (obj.vcp1_avoidCursorStrength === "normal" || obj.vcp1_avoidCursorStrength === "strong") CONFIG.avoidCursorStrength = obj.vcp1_avoidCursorStrength;
     if (typeof obj.vcp1_personality === "string" && PERSONALITY_PRESETS[obj.vcp1_personality]) CONFIG.personality = obj.vcp1_personality;
     if (typeof obj.vcp1_reactionMode === "string" && REACTION_MODES[obj.vcp1_reactionMode]) CONFIG.reactionMode = obj.vcp1_reactionMode;
     if (obj.vcp1_mode === "follow" || obj.vcp1_mode === "roam") {
