@@ -6,7 +6,7 @@ const WALK_SPEED_MIN_PXPS: f64 = 80.0;
 const WALK_SPEED_MAX_PXPS: f64 = 640.0;
 const SPEED_CONFIG_MIN: f64 = 0.05;
 const SPEED_CONFIG_MAX: f64 = 0.50;
-const IDLE_OFFSET_DIR: Vec2 = Vec2 { x: 0.72, y: 0.69 };
+const IDLE_OFFSET_DIR: Vec2 = Vec2 { x: 0.0, y: -1.0 }; // 待機時はカーソルの真上に寄る（本家拡張と同じ）
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Vec2 {
@@ -217,15 +217,16 @@ mod tests {
     use super::*;
 
     #[test]
-    fn idle_target_moves_to_lower_right_away_from_cursor_tip() {
+    fn idle_target_moves_above_cursor() {
         let mut core = FollowerCore::default();
         core.reset_to(100.0, 100.0, 0.0);
         let mut out = core.step(16.0);
         for _ in 0..119 {
             out = core.step(16.0);
         }
-        assert!(out.position.x > 145.0, "{out:?}");
-        assert!(out.position.y > 140.0, "{out:?}");
+        // 待機位置は本家と同じ「カーソルの真上」。x はほぼ不変、y は上方向へ離れる。
+        assert!((out.position.x - 100.0).abs() < 10.0, "{out:?}");
+        assert!(out.position.y < 50.0, "{out:?}");
     }
 
     #[test]

@@ -91,7 +91,7 @@ describe("follower-sim", () => {
     expect(Math.abs(r.y - 1500)).toBeLessThan(50);
   });
 
-  it("停止中はカーソル先端ではなく右下の離れた位置へ寄る", () => {
+  it("停止中はカーソル先端ではなく真上の離れた位置へ寄る", () => {
     const sim = createFollowerSim();
     sim.setMeta(META);
     sim.resetTo(100, 100, 0);
@@ -101,8 +101,9 @@ describe("follower-sim", () => {
       now += 16;
       r = sim.step(16, now);
     }
-    expect(r.x).toBeGreaterThan(145);
-    expect(r.y).toBeGreaterThan(140);
+    // 待機位置は本家と同じ「カーソルの真上」。x はほぼ不変、y は上方向(値が小さく)へ離れる。
+    expect(Math.abs(r.x - 100)).toBeLessThan(10);
+    expect(r.y).toBeLessThan(50);
   });
 
   it("負の座標（左上にオフセットしたモニター）も扱える", () => {
