@@ -40,6 +40,7 @@ function extractNames(data) {
   const names = data.names || [];
   let ja = null;
   let romaji = null;
+  let enName = null;
 
   for (const entry of names) {
     const lang = entry.language?.name;
@@ -51,6 +52,20 @@ function extractNames(data) {
     }
     if (lang === 'ja-roma') {
       romaji = entry.name;
+    }
+    if (lang === 'en' && enName === null) {
+      enName = entry.name;
+    }
+  }
+
+  // Fallback: if PokéAPI lacks the ja-roma entry, use the English name.
+  // Last resort: capitalize the slug (data.name).
+  if (!romaji || !romaji.trim()) {
+    if (enName && enName.trim()) {
+      romaji = enName.trim();
+    } else if (data.name) {
+      const slug = data.name;
+      romaji = slug.charAt(0).toUpperCase() + slug.slice(1);
     }
   }
 
