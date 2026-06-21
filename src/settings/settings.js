@@ -230,14 +230,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     const frag = document.createDocumentFragment();
     const tiles = [];
     function updateFavoriteUi() {
-      for (const t of tiles) t.classList.toggle("favorite", favoriteIds.includes(t.dataset.id));
+      for (const t of tiles) {
+        const isFavorite = favoriteIds.includes(t.dataset.id);
+        t.classList.toggle("favorite", isFavorite);
+        t.dataset.favorite = isFavorite ? "true" : "false";
+      }
       if (favoriteCountEl) favoriteCountEl.textContent = String(favoriteIds.length);
+      if (favoriteAddEl) {
+        const selectedIsFavorite = favoriteIds.includes(selectedId);
+        favoriteAddEl.textContent = selectedIsFavorite ? "DEL" : "ADD";
+        favoriteAddEl.title = selectedIsFavorite ? "選択中のポケモンを待機列から外す" : "選択中のポケモンを待機列に追加";
+        favoriteAddEl.setAttribute("aria-pressed", selectedIsFavorite ? "true" : "false");
+      }
     }
     function selectPack(packId) {
-      if (!packId || packId === selectedId) return;
+      if (!packId) return;
+      if (packId === selectedId) {
+        updateFavoriteUi();
+        return;
+      }
       selectedId = packId;
       for (const t of tiles) t.classList.toggle("selected", t.dataset.id === selectedId);
       window.settingsApi.setSettings({ pack: packId });
+      updateFavoriteUi();
     }
     function saveFavorites() {
       save({ vcp1_favorite_packs: favoriteIds });
@@ -288,10 +303,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     gridEl.appendChild(frag);
     updateFavoriteUi();
     if (favoriteAddEl) {
-      favoriteAddEl.addEventListener("click", () => {
-        if (!selectedId || favoriteIds.includes(selectedId)) return;
-        favoriteIds = [...favoriteIds, selectedId].slice(0, 12);
-        saveFavorites();
+      favoriteAddEl.addEventListener("click", async () => {
+        if (!selectedId) return;
+        if (favoriteIds.includes(selectedId)) {
+          favoriteIds = await window.settingsApi.removeFavorite(selectedId);
+        } else {
+          favoriteIds = await window.settingsApi.addFavorite(selectedId);
+        }
+        updateFavoriteUi();
       });
     }
     if (favoriteNextEl) {

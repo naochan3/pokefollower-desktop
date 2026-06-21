@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { clampRotationMinutes, nextFavoritePack } from "../src/main/favorite-rotation.js";
+import {
+  MAX_FAVORITE_PACKS,
+  addFavoritePack,
+  clampRotationMinutes,
+  nextFavoritePack,
+  normalizeFavoritePacks,
+  removeFavoritePack,
+} from "../src/main/favorite-rotation.js";
 
 describe("favorite-rotation", () => {
   it("待機列が空なら現在のポケモンを維持する", () => {
@@ -18,5 +25,26 @@ describe("favorite-rotation", () => {
     expect(clampRotationMinutes(15.4)).toBe(15);
     expect(clampRotationMinutes(999)).toBe(120);
     expect(clampRotationMinutes("bad")).toBe(15);
+  });
+
+  it("お気に入り追加は安全なpackだけを重複なしで末尾に追加する", () => {
+    const queue = ["retro/gen-1/001-bulbasaur"];
+    expect(addFavoritePack("retro/gen-1/025-pikachu", queue)).toEqual([
+      "retro/gen-1/001-bulbasaur",
+      "retro/gen-1/025-pikachu",
+    ]);
+    expect(addFavoritePack("retro/gen-1/001-bulbasaur", queue)).toEqual(queue);
+    expect(addFavoritePack("../secret", queue)).toEqual(queue);
+  });
+
+  it("お気に入り削除は対象だけを外し、不正な既存値も正規化する", () => {
+    const queue = ["retro/gen-1/001-bulbasaur", "../secret", "retro/gen-1/025-pikachu"];
+    expect(removeFavoritePack("retro/gen-1/001-bulbasaur", queue)).toEqual(["retro/gen-1/025-pikachu"]);
+  });
+
+  it("お気に入り正規化は最大件数で打ち切る", () => {
+    const queue = Array.from({ length: 20 }, (_, i) => `retro/gen-1/${String(i + 1).padStart(3, "0")}-test`);
+    expect(normalizeFavoritePacks(queue)).toHaveLength(MAX_FAVORITE_PACKS);
+    expect(addFavoritePack("retro/gen-1/025-pikachu", queue)).toHaveLength(MAX_FAVORITE_PACKS);
   });
 });

@@ -16,7 +16,7 @@ const { createCodexNotificationWatcher } = require("./codex-notification-watcher
 const { defaultNotificationQueuePath } = require("./notification-queue.js");
 const { createWorkWatchSession } = require("./work-watch.js");
 const { reactionModeForForeground } = require("./app-reactions.js");
-const { nextFavoritePack } = require("./favorite-rotation.js");
+const { addFavoritePack, nextFavoritePack, removeFavoritePack } = require("./favorite-rotation.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -433,6 +433,13 @@ function syncFavoriteRotation() {
   favoriteRotationTimer = setInterval(advanceFavoritePack, settings.rotationIntervalMinutes * 60 * 1000);
 }
 
+function saveFavoritePacks(favoritePacks) {
+  if (!settingsStore) return [];
+  const next = settingsStore.set({ favoritePacks });
+  syncFavoriteRotation();
+  return next.favoritePacks;
+}
+
 ipcMain.handle("settings:get", (event) => {
   requireSettingsSender(event);
   return settingsStore.getAll();
@@ -475,6 +482,16 @@ ipcMain.handle("work-watch:reset", (event) => {
 ipcMain.handle("favorites:next", (event) => {
   requireSettingsSender(event);
   return advanceFavoritePack();
+});
+ipcMain.handle("favorites:add", (event, packKey) => {
+  requireSettingsSender(event);
+  const targetPack = packKey || settingsStore.get("pack");
+  return saveFavoritePacks(addFavoritePack(targetPack, settingsStore.get("favoritePacks")));
+});
+ipcMain.handle("favorites:remove", (event, packKey) => {
+  requireSettingsSender(event);
+  const targetPack = packKey || settingsStore.get("pack");
+  return saveFavoritePacks(removeFavoritePack(targetPack, settingsStore.get("favoritePacks")));
 });
 ipcMain.on("settings:set", (event, patch) => {
   if (!isSettingsSender(event)) return;

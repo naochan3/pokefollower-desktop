@@ -122,6 +122,9 @@ expect(/flex: 1 1 280px/.test(html), "pack grid must keep flexible vertical spac
 expect(/min-height: 160px/.test(html), "pack grid must keep a usable minimum height");
 expect(/grid-template-columns: 1fr auto/.test(html), "notification companion row must keep compact action layout");
 expect(/\.tile\.favorite::after/.test(html), "favorite Pokemon tiles must show a stable favorite marker");
+expect(/favoriteAddEl\.textContent = selectedIsFavorite \? "DEL" : "ADD"/.test(js), "favorite add button must toggle between add and remove for the selected Pokemon");
+expect(/window\.settingsApi\.addFavorite\(selectedId\)/.test(js), "settings UI must persist selected Pokemon additions through favorites:add IPC");
+expect(/window\.settingsApi\.removeFavorite\(selectedId\)/.test(js), "settings UI must persist selected Pokemon removals through favorites:remove IPC");
 
 for (const surface of [
   'getSettings: () => ipcRenderer.invoke("settings:get")',
@@ -132,6 +135,8 @@ for (const surface of [
   'stopWorkWatch: () => ipcRenderer.invoke("work-watch:stop")',
   'resetWorkWatch: () => ipcRenderer.invoke("work-watch:reset")',
   'nextFavorite: () => ipcRenderer.invoke("favorites:next")',
+  'addFavorite: (packKey) => ipcRenderer.invoke("favorites:add", packKey)',
+  'removeFavorite: (packKey) => ipcRenderer.invoke("favorites:remove", packKey)',
 ]) {
   expect(preload.includes(surface), `settings preload missing surface: ${surface}`);
 }
