@@ -68,7 +68,7 @@ expect(
   "STATUS must keep Linux visual runtime validation roadmap item",
 );
 expect(
-  status.includes("Linux は AppImage ビルドと WSLg 起動 smoke まで（実機の tray・透明・クリック透過・最前面は未検証）。"),
+  status.includes("Linux は AppImage 配布と WSLg 起動 smoke まで（実機の tray・透明・クリック透過・最前面は未検証）。"),
   "STATUS must keep Linux visual runtime known limitation",
 );
 

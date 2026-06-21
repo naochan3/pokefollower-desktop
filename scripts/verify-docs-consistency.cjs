@@ -29,9 +29,9 @@ expectIncludes(
   `releases/download/${tag}/PokeFollower-${version}-arm64-mac.zip`,
 );
 expectIncludes(
-  "README Linux AppImage unavailable note",
+  "README Linux AppImage link",
   readme,
-  `${tag} の Release には AppImage asset をまだ添付していない`,
+  `releases/download/${tag}/PokeFollower-${version}.AppImage`,
 );
 expectIncludes("STATUS current version", status, `現在のバージョン: **${tag}**`);
 expectIncludes("STATUS included version", status, `現在含まれているもの（${tag}）`);

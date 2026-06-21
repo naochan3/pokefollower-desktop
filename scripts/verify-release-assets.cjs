@@ -130,8 +130,8 @@ function expectReadmeLink(assetName, url) {
       `PokeFollower-${pkg.version}.AppImage`,
       `https://github.com/${repo}/releases/download/${tag}/PokeFollower-${pkg.version}.AppImage`,
     );
-  } else if (!readme.includes(`${tag} の Release には AppImage asset をまだ添付していない`)) {
-    fail(`README must state ${tag} has no Linux AppImage release asset yet`);
+  } else if (readme.includes(`releases/download/${tag}/PokeFollower-${pkg.version}.AppImage`)) {
+    fail(`README links ${tag} Linux AppImage but PF_EXPECT_LINUX_APPIMAGE is not enabled`);
   }
 
   console.log(

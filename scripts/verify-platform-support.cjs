@@ -57,11 +57,11 @@ expect(
 );
 expect(readme.includes("macOS（Apple Silicon / arm64）"), "README must describe published macOS support as Apple Silicon / arm64");
 expect(!readme.includes("macOS（Apple Silicon / Intel）"), "README must not imply Intel macOS binaries are currently published");
-expect(status.includes("現在は Windows / macOS(arm64) 向けに配布物を出せる状態。"), "STATUS must describe macOS distribution as arm64");
+expect(status.includes("現在は Windows / macOS(arm64) / Linux(AppImage) 向けに配布物を出せる状態。"), "STATUS must describe current distribution targets");
 expect(status.includes("macOS arm64 dmg / zip"), "STATUS included assets must describe macOS arm64 assets");
 expect(status.includes("全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。"), "STATUS must state macOS/Linux fullscreen auto-hide dependencies");
 expect(
-  status.includes("Linux は AppImage ビルドと WSLg 起動 smoke まで（実機の tray・透明・クリック透過・最前面は未検証）。"),
+  status.includes("Linux は AppImage 配布と WSLg 起動 smoke まで（実機の tray・透明・クリック透過・最前面は未検証）。"),
   "STATUS must state Linux visual runtime is unverified",
 );
 

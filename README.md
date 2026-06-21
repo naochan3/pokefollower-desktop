@@ -32,16 +32,15 @@
 
 ### Linux
 
-Linux は AppImage のビルド対応までです。v1.0.5 の Release には AppImage asset をまだ添付していないため、利用する場合はソースからビルドしてください。
+**[→ AppImage をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.0.5/PokeFollower-1.0.5.AppImage)**
 
-1. ソースから `npm run dist:linux` を実行
-2. 生成された `.AppImage` に実行権限を付けて起動
+1. 上のリンクから `PokeFollower-1.0.5.AppImage` をダウンロード
+2. 実行権限を付けて起動
 3. 起動できた環境では、tray または代替の常駐 UI から設定 / 有効・無効 / 終了
 
 ```bash
-npm run dist:linux
-chmod +x release/*.AppImage
-./release/*.AppImage
+chmod +x PokeFollower-1.0.5.AppImage
+./PokeFollower-1.0.5.AppImage
 ```
 
 > Linux 版は AppImage のパッケージ検証と WSLg での起動 smoke までです。デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
@@ -86,7 +85,7 @@ chmod +x release/*.AppImage
 
 - Windows 10 / 11（x64）
 - macOS（Apple Silicon / arm64）
-- Linux（AppImage ビルド対応。v1.0.5 の Release asset は未添付）
+- Linux（AppImage 配布あり。実機 GUI 挙動は追加検証が必要）
 
 ## インストール（使う人向け）
 
