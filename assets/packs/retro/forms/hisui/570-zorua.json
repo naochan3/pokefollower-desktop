@@ -1,0 +1,635 @@
+{
+  "name": "570-zorua",
+  "generation": "forms/hisui",
+  "rawPath": "forms/hisui/570-zorua",
+  "flipX": true,
+  "states": {
+    "walk": {
+      "sheet": "Walk-Anim.webp",
+      "frame": {
+        "w": 32,
+        "h": 48
+      },
+      "fps": 12.5,
+      "frames": 5,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "attack": {
+      "sheet": "Attack-Anim.webp",
+      "frame": {
+        "w": 72,
+        "h": 80
+      },
+      "fps": 25.38,
+      "frames": 11,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "shoot": {
+      "sheet": "Shoot-Anim.webp",
+      "frame": {
+        "w": 40,
+        "h": 48
+      },
+      "fps": 26.9,
+      "frames": 13,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "sleep": {
+      "sheet": "Sleep-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 32
+      },
+      "fps": 1.85,
+      "frames": 2,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "hurt": {
+      "sheet": "Hurt-Anim.webp",
+      "frame": {
+        "w": 40,
+        "h": 56
+      },
+      "fps": 12,
+      "frames": 2,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "idle": {
+      "sheet": "Idle-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 40
+      },
+      "fps": 2.86,
+      "frames": 4,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "swing": {
+      "sheet": "Swing-Anim.webp",
+      "frame": {
+        "w": 72,
+        "h": 88
+      },
+      "fps": 33.75,
+      "frames": 9,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "double": {
+      "sheet": "Double-Anim.webp",
+      "frame": {
+        "w": 56,
+        "h": 72
+      },
+      "fps": 26.67,
+      "frames": 16,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "hop": {
+      "sheet": "Hop-Anim.webp",
+      "frame": {
+        "w": 32,
+        "h": 88
+      },
+      "fps": 25,
+      "frames": 10,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "charge": {
+      "sheet": "Charge-Anim.webp",
+      "frame": {
+        "w": 32,
+        "h": 40
+      },
+      "fps": 30,
+      "frames": 10,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "rotate": {
+      "sheet": "Rotate-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 40
+      },
+      "fps": 30,
+      "frames": 9,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "eventsleep": {
+      "sheet": "EventSleep-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 32
+      },
+      "fps": 1.85,
+      "frames": 2,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "wake": {
+      "sheet": "Wake-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 40
+      },
+      "fps": 8.57,
+      "frames": 6,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "eat": {
+      "sheet": "Eat-Anim.webp",
+      "frame": {
+        "w": 32,
+        "h": 32
+      },
+      "fps": 8.57,
+      "frames": 4,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "tumble": {
+      "sheet": "Tumble-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 40
+      },
+      "fps": 20,
+      "frames": 8,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "pose": {
+      "sheet": "Pose-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 40
+      },
+      "fps": 13.64,
+      "frames": 5,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "pull": {
+      "sheet": "Pull-Anim.webp",
+      "frame": {
+        "w": 32,
+        "h": 32
+      },
+      "fps": 5.53,
+      "frames": 7,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "pain": {
+      "sheet": "Pain-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 48
+      },
+      "fps": 30,
+      "frames": 12,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "float": {
+      "sheet": "Float-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 32
+      },
+      "fps": 4.8,
+      "frames": 4,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "deepbreath": {
+      "sheet": "DeepBreath-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 40
+      },
+      "fps": 8.71,
+      "frames": 9,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "nod": {
+      "sheet": "Nod-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 40
+      },
+      "fps": 9,
+      "frames": 3,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "sit": {
+      "sheet": "Sit-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 32
+      },
+      "fps": 7.5,
+      "frames": 3,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "lookup": {
+      "sheet": "LookUp-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 32
+      },
+      "fps": 10,
+      "frames": 3,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "sink": {
+      "sheet": "Sink-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 32
+      },
+      "fps": 10,
+      "frames": 12,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "trip": {
+      "sheet": "Trip-Anim.webp",
+      "frame": {
+        "w": 32,
+        "h": 40
+      },
+      "fps": 13.64,
+      "frames": 5,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "laying": {
+      "sheet": "Laying-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 32
+      },
+      "fps": 5,
+      "frames": 1,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "leapforth": {
+      "sheet": "LeapForth-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 80
+      },
+      "fps": 25.71,
+      "frames": 6,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "head": {
+      "sheet": "Head-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 48
+      },
+      "fps": 15,
+      "frames": 1,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "cringe": {
+      "sheet": "Cringe-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 56
+      },
+      "fps": 12,
+      "frames": 2,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "lostbalance": {
+      "sheet": "LostBalance-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 32
+      },
+      "fps": 7.5,
+      "frames": 2,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "tumbleback": {
+      "sheet": "TumbleBack-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 40
+      },
+      "fps": 20,
+      "frames": 10,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    },
+    "faint": {
+      "sheet": "Faint-Anim.webp",
+      "frame": {
+        "w": 32,
+        "h": 40
+      },
+      "fps": 7.06,
+      "frames": 4,
+      "rows": {
+        "front": 0,
+        "frontRight": 1,
+        "right": 2,
+        "backRight": 3,
+        "back": 4,
+        "backLeft": 5,
+        "left": 6,
+        "frontLeft": 7
+      }
+    },
+    "hitground": {
+      "sheet": "HitGround-Anim.webp",
+      "frame": {
+        "w": 24,
+        "h": 48
+      },
+      "fps": 14.12,
+      "frames": 8,
+      "rows": {
+        "front": 0,
+        "frontRight": 0,
+        "right": 0,
+        "backRight": 0,
+        "back": 0,
+        "backLeft": 0,
+        "left": 0,
+        "frontLeft": 0
+      }
+    }
+  }
+}
