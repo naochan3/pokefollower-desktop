@@ -195,6 +195,25 @@ describe("follower-sim", () => {
     expect(r.y).toBeLessThan(880);
   });
 
+  it("前面ウィンドウ矩形があれば静止後にウィンドウ端を休憩候補にする", () => {
+    const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-window-edge-")) });
+    sim.setMeta(META);
+    sim.setDisplayBounds([{ x: 0, y: 0, width: 1000, height: 800 }]);
+    sim.setRestSurfaces([{ kind: "window", x: 200, y: 150, width: 500, height: 360 }]);
+    sim.resetTo(420, 220, 0);
+    let now = 0;
+    let r = null;
+    while (now < 12000) {
+      now += 16;
+      sim.updateCursor(420, 220, now);
+      r = sim.step(16, now);
+    }
+    expect(r.x).toBeGreaterThan(220);
+    expect(r.x).toBeLessThan(680);
+    expect(r.y).toBeLessThan(150);
+    expect(r.y).toBeGreaterThan(20);
+  });
+
   it("offsetが小さくてもカーソル直下を避ける", () => {
     const sim = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-avoid-")) });
     sim.setMeta(META);

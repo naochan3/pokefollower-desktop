@@ -43,7 +43,7 @@ if (process.platform === "win32") {
       const buf = Buffer.alloc(256);
       const len = GetClassNameA(h, buf, 256);
       const cls = len > 0 ? buf.toString("latin1", 0, len) : "";
-      return { w: r.right - r.left, h: r.bottom - r.top, cls };
+      return { x: r.left, y: r.top, w: r.right - r.left, h: r.bottom - r.top, cls };
     };
   } catch (e) {
     // koffi が読めない場合は全画面検知を無効化（アプリは通常どおり動く）
@@ -64,6 +64,14 @@ if (process.platform === "win32") {
       'set isFs to false',
       'end try',
       'try',
+      'set windowPosition to position of frontWindow',
+      'set winX to item 1 of windowPosition',
+      'set winY to item 2 of windowPosition',
+      'on error',
+      'set winX to 0',
+      'set winY to 0',
+      'end try',
+      'try',
       'set windowSize to size of frontWindow',
       'set winWidth to item 1 of windowSize',
       'set winHeight to item 2 of windowSize',
@@ -71,13 +79,13 @@ if (process.platform === "win32") {
       'set winWidth to 0',
       'set winHeight to 0',
       'end try',
-      'return appName & tab & winWidth & tab & winHeight & tab & isFs',
+      'return appName & tab & winX & tab & winY & tab & winWidth & tab & winHeight & tab & isFs',
       "end tell",
     ].join("\n");
     const output = await execTextAsync("osascript", ["-e", script]);
     if (!output) return null;
-    const [cls, w, h, isFullscreen] = output.split("\t");
-    return { cls: cls || "", w: parseNumber(w), h: parseNumber(h), isFullscreen: isFullscreen === "true" };
+    const [cls, x, y, w, h, isFullscreen] = output.split("\t");
+    return { cls: cls || "", x: parseNumber(x), y: parseNumber(y), w: parseNumber(w), h: parseNumber(h), isFullscreen: isFullscreen === "true" };
   };
 } else if (process.platform === "linux") {
   getForegroundInfo = async () => {
@@ -91,9 +99,13 @@ if (process.platform === "win32") {
     if (!state || !wmClass || !geometry) return null;
     const widthMatch = geometry.match(/Width:\s+(\d+)/);
     const heightMatch = geometry.match(/Height:\s+(\d+)/);
+    const xMatch = geometry.match(/Absolute upper-left X:\s+(-?\d+)/);
+    const yMatch = geometry.match(/Absolute upper-left Y:\s+(-?\d+)/);
     const classMatch = wmClass.match(/WM_CLASS\(STRING\) = (.+)$/);
     return {
       cls: classMatch ? classMatch[1] : "",
+      x: xMatch ? parseNumber(xMatch[1]) : 0,
+      y: yMatch ? parseNumber(yMatch[1]) : 0,
       w: widthMatch ? parseNumber(widthMatch[1]) : 0,
       h: heightMatch ? parseNumber(heightMatch[1]) : 0,
       isFullscreen: state.includes("_NET_WM_STATE_FULLSCREEN"),
