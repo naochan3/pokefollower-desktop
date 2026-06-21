@@ -5,6 +5,14 @@ function mapKeys(obj) {
   return out;
 }
 
+// 世代導出ヘルパ — gen-util.js の ESM 版と同一ロジック（パッケージング耐性のためインライン化）
+// NOTE: gen-util.js の BOUNDS 配列を変更する場合はここも同期すること
+const GEN_BOUNDS = [151, 251, 386, 493, 649, 721, 809, 905, 1025];
+function genOfDex(dex) {
+  for (let i = 0; i < GEN_BOUNDS.length; i++) if (dex <= GEN_BOUNDS[i]) return i + 1;
+  return GEN_BOUNDS.length;
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const enabledEl = document.getElementById("enabled");
 
@@ -73,9 +81,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function initGrid() {
     const gridEl = document.getElementById("grid");
     const searchEl = document.getElementById("search");
+    const genChipsEl = document.getElementById("genChips");
     if (!gridEl) return;
     const packs = await window.settingsApi.listPacks();
     let selectedId = res.pack;
+
+    // 世代フィルタ状態（'all' または 1〜9 の数値）
+    let selectedGen = 'all';
 
     const frag = document.createDocumentFragment();
     const tiles = [];
@@ -87,6 +99,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.className = "tile" + (p.id === selectedId ? " selected" : "");
       btn.dataset.id = p.id;
       btn.dataset.search = tileSearchText(p);
+      // 世代番号を data 属性に持たせて絞り込みに使う
+      btn.dataset.gen = p.num != null ? String(genOfDex(p.num)) : "0";
       const numStr = p.num == null ? "" : String(p.num).padStart(3, "0");
       const slugCompact = slug.replace(/-/g, "");
       const nameOnly = slug.replace(/^[0-9]+-?/, "");
@@ -125,15 +139,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     const sel = tiles.find((t) => t.classList.contains("selected"));
     if (sel) gridEl.scrollTop = Math.max(0, sel.offsetTop - gridEl.clientHeight / 2);
 
+    // タイル表示を検索 AND 世代で絞り込む共通関数
+    function applyFilter() {
+      const q = toHira((searchEl ? searchEl.value.trim().toLowerCase() : ""));
+      const raw = searchEl ? searchEl.value.trim().toLowerCase() : "";
+      for (const t of tiles) {
+        const hay = t.dataset.search;
+        const searchMatch = !raw || hay.includes(raw) || hay.includes(q);
+        const genMatch = selectedGen === 'all' || t.dataset.gen === String(selectedGen);
+        t.classList.toggle("hidden", !(searchMatch && genMatch));
+      }
+    }
+
     if (searchEl) {
-      searchEl.addEventListener("input", () => {
-        const q = toHira(searchEl.value.trim().toLowerCase());
-        const raw = searchEl.value.trim().toLowerCase();
-        for (const t of tiles) {
-          const hay = t.dataset.search;
-          const match = !raw || hay.includes(raw) || hay.includes(q);
-          t.classList.toggle("hidden", !match);
+      searchEl.addEventListener("input", applyFilter);
+    }
+
+    // 世代チップのクリック処理
+    if (genChipsEl) {
+      genChipsEl.addEventListener("click", (e) => {
+        const chip = e.target.closest(".gen-chip");
+        if (!chip) return;
+        const val = chip.dataset.gen;
+        selectedGen = val === "all" ? "all" : Number(val);
+        for (const c of genChipsEl.querySelectorAll(".gen-chip")) {
+          c.classList.toggle("active", c.dataset.gen === val);
         }
+        applyFilter();
       });
     }
   }

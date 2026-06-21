@@ -178,6 +178,13 @@
       width: 100%; box-sizing: border-box; padding: 7px 10px;
       border: 1.5px solid #000; border-radius: 8px; font-size: 13px; font-weight: 600; outline: none;
     }
+    .gen-chips { margin: 0 14px 6px; display: flex; gap: 3px; }
+    .gen-chip {
+      flex: 1 1 0; min-width: 0; padding: 3px 0; border: 1px solid #ccc; border-radius: 6px;
+      font-size: 11px; font-weight: 700; background: #fff; color: #444; cursor: pointer; outline: none;
+    }
+    .gen-chip:hover { background: #f5f5f5; }
+    .gen-chip.active { background: #EF4036; color: #fff; border-color: #EF4036; }
     .grid {
       margin: 0 12px; padding: 4px; flex: 1 1 auto; min-height: 0; overflow-y: auto;
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-content: start;
@@ -212,6 +219,18 @@
   <div class="card">
     <div class="search">
       <input id="search" type="text" inputmode="search" autocomplete="off" placeholder="名前・ローマ字・番号で検索" aria-label="ポケモン検索" />
+    </div>
+    <div id="genChips" class="gen-chips" role="group" aria-label="世代フィルタ">
+      <button type="button" class="gen-chip active" data-gen="all">全</button>
+      <button type="button" class="gen-chip" data-gen="1">1</button>
+      <button type="button" class="gen-chip" data-gen="2">2</button>
+      <button type="button" class="gen-chip" data-gen="3">3</button>
+      <button type="button" class="gen-chip" data-gen="4">4</button>
+      <button type="button" class="gen-chip" data-gen="5">5</button>
+      <button type="button" class="gen-chip" data-gen="6">6</button>
+      <button type="button" class="gen-chip" data-gen="7">7</button>
+      <button type="button" class="gen-chip" data-gen="8">8</button>
+      <button type="button" class="gen-chip" data-gen="9">9</button>
     </div>
     <div id="grid" class="grid" role="listbox" aria-label="ポケモン一覧"></div>
 

@@ -27,6 +27,15 @@ for (const id of ["enabled", "search", "grid", "scale", "scaleVal", "offset", "o
   expect(js.includes(`getElementById("${id}")`) || ["scaleVal", "offsetVal", "lerpVal"].includes(id), `settings.js should query #${id}`);
 }
 
+// 世代フィルタ
+expect(html.includes('id="genChips"'), 'settings.html must contain id="genChips" chip row');
+expect(html.includes('data-gen="all"'), 'settings.html must contain "全" chip with data-gen="all"');
+for (let g = 1; g <= 9; g++) {
+  expect(html.includes(`data-gen="${g}"`), `settings.html must contain chip data-gen="${g}"`);
+}
+expect(js.includes('genOfDex'), 'settings.js must reference genOfDex for generation filter');
+expect(js.includes('selectedGen'), 'settings.js must maintain selectedGen state');
+
 expect(html.includes('role="listbox"'), "pack grid must keep listbox role");
 expect(html.includes('aria-label="ポケモン一覧"'), "pack grid must keep Japanese aria label");
 expect(html.includes('placeholder="名前・ローマ字・番号で検索"'), "search placeholder must describe supported search keys");

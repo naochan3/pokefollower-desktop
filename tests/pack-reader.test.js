@@ -17,19 +17,21 @@ describe("pack-reader", () => {
   it("pack listをdex順・日本語名付きで返す", () => {
     const list = reader.readPackList();
 
-    expect(list.length).toBe(493);
+    // データセットは世代追加で増える。固定数ではなく下限＋構造で検証する。
+    expect(list.length).toBeGreaterThanOrEqual(493);
     expect(list[0]).toMatchObject({
       id: "retro/gen-1/001-bulbasaur",
       num: 1,
       ja: "フシギダネ",
       en: "Bulbasaur",
     });
-    expect(list.at(-1)).toMatchObject({
+    // 既知エントリの結合（日本語名）が正しいこと
+    expect(list.find((item) => item.num === 493)).toMatchObject({
       id: "retro/gen-4/493-arceus",
-      num: 493,
       ja: "アルセウス",
       en: "Arceus",
     });
+    // dex 昇順
     expect(list.map((item) => item.num)).toEqual([...list].map((item) => item.num).sort((a, b) => a - b));
   });
 

@@ -148,11 +148,37 @@ for (const id of uiIds) {
   if (!seenIds.has(id)) fail(`UI PNG not listed in index: ${id}`);
 }
 
+// No duplicate dex check is already enforced above (seenDex set, line ~87).
+// Gaps within a generation are LEGITIMATE (SpriteCollab is missing sprites for many Pokémon),
+// so contiguity is no longer a valid invariant.
+
+// Generation–range agreement: each entry's gen-N folder must match the national-dex range.
+const GEN_RANGES = {
+  "gen-1": [1, 151],
+  "gen-2": [152, 251],
+  "gen-3": [252, 386],
+  "gen-4": [387, 493],
+  "gen-5": [494, 649],
+  "gen-6": [650, 721],
+  "gen-7": [722, 809],
+  "gen-8": [810, 905],
+  "gen-9": [906, 1025],
+};
 const dexNumbers = entries.map((entry) => dexFromName(path.basename(entry.id))).filter((dex) => dex !== null);
-const minDex = Math.min(...dexNumbers);
-const maxDex = Math.max(...dexNumbers);
-for (let dex = minDex; dex <= maxDex; dex++) {
-  if (!dexNumbers.includes(dex)) fail(`missing dex number in current range: ${dex}`);
+const minDex = dexNumbers.length ? Math.min(...dexNumbers) : 0;
+const maxDex = dexNumbers.length ? Math.max(...dexNumbers) : 0;
+
+for (const entry of entries) {
+  const relative = entry.id.replace(/^retro\//, "");
+  const gen = path.dirname(relative); // "gen-1", "gen-5" …
+  const dex = dexFromName(path.basename(relative));
+  if (dex === null) continue;
+  const range = GEN_RANGES[gen];
+  if (!range) {
+    fail(`${entry.id}: unknown generation folder "${gen}"`);
+  } else if (dex < range[0] || dex > range[1]) {
+    fail(`${entry.id}: dex ${dex} is outside the expected range for ${gen} (${range[0]}–${range[1]})`);
+  }
 }
 
 if (errors.length > 0) {
