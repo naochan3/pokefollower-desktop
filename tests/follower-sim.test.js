@@ -118,7 +118,7 @@ describe("follower-sim", () => {
 const META_DIR = {
   rawPath: "gen-1/009-blastoise",
   states: {
-    idle: { sheet: "Idle-Anim.webp", frame: { w: 40, h: 40 }, fps: 8, frames: 8,
+    idle: { sheet: "Idle-Anim.webp", frame: { w: 40, h: 40 }, fps: 4, frames: 4,
       rows: { front: 0, frontRight: 1, right: 2, backRight: 3, back: 4, backLeft: 5, left: 6, frontLeft: 7 } },
     walk: { sheet: "Walk-Anim.webp", frame: { w: 32, h: 40 }, fps: 6, frames: 4,
       rows: { front: 0, frontRight: 1, right: 2, backRight: 3, back: 4, backLeft: 5, left: 6, frontLeft: 7 } },
@@ -183,5 +183,63 @@ describe("follower-sim 向き・sleep (Issue #30)", () => {
       rows.push(sim.step(16, now).row);
     }
     expect([...new Set(rows)]).toEqual([META_DIR.states.idle.rows.front]);
+  });
+
+  it("着地の瞬間に向きが高速で切り替わらない（ぶるぶる防止）", () => {
+    const sim = createFollowerSim();
+    sim.setMeta(META_DIR);
+    sim.resetTo(0, 0, 0);
+    let now = 0;
+    // 右へドラッグ。
+    for (let i = 0; i < 40; i++) {
+      now += 16;
+      sim.updateCursor(i * 15, 0, now);
+      sim.step(16, now);
+    }
+    // 以後カーソル静止だが、実マウス相当の微ノイズが縦横に乗る。
+    const cx = 39 * 15;
+    const log = [];
+    for (let i = 0; i < 300; i++) {
+      now += 16;
+      const nx = i % 2 ? 2 : 0;
+      const ny = i % 2 ? 0 : 2;
+      sim.updateCursor(cx + nx, ny, now);
+      const r = sim.step(16, now);
+      log.push({ i, row: r.row, st: r.state });
+    }
+    // 着地(初めて idle になる)前後の窓で、向きの切替は「進行方向→front」の最大1回まで。
+    const firstIdle = log.find((l) => l.st === "idle");
+    const c = firstIdle ? firstIdle.i : 150;
+    const win = log.filter((l) => l.i >= c - 20 && l.i <= c + 8);
+    let flips = 0;
+    for (let k = 1; k < win.length; k++) if (win[k].row !== win[k - 1].row) flips++;
+    expect(flips).toBeLessThanOrEqual(1);
+  });
+
+  it("待機(idle)アニメは公称fpsより遅く再生される", () => {
+    const sim = createFollowerSim();
+    sim.setMeta(META_DIR);
+    sim.resetTo(500, 500, 0);
+    let now = 0;
+    // perch へ落ち着かせて idle にする。
+    for (let i = 0; i < 200; i++) {
+      now += 16;
+      sim.updateCursor(500, 500, now);
+      sim.step(16, now);
+    }
+    // 10秒間の idle 中にフレームが進んだ回数を数える。
+    // 公称 idle fps=4 なら約40回。遅くした分それより明確に少ない。
+    let advances = 0;
+    let prev = sim.step(16, (now += 16)).frame;
+    const start = now;
+    while (now - start < 10000) {
+      now += 16;
+      const r = sim.step(16, now);
+      if (r.state !== "idle") throw new Error("idle 維持に失敗: " + r.state);
+      if (r.frame !== prev) advances++;
+      prev = r.frame;
+    }
+    expect(advances).toBeLessThan(34); // 公称40回 → 遅くなっていれば明確に下回る
+    expect(advances).toBeGreaterThan(20); // 遅すぎ(停止)でもない
   });
 });
