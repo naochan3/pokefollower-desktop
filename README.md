@@ -108,6 +108,16 @@
 - 668 カエンジシ（Pyroar）
 - 683 フレフワン（Aromatisse）
 
+**第7世代（7体）**
+
+- 732 ケララッパ（Trumbeak）
+- 733 ドデカバシ（Toucannon）
+- 734 ヤングース（Yungoos）
+- 735 デカグース（Gumshoos）
+- 741 オドリドリ（Oricorio）
+- 756 マシェード（Shiinotic）
+- 765 ヤレユータン（Oranguru）
+
 ---
 
 ## 開発
