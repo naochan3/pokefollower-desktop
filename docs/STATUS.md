@@ -45,10 +45,12 @@
 ## 現在含まれているもの（v1.0.4）
 
 - Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21 の改善＋ #31/#32 の追従挙動修正（向き・sleep・着地ぶるぶる・待機減速）込み。追従既定 16ms）
-- macOS arm64 dmg / zip（v1.0.4 は contributor によるビルド添付待ち。直近の公開済み安定版は v1.0.3）
+- macOS arm64 dmg / zip（v1.0.4 添付済み）
+- Linux AppImage（v1.0.4 添付済み。パッケージ検証まで、実機の常駐挙動は未検証）
 - ポケモン 493 種（第1〜4世代）
 - 日本語表示・日本語検索、タイル選択 UI
 - マルチモニター連続追従、全画面自動非表示（Windows / macOS / Linux best-effort）、ログイン自動起動、クリック透過
+- 通知コンパニオン基盤（既定 OFF、通知本文は保存しない、許可されたイベントを要約してドット風の吹き出し表示）
 
 ---
 
@@ -61,6 +63,7 @@
 | **全ポケモン対応（第5〜9世代の追加）** | 中 | [#14](https://github.com/naochan3/pokefollower-desktop/issues/14) | 現状は493種（〜第4世代）。スプライト素材と日本語名データの拡張が必要 |
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
 | macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知は実装済み。Linux AppImage の透明・常駐・クリック透過・最前面は実機検証が必要 |
+| 通知コンパニオンの OS 通知連携 | 中 | [#42](https://github.com/naochan3/pokefollower-desktop/issues/42) | 現状は表示基盤とテスト通知まで。macOS / Windows の OS 通知取得は権限境界を調査し、明示許可の範囲だけ実装する |
 
 ---
 
@@ -68,5 +71,6 @@
 
 - macOS / Windows とも **未署名**（初回起動時に OS の警告）。
 - 全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。
+- 通知コンパニオンは OS 全体の通知取得までは未対応です。現在はアプリ内/許可済みイベントを表示する軽量基盤です。
 - モニター間で表示スケール（DPI）が大きく異なると、位置がわずかにずれることがある。
 - Linux は AppImage ビルドまで（実機の常駐挙動は未検証）。

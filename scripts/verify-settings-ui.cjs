@@ -22,7 +22,7 @@ function inputAttrs(id) {
   return attrs;
 }
 
-for (const id of ["enabled", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
+for (const id of ["enabled", "notificationCompanion", "testCompanion", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
   expect(html.includes(`id="${id}"`), `settings.html missing id="${id}"`);
   expect(js.includes(`getElementById("${id}")`) || ["scaleVal", "offsetVal", "lerpVal"].includes(id), `settings.js should query #${id}`);
 }
@@ -33,6 +33,7 @@ expect(html.includes('placeholder="名前・ローマ字・番号で検索"'), "
 expect(html.includes('<script src="settings.js"></script>'), "settings.html must load settings.js");
 
 expect(inputAttrs("enabled")?.type === "checkbox", "enabled input must be a checkbox");
+expect(inputAttrs("notificationCompanion")?.type === "checkbox", "notification companion input must be a checkbox");
 expect(inputAttrs("search")?.type === "text", "search input must be text");
 expect(inputAttrs("scale")?.type === "number", "scale input must be number");
 expect(inputAttrs("scale")?.min === "0.5", "scale min must be 0.5");
@@ -53,6 +54,7 @@ for (const mapping of [
   "vcp1_scale: \"scale\"",
   "vcp1_offset: \"offset\"",
   "vcp1_lerp: \"lerp\"",
+  "vcp1_notification_companion: \"notificationCompanionEnabled\"",
 ]) {
   expect(js.includes(mapping), `settings.js missing key mapping ${mapping}`);
 }
@@ -69,6 +71,7 @@ for (const surface of [
   'getSettings: () => ipcRenderer.invoke("settings:get")',
   'setSettings: (patch) => ipcRenderer.send("settings:set", patch)',
   'listPacks: () => ipcRenderer.invoke("packs:list")',
+  'testCompanionNotification: () => ipcRenderer.invoke("companion:test-notification")',
 ]) {
   expect(preload.includes(surface), `settings preload missing surface: ${surface}`);
 }

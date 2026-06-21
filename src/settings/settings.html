@@ -194,6 +194,41 @@
     .tile .name { font-size: 11px; font-weight: 700; line-height: 1.1; word-break: break-all; }
     .tile .num { font-size: 10px; color: #888; }
     .tile.hidden { display: none; }
+    .companion {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 12px 0;
+      padding: 7px 8px;
+      border: 2px solid #000;
+      background: #fff;
+      box-shadow: 3px 3px 0 #000;
+    }
+    .companion label {
+      display: inline-grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .companion input {
+      width: 16px;
+      height: 16px;
+      accent-color: #EF4036;
+    }
+    .companion button {
+      border: 2px solid #000;
+      background: #EF4036;
+      color: #fff;
+      box-shadow: 2px 2px 0 #000;
+      font: inherit;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 7px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -212,6 +247,13 @@
   <div class="card">
     <div class="search">
       <input id="search" type="text" inputmode="search" autocomplete="off" placeholder="名前・ローマ字・番号で検索" aria-label="ポケモン検索" />
+    </div>
+    <div class="companion">
+      <label for="notificationCompanion">
+        <input id="notificationCompanion" type="checkbox" />
+        <span>通知コンパニオン</span>
+      </label>
+      <button id="testCompanion" type="button">TEST</button>
     </div>
     <div id="grid" class="grid" role="listbox" aria-label="ポケモン一覧"></div>
 

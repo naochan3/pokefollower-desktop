@@ -44,6 +44,7 @@ expect(/fullscreenTimer = setInterval\(checkFullscreen, FULLSCREEN_POLL_INTERVAL
 expect(/clearInterval\(fullscreenTimer\)/.test(main), "fullscreen polling must be stoppable");
 expect(!/setInterval\(checkFullscreen, 600\)/.test(main), "main.js must not leave fullscreen polling as an untracked always-on interval");
 expect(/if \(enabled\) \{[\s\S]*startFullscreenPolling\(\)/.test(main), "setEnabled(true) must start fullscreen polling");
+expect(/sim\.resetTo\(c\.x, c\.y, Date\.now\(\)\);[\s\S]*runSimFrame\(\);/.test(main), "setEnabled(true) must publish the first sim frame immediately");
 expect(/else \{[\s\S]*stopFullscreenPolling\(\)/.test(main), "setEnabled(false) must stop fullscreen polling");
 expect(/powerMonitor/.test(main), "main.js must use powerMonitor for AC/battery interval changes");
 expect(/getSimIntervalMs\(\{ isOnBattery: readBatteryState\(\) \}\)/.test(main), "main.js must use sim-loop-config for interval selection");
@@ -69,6 +70,14 @@ expect(
 expect(
   /settingsStore = createSettingsStore\(path\.join\(getUserDataPath\(\), "settings\.json"\)\)/.test(main),
   "settings must be loaded from the resolved Electron userData/settings.json",
+);
+expect(
+  /const s = settingsStore\.getAll\(\);[\s\S]*sim\.setConfig\(\{ vcp1_scale: s\.scale, vcp1_offset: s\.offset, vcp1_lerp: s\.lerp \}\);[\s\S]*loadPackIntoSim\(s\.pack\)/.test(main),
+  "startup must restore the last saved Pokemon pack from settings before creating overlays",
+);
+expect(
+  /catch \(_\) \{ try \{ loadPackIntoSim\("retro\/gen-1\/009-blastoise"\); \}/.test(main),
+  "startup must fall back to Blastoise only when the saved Pokemon pack cannot be loaded",
 );
 
 if (errors.length > 0) {

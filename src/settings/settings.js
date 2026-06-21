@@ -1,5 +1,5 @@
 function mapKeys(obj) {
-  const m = { vcp1_enabled: "enabled", vcp1_pack: "pack", vcp1_scale: "scale", vcp1_offset: "offset", vcp1_lerp: "lerp" };
+  const m = { vcp1_enabled: "enabled", vcp1_pack: "pack", vcp1_scale: "scale", vcp1_offset: "offset", vcp1_lerp: "lerp", vcp1_notification_companion: "notificationCompanionEnabled" };
   const out = {};
   for (const [k, v] of Object.entries(obj)) out[m[k] || k] = v;
   return out;
@@ -7,6 +7,8 @@ function mapKeys(obj) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const enabledEl = document.getElementById("enabled");
+  const notificationCompanionEl = document.getElementById("notificationCompanion");
+  const testCompanionEl = document.getElementById("testCompanion");
 
   // Sliders + readouts
   const scaleEl   = document.getElementById("scale");
@@ -35,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const res = await window.settingsApi.getSettings();
   {
       enabledEl.checked = !!res.enabled;
+      if (notificationCompanionEl) notificationCompanionEl.checked = !!res.notificationCompanionEnabled;
 
       const scale  = (typeof res.scale  === "number") ? res.scale  : DEFAULTS.vcp1_scale;
       const offset = (typeof res.offset === "number") ? res.offset : DEFAULTS.vcp1_offset;
@@ -59,6 +62,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   enabledEl.addEventListener("change", () => {
     save({ vcp1_enabled: enabledEl.checked });
   });
+  if (notificationCompanionEl) {
+    notificationCompanionEl.addEventListener("change", () => {
+      save({ vcp1_notification_companion: notificationCompanionEl.checked });
+    });
+  }
+  if (testCompanionEl) {
+    testCompanionEl.addEventListener("click", () => {
+      window.settingsApi.testCompanionNotification();
+    });
+  }
 
   // --- カタカナ⇄ひらがな正規化（検索用） ---
   function toHira(s) {

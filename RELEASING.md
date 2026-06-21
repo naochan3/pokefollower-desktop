@@ -81,6 +81,7 @@ macOS はアセット名にバージョンが入るため、README では `relea
 | Windows | `PokeFollower-Setup.exe`（バージョン番号を入れない） |
 | macOS dmg | `PokeFollower-<ver>-arm64.dmg` |
 | macOS zip | `PokeFollower-<ver>-arm64-mac.zip` |
+| Linux AppImage | `PokeFollower-<ver>.AppImage` |
 
 > macOS のアセット名にはバージョンが入ります。バージョンを上げたら **README の macOS リンクのタグ名とファイル名も更新** してください（Windows は固定名なので不要）。
 

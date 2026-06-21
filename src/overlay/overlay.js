@@ -12,6 +12,11 @@ let appliedSize = "";
 let appliedBgSize = "";
 let appliedFramePosition = "";
 let appliedTransform = "";
+let notificationEl = null;
+let notificationSourceEl = null;
+let notificationTitleEl = null;
+let notificationBodyEl = null;
+let notificationTimer = null;
 
 function extUrl(rel) {
   return "app://bundle/" + String(rel).replace(/^\/+/, "");
@@ -45,6 +50,64 @@ function ensureEl() {
     display: "none",
   });
   document.documentElement.appendChild(followerEl);
+}
+
+function ensureNotificationEl() {
+  if (notificationEl) return;
+  notificationEl = document.createElement("div");
+  notificationEl.id = "__pf_notification";
+  Object.assign(notificationEl.style, {
+    position: "fixed",
+    left: "0px",
+    top: "0px",
+    maxWidth: "260px",
+    padding: "8px 10px",
+    border: "3px solid #111",
+    borderRadius: "0",
+    background: "#fff",
+    color: "#111",
+    boxShadow: "4px 4px 0 #111",
+    font: "700 12px/1.35 system-ui, -apple-system, Segoe UI, sans-serif",
+    imageRendering: "pixelated",
+    pointerEvents: "none",
+    zIndex: "2147483647",
+    display: "none",
+    whiteSpace: "normal",
+  });
+  notificationSourceEl = document.createElement("div");
+  Object.assign(notificationSourceEl.style, {
+    fontSize: "10px",
+    color: "#ef4036",
+    marginBottom: "3px",
+  });
+  notificationTitleEl = document.createElement("div");
+  notificationBodyEl = document.createElement("div");
+  Object.assign(notificationBodyEl.style, {
+    fontWeight: "600",
+    marginTop: "3px",
+  });
+  notificationEl.append(notificationSourceEl, notificationTitleEl, notificationBodyEl);
+  document.documentElement.appendChild(notificationEl);
+}
+
+function showCompanionNotification(n) {
+  ensureNotificationEl();
+  if (notificationTimer) clearTimeout(notificationTimer);
+  notificationSourceEl.textContent = n.source || "通知";
+  notificationTitleEl.textContent = n.title || "";
+  notificationTitleEl.style.display = n.title ? "block" : "none";
+  notificationBodyEl.textContent = n.body || "";
+  notificationBodyEl.style.display = n.body ? "block" : "none";
+  const baseX = followerEl && visible ? followerEl.getBoundingClientRect().left : window.innerWidth - 280;
+  const baseY = followerEl && visible ? followerEl.getBoundingClientRect().top : window.innerHeight - 120;
+  const x = Math.max(12, Math.min(window.innerWidth - 280, baseX + 18));
+  const y = Math.max(12, Math.min(window.innerHeight - 120, baseY - 76));
+  notificationEl.style.transform = `translate3d(${x.toFixed(0)}px, ${y.toFixed(0)}px, 0)`;
+  notificationEl.style.display = "block";
+  notificationTimer = setTimeout(() => {
+    notificationEl.style.display = "none";
+    notificationTimer = null;
+  }, Number(n.ttlMs) || 5200);
 }
 
 function preloadImages(m) {
@@ -121,4 +184,8 @@ window.pokeapi.onFrame((f) => {
     followerEl.style.transform = transform;
     appliedTransform = transform;
   }
+});
+
+window.pokeapi.onCompanionNotification((n) => {
+  showCompanionNotification(n);
 });
