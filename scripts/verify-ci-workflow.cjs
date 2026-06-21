@@ -172,6 +172,7 @@ for (const file of [
   "scripts/verify-repo-hygiene.cjs",
   "scripts/verify-installer-ux.cjs",
   "scripts/verify-ipc-routing.cjs",
+  "scripts/verify-notification-overlay-render.cjs",
   "scripts/verify-overlay-cache.cjs",
   "scripts/verify-roadmap-issues.cjs",
   "scripts/verify-runtime-guards.cjs",

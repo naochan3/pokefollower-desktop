@@ -39,6 +39,14 @@ expect(/transformOrigin: "center center"/.test(overlay), "overlay should set tra
 expect(/translate3d\(/.test(overlay), "overlay should position sprites with translate3d");
 expect(/onCompanionNotification/.test(overlay), "overlay must subscribe to companion notification events");
 expect(!/getBoundingClientRect/.test(overlay), "overlay notification positioning must avoid forced layout reads");
+expect(/const NOTIFICATION_FALLBACK_WIDTH = 292;/.test(overlay), "notification fallback width must match the styled pixel bubble width");
+expect(/const NOTIFICATION_FALLBACK_HEIGHT = 124;/.test(overlay), "notification fallback height must leave clamp room for the styled pixel bubble");
+expect(/width: "min\(292px, calc\(100vw - 24px\)\)"/.test(overlay), "notification bubble must use a stable clamped width");
+expect(/minHeight: "86px"/.test(overlay), "notification bubble must reserve enough text height");
+expect(/border: "4px solid #000"/.test(overlay), "notification bubble must keep a crisp 4px pixel border");
+expect(/boxShadow: "6px 6px 0 #000"/.test(overlay), "notification bubble must keep a pixel shadow");
+expect(/ui-monospace/.test(overlay), "notification bubble must use a pixel-like monospace font stack");
+expect(/borderBottom: "4px solid #000"/.test(overlay), "notification source strip must keep a pixel divider");
 expect(
   /onMeta: \(cb\) => ipcRenderer\.on\("meta", \(_e, m\) => cb\(m\)\)/.test(preload) &&
     /onFrame: \(cb\) => ipcRenderer\.on\("frame", \(_e, f\) => cb\(f\)\)/.test(preload) &&
