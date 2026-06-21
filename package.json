@@ -26,7 +26,7 @@
     "verify:electron": "node scripts/verify-electron-security.cjs",
     "verify:installer": "node scripts/verify-installer-ux.cjs",
     "verify:ipc": "node scripts/verify-ipc-routing.cjs",
-    "verify:local": "npm run verify:assets && npm run verify:ci && npm run verify:deps && npm run verify:docs && npm run verify:electron && npm run verify:hygiene && npm run verify:installer && npm run verify:ipc && npm run verify:overlay && npm run verify:platform && npm run verify:runtime-validation && npm run verify:roadmap && npm run verify:runtime && npm run verify:search-metadata && npm run verify:settings && npm run verify:signing && npm run verify:wasm && npm test",
+    "verify:local": "npm run verify:assets && npm run verify:ci && npm run verify:deps && npm run verify:docs && npm run verify:electron && npm run verify:hygiene && npm run verify:installer && npm run verify:ipc && npm run verify:notification && npm run verify:overlay && npm run verify:platform && npm run verify:runtime-validation && npm run verify:roadmap && npm run verify:runtime && npm run verify:search-metadata && npm run verify:settings && npm run verify:signing && npm run verify:wasm && npm test",
     "verify:hygiene": "node scripts/verify-repo-hygiene.cjs",
     "verify:notification": "node scripts/verify-notification-overlay-render.cjs",
     "verify:overlay": "node scripts/verify-overlay-cache.cjs",

@@ -101,6 +101,7 @@ if (!pkg.scripts || !pkg.scripts["verify:local"]) {
     "npm run verify:hygiene",
     "npm run verify:installer",
     "npm run verify:ipc",
+    "npm run verify:notification",
     "npm run verify:overlay",
     "npm run verify:platform",
     "npm run verify:roadmap",
