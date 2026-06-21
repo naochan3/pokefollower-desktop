@@ -17,6 +17,7 @@ const { defaultNotificationQueuePath } = require("./notification-queue.js");
 const { createWorkWatchSession } = require("./work-watch.js");
 const { reactionModeForForeground } = require("./app-reactions.js");
 const { addFavoritePack, nextFavoritePack, removeFavoritePack } = require("./favorite-rotation.js");
+const { exportCodexPet } = require("./codex-pet-export.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -496,6 +497,23 @@ ipcMain.handle("favorites:remove", (event, packKey) => {
   requireSettingsSender(event);
   const targetPack = packKey || settingsStore.get("pack");
   return saveFavoritePacks(removeFavoritePack(targetPack, settingsStore.get("favoritePacks")));
+});
+ipcMain.handle("codex-pet:export-current", async (event, packKey) => {
+  requireSettingsSender(event);
+  const result = await exportCodexPet({
+    BrowserWindow,
+    root: ROOT,
+    packReader,
+    packKey: packKey || settingsStore.get("pack"),
+  });
+  if (notificationCompanion) {
+    notificationCompanion.publish({
+      source: "PokéFollower",
+      title: "Codex pet",
+      body: `${result.displayName} を書き出しました`,
+    }, { force: true });
+  }
+  return result;
 });
 ipcMain.on("settings:set", (event, patch) => {
   if (!isSettingsSender(event)) return;

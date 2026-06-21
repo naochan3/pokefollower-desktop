@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const notificationCompanionEl = document.getElementById("notificationCompanion");
   const appReactionsEl = document.getElementById("appReactions");
   const testCompanionEl = document.getElementById("testCompanion");
+  const exportCodexPetEl = document.getElementById("exportCodexPet");
   const workWatchEl = document.getElementById("workWatch");
   const workWatchPresetEl = document.getElementById("workWatchPreset");
   const workWatchStartEl = document.getElementById("workWatchStart");
@@ -163,6 +164,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (testCompanionEl) {
     testCompanionEl.addEventListener("click", () => {
       window.settingsApi.testCompanionNotification();
+    });
+  }
+  if (exportCodexPetEl) {
+    exportCodexPetEl.addEventListener("click", async () => {
+      const packKey = document.querySelector(".tile.selected")?.dataset.id || res.pack;
+      exportCodexPetEl.disabled = true;
+      exportCodexPetEl.textContent = "...";
+      try {
+        await window.settingsApi.exportCodexPet(packKey);
+        exportCodexPetEl.textContent = "DONE";
+      } catch (_) {
+        exportCodexPetEl.textContent = "ERR";
+      } finally {
+        setTimeout(() => {
+          exportCodexPetEl.disabled = false;
+          exportCodexPetEl.textContent = "EXPORT";
+        }, 1200);
+      }
     });
   }
   if (workWatchEl) {
