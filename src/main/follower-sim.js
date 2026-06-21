@@ -48,12 +48,14 @@ function createFollowerSim(options = {}) {
     const speed = R.speedAvg || 0;
     const hasDir = speed > 40;
     const OFFSET = CONFIG.offset;
-    let dX, dY;
-    if (hasDir) { dX = -(R.velAvg.x / (speed || 1)); dY = -(R.velAvg.y / (speed || 1)); }
-    else { dX = IDLE_OFFSET_DIR.x; dY = IDLE_OFFSET_DIR.y; }
-    const OD_LERP = 0.08;
-    R.offsetDir.x += (dX - R.offsetDir.x) * OD_LERP;
-    R.offsetDir.y += (dY - R.offsetDir.y) * OD_LERP;
+    // 移動中だけ offsetDir を進行方向の逆へ更新。停止中は凍結＝直前の隅に留まる（真上へ戻さない）。
+    if (hasDir) {
+      const dX = -(R.velAvg.x / (speed || 1));
+      const dY = -(R.velAvg.y / (speed || 1));
+      const OD_LERP = 0.08;
+      R.offsetDir.x += (dX - R.offsetDir.x) * OD_LERP;
+      R.offsetDir.y += (dY - R.offsetDir.y) * OD_LERP;
+    }
     R.target.x = R.lastMouse.x + R.offsetDir.x * OFFSET;
     R.target.y = R.lastMouse.y + R.offsetDir.y * OFFSET;
   }
