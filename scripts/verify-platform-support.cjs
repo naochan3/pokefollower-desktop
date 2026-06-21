@@ -34,6 +34,10 @@ expect(
   "fullscreen-detect should include best-effort macOS foreground detection",
 );
 expect(
+  /execTextAsync/.test(fullscreenDetect) && /getForegroundInfo = async \(\)/.test(fullscreenDetect),
+  "macOS/Linux foreground detection must avoid blocking the Electron main process",
+);
+expect(
   /process\.platform === "linux"/.test(fullscreenDetect) && /xdotool/.test(fullscreenDetect) && /xprop/.test(fullscreenDetect) && /xwininfo/.test(fullscreenDetect),
   "fullscreen-detect should include best-effort Linux foreground detection",
 );
