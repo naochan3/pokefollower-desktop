@@ -23,7 +23,8 @@ function applySettingsPatch(patch, {
     hasOwn(safePatch, "edgeRest") ||
     hasOwn(safePatch, "avoidCursor") ||
     hasOwn(safePatch, "personality") ||
-    hasOwn(safePatch, "mode")
+    hasOwn(safePatch, "mode") ||
+    hasOwn(safePatch, "appReactionsEnabled")
   ) {
     sim.setConfig({
       vcp1_scale: next.scale,

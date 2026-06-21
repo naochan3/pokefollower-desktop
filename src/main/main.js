@@ -15,6 +15,7 @@ const { createNotificationCompanion } = require("./notification-companion.js");
 const { createCodexNotificationWatcher } = require("./codex-notification-watcher.js");
 const { defaultNotificationQueuePath } = require("./notification-queue.js");
 const { createWorkWatchSession } = require("./work-watch.js");
+const { reactionModeForForeground } = require("./app-reactions.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -33,6 +34,8 @@ let lastStepTs = 0;
 let lastRender = null;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
 let fullscreenCheckInFlight = false;
+let lastForegroundInfo = null;
+let currentReactionMode = "normal";
 let notificationCompanion = null;
 let codexNotificationWatcher = null;
 let workWatchSession = null;
@@ -43,6 +46,7 @@ const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
 const FULLSCREEN_POLL_INTERVAL_MS = process.platform === "win32" ? 600 : 2000;
 
 function applyFullscreenInfo(info) {
+  lastForegroundInfo = info || null;
   const nextFullscreenActive = isFullscreenForeground(info, screen.getAllDisplays());
   if (nextFullscreenActive === fullscreenActive) return;
   fullscreenActive = nextFullscreenActive;
@@ -53,6 +57,24 @@ function applyFullscreenInfo(info) {
     startSimLoop();
     runSimFrame();
   }
+}
+
+function workWatchPhase() {
+  if (!workWatchSession) return "idle";
+  const state = workWatchSession.snapshot();
+  if (!state.running) return "idle";
+  return state.phase;
+}
+
+function syncReactionMode() {
+  if (!settingsStore) return;
+  const nextMode = reactionModeForForeground(lastForegroundInfo, {
+    enabled: !!settingsStore.get("appReactionsEnabled"),
+    workWatchPhase: workWatchPhase(),
+  });
+  if (nextMode === currentReactionMode) return;
+  currentReactionMode = nextMode;
+  sim.setConfig({ vcp1_reactionMode: currentReactionMode });
 }
 
 function checkFullscreen() {
@@ -204,6 +226,7 @@ function runSimFrame() {
   const dt = now - lastStepTs;
   lastStepTs = now;
   if (!enabled || fullscreenActive) { broadcastFrame(null); return; }
+  syncReactionMode();
   const cursor = screen.getCursorScreenPoint(); // グローバル座標
   sim.updateCursor(cursor.x, cursor.y, now);
   broadcastFrame(sim.step(dt, now));
@@ -354,6 +377,7 @@ function startWorkWatchTimer() {
   workWatchTimer = setInterval(() => {
     const { event, state } = workWatchSession.tick(Date.now());
     if (event) publishWorkWatchEvent(event);
+    if (event) syncReactionMode();
     if (!state.running) stopWorkWatchTimer();
   }, 1000);
 }
@@ -365,6 +389,7 @@ function syncWorkWatchConfig() {
     workWatchSession.stop();
     stopWorkWatchTimer();
   }
+  syncReactionMode();
 }
 
 ipcMain.handle("settings:get", (event) => {
@@ -388,6 +413,7 @@ ipcMain.handle("work-watch:start", (event) => {
   settingsStore.set({ workWatchEnabled: true });
   syncWorkWatchConfig();
   const state = workWatchSession.start(Date.now());
+  syncReactionMode();
   startWorkWatchTimer();
   return state;
 });
@@ -395,12 +421,14 @@ ipcMain.handle("work-watch:stop", (event) => {
   requireSettingsSender(event);
   const state = workWatchSession.stop();
   stopWorkWatchTimer();
+  syncReactionMode();
   return state;
 });
 ipcMain.handle("work-watch:reset", (event) => {
   requireSettingsSender(event);
   const state = workWatchSession.stop();
   stopWorkWatchTimer();
+  syncReactionMode();
   return state;
 });
 ipcMain.on("settings:set", (event, patch) => {
@@ -441,6 +469,7 @@ app.whenReady().then(() => {
     vcp1_avoidCursor: s.avoidCursor,
     vcp1_personality: s.personality,
     vcp1_mode: s.mode,
+    vcp1_reactionMode: currentReactionMode,
   });
   try { loadPackIntoSim(s.pack); }
   catch (_) { try { loadPackIntoSim("retro/gen-1/009-blastoise"); } catch (_e) { /* noop */ } }

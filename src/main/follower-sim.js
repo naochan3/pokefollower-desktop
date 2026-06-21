@@ -35,9 +35,16 @@ const PERSONALITY_PRESETS = {
   relaxed: { offset: 1.25, lerp: 0.75, idleAnim: 0.75, edgeRestIdle: 0.75, roamIdle: 1.75, roamSleepEvery: 3 },
   friendly: { offset: 0.70, lerp: 1.10, idleAnim: 1.10, edgeRestIdle: 0.90, roamIdle: 0.85, roamSleepEvery: 5 },
 };
+const REACTION_MODES = {
+  normal: { offset: 1.0, lerp: 1.0, idleAnim: 1.0, edgeRestIdle: 1.0 },
+  calm: { offset: 1.18, lerp: 0.82, idleAnim: 0.78, edgeRestIdle: 0.75 },
+  break: { offset: 0.66, lerp: 1.18, idleAnim: 1.18, edgeRestIdle: 1.2 },
+  focus: { offset: 1.35, lerp: 0.72, idleAnim: 0.72, edgeRestIdle: 0.65 },
+  friendly: { offset: 0.78, lerp: 1.08, idleAnim: 1.08, edgeRestIdle: 1.0 },
+};
 
 function createFollowerSim(options = {}) {
-  const CONFIG = { scale: 1.25, offset: 70, lerp: 0.20, edgeRest: true, avoidCursor: true, personality: "standard", mode: "follow" };
+  const CONFIG = { scale: 1.25, offset: 70, lerp: 0.20, edgeRest: true, avoidCursor: true, personality: "standard", mode: "follow", reactionMode: "normal" };
   const rustCore = createRustFollowerCore(options.rootDir || path.join(__dirname, "..", ".."));
   let displayBounds = [];
   let meta = null;
@@ -72,20 +79,24 @@ function createFollowerSim(options = {}) {
     return PERSONALITY_PRESETS[CONFIG.personality] || PERSONALITY_PRESETS.standard;
   }
 
+  function reactionPreset() {
+    return REACTION_MODES[CONFIG.reactionMode] || REACTION_MODES.normal;
+  }
+
   function effectiveOffset() {
-    return Math.max(0, CONFIG.offset * personalityPreset().offset);
+    return Math.max(0, CONFIG.offset * personalityPreset().offset * reactionPreset().offset);
   }
 
   function effectiveLerp() {
-    return clamp(CONFIG.lerp * personalityPreset().lerp, SPEED_CONFIG_MIN, SPEED_CONFIG_MAX);
+    return clamp(CONFIG.lerp * personalityPreset().lerp * reactionPreset().lerp, SPEED_CONFIG_MIN, SPEED_CONFIG_MAX);
   }
 
   function effectiveIdleAnimSpeed() {
-    return IDLE_ANIM_SPEED * personalityPreset().idleAnim;
+    return IDLE_ANIM_SPEED * personalityPreset().idleAnim * reactionPreset().idleAnim;
   }
 
   function effectiveEdgeRestIdleMs() {
-    return EDGE_REST_IDLE_MS * personalityPreset().edgeRestIdle;
+    return EDGE_REST_IDLE_MS * personalityPreset().edgeRestIdle * reactionPreset().edgeRestIdle;
   }
 
   function effectiveRoamIdleMs() {
@@ -278,6 +289,7 @@ function createFollowerSim(options = {}) {
     if (typeof obj.vcp1_edgeRest === "boolean") CONFIG.edgeRest = obj.vcp1_edgeRest;
     if (typeof obj.vcp1_avoidCursor === "boolean") CONFIG.avoidCursor = obj.vcp1_avoidCursor;
     if (typeof obj.vcp1_personality === "string" && PERSONALITY_PRESETS[obj.vcp1_personality]) CONFIG.personality = obj.vcp1_personality;
+    if (typeof obj.vcp1_reactionMode === "string" && REACTION_MODES[obj.vcp1_reactionMode]) CONFIG.reactionMode = obj.vcp1_reactionMode;
     if (obj.vcp1_mode === "follow" || obj.vcp1_mode === "roam") {
       CONFIG.mode = obj.vcp1_mode;
       R.roamTarget = null;

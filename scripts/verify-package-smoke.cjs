@@ -71,6 +71,7 @@ if (!fileSet.has("/native/pokefollower_core.wasm")) {
 }
 for (const requiredSource of [
   "/src/main/main.js",
+  "/src/main/app-reactions.js",
   "/src/main/app-protocol-path.js",
   "/src/main/asset-path.js",
   "/src/main/codex-notify-cli.js",

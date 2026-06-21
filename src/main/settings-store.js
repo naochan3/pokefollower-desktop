@@ -11,6 +11,7 @@ const DEFAULTS = {
   avoidCursor: true,
   personality: "standard",
   mode: "follow",
+  appReactionsEnabled: false,
   notificationCompanionEnabled: false,
   workWatchEnabled: false,
   workWatchPreset: "25/5",
@@ -35,7 +36,7 @@ function sanitize(patch) {
   if (!patch || typeof patch !== "object" || Array.isArray(patch)) return out;
   for (const [k, v] of Object.entries(patch)) {
     if (!(k in DEFAULTS)) continue;
-    if (k === "enabled" || k === "edgeRest" || k === "avoidCursor" || k === "notificationCompanionEnabled" || k === "workWatchEnabled") { out[k] = !!v; continue; }
+    if (k === "enabled" || k === "edgeRest" || k === "avoidCursor" || k === "appReactionsEnabled" || k === "notificationCompanionEnabled" || k === "workWatchEnabled") { out[k] = !!v; continue; }
     if (k === "personality") {
       const personality = typeof v === "string" ? v.trim() : "";
       if (PERSONALITIES.has(personality)) out.personality = personality;
