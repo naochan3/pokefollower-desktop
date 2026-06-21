@@ -277,7 +277,8 @@
       height: 16px;
       accent-color: #EF4036;
     }
-    .companion {
+    .companion,
+    .codexpet {
       display: grid;
       grid-template-columns: 1fr auto;
       align-items: center;
@@ -290,7 +291,8 @@
       box-sizing: border-box;
       flex: 0 0 auto;
     }
-    .companion label {
+    .companion label,
+    .codexpet label {
       display: inline-grid;
       grid-template-columns: auto 1fr;
       align-items: center;
@@ -304,7 +306,8 @@
       height: 16px;
       accent-color: #EF4036;
     }
-    .companion button {
+    .companion button,
+    .codexpet button {
       border: 2px solid #000;
       background: #EF4036;
       color: #fff;
@@ -315,6 +318,13 @@
       padding: 3px 7px;
       cursor: pointer;
       min-width: 48px;
+    }
+    .codexpet label {
+      grid-template-columns: 1fr;
+    }
+    .codexpet button:disabled {
+      opacity: 0.68;
+      cursor: default;
     }
     .workwatch {
       display: grid;
@@ -446,6 +456,12 @@
         <span>通知コンパニオン</span>
       </label>
       <button id="testCompanion" type="button">TEST</button>
+    </div>
+    <div class="codexpet">
+      <label for="exportCodexPet">
+        <span>Codex pet</span>
+      </label>
+      <button id="exportCodexPet" type="button">EXPORT</button>
     </div>
     <div class="workwatch">
       <label class="workwatch-main" for="workWatch">

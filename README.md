@@ -102,6 +102,7 @@ chmod +x release/*.AppImage
   - **自動起動** — ログイン時の自動起動の ON / OFF
   - **終了** — アプリを終了
 - 設定画面では、検索ボックスに `ピカチュウ` / `ぴかちゅう` / `pikachu` / `25` などを入力して絞り込めます。
+- 設定画面の `Codex pet` → `EXPORT` で、選択中のポケモンを `~/.codex/pets/pokefollower-.../` に custom pet として書き出せます。
 - 通知コンパニオンは設定画面で ON / OFF できます。Codex の `notify` と連携する場合は、既存の Codex pet helper を残すために chain mode を使います。
 
 ```toml

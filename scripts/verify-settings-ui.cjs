@@ -22,7 +22,7 @@ function inputAttrs(id) {
   return attrs;
 }
 
-for (const id of ["enabled", "edgeRest", "avoidCursor", "avoidCursorStrength", "appReactions", "personality", "mode", "notificationCompanion", "testCompanion", "workWatch", "workWatchPreset", "workWatchStart", "workWatchStop", "workWatchReset", "favoriteAdd", "favoriteNext", "favoriteClear", "favoriteCount", "rotationEnabled", "rotationInterval", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
+for (const id of ["enabled", "edgeRest", "avoidCursor", "avoidCursorStrength", "appReactions", "personality", "mode", "notificationCompanion", "testCompanion", "exportCodexPet", "workWatch", "workWatchPreset", "workWatchStart", "workWatchStop", "workWatchReset", "favoriteAdd", "favoriteNext", "favoriteClear", "favoriteCount", "rotationEnabled", "rotationInterval", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
   expect(html.includes(`id="${id}"`), `settings.html missing id="${id}"`);
   expect(js.includes(`getElementById("${id}")`) || ["scaleVal", "offsetVal", "lerpVal"].includes(id), `settings.js should query #${id}`);
 }
@@ -59,6 +59,7 @@ for (const mode of ["follow", "roam"]) {
 }
 expect(html.includes('<select id="kind">'), "kind select must exist");
 expect(inputAttrs("notificationCompanion")?.type === "checkbox", "notification companion input must be a checkbox");
+expect(html.includes('id="exportCodexPet"'), "settings UI must expose Codex pet export button");
 expect(inputAttrs("workWatch")?.type === "checkbox", "work watch input must be a checkbox");
 expect(inputAttrs("rotationEnabled")?.type === "checkbox", "rotation enabled input must be a checkbox");
 expect(inputAttrs("rotationInterval")?.type === "number", "rotation interval input must be number");
@@ -125,6 +126,8 @@ expect(/\.tile\.favorite::after/.test(html), "favorite Pokemon tiles must show a
 expect(/favoriteAddEl\.textContent = selectedIsFavorite \? "DEL" : "ADD"/.test(js), "favorite add button must toggle between add and remove for the selected Pokemon");
 expect(/window\.settingsApi\.addFavorite\(selectedId\)/.test(js), "settings UI must persist selected Pokemon additions through favorites:add IPC");
 expect(/window\.settingsApi\.removeFavorite\(selectedId\)/.test(js), "settings UI must persist selected Pokemon removals through favorites:remove IPC");
+expect(/window\.settingsApi\.exportCodexPet\(packKey\)/.test(js), "settings UI must export the currently selected Pokemon through Codex pet IPC");
+expect(/document\.querySelector\("\.tile\.selected"\)\?\.dataset\.id/.test(js), "Codex pet export must use the currently selected tile");
 
 for (const surface of [
   'getSettings: () => ipcRenderer.invoke("settings:get")',
@@ -137,6 +140,7 @@ for (const surface of [
   'nextFavorite: () => ipcRenderer.invoke("favorites:next")',
   'addFavorite: (packKey) => ipcRenderer.invoke("favorites:add", packKey)',
   'removeFavorite: (packKey) => ipcRenderer.invoke("favorites:remove", packKey)',
+  'exportCodexPet: (packKey) => ipcRenderer.invoke("codex-pet:export-current", packKey)',
 ]) {
   expect(preload.includes(surface), `settings preload missing surface: ${surface}`);
 }

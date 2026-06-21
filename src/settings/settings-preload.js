@@ -11,4 +11,5 @@ contextBridge.exposeInMainWorld("settingsApi", {
   nextFavorite: () => ipcRenderer.invoke("favorites:next"),
   addFavorite: (packKey) => ipcRenderer.invoke("favorites:add", packKey),
   removeFavorite: (packKey) => ipcRenderer.invoke("favorites:remove", packKey),
+  exportCodexPet: (packKey) => ipcRenderer.invoke("codex-pet:export-current", packKey),
 });
