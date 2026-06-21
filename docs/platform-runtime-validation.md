@@ -85,7 +85,7 @@ chmod +x release/*.AppImage
 PF_LINUX_UNPACKED_PACK=retro/gen-1/025-pikachu PF_LINUX_UNPACKED_MODES=enabled PF_LINUX_UNPACKED_WARMUP_MS=3000 PF_LINUX_UNPACKED_SAMPLE_MS=5000 PF_LINUX_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:linux-unpacked-runtime
 ```
 
-`bench:linux-unpacked-runtime` は GUI セッションが必要です。WSLg などの実 GUI ではそのまま実行し、headless VM では `xvfb-run -a npm run bench:linux-unpacked-runtime` のように Xvfb を明示して使います。sandbox 権限で起動できない環境では `PF_LINUX_UNPACKED_ARGS=--no-sandbox` を検証ログに残してから使います。
+`bench:linux-unpacked-runtime` は GUI セッションが必要です。WSLg などの実 GUI ではそのまま実行し、headless VM では `xvfb-run -a npm run bench:linux-unpacked-runtime` のように Xvfb を明示して使います。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。sandbox 権限で起動できない環境では `PF_LINUX_UNPACKED_ARGS=--no-sandbox` を検証ログに残してから使います。
 
 手動の UI 確認で起動する場合:
 
@@ -107,6 +107,24 @@ rm -rf "$PF_LINUX_USER_DATA"
 - `bench:linux-unpacked-runtime` の終了後、残プロセスが 0。
 - AppImage 終了後、PokeFollower の残プロセスが 0。
 
+## 手動 GUI 検証の証跡チェックリスト
+
+完了扱いにするには、テキストの PASS だけではなく、実際に見た UI と操作の証跡を残します。
+
+- 検証対象 artifact: Release URL または `release/` のファイル名、sha256、commit。
+- 起動環境: OS、desktop environment、X11 / Wayland / macOS、display scale、multi-monitor 有無。
+- machine-check: package smoke、runtime smoke、X11 window probe、残プロセスなど、コマンドで再実行できる結果。
+- human-check: スクリーンショット、短い動画、操作ログなど、人間が見た UI の証跡。
+- 常駐 UI: tray / menu のスクリーンショットまたは短い動画、設定・有効 OFF/ON・終了が操作できた記録。
+- 透明 overlay: 背景アプリが見える状態のスクリーンショット。
+- click-through: overlay 下のアプリをクリック操作できた短い動画または操作ログ。
+- always-on-top: 通常ウィンドウを前面に移動しても overlay が前面維持されるスクリーンショットまたは短い動画。
+- fullscreen hide/restore: fullscreen 前、fullscreen 中（非表示）、解除後（復帰）の3点スクリーンショットまたは短い動画。
+- saved pack restore: 最後に保存した pack の名前と、再起動後に同じポケモンが表示されたスクリーンショットまたは短い動画。
+- fallback: macOS 権限なし、Wayland、`xdotool` / `xprop` / `xwininfo` 不足などでクラッシュせず通常追従に戻る記録。
+- 残プロセス: 終了後 `pgrep -af 'PokeFollower|pokefollower'` などの結果。
+- NG/未確認項目: 未確認を PASS と書かず、未検証として残す。
+
 ## 記録テンプレート
 
 ```md
@@ -117,8 +135,11 @@ rm -rf "$PF_LINUX_USER_DATA"
 - セッション種別: X11 / Wayland / macOS
 - PokeFollower commit:
 - package version:
+- 検証対象 artifact:
+- sha256:
 - 生成コマンド:
 - package smoke:
+- 証跡ファイル:
 - 常駐 UI:
 - 透明 overlay:
 - click-through:

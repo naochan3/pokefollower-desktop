@@ -40,7 +40,7 @@ for (const closedIssue of ["#1", "#2", "#3", "#4", "#6", "#7", "#8", "#9", "#10"
 }
 
 expect(
-  status.includes("Linux は AppImage 配布と WSLg 起動 smoke まで（実機の tray・透明・クリック透過・最前面は未検証）。"),
+  status.includes("Linux は AppImage 配布と WSLg 起動 smoke まで（WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。実機の tray・透明・クリック透過・最前面は未検証）。"),
   "STATUS must keep Linux visual runtime limitation",
 );
 expect(status.includes("全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。"), "STATUS must keep macOS/Linux fullscreen dependency limitation");
