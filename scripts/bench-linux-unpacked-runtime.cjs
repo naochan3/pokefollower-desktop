@@ -87,6 +87,7 @@ function summarize(processes, pids) {
       .map((proc) => ({
         pid: proc.pid,
         name: proc.name,
+        commandLine: proc.commandLine || "",
         cpuPercent: proc.cpuPercent || 0,
         rssKb: proc.rssKb || 0,
       }))
@@ -130,7 +131,7 @@ async function runMode(mode) {
     const firstProcesses = getProcesses();
     trackedPids = matchingPids(firstProcesses, child.pid, userDataDir);
     const before = summarize(firstProcesses, trackedPids);
-    if (!before.rows.some((proc) => proc.name === "pokefollower-desktop")) {
+    if (!before.rows.some((proc) => proc.name === "pokefollower-desktop" || proc.commandLine.includes(appPath))) {
       throw new Error("pokefollower-desktop process was not found; close any existing instance before benchmarking");
     }
     const sampleStarted = Date.now();
