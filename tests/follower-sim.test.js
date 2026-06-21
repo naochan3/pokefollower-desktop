@@ -113,3 +113,75 @@ describe("follower-sim", () => {
     expect(r.x).toBeLessThan(0);
   });
 });
+
+// Issue #30: 向きはカーソル速度でなくポケモン自身の進行方向に従う／無操作で sleep する
+const META_DIR = {
+  rawPath: "gen-1/009-blastoise",
+  states: {
+    idle: { sheet: "Idle-Anim.webp", frame: { w: 40, h: 40 }, fps: 8, frames: 8,
+      rows: { front: 0, frontRight: 1, right: 2, backRight: 3, back: 4, backLeft: 5, left: 6, frontLeft: 7 } },
+    walk: { sheet: "Walk-Anim.webp", frame: { w: 32, h: 40 }, fps: 6, frames: 4,
+      rows: { front: 0, frontRight: 1, right: 2, backRight: 3, back: 4, backLeft: 5, left: 6, frontLeft: 7 } },
+    sleep: { sheet: "Sleep-Anim.webp", frame: { w: 40, h: 40 }, fps: 1, frames: 2,
+      rows: { front: 0, frontRight: 0, right: 0, backRight: 0, back: 0, backLeft: 0, left: 0, frontLeft: 0 } },
+  },
+};
+
+describe("follower-sim 向き・sleep (Issue #30)", () => {
+  it("カーソル停止後も、到着まで進行方向(右)を向く", () => {
+    const sim = createFollowerSim();
+    sim.setMeta(META_DIR);
+    sim.resetTo(0, 0, 0);
+    // カーソルを一度だけ右遠方へ飛ばし、以後は静止させる。
+    // velAvg は完全に減衰するが、ポケモンはまだ目標へ歩いて追従中。
+    let now = 0;
+    let r = null;
+    for (let i = 0; i < 120; i++) {
+      now += 16;
+      sim.updateCursor(800, 0, now);
+      r = sim.step(16, now);
+    }
+    // この時点でもポケモンは目標へ歩行中（右へ移動中）。
+    expect(r.state).toBe("walk");
+    expect(r.x).toBeGreaterThan(350);
+    expect(r.x).toBeLessThan(780);
+    // velAvg は既に0。カーソル基準だと front(0) になるが、進行方向基準なら right(2)。
+    expect(r.row).toBe(META_DIR.states.walk.rows.right);
+  });
+
+  it("カーソルを30秒間動かさなければ sleep に入る（毎フレーム updateCursor されても）", () => {
+    const sim = createFollowerSim();
+    sim.setMeta(META_DIR);
+    sim.resetTo(500, 500, 0);
+    let now = 0;
+    let r = null;
+    // 実機の sim ループ同様、静止カーソルでも毎フレーム updateCursor を呼ぶ。
+    while (now < 31000) {
+      now += 16;
+      sim.updateCursor(500, 500, now);
+      r = sim.step(16, now);
+    }
+    expect(r.state).toBe("sleep");
+  });
+
+  it("静止＋微小カーソル揺れでは向きが front 固定（ぴくぴくしない）", () => {
+    const sim = createFollowerSim();
+    sim.setMeta(META_DIR);
+    sim.resetTo(500, 500, 0);
+    let now = 0;
+    // まず静止カーソルで perch へ落ち着かせる。
+    for (let i = 0; i < 120; i++) {
+      now += 16;
+      sim.updateCursor(500, 500, now);
+      sim.step(16, now);
+    }
+    // ±1px の微小揺れを与える。
+    const rows = [];
+    for (let i = 0; i < 30; i++) {
+      now += 16;
+      sim.updateCursor(500 + (i % 2), 500, now);
+      rows.push(sim.step(16, now).row);
+    }
+    expect([...new Set(rows)]).toEqual([META_DIR.states.idle.rows.front]);
+  });
+});
