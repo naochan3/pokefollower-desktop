@@ -129,4 +129,15 @@ describe("settings-store", () => {
     store.set({ avoidCursor: "yes" });
     expect(store.get("avoidCursor")).toBe(true);
   });
+
+  it("personalityは許可されたプリセットだけを保存する", () => {
+    const store = createSettingsStore(file);
+    expect(store.get("personality")).toBe("standard");
+    store.set({ personality: "active" });
+    expect(store.get("personality")).toBe("active");
+    store.set({ personality: "relaxed" });
+    expect(store.get("personality")).toBe("relaxed");
+    store.set({ personality: "../bad" });
+    expect(store.get("personality")).toBe("relaxed");
+  });
 });

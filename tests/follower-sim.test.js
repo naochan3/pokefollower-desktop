@@ -224,6 +224,51 @@ describe("follower-sim", () => {
     }
     expect(Math.hypot(r.x - 400, r.y - 300)).toBeLessThan(5);
   });
+
+  it("性格プリセット friendly は標準より近い距離へ寄る", () => {
+    const standard = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-personality-standard-")) });
+    const friendly = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-personality-friendly-")) });
+    for (const sim of [standard, friendly]) {
+      sim.setMeta(META);
+      sim.setConfig({ vcp1_edgeRest: false, vcp1_avoidCursor: false, vcp1_offset: 70, vcp1_lerp: 0.5 });
+      sim.resetTo(400, 300, 0);
+    }
+    friendly.setConfig({ vcp1_personality: "friendly" });
+    let now = 0;
+    let s = null;
+    let f = null;
+    for (let i = 0; i < 160; i++) {
+      now += 16;
+      standard.updateCursor(400, 300, now);
+      friendly.updateCursor(400, 300, now);
+      s = standard.step(16, now);
+      f = friendly.step(16, now);
+    }
+    expect(Math.hypot(f.x - 400, f.y - 300)).toBeLessThan(Math.hypot(s.x - 400, s.y - 300));
+  });
+
+  it("性格プリセット relaxed は edge rest を早める", () => {
+    const standard = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-edge-standard-")) });
+    const relaxed = createFollowerSim({ rootDir: mkdtempSync(join(tmpdir(), "pf-no-wasm-edge-relaxed-")) });
+    for (const sim of [standard, relaxed]) {
+      sim.setMeta(META);
+      sim.setDisplayBounds([{ x: 0, y: 0, width: 800, height: 600 }]);
+      sim.resetTo(400, 300, 0);
+    }
+    relaxed.setConfig({ vcp1_personality: "relaxed" });
+    let now = 0;
+    let s = null;
+    let r = null;
+    while (now < 7000) {
+      now += 16;
+      standard.updateCursor(400, 300, now);
+      relaxed.updateCursor(400, 300, now);
+      s = standard.step(16, now);
+      r = relaxed.step(16, now);
+    }
+    expect(s.y).toBeGreaterThan(200);
+    expect(r.y).toBeLessThan(180);
+  });
 });
 
 // Issue #30: 向きはカーソル速度でなくポケモン自身の進行方向に従う／無操作で sleep する

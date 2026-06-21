@@ -22,7 +22,7 @@ function inputAttrs(id) {
   return attrs;
 }
 
-for (const id of ["enabled", "edgeRest", "avoidCursor", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
+for (const id of ["enabled", "edgeRest", "avoidCursor", "personality", "search", "grid", "scale", "scaleVal", "offset", "offsetVal", "lerp", "lerpVal"]) {
   expect(html.includes(`id="${id}"`), `settings.html missing id="${id}"`);
   expect(js.includes(`getElementById("${id}")`) || ["scaleVal", "offsetVal", "lerpVal"].includes(id), `settings.js should query #${id}`);
 }
@@ -44,6 +44,10 @@ expect(html.includes('<script src="settings.js"></script>'), "settings.html must
 expect(inputAttrs("enabled")?.type === "checkbox", "enabled input must be a checkbox");
 expect(inputAttrs("edgeRest")?.type === "checkbox", "edgeRest input must be a checkbox");
 expect(inputAttrs("avoidCursor")?.type === "checkbox", "avoidCursor input must be a checkbox");
+expect(html.includes('<select id="personality">'), "personality select must exist");
+for (const preset of ["standard", "active", "relaxed", "friendly"]) {
+  expect(html.includes(`value="${preset}"`), `personality select must include ${preset}`);
+}
 expect(inputAttrs("search")?.type === "text", "search input must be text");
 expect(inputAttrs("scale")?.type === "number", "scale input must be number");
 expect(inputAttrs("scale")?.min === "0.5", "scale min must be 0.5");
@@ -66,6 +70,7 @@ for (const mapping of [
   "vcp1_lerp: \"lerp\"",
   "vcp1_edgeRest: \"edgeRest\"",
   "vcp1_avoidCursor: \"avoidCursor\"",
+  "vcp1_personality: \"personality\"",
 ]) {
   expect(js.includes(mapping), `settings.js missing key mapping ${mapping}`);
 }
@@ -75,6 +80,7 @@ expect(/vcp1_offset: 70/.test(js), "settings.js default offset must be 70");
 expect(/vcp1_lerp: 0\.20/.test(js), "settings.js default lerp must be 0.20");
 expect(/vcp1_edgeRest: true/.test(js), "settings.js default edgeRest must be true");
 expect(/vcp1_avoidCursor: true/.test(js), "settings.js default avoidCursor must be true");
+expect(/vcp1_personality: "standard"/.test(js), "settings.js default personality must be standard");
 expect(/const lerpUI = lerp \* 10;/.test(js), "settings.js must expose lerp as x10 speed UI");
 expect(/const lerp = normalized \/ 10;/.test(js), "settings.js must convert speed UI back to internal lerp");
 expect(/toHira/.test(js) && /romaji/.test(js) && /#"\s*\+\s*padded/.test(js), "settings search must include kana, romaji, and dex number terms");
