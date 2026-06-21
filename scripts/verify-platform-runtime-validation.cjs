@@ -71,4 +71,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log("[verify-platform-runtime-validation] ok: macOS/Linux runtime validation checklist covers Issue #17");
+console.log("[verify-platform-runtime-validation] ok: Issue #17 validation checklist and remaining gaps are documented");
