@@ -81,6 +81,30 @@
 
 ---
 
+## 未収録ポケモン（素材準備中）
+
+スプライト出典（PMD Collab / SpriteCollab）にまだ素材が無いポケモンは未収録です。素材が追加され次第対応します。
+
+**第5世代（15体）**
+
+- 514 バオッキー（Simisear）
+- 516 ヒヤッキー（Simipour）
+- 520 ハトーボー（Tranquill）
+- 522 シママ（Blitzle）
+- 523 ゼブライカ（Zebstrika）
+- 538 ナゲキ（Throh）
+- 558 イワパレス（Crustle）
+- 564 プロトーガ（Tirtouga）
+- 565 アバゴーラ（Carracosta）
+- 591 モロバレル（Amoonguss）
+- 592 プルリル（Frillish）
+- 593 ブルンゲル（Jellicent）
+- 616 チョボマキ（Shelmet）
+- 618 マッギョ（Stunfisk）
+- 626 バッフロン（Bouffalant）
+
+---
+
 ## 開発
 
 ```bash
