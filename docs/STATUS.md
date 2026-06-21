@@ -47,7 +47,8 @@
 - Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21＋ #31/#32 の追従挙動修正＋ #34（待機を移動方向の逆隅に）＋ #35（第5〜9世代追加・世代フィルタ）込み。追従既定 16ms）
 - macOS arm64 dmg / zip（v1.0.5 添付済み）
 - ポケモン 956 種（第1〜9世代。未収録69種は出典素材待ち）
-- 日本語表示・日本語検索、タイル選択 UI、世代フィルタ（全/第1〜9）
+- 日本語表示・日本語検索、タイル選択 UI、世代フィルタ（赤緑/金銀/RS/DP/BW/XY/SM/剣盾/SV）
+- 検索用ポケモンメタデータ schema / verifier と自然言語風検索（タイプ・特徴・作品名の deterministic parser + index）
 - 待機位置は移動方向の逆隅に留まる（本家拡張準拠）
 - Follow / Roam（散歩）モード切り替え。Roam は画面内の自律移動、idle/sleep 休止、性格プリセット別タイミングを含む
 - Edge Rest（既定 ON）。カーソル静止後に現在ディスプレイの安全な画面端、または取得できた前面ウィンドウ端へ移動
@@ -57,6 +58,7 @@
 - アプリ別リアクション（既定 OFF）。前面アプリ情報が取れる環境では、エディタ/ターミナルで距離を取り、ブラウザ/チャットでは少し近づく軽量ルールを適用
 - マルチモニター連続追従、全画面自動非表示（Windows / macOS / Linux best-effort）、ログイン自動起動、クリック透過
 - 通知コンパニオン基盤（既定 OFF、OS 通知本文は保存しない、Codex notify bridge は短い要約だけを最大64件のローカル queue に保持）
+- Codex custom pet 書き出し（設定画面の `Codex pet` → `EXPORT` で選択中ポケモンを `~/.codex/pets/` へ出力）
 
 ---
 
@@ -68,9 +70,6 @@
 |---|---|---|---|
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
 | macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知、macOS runtime smoke、Linux AppImage build/start smoke は確認済み。Linux AppImage の tray・透明・クリック透過・最前面は実機目視検証が必要 |
-| 検索用ポケモンメタデータ | 中 | [#77](https://github.com/naochan3/pokefollower-desktop/issues/77) | タイプ・特徴・初出ゲーム・メディアタグ用の metadata schema / verifier を追加する |
-| 自然言語風検索 | 中 | [#78](https://github.com/naochan3/pokefollower-desktop/issues/78) | タイプ/特徴/作品名を deterministic parser + index で絞り込む |
-| 世代フィルタのシリーズ名表示 | 中 | [#79](https://github.com/naochan3/pokefollower-desktop/issues/79) | 世代チップを赤緑/金銀などの短縮シリーズ名にし、tooltip/alias 定義を持つ |
 
 ---
 

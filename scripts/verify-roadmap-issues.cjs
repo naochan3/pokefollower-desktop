@@ -18,9 +18,6 @@ expect(status.includes("現在含まれているもの（v1.0.5）"), "STATUS mu
 for (const issue of [
   ["#16", "配布物の署名・公証（Win/Mac）", "SmartScreen / Gatekeeper"],
   ["#17", "macOS / Linux の全画面自動非表示・Linux 実機検証", "Linux AppImage build/start smoke は確認済み"],
-  ["#77", "検索用ポケモンメタデータ", "metadata schema / verifier"],
-  ["#78", "自然言語風検索", "deterministic parser + index"],
-  ["#79", "世代フィルタのシリーズ名表示", "赤緑/金銀"],
 ]) {
   const [num, title, note] = issue;
   const id = num.slice(1);
@@ -31,6 +28,12 @@ for (const issue of [
 
 expect(status.includes("追従更新間隔の軽量化"), "STATUS must record completed sim interval lightweight change");
 expect(status.includes("既定を16ms（最大60fps相当）へ戻し"), "STATUS must document the 16ms default decision");
+expect(status.includes("世代フィルタ（赤緑/金銀/RS/DP/BW/XY/SM/剣盾/SV）"), "STATUS must record completed generation label filters");
+expect(status.includes("検索用ポケモンメタデータ schema / verifier と自然言語風検索"), "STATUS must record completed search metadata and natural language search");
+expect(status.includes("Codex custom pet 書き出し"), "STATUS must record completed Codex custom pet export");
+for (const closedIssue of ["#77", "#78", "#79", "#83"]) {
+  expect(!status.includes(`https://github.com/naochan3/pokefollower-desktop/issues/${closedIssue.slice(1)}`), `STATUS roadmap must not link closed issue ${closedIssue}`);
+}
 
 for (const closedIssue of ["#1", "#2", "#3", "#4", "#6", "#7", "#8", "#9", "#10"]) {
   expect(status.includes(closedIssue), `STATUS completed-plan table must keep ${closedIssue}`);
