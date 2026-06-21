@@ -148,27 +148,36 @@ for (const id of uiIds) {
   if (!seenIds.has(id)) fail(`UI PNG not listed in index: ${id}`);
 }
 
-// Per-generation contiguity check: no gaps are allowed within a single gen-N group.
-// Gaps between generations are expected (e.g. gen-4 ends at 493, gen-5 may start mid-range).
+// No duplicate dex check is already enforced above (seenDex set, line ~87).
+// Gaps within a generation are LEGITIMATE (SpriteCollab is missing sprites for many Pokémon),
+// so contiguity is no longer a valid invariant.
+
+// Generation–range agreement: each entry's gen-N folder must match the national-dex range.
+const GEN_RANGES = {
+  "gen-1": [1, 151],
+  "gen-2": [152, 251],
+  "gen-3": [252, 386],
+  "gen-4": [387, 493],
+  "gen-5": [494, 649],
+  "gen-6": [650, 721],
+  "gen-7": [722, 809],
+  "gen-8": [810, 905],
+  "gen-9": [906, 1025],
+};
 const dexNumbers = entries.map((entry) => dexFromName(path.basename(entry.id))).filter((dex) => dex !== null);
 const minDex = dexNumbers.length ? Math.min(...dexNumbers) : 0;
 const maxDex = dexNumbers.length ? Math.max(...dexNumbers) : 0;
 
-/** @type {Map<string, number[]>} gen-dir → sorted dex list */
-const dexByGen = new Map();
 for (const entry of entries) {
-  const gen = path.dirname(entry.id.replace(/^retro\//, "")); // "gen-1", "gen-5" …
-  const dex = dexFromName(path.basename(entry.id));
+  const relative = entry.id.replace(/^retro\//, "");
+  const gen = path.dirname(relative); // "gen-1", "gen-5" …
+  const dex = dexFromName(path.basename(relative));
   if (dex === null) continue;
-  if (!dexByGen.has(gen)) dexByGen.set(gen, []);
-  dexByGen.get(gen).push(dex);
-}
-for (const [gen, dexes] of dexByGen) {
-  dexes.sort((a, b) => a - b);
-  for (let i = 1; i < dexes.length; i++) {
-    if (dexes[i] !== dexes[i - 1] + 1) {
-      fail(`${gen}: gap between dex ${dexes[i - 1]} and ${dexes[i]} (missing ${dexes[i - 1] + 1}–${dexes[i] - 1})`);
-    }
+  const range = GEN_RANGES[gen];
+  if (!range) {
+    fail(`${entry.id}: unknown generation folder "${gen}"`);
+  } else if (dex < range[0] || dex > range[1]) {
+    fail(`${entry.id}: dex ${dex} is outside the expected range for ${gen} (${range[0]}–${range[1]})`);
   }
 }
 
