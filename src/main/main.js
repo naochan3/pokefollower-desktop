@@ -492,7 +492,7 @@ app.whenReady().then(() => {
   notificationCompanion = createNotificationCompanion({
     isEnabled: () => !!settingsStore.get("notificationCompanionEnabled"),
     getOverlays: () => overlays,
-    isSuppressed: () => !enabled || fullscreenActive,
+    isSuppressed: () => !enabled || fullscreenActive || currentReactionMode === "busy",
   });
   codexNotificationWatcher = createCodexNotificationWatcher({
     queuePath: defaultNotificationQueuePath(),

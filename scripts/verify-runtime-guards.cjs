@@ -80,6 +80,7 @@ expect(/workWatchPhase\(\)/.test(main), "main.js must let work watch override ap
 expect(/powerMonitor\.getSystemIdleTime\(\) <= 1/.test(main), "main.js must use system idle time for non-intrusive busy reactions");
 expect(/function syncFavoriteRotation\(\)/.test(main), "main.js must define favorite rotation synchronization");
 expect(/ipcMain\.handle\("favorites:next"/.test(main), "main.js must expose settings-only manual favorite switching");
+expect(/isSuppressed: \(\) => !enabled \|\| fullscreenActive \|\| currentReactionMode === "busy"/.test(main), "notification companion must suppress during fullscreen and non-intrusive busy mode");
 expect(/vcp1_reactionMode/.test(sim), "follower-sim must accept runtime reaction mode");
 expect(/setRestSurfaces\(surfaces = \[\]\)/.test(sim), "follower-sim must accept foreground window rest surfaces");
 expect(/function computeWindowEdgeRestTarget/.test(sim), "follower-sim must use foreground window edges as rest candidates");
