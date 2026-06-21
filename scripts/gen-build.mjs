@@ -189,7 +189,8 @@ if (dexArg) {
   results.push(await buildOne(Number(dexArg), slugArg, Number(genArg)));
 } else if (manifest) {
   // Batch mode
-  const list = JSON.parse(fs.readFileSync(path.resolve(manifest), 'utf8'));
+  const raw = JSON.parse(fs.readFileSync(path.resolve(manifest), 'utf8'));
+  const list = Array.isArray(raw) ? raw : (raw.includable ?? raw);
   const filtered = list.filter(m => String(m.gen) === String(genArg));
   for (const m of filtered) {
     results.push(await buildOne(m.dex, m.slug, m.gen));
