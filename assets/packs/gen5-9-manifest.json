@@ -1,0 +1,3130 @@
+{
+  "generatedFrom": "PMDCollab/SpriteCollab tracker.json + contents API",
+  "includable": [
+    {
+      "dex": 494,
+      "gen": 5,
+      "slug": "victini",
+      "name": "Victini"
+    },
+    {
+      "dex": 495,
+      "gen": 5,
+      "slug": "snivy",
+      "name": "Snivy"
+    },
+    {
+      "dex": 496,
+      "gen": 5,
+      "slug": "servine",
+      "name": "Servine"
+    },
+    {
+      "dex": 497,
+      "gen": 5,
+      "slug": "serperior",
+      "name": "Serperior"
+    },
+    {
+      "dex": 498,
+      "gen": 5,
+      "slug": "tepig",
+      "name": "Tepig"
+    },
+    {
+      "dex": 499,
+      "gen": 5,
+      "slug": "pignite",
+      "name": "Pignite"
+    },
+    {
+      "dex": 500,
+      "gen": 5,
+      "slug": "emboar",
+      "name": "Emboar"
+    },
+    {
+      "dex": 501,
+      "gen": 5,
+      "slug": "oshawott",
+      "name": "Oshawott"
+    },
+    {
+      "dex": 502,
+      "gen": 5,
+      "slug": "dewott",
+      "name": "Dewott"
+    },
+    {
+      "dex": 503,
+      "gen": 5,
+      "slug": "samurott",
+      "name": "Samurott"
+    },
+    {
+      "dex": 504,
+      "gen": 5,
+      "slug": "patrat",
+      "name": "Patrat"
+    },
+    {
+      "dex": 505,
+      "gen": 5,
+      "slug": "watchog",
+      "name": "Watchog"
+    },
+    {
+      "dex": 506,
+      "gen": 5,
+      "slug": "lillipup",
+      "name": "Lillipup"
+    },
+    {
+      "dex": 507,
+      "gen": 5,
+      "slug": "herdier",
+      "name": "Herdier"
+    },
+    {
+      "dex": 508,
+      "gen": 5,
+      "slug": "stoutland",
+      "name": "Stoutland"
+    },
+    {
+      "dex": 509,
+      "gen": 5,
+      "slug": "purrloin",
+      "name": "Purrloin"
+    },
+    {
+      "dex": 510,
+      "gen": 5,
+      "slug": "liepard",
+      "name": "Liepard"
+    },
+    {
+      "dex": 511,
+      "gen": 5,
+      "slug": "pansage",
+      "name": "Pansage"
+    },
+    {
+      "dex": 512,
+      "gen": 5,
+      "slug": "simisage",
+      "name": "Simisage"
+    },
+    {
+      "dex": 513,
+      "gen": 5,
+      "slug": "pansear",
+      "name": "Pansear"
+    },
+    {
+      "dex": 515,
+      "gen": 5,
+      "slug": "panpour",
+      "name": "Panpour"
+    },
+    {
+      "dex": 517,
+      "gen": 5,
+      "slug": "munna",
+      "name": "Munna"
+    },
+    {
+      "dex": 518,
+      "gen": 5,
+      "slug": "musharna",
+      "name": "Musharna"
+    },
+    {
+      "dex": 519,
+      "gen": 5,
+      "slug": "pidove",
+      "name": "Pidove"
+    },
+    {
+      "dex": 521,
+      "gen": 5,
+      "slug": "unfezant",
+      "name": "Unfezant"
+    },
+    {
+      "dex": 524,
+      "gen": 5,
+      "slug": "roggenrola",
+      "name": "Roggenrola"
+    },
+    {
+      "dex": 525,
+      "gen": 5,
+      "slug": "boldore",
+      "name": "Boldore"
+    },
+    {
+      "dex": 526,
+      "gen": 5,
+      "slug": "gigalith",
+      "name": "Gigalith"
+    },
+    {
+      "dex": 527,
+      "gen": 5,
+      "slug": "woobat",
+      "name": "Woobat"
+    },
+    {
+      "dex": 528,
+      "gen": 5,
+      "slug": "swoobat",
+      "name": "Swoobat"
+    },
+    {
+      "dex": 529,
+      "gen": 5,
+      "slug": "drilbur",
+      "name": "Drilbur"
+    },
+    {
+      "dex": 530,
+      "gen": 5,
+      "slug": "excadrill",
+      "name": "Excadrill"
+    },
+    {
+      "dex": 531,
+      "gen": 5,
+      "slug": "audino",
+      "name": "Audino"
+    },
+    {
+      "dex": 532,
+      "gen": 5,
+      "slug": "timburr",
+      "name": "Timburr"
+    },
+    {
+      "dex": 533,
+      "gen": 5,
+      "slug": "gurdurr",
+      "name": "Gurdurr"
+    },
+    {
+      "dex": 534,
+      "gen": 5,
+      "slug": "conkeldurr",
+      "name": "Conkeldurr"
+    },
+    {
+      "dex": 535,
+      "gen": 5,
+      "slug": "tympole",
+      "name": "Tympole"
+    },
+    {
+      "dex": 536,
+      "gen": 5,
+      "slug": "palpitoad",
+      "name": "Palpitoad"
+    },
+    {
+      "dex": 537,
+      "gen": 5,
+      "slug": "seismitoad",
+      "name": "Seismitoad"
+    },
+    {
+      "dex": 539,
+      "gen": 5,
+      "slug": "sawk",
+      "name": "Sawk"
+    },
+    {
+      "dex": 540,
+      "gen": 5,
+      "slug": "sewaddle",
+      "name": "Sewaddle"
+    },
+    {
+      "dex": 541,
+      "gen": 5,
+      "slug": "swadloon",
+      "name": "Swadloon"
+    },
+    {
+      "dex": 542,
+      "gen": 5,
+      "slug": "leavanny",
+      "name": "Leavanny"
+    },
+    {
+      "dex": 543,
+      "gen": 5,
+      "slug": "venipede",
+      "name": "Venipede"
+    },
+    {
+      "dex": 544,
+      "gen": 5,
+      "slug": "whirlipede",
+      "name": "Whirlipede"
+    },
+    {
+      "dex": 545,
+      "gen": 5,
+      "slug": "scolipede",
+      "name": "Scolipede"
+    },
+    {
+      "dex": 546,
+      "gen": 5,
+      "slug": "cottonee",
+      "name": "Cottonee"
+    },
+    {
+      "dex": 547,
+      "gen": 5,
+      "slug": "whimsicott",
+      "name": "Whimsicott"
+    },
+    {
+      "dex": 548,
+      "gen": 5,
+      "slug": "petilil",
+      "name": "Petilil"
+    },
+    {
+      "dex": 549,
+      "gen": 5,
+      "slug": "lilligant",
+      "name": "Lilligant"
+    },
+    {
+      "dex": 550,
+      "gen": 5,
+      "slug": "basculin",
+      "name": "Basculin"
+    },
+    {
+      "dex": 551,
+      "gen": 5,
+      "slug": "sandile",
+      "name": "Sandile"
+    },
+    {
+      "dex": 552,
+      "gen": 5,
+      "slug": "krokorok",
+      "name": "Krokorok"
+    },
+    {
+      "dex": 553,
+      "gen": 5,
+      "slug": "krookodile",
+      "name": "Krookodile"
+    },
+    {
+      "dex": 554,
+      "gen": 5,
+      "slug": "darumaka",
+      "name": "Darumaka"
+    },
+    {
+      "dex": 555,
+      "gen": 5,
+      "slug": "darmanitan",
+      "name": "Darmanitan"
+    },
+    {
+      "dex": 556,
+      "gen": 5,
+      "slug": "maractus",
+      "name": "Maractus"
+    },
+    {
+      "dex": 557,
+      "gen": 5,
+      "slug": "dwebble",
+      "name": "Dwebble"
+    },
+    {
+      "dex": 559,
+      "gen": 5,
+      "slug": "scraggy",
+      "name": "Scraggy"
+    },
+    {
+      "dex": 560,
+      "gen": 5,
+      "slug": "scrafty",
+      "name": "Scrafty"
+    },
+    {
+      "dex": 561,
+      "gen": 5,
+      "slug": "sigilyph",
+      "name": "Sigilyph"
+    },
+    {
+      "dex": 562,
+      "gen": 5,
+      "slug": "yamask",
+      "name": "Yamask"
+    },
+    {
+      "dex": 563,
+      "gen": 5,
+      "slug": "cofagrigus",
+      "name": "Cofagrigus"
+    },
+    {
+      "dex": 566,
+      "gen": 5,
+      "slug": "archen",
+      "name": "Archen"
+    },
+    {
+      "dex": 567,
+      "gen": 5,
+      "slug": "archeops",
+      "name": "Archeops"
+    },
+    {
+      "dex": 568,
+      "gen": 5,
+      "slug": "trubbish",
+      "name": "Trubbish"
+    },
+    {
+      "dex": 569,
+      "gen": 5,
+      "slug": "garbodor",
+      "name": "Garbodor"
+    },
+    {
+      "dex": 570,
+      "gen": 5,
+      "slug": "zorua",
+      "name": "Zorua"
+    },
+    {
+      "dex": 571,
+      "gen": 5,
+      "slug": "zoroark",
+      "name": "Zoroark"
+    },
+    {
+      "dex": 572,
+      "gen": 5,
+      "slug": "minccino",
+      "name": "Minccino"
+    },
+    {
+      "dex": 573,
+      "gen": 5,
+      "slug": "cinccino",
+      "name": "Cinccino"
+    },
+    {
+      "dex": 574,
+      "gen": 5,
+      "slug": "gothita",
+      "name": "Gothita"
+    },
+    {
+      "dex": 575,
+      "gen": 5,
+      "slug": "gothorita",
+      "name": "Gothorita"
+    },
+    {
+      "dex": 576,
+      "gen": 5,
+      "slug": "gothitelle",
+      "name": "Gothitelle"
+    },
+    {
+      "dex": 577,
+      "gen": 5,
+      "slug": "solosis",
+      "name": "Solosis"
+    },
+    {
+      "dex": 578,
+      "gen": 5,
+      "slug": "duosion",
+      "name": "Duosion"
+    },
+    {
+      "dex": 579,
+      "gen": 5,
+      "slug": "reuniclus",
+      "name": "Reuniclus"
+    },
+    {
+      "dex": 580,
+      "gen": 5,
+      "slug": "ducklett",
+      "name": "Ducklett"
+    },
+    {
+      "dex": 581,
+      "gen": 5,
+      "slug": "swanna",
+      "name": "Swanna"
+    },
+    {
+      "dex": 582,
+      "gen": 5,
+      "slug": "vanillite",
+      "name": "Vanillite"
+    },
+    {
+      "dex": 583,
+      "gen": 5,
+      "slug": "vanillish",
+      "name": "Vanillish"
+    },
+    {
+      "dex": 584,
+      "gen": 5,
+      "slug": "vanilluxe",
+      "name": "Vanilluxe"
+    },
+    {
+      "dex": 585,
+      "gen": 5,
+      "slug": "deerling",
+      "name": "Deerling"
+    },
+    {
+      "dex": 586,
+      "gen": 5,
+      "slug": "sawsbuck",
+      "name": "Sawsbuck"
+    },
+    {
+      "dex": 587,
+      "gen": 5,
+      "slug": "emolga",
+      "name": "Emolga"
+    },
+    {
+      "dex": 588,
+      "gen": 5,
+      "slug": "karrablast",
+      "name": "Karrablast"
+    },
+    {
+      "dex": 589,
+      "gen": 5,
+      "slug": "escavalier",
+      "name": "Escavalier"
+    },
+    {
+      "dex": 590,
+      "gen": 5,
+      "slug": "foongus",
+      "name": "Foongus"
+    },
+    {
+      "dex": 594,
+      "gen": 5,
+      "slug": "alomomola",
+      "name": "Alomomola"
+    },
+    {
+      "dex": 595,
+      "gen": 5,
+      "slug": "joltik",
+      "name": "Joltik"
+    },
+    {
+      "dex": 596,
+      "gen": 5,
+      "slug": "galvantula",
+      "name": "Galvantula"
+    },
+    {
+      "dex": 597,
+      "gen": 5,
+      "slug": "ferroseed",
+      "name": "Ferroseed"
+    },
+    {
+      "dex": 598,
+      "gen": 5,
+      "slug": "ferrothorn",
+      "name": "Ferrothorn"
+    },
+    {
+      "dex": 599,
+      "gen": 5,
+      "slug": "klink",
+      "name": "Klink"
+    },
+    {
+      "dex": 600,
+      "gen": 5,
+      "slug": "klang",
+      "name": "Klang"
+    },
+    {
+      "dex": 601,
+      "gen": 5,
+      "slug": "klinklang",
+      "name": "Klinklang"
+    },
+    {
+      "dex": 602,
+      "gen": 5,
+      "slug": "tynamo",
+      "name": "Tynamo"
+    },
+    {
+      "dex": 603,
+      "gen": 5,
+      "slug": "eelektrik",
+      "name": "Eelektrik"
+    },
+    {
+      "dex": 604,
+      "gen": 5,
+      "slug": "eelektross",
+      "name": "Eelektross"
+    },
+    {
+      "dex": 605,
+      "gen": 5,
+      "slug": "elgyem",
+      "name": "Elgyem"
+    },
+    {
+      "dex": 606,
+      "gen": 5,
+      "slug": "beheeyem",
+      "name": "Beheeyem"
+    },
+    {
+      "dex": 607,
+      "gen": 5,
+      "slug": "litwick",
+      "name": "Litwick"
+    },
+    {
+      "dex": 608,
+      "gen": 5,
+      "slug": "lampent",
+      "name": "Lampent"
+    },
+    {
+      "dex": 609,
+      "gen": 5,
+      "slug": "chandelure",
+      "name": "Chandelure"
+    },
+    {
+      "dex": 610,
+      "gen": 5,
+      "slug": "axew",
+      "name": "Axew"
+    },
+    {
+      "dex": 611,
+      "gen": 5,
+      "slug": "fraxure",
+      "name": "Fraxure"
+    },
+    {
+      "dex": 612,
+      "gen": 5,
+      "slug": "haxorus",
+      "name": "Haxorus"
+    },
+    {
+      "dex": 613,
+      "gen": 5,
+      "slug": "cubchoo",
+      "name": "Cubchoo"
+    },
+    {
+      "dex": 614,
+      "gen": 5,
+      "slug": "beartic",
+      "name": "Beartic"
+    },
+    {
+      "dex": 615,
+      "gen": 5,
+      "slug": "cryogonal",
+      "name": "Cryogonal"
+    },
+    {
+      "dex": 617,
+      "gen": 5,
+      "slug": "accelgor",
+      "name": "Accelgor"
+    },
+    {
+      "dex": 619,
+      "gen": 5,
+      "slug": "mienfoo",
+      "name": "Mienfoo"
+    },
+    {
+      "dex": 620,
+      "gen": 5,
+      "slug": "mienshao",
+      "name": "Mienshao"
+    },
+    {
+      "dex": 621,
+      "gen": 5,
+      "slug": "druddigon",
+      "name": "Druddigon"
+    },
+    {
+      "dex": 622,
+      "gen": 5,
+      "slug": "golett",
+      "name": "Golett"
+    },
+    {
+      "dex": 623,
+      "gen": 5,
+      "slug": "golurk",
+      "name": "Golurk"
+    },
+    {
+      "dex": 624,
+      "gen": 5,
+      "slug": "pawniard",
+      "name": "Pawniard"
+    },
+    {
+      "dex": 625,
+      "gen": 5,
+      "slug": "bisharp",
+      "name": "Bisharp"
+    },
+    {
+      "dex": 627,
+      "gen": 5,
+      "slug": "rufflet",
+      "name": "Rufflet"
+    },
+    {
+      "dex": 628,
+      "gen": 5,
+      "slug": "braviary",
+      "name": "Braviary"
+    },
+    {
+      "dex": 629,
+      "gen": 5,
+      "slug": "vullaby",
+      "name": "Vullaby"
+    },
+    {
+      "dex": 630,
+      "gen": 5,
+      "slug": "mandibuzz",
+      "name": "Mandibuzz"
+    },
+    {
+      "dex": 631,
+      "gen": 5,
+      "slug": "heatmor",
+      "name": "Heatmor"
+    },
+    {
+      "dex": 632,
+      "gen": 5,
+      "slug": "durant",
+      "name": "Durant"
+    },
+    {
+      "dex": 633,
+      "gen": 5,
+      "slug": "deino",
+      "name": "Deino"
+    },
+    {
+      "dex": 634,
+      "gen": 5,
+      "slug": "zweilous",
+      "name": "Zweilous"
+    },
+    {
+      "dex": 635,
+      "gen": 5,
+      "slug": "hydreigon",
+      "name": "Hydreigon"
+    },
+    {
+      "dex": 636,
+      "gen": 5,
+      "slug": "larvesta",
+      "name": "Larvesta"
+    },
+    {
+      "dex": 637,
+      "gen": 5,
+      "slug": "volcarona",
+      "name": "Volcarona"
+    },
+    {
+      "dex": 638,
+      "gen": 5,
+      "slug": "cobalion",
+      "name": "Cobalion"
+    },
+    {
+      "dex": 639,
+      "gen": 5,
+      "slug": "terrakion",
+      "name": "Terrakion"
+    },
+    {
+      "dex": 640,
+      "gen": 5,
+      "slug": "virizion",
+      "name": "Virizion"
+    },
+    {
+      "dex": 641,
+      "gen": 5,
+      "slug": "tornadus",
+      "name": "Tornadus"
+    },
+    {
+      "dex": 642,
+      "gen": 5,
+      "slug": "thundurus",
+      "name": "Thundurus"
+    },
+    {
+      "dex": 643,
+      "gen": 5,
+      "slug": "reshiram",
+      "name": "Reshiram"
+    },
+    {
+      "dex": 644,
+      "gen": 5,
+      "slug": "zekrom",
+      "name": "Zekrom"
+    },
+    {
+      "dex": 645,
+      "gen": 5,
+      "slug": "landorus",
+      "name": "Landorus"
+    },
+    {
+      "dex": 646,
+      "gen": 5,
+      "slug": "kyurem",
+      "name": "Kyurem"
+    },
+    {
+      "dex": 647,
+      "gen": 5,
+      "slug": "keldeo",
+      "name": "Keldeo"
+    },
+    {
+      "dex": 648,
+      "gen": 5,
+      "slug": "meloetta",
+      "name": "Meloetta"
+    },
+    {
+      "dex": 649,
+      "gen": 5,
+      "slug": "genesect",
+      "name": "Genesect"
+    },
+    {
+      "dex": 650,
+      "gen": 6,
+      "slug": "chespin",
+      "name": "Chespin"
+    },
+    {
+      "dex": 651,
+      "gen": 6,
+      "slug": "quilladin",
+      "name": "Quilladin"
+    },
+    {
+      "dex": 652,
+      "gen": 6,
+      "slug": "chesnaught",
+      "name": "Chesnaught"
+    },
+    {
+      "dex": 653,
+      "gen": 6,
+      "slug": "fennekin",
+      "name": "Fennekin"
+    },
+    {
+      "dex": 654,
+      "gen": 6,
+      "slug": "braixen",
+      "name": "Braixen"
+    },
+    {
+      "dex": 655,
+      "gen": 6,
+      "slug": "delphox",
+      "name": "Delphox"
+    },
+    {
+      "dex": 656,
+      "gen": 6,
+      "slug": "froakie",
+      "name": "Froakie"
+    },
+    {
+      "dex": 657,
+      "gen": 6,
+      "slug": "frogadier",
+      "name": "Frogadier"
+    },
+    {
+      "dex": 658,
+      "gen": 6,
+      "slug": "greninja",
+      "name": "Greninja"
+    },
+    {
+      "dex": 659,
+      "gen": 6,
+      "slug": "bunnelby",
+      "name": "Bunnelby"
+    },
+    {
+      "dex": 660,
+      "gen": 6,
+      "slug": "diggersby",
+      "name": "Diggersby"
+    },
+    {
+      "dex": 661,
+      "gen": 6,
+      "slug": "fletchling",
+      "name": "Fletchling"
+    },
+    {
+      "dex": 662,
+      "gen": 6,
+      "slug": "fletchinder",
+      "name": "Fletchinder"
+    },
+    {
+      "dex": 663,
+      "gen": 6,
+      "slug": "talonflame",
+      "name": "Talonflame"
+    },
+    {
+      "dex": 664,
+      "gen": 6,
+      "slug": "scatterbug",
+      "name": "Scatterbug"
+    },
+    {
+      "dex": 665,
+      "gen": 6,
+      "slug": "spewpa",
+      "name": "Spewpa"
+    },
+    {
+      "dex": 666,
+      "gen": 6,
+      "slug": "vivillon",
+      "name": "Vivillon"
+    },
+    {
+      "dex": 667,
+      "gen": 6,
+      "slug": "litleo",
+      "name": "Litleo"
+    },
+    {
+      "dex": 669,
+      "gen": 6,
+      "slug": "flabebe",
+      "name": "Flabebe"
+    },
+    {
+      "dex": 670,
+      "gen": 6,
+      "slug": "floette",
+      "name": "Floette"
+    },
+    {
+      "dex": 671,
+      "gen": 6,
+      "slug": "florges",
+      "name": "Florges"
+    },
+    {
+      "dex": 672,
+      "gen": 6,
+      "slug": "skiddo",
+      "name": "Skiddo"
+    },
+    {
+      "dex": 673,
+      "gen": 6,
+      "slug": "gogoat",
+      "name": "Gogoat"
+    },
+    {
+      "dex": 674,
+      "gen": 6,
+      "slug": "pancham",
+      "name": "Pancham"
+    },
+    {
+      "dex": 675,
+      "gen": 6,
+      "slug": "pangoro",
+      "name": "Pangoro"
+    },
+    {
+      "dex": 676,
+      "gen": 6,
+      "slug": "furfrou",
+      "name": "Furfrou"
+    },
+    {
+      "dex": 677,
+      "gen": 6,
+      "slug": "espurr",
+      "name": "Espurr"
+    },
+    {
+      "dex": 678,
+      "gen": 6,
+      "slug": "meowstic",
+      "name": "Meowstic"
+    },
+    {
+      "dex": 679,
+      "gen": 6,
+      "slug": "honedge",
+      "name": "Honedge"
+    },
+    {
+      "dex": 680,
+      "gen": 6,
+      "slug": "doublade",
+      "name": "Doublade"
+    },
+    {
+      "dex": 681,
+      "gen": 6,
+      "slug": "aegislash",
+      "name": "Aegislash"
+    },
+    {
+      "dex": 682,
+      "gen": 6,
+      "slug": "spritzee",
+      "name": "Spritzee"
+    },
+    {
+      "dex": 684,
+      "gen": 6,
+      "slug": "swirlix",
+      "name": "Swirlix"
+    },
+    {
+      "dex": 685,
+      "gen": 6,
+      "slug": "slurpuff",
+      "name": "Slurpuff"
+    },
+    {
+      "dex": 686,
+      "gen": 6,
+      "slug": "inkay",
+      "name": "Inkay"
+    },
+    {
+      "dex": 687,
+      "gen": 6,
+      "slug": "malamar",
+      "name": "Malamar"
+    },
+    {
+      "dex": 688,
+      "gen": 6,
+      "slug": "binacle",
+      "name": "Binacle"
+    },
+    {
+      "dex": 689,
+      "gen": 6,
+      "slug": "barbaracle",
+      "name": "Barbaracle"
+    },
+    {
+      "dex": 690,
+      "gen": 6,
+      "slug": "skrelp",
+      "name": "Skrelp"
+    },
+    {
+      "dex": 691,
+      "gen": 6,
+      "slug": "dragalge",
+      "name": "Dragalge"
+    },
+    {
+      "dex": 692,
+      "gen": 6,
+      "slug": "clauncher",
+      "name": "Clauncher"
+    },
+    {
+      "dex": 693,
+      "gen": 6,
+      "slug": "clawitzer",
+      "name": "Clawitzer"
+    },
+    {
+      "dex": 694,
+      "gen": 6,
+      "slug": "helioptile",
+      "name": "Helioptile"
+    },
+    {
+      "dex": 695,
+      "gen": 6,
+      "slug": "heliolisk",
+      "name": "Heliolisk"
+    },
+    {
+      "dex": 696,
+      "gen": 6,
+      "slug": "tyrunt",
+      "name": "Tyrunt"
+    },
+    {
+      "dex": 697,
+      "gen": 6,
+      "slug": "tyrantrum",
+      "name": "Tyrantrum"
+    },
+    {
+      "dex": 698,
+      "gen": 6,
+      "slug": "amaura",
+      "name": "Amaura"
+    },
+    {
+      "dex": 699,
+      "gen": 6,
+      "slug": "aurorus",
+      "name": "Aurorus"
+    },
+    {
+      "dex": 700,
+      "gen": 6,
+      "slug": "sylveon",
+      "name": "Sylveon"
+    },
+    {
+      "dex": 701,
+      "gen": 6,
+      "slug": "hawlucha",
+      "name": "Hawlucha"
+    },
+    {
+      "dex": 702,
+      "gen": 6,
+      "slug": "dedenne",
+      "name": "Dedenne"
+    },
+    {
+      "dex": 703,
+      "gen": 6,
+      "slug": "carbink",
+      "name": "Carbink"
+    },
+    {
+      "dex": 704,
+      "gen": 6,
+      "slug": "goomy",
+      "name": "Goomy"
+    },
+    {
+      "dex": 705,
+      "gen": 6,
+      "slug": "sliggoo",
+      "name": "Sliggoo"
+    },
+    {
+      "dex": 706,
+      "gen": 6,
+      "slug": "goodra",
+      "name": "Goodra"
+    },
+    {
+      "dex": 707,
+      "gen": 6,
+      "slug": "klefki",
+      "name": "Klefki"
+    },
+    {
+      "dex": 708,
+      "gen": 6,
+      "slug": "phantump",
+      "name": "Phantump"
+    },
+    {
+      "dex": 709,
+      "gen": 6,
+      "slug": "trevenant",
+      "name": "Trevenant"
+    },
+    {
+      "dex": 710,
+      "gen": 6,
+      "slug": "pumpkaboo",
+      "name": "Pumpkaboo"
+    },
+    {
+      "dex": 711,
+      "gen": 6,
+      "slug": "gourgeist",
+      "name": "Gourgeist"
+    },
+    {
+      "dex": 712,
+      "gen": 6,
+      "slug": "bergmite",
+      "name": "Bergmite"
+    },
+    {
+      "dex": 713,
+      "gen": 6,
+      "slug": "avalugg",
+      "name": "Avalugg"
+    },
+    {
+      "dex": 714,
+      "gen": 6,
+      "slug": "noibat",
+      "name": "Noibat"
+    },
+    {
+      "dex": 715,
+      "gen": 6,
+      "slug": "noivern",
+      "name": "Noivern"
+    },
+    {
+      "dex": 716,
+      "gen": 6,
+      "slug": "xerneas",
+      "name": "Xerneas"
+    },
+    {
+      "dex": 717,
+      "gen": 6,
+      "slug": "yveltal",
+      "name": "Yveltal"
+    },
+    {
+      "dex": 718,
+      "gen": 6,
+      "slug": "zygarde",
+      "name": "Zygarde"
+    },
+    {
+      "dex": 719,
+      "gen": 6,
+      "slug": "diancie",
+      "name": "Diancie"
+    },
+    {
+      "dex": 720,
+      "gen": 6,
+      "slug": "hoopa",
+      "name": "Hoopa"
+    },
+    {
+      "dex": 721,
+      "gen": 6,
+      "slug": "volcanion",
+      "name": "Volcanion"
+    },
+    {
+      "dex": 722,
+      "gen": 7,
+      "slug": "rowlet",
+      "name": "Rowlet"
+    },
+    {
+      "dex": 723,
+      "gen": 7,
+      "slug": "dartrix",
+      "name": "Dartrix"
+    },
+    {
+      "dex": 724,
+      "gen": 7,
+      "slug": "decidueye",
+      "name": "Decidueye"
+    },
+    {
+      "dex": 725,
+      "gen": 7,
+      "slug": "litten",
+      "name": "Litten"
+    },
+    {
+      "dex": 726,
+      "gen": 7,
+      "slug": "torracat",
+      "name": "Torracat"
+    },
+    {
+      "dex": 727,
+      "gen": 7,
+      "slug": "incineroar",
+      "name": "Incineroar"
+    },
+    {
+      "dex": 728,
+      "gen": 7,
+      "slug": "popplio",
+      "name": "Popplio"
+    },
+    {
+      "dex": 729,
+      "gen": 7,
+      "slug": "brionne",
+      "name": "Brionne"
+    },
+    {
+      "dex": 730,
+      "gen": 7,
+      "slug": "primarina",
+      "name": "Primarina"
+    },
+    {
+      "dex": 731,
+      "gen": 7,
+      "slug": "pikipek",
+      "name": "Pikipek"
+    },
+    {
+      "dex": 736,
+      "gen": 7,
+      "slug": "grubbin",
+      "name": "Grubbin"
+    },
+    {
+      "dex": 737,
+      "gen": 7,
+      "slug": "charjabug",
+      "name": "Charjabug"
+    },
+    {
+      "dex": 738,
+      "gen": 7,
+      "slug": "vikavolt",
+      "name": "Vikavolt"
+    },
+    {
+      "dex": 739,
+      "gen": 7,
+      "slug": "crabrawler",
+      "name": "Crabrawler"
+    },
+    {
+      "dex": 740,
+      "gen": 7,
+      "slug": "crabominable",
+      "name": "Crabominable"
+    },
+    {
+      "dex": 742,
+      "gen": 7,
+      "slug": "cutiefly",
+      "name": "Cutiefly"
+    },
+    {
+      "dex": 743,
+      "gen": 7,
+      "slug": "ribombee",
+      "name": "Ribombee"
+    },
+    {
+      "dex": 744,
+      "gen": 7,
+      "slug": "rockruff",
+      "name": "Rockruff"
+    },
+    {
+      "dex": 745,
+      "gen": 7,
+      "slug": "lycanroc",
+      "name": "Lycanroc"
+    },
+    {
+      "dex": 746,
+      "gen": 7,
+      "slug": "wishiwashi",
+      "name": "Wishiwashi"
+    },
+    {
+      "dex": 747,
+      "gen": 7,
+      "slug": "mareanie",
+      "name": "Mareanie"
+    },
+    {
+      "dex": 748,
+      "gen": 7,
+      "slug": "toxapex",
+      "name": "Toxapex"
+    },
+    {
+      "dex": 749,
+      "gen": 7,
+      "slug": "mudbray",
+      "name": "Mudbray"
+    },
+    {
+      "dex": 750,
+      "gen": 7,
+      "slug": "mudsdale",
+      "name": "Mudsdale"
+    },
+    {
+      "dex": 751,
+      "gen": 7,
+      "slug": "dewpider",
+      "name": "Dewpider"
+    },
+    {
+      "dex": 752,
+      "gen": 7,
+      "slug": "araquanid",
+      "name": "Araquanid"
+    },
+    {
+      "dex": 753,
+      "gen": 7,
+      "slug": "fomantis",
+      "name": "Fomantis"
+    },
+    {
+      "dex": 754,
+      "gen": 7,
+      "slug": "lurantis",
+      "name": "Lurantis"
+    },
+    {
+      "dex": 755,
+      "gen": 7,
+      "slug": "morelull",
+      "name": "Morelull"
+    },
+    {
+      "dex": 757,
+      "gen": 7,
+      "slug": "salandit",
+      "name": "Salandit"
+    },
+    {
+      "dex": 758,
+      "gen": 7,
+      "slug": "salazzle",
+      "name": "Salazzle"
+    },
+    {
+      "dex": 759,
+      "gen": 7,
+      "slug": "stufful",
+      "name": "Stufful"
+    },
+    {
+      "dex": 760,
+      "gen": 7,
+      "slug": "bewear",
+      "name": "Bewear"
+    },
+    {
+      "dex": 761,
+      "gen": 7,
+      "slug": "bounsweet",
+      "name": "Bounsweet"
+    },
+    {
+      "dex": 762,
+      "gen": 7,
+      "slug": "steenee",
+      "name": "Steenee"
+    },
+    {
+      "dex": 763,
+      "gen": 7,
+      "slug": "tsareena",
+      "name": "Tsareena"
+    },
+    {
+      "dex": 764,
+      "gen": 7,
+      "slug": "comfey",
+      "name": "Comfey"
+    },
+    {
+      "dex": 766,
+      "gen": 7,
+      "slug": "passimian",
+      "name": "Passimian"
+    },
+    {
+      "dex": 767,
+      "gen": 7,
+      "slug": "wimpod",
+      "name": "Wimpod"
+    },
+    {
+      "dex": 768,
+      "gen": 7,
+      "slug": "golisopod",
+      "name": "Golisopod"
+    },
+    {
+      "dex": 769,
+      "gen": 7,
+      "slug": "sandygast",
+      "name": "Sandygast"
+    },
+    {
+      "dex": 770,
+      "gen": 7,
+      "slug": "palossand",
+      "name": "Palossand"
+    },
+    {
+      "dex": 771,
+      "gen": 7,
+      "slug": "pyukumuku",
+      "name": "Pyukumuku"
+    },
+    {
+      "dex": 772,
+      "gen": 7,
+      "slug": "type-null",
+      "name": "Type_Null"
+    },
+    {
+      "dex": 773,
+      "gen": 7,
+      "slug": "silvally",
+      "name": "Silvally"
+    },
+    {
+      "dex": 774,
+      "gen": 7,
+      "slug": "minior",
+      "name": "Minior"
+    },
+    {
+      "dex": 775,
+      "gen": 7,
+      "slug": "komala",
+      "name": "Komala"
+    },
+    {
+      "dex": 776,
+      "gen": 7,
+      "slug": "turtonator",
+      "name": "Turtonator"
+    },
+    {
+      "dex": 777,
+      "gen": 7,
+      "slug": "togedemaru",
+      "name": "Togedemaru"
+    },
+    {
+      "dex": 778,
+      "gen": 7,
+      "slug": "mimikyu",
+      "name": "Mimikyu"
+    },
+    {
+      "dex": 779,
+      "gen": 7,
+      "slug": "bruxish",
+      "name": "Bruxish"
+    },
+    {
+      "dex": 780,
+      "gen": 7,
+      "slug": "drampa",
+      "name": "Drampa"
+    },
+    {
+      "dex": 781,
+      "gen": 7,
+      "slug": "dhelmise",
+      "name": "Dhelmise"
+    },
+    {
+      "dex": 782,
+      "gen": 7,
+      "slug": "jangmo-o",
+      "name": "Jangmo_o"
+    },
+    {
+      "dex": 783,
+      "gen": 7,
+      "slug": "hakamo-o",
+      "name": "Hakamo_o"
+    },
+    {
+      "dex": 784,
+      "gen": 7,
+      "slug": "kommo-o",
+      "name": "Kommo_o"
+    },
+    {
+      "dex": 785,
+      "gen": 7,
+      "slug": "tapu-koko",
+      "name": "Tapu_Koko"
+    },
+    {
+      "dex": 786,
+      "gen": 7,
+      "slug": "tapu-lele",
+      "name": "Tapu_Lele"
+    },
+    {
+      "dex": 787,
+      "gen": 7,
+      "slug": "tapu-bulu",
+      "name": "Tapu_Bulu"
+    },
+    {
+      "dex": 788,
+      "gen": 7,
+      "slug": "tapu-fini",
+      "name": "Tapu_Fini"
+    },
+    {
+      "dex": 789,
+      "gen": 7,
+      "slug": "cosmog",
+      "name": "Cosmog"
+    },
+    {
+      "dex": 790,
+      "gen": 7,
+      "slug": "cosmoem",
+      "name": "Cosmoem"
+    },
+    {
+      "dex": 791,
+      "gen": 7,
+      "slug": "solgaleo",
+      "name": "Solgaleo"
+    },
+    {
+      "dex": 792,
+      "gen": 7,
+      "slug": "lunala",
+      "name": "Lunala"
+    },
+    {
+      "dex": 793,
+      "gen": 7,
+      "slug": "nihilego",
+      "name": "Nihilego"
+    },
+    {
+      "dex": 794,
+      "gen": 7,
+      "slug": "buzzwole",
+      "name": "Buzzwole"
+    },
+    {
+      "dex": 795,
+      "gen": 7,
+      "slug": "pheromosa",
+      "name": "Pheromosa"
+    },
+    {
+      "dex": 796,
+      "gen": 7,
+      "slug": "xurkitree",
+      "name": "Xurkitree"
+    },
+    {
+      "dex": 797,
+      "gen": 7,
+      "slug": "celesteela",
+      "name": "Celesteela"
+    },
+    {
+      "dex": 798,
+      "gen": 7,
+      "slug": "kartana",
+      "name": "Kartana"
+    },
+    {
+      "dex": 799,
+      "gen": 7,
+      "slug": "guzzlord",
+      "name": "Guzzlord"
+    },
+    {
+      "dex": 800,
+      "gen": 7,
+      "slug": "necrozma",
+      "name": "Necrozma"
+    },
+    {
+      "dex": 801,
+      "gen": 7,
+      "slug": "magearna",
+      "name": "Magearna"
+    },
+    {
+      "dex": 802,
+      "gen": 7,
+      "slug": "marshadow",
+      "name": "Marshadow"
+    },
+    {
+      "dex": 803,
+      "gen": 7,
+      "slug": "poipole",
+      "name": "Poipole"
+    },
+    {
+      "dex": 804,
+      "gen": 7,
+      "slug": "naganadel",
+      "name": "Naganadel"
+    },
+    {
+      "dex": 805,
+      "gen": 7,
+      "slug": "stakataka",
+      "name": "Stakataka"
+    },
+    {
+      "dex": 806,
+      "gen": 7,
+      "slug": "blacephalon",
+      "name": "Blacephalon"
+    },
+    {
+      "dex": 807,
+      "gen": 7,
+      "slug": "zeraora",
+      "name": "Zeraora"
+    },
+    {
+      "dex": 808,
+      "gen": 7,
+      "slug": "meltan",
+      "name": "Meltan"
+    },
+    {
+      "dex": 809,
+      "gen": 7,
+      "slug": "melmetal",
+      "name": "Melmetal"
+    },
+    {
+      "dex": 810,
+      "gen": 8,
+      "slug": "grookey",
+      "name": "Grookey"
+    },
+    {
+      "dex": 811,
+      "gen": 8,
+      "slug": "thwackey",
+      "name": "Thwackey"
+    },
+    {
+      "dex": 812,
+      "gen": 8,
+      "slug": "rillaboom",
+      "name": "Rillaboom"
+    },
+    {
+      "dex": 813,
+      "gen": 8,
+      "slug": "scorbunny",
+      "name": "Scorbunny"
+    },
+    {
+      "dex": 814,
+      "gen": 8,
+      "slug": "raboot",
+      "name": "Raboot"
+    },
+    {
+      "dex": 815,
+      "gen": 8,
+      "slug": "cinderace",
+      "name": "Cinderace"
+    },
+    {
+      "dex": 816,
+      "gen": 8,
+      "slug": "sobble",
+      "name": "Sobble"
+    },
+    {
+      "dex": 817,
+      "gen": 8,
+      "slug": "drizzile",
+      "name": "Drizzile"
+    },
+    {
+      "dex": 818,
+      "gen": 8,
+      "slug": "inteleon",
+      "name": "Inteleon"
+    },
+    {
+      "dex": 819,
+      "gen": 8,
+      "slug": "skwovet",
+      "name": "Skwovet"
+    },
+    {
+      "dex": 820,
+      "gen": 8,
+      "slug": "greedent",
+      "name": "Greedent"
+    },
+    {
+      "dex": 821,
+      "gen": 8,
+      "slug": "rookidee",
+      "name": "Rookidee"
+    },
+    {
+      "dex": 822,
+      "gen": 8,
+      "slug": "corvisquire",
+      "name": "Corvisquire"
+    },
+    {
+      "dex": 823,
+      "gen": 8,
+      "slug": "corviknight",
+      "name": "Corviknight"
+    },
+    {
+      "dex": 824,
+      "gen": 8,
+      "slug": "blipbug",
+      "name": "Blipbug"
+    },
+    {
+      "dex": 825,
+      "gen": 8,
+      "slug": "dottler",
+      "name": "Dottler"
+    },
+    {
+      "dex": 826,
+      "gen": 8,
+      "slug": "orbeetle",
+      "name": "Orbeetle"
+    },
+    {
+      "dex": 827,
+      "gen": 8,
+      "slug": "nickit",
+      "name": "Nickit"
+    },
+    {
+      "dex": 828,
+      "gen": 8,
+      "slug": "thievul",
+      "name": "Thievul"
+    },
+    {
+      "dex": 829,
+      "gen": 8,
+      "slug": "gossifleur",
+      "name": "Gossifleur"
+    },
+    {
+      "dex": 830,
+      "gen": 8,
+      "slug": "eldegoss",
+      "name": "Eldegoss"
+    },
+    {
+      "dex": 831,
+      "gen": 8,
+      "slug": "wooloo",
+      "name": "Wooloo"
+    },
+    {
+      "dex": 832,
+      "gen": 8,
+      "slug": "dubwool",
+      "name": "Dubwool"
+    },
+    {
+      "dex": 833,
+      "gen": 8,
+      "slug": "chewtle",
+      "name": "Chewtle"
+    },
+    {
+      "dex": 834,
+      "gen": 8,
+      "slug": "drednaw",
+      "name": "Drednaw"
+    },
+    {
+      "dex": 835,
+      "gen": 8,
+      "slug": "yamper",
+      "name": "Yamper"
+    },
+    {
+      "dex": 836,
+      "gen": 8,
+      "slug": "boltund",
+      "name": "Boltund"
+    },
+    {
+      "dex": 840,
+      "gen": 8,
+      "slug": "applin",
+      "name": "Applin"
+    },
+    {
+      "dex": 841,
+      "gen": 8,
+      "slug": "flapple",
+      "name": "Flapple"
+    },
+    {
+      "dex": 842,
+      "gen": 8,
+      "slug": "appletun",
+      "name": "Appletun"
+    },
+    {
+      "dex": 843,
+      "gen": 8,
+      "slug": "silicobra",
+      "name": "Silicobra"
+    },
+    {
+      "dex": 844,
+      "gen": 8,
+      "slug": "sandaconda",
+      "name": "Sandaconda"
+    },
+    {
+      "dex": 845,
+      "gen": 8,
+      "slug": "cramorant",
+      "name": "Cramorant"
+    },
+    {
+      "dex": 846,
+      "gen": 8,
+      "slug": "arrokuda",
+      "name": "Arrokuda"
+    },
+    {
+      "dex": 848,
+      "gen": 8,
+      "slug": "toxel",
+      "name": "Toxel"
+    },
+    {
+      "dex": 849,
+      "gen": 8,
+      "slug": "toxtricity",
+      "name": "Toxtricity"
+    },
+    {
+      "dex": 850,
+      "gen": 8,
+      "slug": "sizzlipede",
+      "name": "Sizzlipede"
+    },
+    {
+      "dex": 851,
+      "gen": 8,
+      "slug": "centiskorch",
+      "name": "Centiskorch"
+    },
+    {
+      "dex": 852,
+      "gen": 8,
+      "slug": "clobbopus",
+      "name": "Clobbopus"
+    },
+    {
+      "dex": 853,
+      "gen": 8,
+      "slug": "grapploct",
+      "name": "Grapploct"
+    },
+    {
+      "dex": 854,
+      "gen": 8,
+      "slug": "sinistea",
+      "name": "Sinistea"
+    },
+    {
+      "dex": 855,
+      "gen": 8,
+      "slug": "polteageist",
+      "name": "Polteageist"
+    },
+    {
+      "dex": 856,
+      "gen": 8,
+      "slug": "hatenna",
+      "name": "Hatenna"
+    },
+    {
+      "dex": 857,
+      "gen": 8,
+      "slug": "hattrem",
+      "name": "Hattrem"
+    },
+    {
+      "dex": 858,
+      "gen": 8,
+      "slug": "hatterene",
+      "name": "Hatterene"
+    },
+    {
+      "dex": 859,
+      "gen": 8,
+      "slug": "impidimp",
+      "name": "Impidimp"
+    },
+    {
+      "dex": 860,
+      "gen": 8,
+      "slug": "morgrem",
+      "name": "Morgrem"
+    },
+    {
+      "dex": 861,
+      "gen": 8,
+      "slug": "grimmsnarl",
+      "name": "Grimmsnarl"
+    },
+    {
+      "dex": 862,
+      "gen": 8,
+      "slug": "obstagoon",
+      "name": "Obstagoon"
+    },
+    {
+      "dex": 863,
+      "gen": 8,
+      "slug": "perrserker",
+      "name": "Perrserker"
+    },
+    {
+      "dex": 864,
+      "gen": 8,
+      "slug": "cursola",
+      "name": "Cursola"
+    },
+    {
+      "dex": 867,
+      "gen": 8,
+      "slug": "runerigus",
+      "name": "Runerigus"
+    },
+    {
+      "dex": 869,
+      "gen": 8,
+      "slug": "alcremie",
+      "name": "Alcremie"
+    },
+    {
+      "dex": 871,
+      "gen": 8,
+      "slug": "pincurchin",
+      "name": "Pincurchin"
+    },
+    {
+      "dex": 872,
+      "gen": 8,
+      "slug": "snom",
+      "name": "Snom"
+    },
+    {
+      "dex": 873,
+      "gen": 8,
+      "slug": "frosmoth",
+      "name": "Frosmoth"
+    },
+    {
+      "dex": 875,
+      "gen": 8,
+      "slug": "eiscue",
+      "name": "Eiscue"
+    },
+    {
+      "dex": 876,
+      "gen": 8,
+      "slug": "indeedee",
+      "name": "Indeedee"
+    },
+    {
+      "dex": 877,
+      "gen": 8,
+      "slug": "morpeko",
+      "name": "Morpeko"
+    },
+    {
+      "dex": 880,
+      "gen": 8,
+      "slug": "dracozolt",
+      "name": "Dracozolt"
+    },
+    {
+      "dex": 881,
+      "gen": 8,
+      "slug": "arctozolt",
+      "name": "Arctozolt"
+    },
+    {
+      "dex": 882,
+      "gen": 8,
+      "slug": "dracovish",
+      "name": "Dracovish"
+    },
+    {
+      "dex": 884,
+      "gen": 8,
+      "slug": "duraludon",
+      "name": "Duraludon"
+    },
+    {
+      "dex": 885,
+      "gen": 8,
+      "slug": "dreepy",
+      "name": "Dreepy"
+    },
+    {
+      "dex": 886,
+      "gen": 8,
+      "slug": "drakloak",
+      "name": "Drakloak"
+    },
+    {
+      "dex": 887,
+      "gen": 8,
+      "slug": "dragapult",
+      "name": "Dragapult"
+    },
+    {
+      "dex": 888,
+      "gen": 8,
+      "slug": "zacian",
+      "name": "Zacian"
+    },
+    {
+      "dex": 889,
+      "gen": 8,
+      "slug": "zamazenta",
+      "name": "Zamazenta"
+    },
+    {
+      "dex": 890,
+      "gen": 8,
+      "slug": "eternatus",
+      "name": "Eternatus"
+    },
+    {
+      "dex": 891,
+      "gen": 8,
+      "slug": "kubfu",
+      "name": "Kubfu"
+    },
+    {
+      "dex": 892,
+      "gen": 8,
+      "slug": "urshifu",
+      "name": "Urshifu"
+    },
+    {
+      "dex": 894,
+      "gen": 8,
+      "slug": "regieleki",
+      "name": "Regieleki"
+    },
+    {
+      "dex": 895,
+      "gen": 8,
+      "slug": "regidrago",
+      "name": "Regidrago"
+    },
+    {
+      "dex": 897,
+      "gen": 8,
+      "slug": "spectrier",
+      "name": "Spectrier"
+    },
+    {
+      "dex": 898,
+      "gen": 8,
+      "slug": "calyrex",
+      "name": "Calyrex"
+    },
+    {
+      "dex": 899,
+      "gen": 8,
+      "slug": "wyrdeer",
+      "name": "Wyrdeer"
+    },
+    {
+      "dex": 900,
+      "gen": 8,
+      "slug": "kleavor",
+      "name": "Kleavor"
+    },
+    {
+      "dex": 901,
+      "gen": 8,
+      "slug": "ursaluna",
+      "name": "Ursaluna"
+    },
+    {
+      "dex": 902,
+      "gen": 8,
+      "slug": "basculegion",
+      "name": "Basculegion"
+    },
+    {
+      "dex": 903,
+      "gen": 8,
+      "slug": "sneasler",
+      "name": "Sneasler"
+    },
+    {
+      "dex": 904,
+      "gen": 8,
+      "slug": "overqwil",
+      "name": "Overqwil"
+    },
+    {
+      "dex": 905,
+      "gen": 8,
+      "slug": "enamorus",
+      "name": "Enamorus"
+    },
+    {
+      "dex": 906,
+      "gen": 9,
+      "slug": "sprigatito",
+      "name": "Sprigatito"
+    },
+    {
+      "dex": 907,
+      "gen": 9,
+      "slug": "floragato",
+      "name": "Floragato"
+    },
+    {
+      "dex": 908,
+      "gen": 9,
+      "slug": "meowscarada",
+      "name": "Meowscarada"
+    },
+    {
+      "dex": 909,
+      "gen": 9,
+      "slug": "fuecoco",
+      "name": "Fuecoco"
+    },
+    {
+      "dex": 910,
+      "gen": 9,
+      "slug": "crocalor",
+      "name": "Crocalor"
+    },
+    {
+      "dex": 911,
+      "gen": 9,
+      "slug": "skeledirge",
+      "name": "Skeledirge"
+    },
+    {
+      "dex": 912,
+      "gen": 9,
+      "slug": "quaxly",
+      "name": "Quaxly"
+    },
+    {
+      "dex": 913,
+      "gen": 9,
+      "slug": "quaxwell",
+      "name": "Quaxwell"
+    },
+    {
+      "dex": 914,
+      "gen": 9,
+      "slug": "quaquaval",
+      "name": "Quaquaval"
+    },
+    {
+      "dex": 915,
+      "gen": 9,
+      "slug": "lechonk",
+      "name": "Lechonk"
+    },
+    {
+      "dex": 916,
+      "gen": 9,
+      "slug": "oinkologne",
+      "name": "Oinkologne"
+    },
+    {
+      "dex": 918,
+      "gen": 9,
+      "slug": "spidops",
+      "name": "Spidops"
+    },
+    {
+      "dex": 919,
+      "gen": 9,
+      "slug": "nymble",
+      "name": "Nymble"
+    },
+    {
+      "dex": 920,
+      "gen": 9,
+      "slug": "lokix",
+      "name": "Lokix"
+    },
+    {
+      "dex": 921,
+      "gen": 9,
+      "slug": "pawmi",
+      "name": "Pawmi"
+    },
+    {
+      "dex": 922,
+      "gen": 9,
+      "slug": "pawmo",
+      "name": "Pawmo"
+    },
+    {
+      "dex": 923,
+      "gen": 9,
+      "slug": "pawmot",
+      "name": "Pawmot"
+    },
+    {
+      "dex": 924,
+      "gen": 9,
+      "slug": "tandemaus",
+      "name": "Tandemaus"
+    },
+    {
+      "dex": 925,
+      "gen": 9,
+      "slug": "maushold",
+      "name": "Maushold"
+    },
+    {
+      "dex": 926,
+      "gen": 9,
+      "slug": "fidough",
+      "name": "Fidough"
+    },
+    {
+      "dex": 927,
+      "gen": 9,
+      "slug": "dachsbun",
+      "name": "Dachsbun"
+    },
+    {
+      "dex": 928,
+      "gen": 9,
+      "slug": "smoliv",
+      "name": "Smoliv"
+    },
+    {
+      "dex": 930,
+      "gen": 9,
+      "slug": "arboliva",
+      "name": "Arboliva"
+    },
+    {
+      "dex": 932,
+      "gen": 9,
+      "slug": "nacli",
+      "name": "Nacli"
+    },
+    {
+      "dex": 933,
+      "gen": 9,
+      "slug": "naclstack",
+      "name": "Naclstack"
+    },
+    {
+      "dex": 934,
+      "gen": 9,
+      "slug": "garganacl",
+      "name": "Garganacl"
+    },
+    {
+      "dex": 935,
+      "gen": 9,
+      "slug": "charcadet",
+      "name": "Charcadet"
+    },
+    {
+      "dex": 936,
+      "gen": 9,
+      "slug": "armarouge",
+      "name": "Armarouge"
+    },
+    {
+      "dex": 937,
+      "gen": 9,
+      "slug": "ceruledge",
+      "name": "Ceruledge"
+    },
+    {
+      "dex": 938,
+      "gen": 9,
+      "slug": "tadbulb",
+      "name": "Tadbulb"
+    },
+    {
+      "dex": 939,
+      "gen": 9,
+      "slug": "bellibolt",
+      "name": "Bellibolt"
+    },
+    {
+      "dex": 940,
+      "gen": 9,
+      "slug": "wattrel",
+      "name": "Wattrel"
+    },
+    {
+      "dex": 941,
+      "gen": 9,
+      "slug": "kilowattrel",
+      "name": "Kilowattrel"
+    },
+    {
+      "dex": 951,
+      "gen": 9,
+      "slug": "capsakid",
+      "name": "Capsakid"
+    },
+    {
+      "dex": 952,
+      "gen": 9,
+      "slug": "scovillain",
+      "name": "Scovillain"
+    },
+    {
+      "dex": 953,
+      "gen": 9,
+      "slug": "rellor",
+      "name": "Rellor"
+    },
+    {
+      "dex": 955,
+      "gen": 9,
+      "slug": "flittle",
+      "name": "Flittle"
+    },
+    {
+      "dex": 957,
+      "gen": 9,
+      "slug": "tinkatink",
+      "name": "Tinkatink"
+    },
+    {
+      "dex": 958,
+      "gen": 9,
+      "slug": "tinkatuff",
+      "name": "Tinkatuff"
+    },
+    {
+      "dex": 959,
+      "gen": 9,
+      "slug": "tinkaton",
+      "name": "Tinkaton"
+    },
+    {
+      "dex": 960,
+      "gen": 9,
+      "slug": "wiglett",
+      "name": "Wiglett"
+    },
+    {
+      "dex": 961,
+      "gen": 9,
+      "slug": "wugtrio",
+      "name": "Wugtrio"
+    },
+    {
+      "dex": 963,
+      "gen": 9,
+      "slug": "finizen",
+      "name": "Finizen"
+    },
+    {
+      "dex": 964,
+      "gen": 9,
+      "slug": "palafin",
+      "name": "Palafin"
+    },
+    {
+      "dex": 965,
+      "gen": 9,
+      "slug": "varoom",
+      "name": "Varoom"
+    },
+    {
+      "dex": 966,
+      "gen": 9,
+      "slug": "revavroom",
+      "name": "Revavroom"
+    },
+    {
+      "dex": 967,
+      "gen": 9,
+      "slug": "cyclizar",
+      "name": "Cyclizar"
+    },
+    {
+      "dex": 969,
+      "gen": 9,
+      "slug": "glimmet",
+      "name": "Glimmet"
+    },
+    {
+      "dex": 970,
+      "gen": 9,
+      "slug": "glimmora",
+      "name": "Glimmora"
+    },
+    {
+      "dex": 971,
+      "gen": 9,
+      "slug": "greavard",
+      "name": "Greavard"
+    },
+    {
+      "dex": 972,
+      "gen": 9,
+      "slug": "houndstone",
+      "name": "Houndstone"
+    },
+    {
+      "dex": 974,
+      "gen": 9,
+      "slug": "cetoddle",
+      "name": "Cetoddle"
+    },
+    {
+      "dex": 975,
+      "gen": 9,
+      "slug": "cetitan",
+      "name": "Cetitan"
+    },
+    {
+      "dex": 976,
+      "gen": 9,
+      "slug": "veluza",
+      "name": "Veluza"
+    },
+    {
+      "dex": 977,
+      "gen": 9,
+      "slug": "dondozo",
+      "name": "Dondozo"
+    },
+    {
+      "dex": 978,
+      "gen": 9,
+      "slug": "tatsugiri",
+      "name": "Tatsugiri"
+    },
+    {
+      "dex": 979,
+      "gen": 9,
+      "slug": "annihilape",
+      "name": "Annihilape"
+    },
+    {
+      "dex": 980,
+      "gen": 9,
+      "slug": "clodsire",
+      "name": "Clodsire"
+    },
+    {
+      "dex": 981,
+      "gen": 9,
+      "slug": "farigiraf",
+      "name": "Farigiraf"
+    },
+    {
+      "dex": 982,
+      "gen": 9,
+      "slug": "dudunsparce",
+      "name": "Dudunsparce"
+    },
+    {
+      "dex": 983,
+      "gen": 9,
+      "slug": "kingambit",
+      "name": "Kingambit"
+    },
+    {
+      "dex": 984,
+      "gen": 9,
+      "slug": "great-tusk",
+      "name": "Great_Tusk"
+    },
+    {
+      "dex": 985,
+      "gen": 9,
+      "slug": "scream-tail",
+      "name": "Scream_Tail"
+    },
+    {
+      "dex": 987,
+      "gen": 9,
+      "slug": "flutter-mane",
+      "name": "Flutter_Mane"
+    },
+    {
+      "dex": 988,
+      "gen": 9,
+      "slug": "slither-wing",
+      "name": "Slither_Wing"
+    },
+    {
+      "dex": 989,
+      "gen": 9,
+      "slug": "sandy-shocks",
+      "name": "Sandy_Shocks"
+    },
+    {
+      "dex": 991,
+      "gen": 9,
+      "slug": "iron-bundle",
+      "name": "Iron_Bundle"
+    },
+    {
+      "dex": 992,
+      "gen": 9,
+      "slug": "iron-hands",
+      "name": "Iron_Hands"
+    },
+    {
+      "dex": 994,
+      "gen": 9,
+      "slug": "iron-moth",
+      "name": "Iron_Moth"
+    },
+    {
+      "dex": 995,
+      "gen": 9,
+      "slug": "iron-thorns",
+      "name": "Iron_Thorns"
+    },
+    {
+      "dex": 996,
+      "gen": 9,
+      "slug": "frigibax",
+      "name": "Frigibax"
+    },
+    {
+      "dex": 997,
+      "gen": 9,
+      "slug": "arctibax",
+      "name": "Arctibax"
+    },
+    {
+      "dex": 998,
+      "gen": 9,
+      "slug": "baxcalibur",
+      "name": "Baxcalibur"
+    },
+    {
+      "dex": 1000,
+      "gen": 9,
+      "slug": "gholdengo",
+      "name": "Gholdengo"
+    },
+    {
+      "dex": 1004,
+      "gen": 9,
+      "slug": "chi-yu",
+      "name": "Chi_Yu"
+    },
+    {
+      "dex": 1005,
+      "gen": 9,
+      "slug": "roaring-moon",
+      "name": "Roaring_Moon"
+    },
+    {
+      "dex": 1006,
+      "gen": 9,
+      "slug": "iron-valiant",
+      "name": "Iron_Valiant"
+    },
+    {
+      "dex": 1007,
+      "gen": 9,
+      "slug": "koraidon",
+      "name": "Koraidon"
+    },
+    {
+      "dex": 1009,
+      "gen": 9,
+      "slug": "walking-wake",
+      "name": "Walking_Wake"
+    },
+    {
+      "dex": 1010,
+      "gen": 9,
+      "slug": "iron-leaves",
+      "name": "Iron_Leaves"
+    },
+    {
+      "dex": 1011,
+      "gen": 9,
+      "slug": "dipplin",
+      "name": "Dipplin"
+    },
+    {
+      "dex": 1012,
+      "gen": 9,
+      "slug": "poltchageist",
+      "name": "Poltchageist"
+    },
+    {
+      "dex": 1013,
+      "gen": 9,
+      "slug": "sinistcha",
+      "name": "Sinistcha"
+    },
+    {
+      "dex": 1015,
+      "gen": 9,
+      "slug": "munkidori",
+      "name": "Munkidori"
+    },
+    {
+      "dex": 1016,
+      "gen": 9,
+      "slug": "fezandipiti",
+      "name": "Fezandipiti"
+    },
+    {
+      "dex": 1017,
+      "gen": 9,
+      "slug": "ogerpon",
+      "name": "Ogerpon"
+    },
+    {
+      "dex": 1018,
+      "gen": 9,
+      "slug": "archaludon",
+      "name": "Archaludon"
+    },
+    {
+      "dex": 1019,
+      "gen": 9,
+      "slug": "hydrapple",
+      "name": "Hydrapple"
+    },
+    {
+      "dex": 1024,
+      "gen": 9,
+      "slug": "terapagos",
+      "name": "Terapagos"
+    }
+  ],
+  "missing": [
+    {
+      "dex": 514,
+      "gen": 5,
+      "name": "Simisear"
+    },
+    {
+      "dex": 516,
+      "gen": 5,
+      "name": "Simipour"
+    },
+    {
+      "dex": 520,
+      "gen": 5,
+      "name": "Tranquill"
+    },
+    {
+      "dex": 522,
+      "gen": 5,
+      "name": "Blitzle"
+    },
+    {
+      "dex": 523,
+      "gen": 5,
+      "name": "Zebstrika"
+    },
+    {
+      "dex": 538,
+      "gen": 5,
+      "name": "Throh"
+    },
+    {
+      "dex": 558,
+      "gen": 5,
+      "name": "Crustle"
+    },
+    {
+      "dex": 564,
+      "gen": 5,
+      "name": "Tirtouga"
+    },
+    {
+      "dex": 565,
+      "gen": 5,
+      "name": "Carracosta"
+    },
+    {
+      "dex": 591,
+      "gen": 5,
+      "name": "Amoonguss"
+    },
+    {
+      "dex": 592,
+      "gen": 5,
+      "name": "Frillish"
+    },
+    {
+      "dex": 593,
+      "gen": 5,
+      "name": "Jellicent"
+    },
+    {
+      "dex": 616,
+      "gen": 5,
+      "name": "Shelmet"
+    },
+    {
+      "dex": 618,
+      "gen": 5,
+      "name": "Stunfisk"
+    },
+    {
+      "dex": 626,
+      "gen": 5,
+      "name": "Bouffalant"
+    },
+    {
+      "dex": 668,
+      "gen": 6,
+      "name": "Pyroar"
+    },
+    {
+      "dex": 683,
+      "gen": 6,
+      "name": "Aromatisse"
+    },
+    {
+      "dex": 732,
+      "gen": 7,
+      "name": "Trumbeak"
+    },
+    {
+      "dex": 733,
+      "gen": 7,
+      "name": "Toucannon"
+    },
+    {
+      "dex": 734,
+      "gen": 7,
+      "name": "Yungoos"
+    },
+    {
+      "dex": 735,
+      "gen": 7,
+      "name": "Gumshoos"
+    },
+    {
+      "dex": 741,
+      "gen": 7,
+      "name": "Oricorio"
+    },
+    {
+      "dex": 756,
+      "gen": 7,
+      "name": "Shiinotic"
+    },
+    {
+      "dex": 765,
+      "gen": 7,
+      "name": "Oranguru"
+    },
+    {
+      "dex": 837,
+      "gen": 8,
+      "name": "Rolycoly"
+    },
+    {
+      "dex": 838,
+      "gen": 8,
+      "name": "Carkol"
+    },
+    {
+      "dex": 839,
+      "gen": 8,
+      "name": "Coalossal"
+    },
+    {
+      "dex": 847,
+      "gen": 8,
+      "name": "Barraskewda"
+    },
+    {
+      "dex": 865,
+      "gen": 8,
+      "name": "Sirfetch_d"
+    },
+    {
+      "dex": 866,
+      "gen": 8,
+      "name": "Mr_Rime"
+    },
+    {
+      "dex": 868,
+      "gen": 8,
+      "name": "Milcery"
+    },
+    {
+      "dex": 870,
+      "gen": 8,
+      "name": "Falinks"
+    },
+    {
+      "dex": 874,
+      "gen": 8,
+      "name": "Stonjourner"
+    },
+    {
+      "dex": 878,
+      "gen": 8,
+      "name": "Cufant"
+    },
+    {
+      "dex": 879,
+      "gen": 8,
+      "name": "Copperajah"
+    },
+    {
+      "dex": 883,
+      "gen": 8,
+      "name": "Arctovish"
+    },
+    {
+      "dex": 893,
+      "gen": 8,
+      "name": "Zarude"
+    },
+    {
+      "dex": 896,
+      "gen": 8,
+      "name": "Glastrier"
+    },
+    {
+      "dex": 917,
+      "gen": 9,
+      "name": "Tarountula"
+    },
+    {
+      "dex": 929,
+      "gen": 9,
+      "name": "Dolliv"
+    },
+    {
+      "dex": 931,
+      "gen": 9,
+      "name": "Squawkabilly"
+    },
+    {
+      "dex": 942,
+      "gen": 9,
+      "name": "Maschiff"
+    },
+    {
+      "dex": 943,
+      "gen": 9,
+      "name": "Mabosstiff"
+    },
+    {
+      "dex": 944,
+      "gen": 9,
+      "name": "Shroodle"
+    },
+    {
+      "dex": 945,
+      "gen": 9,
+      "name": "Grafaiai"
+    },
+    {
+      "dex": 946,
+      "gen": 9,
+      "name": "Bramblin"
+    },
+    {
+      "dex": 947,
+      "gen": 9,
+      "name": "Brambleghast"
+    },
+    {
+      "dex": 948,
+      "gen": 9,
+      "name": "Toedscool"
+    },
+    {
+      "dex": 949,
+      "gen": 9,
+      "name": "Toedscruel"
+    },
+    {
+      "dex": 950,
+      "gen": 9,
+      "name": "Klawf"
+    },
+    {
+      "dex": 954,
+      "gen": 9,
+      "name": "Rabsca"
+    },
+    {
+      "dex": 956,
+      "gen": 9,
+      "name": "Espathra"
+    },
+    {
+      "dex": 962,
+      "gen": 9,
+      "name": "Bombirdier"
+    },
+    {
+      "dex": 968,
+      "gen": 9,
+      "name": "Orthworm"
+    },
+    {
+      "dex": 973,
+      "gen": 9,
+      "name": "Flamigo"
+    },
+    {
+      "dex": 986,
+      "gen": 9,
+      "name": "Brute_Bonnet"
+    },
+    {
+      "dex": 990,
+      "gen": 9,
+      "name": "Iron_Treads"
+    },
+    {
+      "dex": 993,
+      "gen": 9,
+      "name": "Iron_Jugulis"
+    },
+    {
+      "dex": 999,
+      "gen": 9,
+      "name": "Gimmighoul"
+    },
+    {
+      "dex": 1001,
+      "gen": 9,
+      "name": "Wo_Chien"
+    },
+    {
+      "dex": 1002,
+      "gen": 9,
+      "name": "Chien_Pao"
+    },
+    {
+      "dex": 1003,
+      "gen": 9,
+      "name": "Ting_Lu"
+    },
+    {
+      "dex": 1008,
+      "gen": 9,
+      "name": "Miraidon"
+    },
+    {
+      "dex": 1014,
+      "gen": 9,
+      "name": "Okidogi"
+    },
+    {
+      "dex": 1020,
+      "gen": 9,
+      "name": "Gouging_Fire"
+    },
+    {
+      "dex": 1021,
+      "gen": 9,
+      "name": "Raging_Bolt"
+    },
+    {
+      "dex": 1022,
+      "gen": 9,
+      "name": "Iron_Boulder"
+    },
+    {
+      "dex": 1023,
+      "gen": 9,
+      "name": "Iron_Crown"
+    },
+    {
+      "dex": 1025,
+      "gen": 9,
+      "name": "Pecharunt"
+    }
+  ]
+}
