@@ -134,6 +134,8 @@ rm -rf "$PF_LINUX_USER_DATA"
 - runtime smoke: `PF_LINUX_UNPACKED_MODES=both PF_LINUX_UNPACKED_WARMUP_MS=3000 PF_LINUX_UNPACKED_SAMPLE_MS=5000 PF_LINUX_UNPACKED_SAMPLE_INTERVAL_MS=1000 PF_LINUX_UNPACKED_ARGS=--no-sandbox npm run bench:linux-unpacked-runtime` passed
 - enabled mode: tracked process count 7、avg ps cpu 9.860%、max ps cpu 11.500%、avg rss 804.7 MB、残プロセス 0
 - disabled mode: tracked process count 7、avg ps cpu 9.900%、max ps cpu 11.000%、avg rss 760.7 MB、残プロセス 0
+- AppImage build: `npm run dist:linux -- --publish=never` passed、`release/PokeFollower-1.0.5.AppImage` generated
+- AppImage start smoke: `libfuse2t64` 追加後、`POKEFOLLOWER_ALLOW_TEST_USER_DATA=1 POKEFOLLOWER_TEST_USER_DATA_DIR=<tmp> release/PokeFollower-1.0.5.AppImage --no-sandbox` が10秒以上起動を維持、手動停止後の残プロセス 0
 - 備考: `ps comm` が `pokefollower-desktop` を15文字で `pokefollower-de` に切り詰めるため、runtime helper は command line でもプロセス検出します。これは起動・軽量測定・cleanup の証跡であり、AppImage の tray / transparent overlay / click-through / always-on-top 目視確認は引き続き別途必要です。
 
 ## Issue #17 の完了条件
