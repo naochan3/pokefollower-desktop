@@ -115,7 +115,7 @@ git commit -m "build: rebuild rust wasm core"
 - 現状、Windows / macOS とも **未署名** です。
   - Windows: 初回起動時に SmartScreen 警告（「詳細情報」→「実行」で回避）。
   - macOS: Gatekeeper でブロック（右クリック→「開く」、または設定で許可）。
-- 通常の `npm run dist:win` / `npm run dist:mac` は未署名のままです。
+- 通常の `npm run dist:win` / `npm run dist:mac` は未署名のままです。通常ビルドは `electron-builder.unsigned.cjs` で Windows の `signExecutable: false`、macOS の `identity: null` / `notarize: false` を明示し、環境内の証明書を自動検出して署名しないようにしています。
 - 署名済み配布物を作る場合だけ、資格情報を環境変数で注入して signed build を使います。
 
 ```bash
@@ -127,6 +127,7 @@ npm run dist:mac:signed
 ```
 
 signed build は `electron-builder.signed.cjs` を使い、`forceCodeSigning: true` にしています。資格情報がない環境では、未署名 artifact を黙って出さずに失敗するのが期待動作です。
+macOS signed build は notarization 前提として `hardenedRuntime: true` を明示し、通常の `dist:mac` が既定検出しない `build/signed/entitlements.mac.plist` / `build/signed/entitlements.mac.inherit.plist` を使います。
 
 必要な資格情報:
 

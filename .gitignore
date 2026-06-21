@@ -6,6 +6,10 @@ target/
 dist/
 out/
 build/
+!build/
+build/*
+!build/signed/
+!build/signed/*.plist
 release/
 *.exe
 
