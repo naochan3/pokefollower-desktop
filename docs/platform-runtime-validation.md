@@ -121,6 +121,20 @@ rm -rf "$PF_LINUX_USER_DATA"
 - disabled mode: tracked process count 4、avg ps cpu 0.000%、max ps cpu 0.000%、avg rss 355.7 MB、残プロセス 0
 - 備考: builder は Developer ID Application 証明書を見つけられず未署名で package しました。これは #16 の既知制限と一致します。
 
+### 2026-06-22 macOS arm64 package smoke refresh
+
+- OS: macOS 26.5.1 / arm64
+- PokeFollower commit: `5d161d5`
+- package version: `v1.0.5`
+- System Events probe: `osascript -e 'tell application "System Events" to return UI elements enabled'` -> `true`
+- foreground probe: `node -e 'require("./src/main/fullscreen-detect.js").getForegroundInfo().then(v=>console.log(JSON.stringify(v)))'` -> `{"cls":"Codex","x":0,"y":0,"w":0,"h":0,"isFullscreen":false}`
+- 生成コマンド: `npm run dist:mac -- --arm64 --dir --publish=never` passed
+- package smoke: `node scripts/verify-package-smoke.cjs darwin arm64` passed
+- runtime smoke: `PF_MAC_UNPACKED_MODES=both PF_MAC_UNPACKED_WARMUP_MS=3000 PF_MAC_UNPACKED_SAMPLE_MS=5000 PF_MAC_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:mac-unpacked-runtime` passed
+- enabled mode: tracked process count 4、avg ps cpu 12.160%、max ps cpu 30.600%、avg rss 374.3 MB、残プロセス 0
+- disabled mode: tracked process count 4、avg ps cpu 0.000%、max ps cpu 0.000%、avg rss 349.7 MB、残プロセス 0
+- 備考: System Events が許可されているこの Mac では foreground info 取得がクラッシュせず通常値を返しました。Accessibility / System Events 権限なし状態そのものは未確認のため、Issue #17 の残タスクとして維持します。builder は Developer ID Application 証明書を見つけられず未署名で package しました。これは #16 の既知制限と一致します。
+
 ### 2026-06-22 Linux WSLg unpacked runtime smoke
 
 - OS: Ubuntu 26.04 on WSL2 / WSLg（Windows host: rtx4090）
