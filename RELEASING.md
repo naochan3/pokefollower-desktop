@@ -110,9 +110,28 @@ git commit -m "build: rebuild rust wasm core"
 
 ---
 
-## 署名・公証（未対応）
+## 署名・公証
 
 - 現状、Windows / macOS とも **未署名** です。
   - Windows: 初回起動時に SmartScreen 警告（「詳細情報」→「実行」で回避）。
   - macOS: Gatekeeper でブロック（右クリック→「開く」、または設定で許可）。
-- 正式配布で警告を消すには、Windows のコード署名証明書 / Apple Developer ID 署名＋公証が必要です（[STATUS](docs/STATUS.md) の今後対応を参照）。
+- 通常の `npm run dist:win` / `npm run dist:mac` は未署名のままです。
+- 署名済み配布物を作る場合だけ、資格情報を環境変数で注入して signed build を使います。
+
+```bash
+# Windows: Windows code signing certificate を用意した環境で実行
+npm run dist:win:signed
+
+# macOS: Developer ID Application certificate と notarization credentials を用意した環境で実行
+npm run dist:mac:signed
+```
+
+signed build は `electron-builder.signed.cjs` を使い、`forceCodeSigning: true` にしています。資格情報がない環境では、未署名 artifact を黙って出さずに失敗するのが期待動作です。
+
+必要な資格情報:
+
+- Windows: code signing certificate（例: `CSC_LINK` / `CSC_KEY_PASSWORD`）
+- macOS: Apple Developer ID Application certificate
+- macOS notarization: Apple ID / app-specific password / team ID（例: `APPLE_ID` / `APPLE_APP_SPECIFIC_PASSWORD` / `APPLE_TEAM_ID`）
+
+秘密情報はリポジトリ、Issue、ログ、Release notes に書かず、ローカル環境変数または CI secrets から注入してください。

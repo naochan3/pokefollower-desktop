@@ -5,6 +5,7 @@ const root = path.join(__dirname, "..");
 const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
 const status = fs.readFileSync(path.join(root, "docs", "STATUS.md"), "utf8");
+const releasing = fs.readFileSync(path.join(root, "RELEASING.md"), "utf8");
 const workflow = fs.readFileSync(path.join(root, ".github", "workflows", "ci.yml"), "utf8");
 const errors = [];
 
@@ -36,6 +37,18 @@ if (!readme.includes("未署名・未公証のため、初回は Gatekeeper")) {
 }
 if (!status.includes("macOS / Windows とも **未署名**")) {
   fail("docs/STATUS.md must state Windows/macOS are unsigned");
+}
+if (!releasing.includes("通常の `npm run dist:win` / `npm run dist:mac` は未署名のままです。")) {
+  fail("RELEASING.md must state normal Windows/macOS builds stay unsigned");
+}
+if (!releasing.includes("npm run dist:win:signed") || !releasing.includes("npm run dist:mac:signed")) {
+  fail("RELEASING.md must document signed Windows/macOS build commands");
+}
+if (!releasing.includes("forceCodeSigning: true") || !releasing.includes("資格情報がない環境では、未署名 artifact を黙って出さずに失敗する")) {
+  fail("RELEASING.md must document signed build fail-closed behavior");
+}
+if (!releasing.includes("秘密情報はリポジトリ、Issue、ログ、Release notes に書かず")) {
+  fail("RELEASING.md must document signing secret handling boundaries");
 }
 
 if (errors.length > 0) {
