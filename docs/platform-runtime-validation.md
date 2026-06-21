@@ -43,6 +43,14 @@ PF_MAC_UNPACKED_MODES=both PF_MAC_UNPACKED_WARMUP_MS=3000 PF_MAC_UNPACKED_SAMPLE
 PF_MAC_UNPACKED_PACK=retro/gen-1/025-pikachu PF_MAC_UNPACKED_MODES=enabled PF_MAC_UNPACKED_WARMUP_MS=3000 PF_MAC_UNPACKED_SAMPLE_MS=5000 PF_MAC_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:mac-unpacked-runtime
 ```
 
+スクリーンショットと process 証跡を収集する場合:
+
+```bash
+PF_MAC_GUI_PACK=retro/gen-1/025-pikachu npm run evidence:mac-gui
+```
+
+`evidence:mac-gui` は実機目視の補助です。baseline との差分と visible pixel ratio を記録しますが、`status=candidate` でも人間の確認なしに視覚 PASS 証跡として扱いません。`screencapture` が全面黒を返した場合や十分な差分を取れない場合は `status=blocked` として終了します。
+
 手動の UI 確認で起動する場合:
 
 ```bash
@@ -187,6 +195,19 @@ rm -rf "$PF_LINUX_USER_DATA"
 - saved pack restore: `PF_MAC_UNPACKED_PACK=retro/gen-1/025-pikachu PF_MAC_UNPACKED_MODES=enabled PF_MAC_UNPACKED_WARMUP_MS=2000 PF_MAC_UNPACKED_SAMPLE_MS=3000 PF_MAC_UNPACKED_SAMPLE_INTERVAL_MS=1000 npm run bench:mac-unpacked-runtime` passed
 - runtime smoke: `initial pack: retro/gen-1/025-pikachu`、tracked process count 4、avg ps cpu 2.400%、max ps cpu 2.900%、avg rss 369.3 MB、残プロセス 0
 - 備考: 一時 userData の `settings.json` に保存済み pack を入れた packaged app 起動 smoke です。実画面でピカチュウが見えることの目視確認ではありませんが、最後に保存した pack を含む設定で起動・cleanup できることを確認します。
+
+### 2026-06-22 macOS arm64 GUI screenshot attempt
+
+- OS: macOS 26.5.1 / arm64
+- PokeFollower commit: `580f3ca`
+- package version: `v1.0.5`
+- 生成コマンド: `npm run dist:mac -- --arm64 --dir --publish=never` passed
+- package smoke: `node scripts/verify-package-smoke.cjs darwin arm64` passed
+- evidence helper: `PF_MAC_GUI_PACK=retro/gen-1/025-pikachu npm run evidence:mac-gui` -> `status=blocked`
+- saved pack restore: 一時 userData の `settings.json` に `retro/gen-1/025-pikachu` を設定して packaged app を起動
+- screenshot: baseline / app capture とも `3600x2338`、non-black pixel `0`、changed ratio `0`
+- process: tracked process count 4、残プロセス 0
+- 備考: この Codex 実行環境では、アプリ未起動時の `screencapture` も全面黒を返しました。そのため、スクリーンショットは視覚 PASS 証跡として扱わず、macOS の実画面目視は Issue #17 の残タスクとして維持します。`status=candidate` の場合も、人間がスクリーンショットを確認するまでは PASS にしません。
 
 ### 2026-06-22 Linux WSLg unpacked runtime smoke
 

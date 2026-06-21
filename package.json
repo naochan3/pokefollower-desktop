@@ -18,6 +18,7 @@
     "bench:pack-list": "node scripts/bench-pack-list.cjs",
     "bench:search": "node scripts/bench-search-index.cjs",
     "bench:win-unpacked-runtime": "node scripts/bench-win-unpacked-runtime.cjs",
+    "evidence:mac-gui": "node scripts/capture-mac-gui-evidence.cjs",
     "test": "vitest run",
     "verify:assets": "node scripts/verify-assets-consistency.cjs",
     "verify:ci": "node scripts/verify-ci-workflow.cjs",
