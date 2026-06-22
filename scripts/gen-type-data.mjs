@@ -15,7 +15,7 @@ export function pokeapiSlug(entry) {
 export async function buildTypeData(entries, fetchTypesFor) {
   const out = {};
   for (const e of entries) {
-    const types = await fetchTypesFor(pokeapiSlug(e), e);
+    const types = await fetchTypesFor(pokeapiSlug(e));
     if (Array.isArray(types) && types.length) out[e.id] = { types };
   }
   return out;
