@@ -256,6 +256,20 @@
       image-rendering: pixelated;
       object-fit: contain;
     }
+    .party-slot { position: relative; cursor: pointer; font: inherit; }
+    .party-slot.lead { border-color: var(--red); box-shadow: 0 0 0 2px var(--red) inset; }
+    .party-slot.empty { color: #bbb; font-size: 22px; font-weight: 800; line-height: 1; }
+    .party-slot .party-remove {
+      position: absolute; top: -4px; right: -4px;
+      width: 16px; height: 16px; line-height: 14px;
+      border-radius: 50%; border: 1.5px solid #000;
+      background: #fff; color: #000;
+      font-size: 11px; font-weight: 900; text-align: center;
+    }
+    .party-slot .party-remove:hover { background: var(--red); color: #fff; }
+    .party-row.replacing { outline: 2px dashed var(--red); outline-offset: 2px; animation: party-blink 0.8s steps(2) infinite; }
+    @keyframes party-blink { 50% { opacity: .55; } }
+    .replace-hint { color: var(--red) !important; }
 
     /* ── Roam coming-soon pill ── */
     #roamSoon {
