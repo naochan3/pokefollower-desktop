@@ -12,7 +12,7 @@ const DEFAULTS = {
   offset: 70,
   lerp: 0.20,
   edgeRest: false,
-  avoidCursor: false,
+  avoidCursor: true,
   avoidCursorStrength: "normal",
   personality: "standard",
   mode: "follow",

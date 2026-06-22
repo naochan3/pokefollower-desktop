@@ -55,7 +55,7 @@ describe("settings-patch", () => {
         vcp1_offset: 0,
         vcp1_lerp: 0.5,
         vcp1_edgeRest: false,
-        vcp1_avoidCursor: false,
+        vcp1_avoidCursor: true,
         vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "standard",
         vcp1_mode: "follow",
@@ -74,7 +74,7 @@ describe("settings-patch", () => {
         vcp1_offset: 70,
         vcp1_lerp: 0.2,
         vcp1_edgeRest: true,
-        vcp1_avoidCursor: false,
+        vcp1_avoidCursor: true,
         vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "standard",
         vcp1_mode: "follow",
@@ -84,16 +84,16 @@ describe("settings-patch", () => {
 
   it("avoidCursor patchはsim設定を更新する", () => {
     const { deps, calls } = makeDeps();
-    const next = applySettingsPatch({ avoidCursor: true }, deps);
-    expect(next.avoidCursor).toBe(true);
+    const next = applySettingsPatch({ avoidCursor: false }, deps);
+    expect(next.avoidCursor).toBe(false);
     expect(calls).toEqual([
-      ["settings:set", { avoidCursor: true }],
+      ["settings:set", { avoidCursor: false }],
       ["sim:setConfig", {
         vcp1_scale: 1.25,
         vcp1_offset: 70,
         vcp1_lerp: 0.2,
         vcp1_edgeRest: false,
-        vcp1_avoidCursor: true,
+        vcp1_avoidCursor: false,
         vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "standard",
         vcp1_mode: "follow",
@@ -112,7 +112,7 @@ describe("settings-patch", () => {
         vcp1_offset: 70,
         vcp1_lerp: 0.2,
         vcp1_edgeRest: false,
-        vcp1_avoidCursor: false,
+        vcp1_avoidCursor: true,
         vcp1_avoidCursorStrength: "strong",
         vcp1_personality: "standard",
         vcp1_mode: "follow",
@@ -131,7 +131,7 @@ describe("settings-patch", () => {
         vcp1_offset: 70,
         vcp1_lerp: 0.2,
         vcp1_edgeRest: false,
-        vcp1_avoidCursor: false,
+        vcp1_avoidCursor: true,
         vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "friendly",
         vcp1_mode: "follow",
@@ -150,7 +150,7 @@ describe("settings-patch", () => {
         vcp1_offset: 70,
         vcp1_lerp: 0.2,
         vcp1_edgeRest: false,
-        vcp1_avoidCursor: false,
+        vcp1_avoidCursor: true,
         vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "standard",
         vcp1_mode: "roam",

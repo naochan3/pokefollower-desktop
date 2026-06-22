@@ -35,7 +35,8 @@ for (const id of [
   // ボックスパネル
   "search", "kind", "genChips", "typeChips", "grid",
   // せっていパネル
-  "enabled", "notificationCompanion", "testCompanion", "exportCodexPet",
+  "enabled", "avoidCursor", "avoidCursorStrength", "appReactions",
+  "notificationCompanion", "testCompanion", "exportCodexPet",
   "comingSoonList", "roamSoon",
 ]) {
   expect(html.includes(`id="${id}"`), `settings.html missing id="${id}"`);
@@ -47,7 +48,8 @@ for (const id of [
   "partyRowAibou", "partyRowBox",
   "scale", "offset", "lerp", "scaleVal", "offsetVal", "lerpVal",
   "grid", "search", "genChips", "typeChips", "kind",
-  "enabled", "notificationCompanion", "testCompanion", "exportCodexPet",
+  "enabled", "avoidCursor", "avoidCursorStrength", "appReactions",
+  "notificationCompanion", "testCompanion", "exportCodexPet",
 ]) {
   expect(js.includes(`getElementById("${id}")`), `settings.js should query #${id}`);
 }

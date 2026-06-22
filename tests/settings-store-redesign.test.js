@@ -2,7 +2,7 @@ const { DEFAULTS, sanitize } = require("../src/main/settings-store.js");
 
 test("coming-soon behaviors default OFF", () => {
   expect(DEFAULTS.edgeRest).toBe(false);
-  expect(DEFAULTS.avoidCursor).toBe(false);
+  expect(DEFAULTS.avoidCursor).toBe(true);
   expect(DEFAULTS.appReactionsEnabled).toBe(false);
   expect(DEFAULTS.mode).toBe("follow");
 });

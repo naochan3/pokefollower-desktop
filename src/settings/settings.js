@@ -13,6 +13,9 @@ function mapKeys(obj) {
     vcp1_offset: "offset",
     vcp1_lerp: "lerp",
     vcp1_notification_companion: "notificationCompanionEnabled",
+    vcp1_avoidCursor: "avoidCursor",
+    vcp1_avoid_cursor_strength: "avoidCursorStrength",
+    vcp1_app_reactions: "appReactionsEnabled",
   };
   const out = {};
   for (const [k, v] of Object.entries(obj)) out[m[k] || k] = v;
@@ -683,6 +686,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ═══════════════ せってい ═══════════════
   const enabledEl = document.getElementById("enabled");
+  const avoidCursorEl = document.getElementById("avoidCursor");
+  const avoidCursorStrengthEl = document.getElementById("avoidCursorStrength");
+  const appReactionsEl = document.getElementById("appReactions");
   const notificationCompanionEl = document.getElementById("notificationCompanion");
   const testCompanionEl = document.getElementById("testCompanion");
   const exportCodexPetEl = document.getElementById("exportCodexPet");
@@ -690,6 +696,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (enabledEl) {
     enabledEl.checked = !!settings.enabled;
     enabledEl.addEventListener("change", () => save({ vcp1_enabled: enabledEl.checked }));
+  }
+  if (avoidCursorEl) {
+    avoidCursorEl.checked = settings.avoidCursor !== false;
+    avoidCursorEl.addEventListener("change", () => save({ vcp1_avoidCursor: avoidCursorEl.checked }));
+  }
+  if (avoidCursorStrengthEl) {
+    avoidCursorStrengthEl.value = typeof settings.avoidCursorStrength === "string" ? settings.avoidCursorStrength : "normal";
+    avoidCursorStrengthEl.addEventListener("change", () => save({ vcp1_avoid_cursor_strength: avoidCursorStrengthEl.value }));
+  }
+  if (appReactionsEl) {
+    appReactionsEl.checked = !!settings.appReactionsEnabled;
+    appReactionsEl.addEventListener("change", () => save({ vcp1_app_reactions: appReactionsEl.checked }));
   }
   if (notificationCompanionEl) {
     notificationCompanionEl.checked = !!settings.notificationCompanionEnabled;

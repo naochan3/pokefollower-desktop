@@ -162,7 +162,7 @@ describe("settings-store", () => {
 
   it("avoidCursorはbooleanとして保存する", () => {
     const store = createSettingsStore(file);
-    expect(store.get("avoidCursor")).toBe(false);
+    expect(store.get("avoidCursor")).toBe(true);
     store.set({ avoidCursor: 0 });
     expect(store.get("avoidCursor")).toBe(false);
     store.set({ avoidCursor: "yes" });
