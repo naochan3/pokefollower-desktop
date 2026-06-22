@@ -2,6 +2,11 @@ use std::sync::Mutex;
 
 const ARRIVE_RADIUS_PX: f64 = 6.0;
 const SLOW_RADIUS_PX: f64 = 60.0;
+// 「遠いと速足」: 相棒↔ターゲットが遠いほど移動速度を上げる（最大 QUICK_MULT 倍）。
+// QUICK_START 以下は通常速度、QUICK_FULL 以上で最大。間は線形。スプライト・向きは一切変えない。
+const QUICK_START_PX: f64 = 120.0;
+const QUICK_FULL_PX: f64 = 320.0;
+const QUICK_MULT: f64 = 2.2;
 const WALK_SPEED_MIN_PXPS: f64 = 80.0;
 const WALK_SPEED_MAX_PXPS: f64 = 640.0;
 const SPEED_CONFIG_MIN: f64 = 0.05;
@@ -120,9 +125,9 @@ impl FollowerCore {
         if dist > ARRIVE_RADIUS_PX {
             let ws = self.walk_speed_from_config();
             let sp = if dist < SLOW_RADIUS_PX {
-                ws * (dist / SLOW_RADIUS_PX)
+                ws * (dist / SLOW_RADIUS_PX) // 到着減速
             } else {
-                ws
+                ws * quick_step_mult(dist) // 遠いほど速足（最大 QUICK_MULT 倍）
             };
             let mdt = dt_ms.min(50.0);
             let md = dist.min(sp * (mdt / 1000.0));
@@ -183,6 +188,12 @@ impl FollowerCore {
 
 fn hypot(x: f64, y: f64) -> f64 {
     (x * x + y * y).sqrt()
+}
+
+// 距離 dist に応じた速度倍率。QUICK_START 以下=1.0、QUICK_FULL 以上=QUICK_MULT、間は線形補間。
+fn quick_step_mult(dist: f64) -> f64 {
+    let t = ((dist - QUICK_START_PX) / (QUICK_FULL_PX - QUICK_START_PX)).clamp(0.0, 1.0);
+    1.0 + t * (QUICK_MULT - 1.0)
 }
 
 static CORE: Mutex<FollowerCore> = Mutex::new(FollowerCore {

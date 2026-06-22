@@ -399,15 +399,16 @@ describe("follower-sim 向き・sleep (Issue #30)", () => {
     // velAvg は完全に減衰するが、ポケモンはまだ目標へ歩いて追従中。
     let now = 0;
     let r = null;
+    // 遠いと速足になるため、十分遠く(3000)へ飛ばして frame120 時点でも歩行中にする。
     for (let i = 0; i < 120; i++) {
       now += 16;
-      sim.updateCursor(800, 0, now);
+      sim.updateCursor(3000, 0, now);
       r = sim.step(16, now);
     }
     // この時点でもポケモンは目標へ歩行中（右へ移動中）。
     expect(r.state).toBe("walk");
     expect(r.x).toBeGreaterThan(350);
-    expect(r.x).toBeLessThan(780);
+    expect(r.x).toBeLessThan(2900);
     // velAvg は既に0。カーソル基準だと front(0) になるが、進行方向基準なら right(2)。
     expect(r.row).toBe(META_DIR.states.walk.rows.right);
   });

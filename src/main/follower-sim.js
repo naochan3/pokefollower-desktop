@@ -9,6 +9,11 @@ const { createRustFollowerCore } = require("./rust-follower-core.js");
 const SLEEP_TIMEOUT_MS = 30000; // 無操作30sで sleep
 const ARRIVE_RADIUS_PX = 6;
 const SLOW_RADIUS_PX = 60;
+// 「遠いと速足」: 遠いほど速く（最大QUICK_MULT倍）。START以下=通常、FULL以上=最大、間は線形。
+// スプライト・向きは変えない。Rustコア(quick_step_mult)と同ロジック。
+const QUICK_START_PX = 120;
+const QUICK_FULL_PX = 320;
+const QUICK_MULT = 2.2;
 const WALK_SPEED_MIN_PXPS = 80;
 const WALK_SPEED_MAX_PXPS = 640;
 const SPEED_CONFIG_MIN = 0.05;
@@ -76,6 +81,12 @@ function createFollowerSim(options = {}) {
     const t = (effectiveLerp() - SPEED_CONFIG_MIN) / (SPEED_CONFIG_MAX - SPEED_CONFIG_MIN);
     const c = Math.min(1, Math.max(0, t));
     return WALK_SPEED_MIN_PXPS + c * (WALK_SPEED_MAX_PXPS - WALK_SPEED_MIN_PXPS);
+  }
+
+  // 距離に応じた速度倍率。START以下=1.0、FULL以上=QUICK_MULT、間は線形（Rust quick_step_mult と一致）。
+  function quickStepMult(dist) {
+    const t = Math.min(1, Math.max(0, (dist - QUICK_START_PX) / (QUICK_FULL_PX - QUICK_START_PX)));
+    return 1 + t * (QUICK_MULT - 1);
   }
 
   function personalityPreset() {
@@ -417,7 +428,9 @@ function createFollowerSim(options = {}) {
         const dist = Math.hypot(dx, dy);
         if (dist > ARRIVE_RADIUS_PX) {
           const ws = walkSpeedFromConfig();
-          const sp = dist < SLOW_RADIUS_PX ? ws * (dist / SLOW_RADIUS_PX) : ws;
+          const sp = dist < SLOW_RADIUS_PX
+            ? ws * (dist / SLOW_RADIUS_PX) // 到着減速
+            : ws * quickStepMult(dist); // 遠いほど速足
           const mdt = Math.min(dtMs, 50);
           const md = Math.min(dist, sp * (mdt / 1000));
           R.pos.x += (dx / dist) * md;
