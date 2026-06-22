@@ -43,7 +43,7 @@ chmod +x PokeFollower-1.0.5.AppImage
 ./PokeFollower-1.0.5.AppImage
 ```
 
-> Linux 版は AppImage のパッケージ検証と WSLg での起動 smoke までです。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
+> Linux 版は AppImage のパッケージ検証、WSLg での起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate までです。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない candidate は visual non-evaluable として扱い、デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
 
 > 最新の配布状況は常に[リリースページ](https://github.com/naochan3/pokefollower-desktop/releases/latest)から確認できます。
 
@@ -71,7 +71,7 @@ chmod +x PokeFollower-1.0.5.AppImage
 ### 既知の制限
 
 - macOS 版はビルド対応済みですが、未署名・未公証です。配布する場合は Developer ID で署名し、公証してください。
-- Linux 版は AppImage のビルドと WSLg での起動 smoke までです。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
+- Linux 版は AppImage のビルド、WSLg での起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate までです。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない candidate は visual non-evaluable として扱い、デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
 - 全画面の自動判定は Windows では Win32、macOS では System Events / Accessibility、Linux では `xdotool` / `xprop` / `xwininfo` が利用できる環境で動作します。権限やツールが無い環境では自動非表示だけ無効になります。
 - アプリ別リアクションは全画面検知と同じ前面ウィンドウ情報を使うため、macOS では Accessibility/System Events、Linux では `xdotool` / `xprop` / `xwininfo` の可否に依存します。取得できない場合は通常追従に戻ります。
 - 邪魔しない追従は Electron の system idle time とカーソル位置を使うため、キー入力/ドラッグを個別に記録しません。取得できない環境ではカーソル近傍回避だけにフォールバックします。
