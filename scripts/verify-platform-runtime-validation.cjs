@@ -138,11 +138,12 @@ expect(
   "STATUS must keep Linux visual runtime validation roadmap item",
 );
 expectIncludesAll(status, [
-  "Linux は AppImage 配布",
+  "Linux は AppImage ビルド対応",
   "WSLg 起動 smoke",
   "saved pack restore smoke",
   "X11 window probe",
   "GUI evidence candidate",
+  "v1.1.0 Release の AppImage asset は未添付",
   "native Linux desktop の目視検証の代替ではありません",
   "visual non-evaluable",
   "実機の tray・透明・クリック透過・最前面は未検証",

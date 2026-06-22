@@ -51,7 +51,7 @@ npm run dist:mac    # → release/PokeFollower-<ver>-arm64.dmg, -arm64-mac.zip
 npm run dist:linux  # → release/PokeFollower-<ver>.AppImage
 ```
 
-> 追従計算の Rust→WASM（`native/pokefollower_core.wasm`）は **リポジトリに同梱済み**。`npm run dist` は同梱 WASM をそのまま使うため、**Rust ツールチェーンは不要**です（詳細は下記）。
+> 追従計算の Rust→WASM（`native/pokefollower_core.wasm`）は **リポジトリに同梱済み**。`npm run dist` は同梱 WASM をそのまま使うため、**Rust ツールチェーンは不要**です（詳細は下記）。通常の `dist*` scripts は CI 上で electron-builder が暗黙 publish しないよう `--publish never` を含みます。
 
 ### 3. GitHub Release を作成し、アセットを上げる
 
@@ -115,7 +115,7 @@ git commit -m "build: rebuild rust wasm core"
 - 現状、Windows / macOS とも **未署名** です。
   - Windows: 初回起動時に SmartScreen 警告（「詳細情報」→「実行」で回避）。
   - macOS: Gatekeeper でブロック（右クリック→「開く」、または設定で許可）。
-- 通常の `npm run dist:win` / `npm run dist:mac` は未署名のままです。通常ビルドは `electron-builder.unsigned.cjs` で Windows の `signExecutable: false`、macOS の `identity: null` / `notarize: false` を明示し、環境内の証明書を自動検出して署名しないようにしています。
+- 通常の `npm run dist:win` / `npm run dist:mac` は未署名のままです。通常ビルドは `electron-builder.unsigned.cjs` で Windows の `signExecutable: false`、macOS の `identity: null` / `notarize: false` を明示し、環境内の証明書を自動検出して署名しないようにしています。通常の `dist*` scripts は `--publish never` を含むため、Release への添付は `gh release create` / `gh release upload` で明示的に行います。
 - 署名済み配布物を作る場合だけ、資格情報を環境変数で注入して signed build を使います。
 
 ```bash

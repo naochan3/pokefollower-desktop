@@ -22,7 +22,7 @@ function expectIncludesAll(text, snippets, message) {
 }
 
 expect(pkg.build?.linux?.target?.includes("AppImage"), "package.json build.linux.target must include AppImage");
-expect(pkg.scripts?.["dist:linux"] === "electron-builder --linux", "package.json dist:linux must build linux target");
+expect(pkg.scripts?.["dist:linux"] === "electron-builder --linux --publish never", "package.json dist:linux must build linux target without implicit publish");
 expect(pkg.build?.mac?.target?.includes("dmg"), "package.json build.mac.target must include dmg");
 expect(pkg.build?.mac?.target?.includes("zip"), "package.json build.mac.target must include zip");
 
@@ -68,15 +68,16 @@ expectIncludesAll(readme, [
 ], "README must state Linux visual runtime behavior still needs validation");
 expect(readme.includes("macOS（Apple Silicon / arm64）"), "README must describe published macOS support as Apple Silicon / arm64");
 expect(!readme.includes("macOS（Apple Silicon / Intel）"), "README must not imply Intel macOS binaries are currently published");
-expect(status.includes("現在は Windows / macOS(arm64) / Linux(AppImage) 向けに配布物を出せる状態。"), "STATUS must describe current distribution targets");
+expect(status.includes("現在は Windows / macOS(arm64) 向けの v1.1.0 配布物を公開済み。"), "STATUS must describe current published distribution targets");
 expect(status.includes("macOS arm64 dmg / zip"), "STATUS included assets must describe macOS arm64 assets");
 expect(status.includes("全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。"), "STATUS must state macOS/Linux fullscreen auto-hide dependencies");
 expectIncludesAll(status, [
-  "Linux は AppImage 配布",
+  "Linux は AppImage ビルド対応",
   "WSLg 起動 smoke",
   "saved pack restore smoke",
   "X11 window probe",
   "GUI evidence candidate",
+  "v1.1.0 Release の AppImage asset は未添付",
   "native Linux desktop の目視検証の代替ではありません",
   "visual non-evaluable",
   "実機の tray・透明・クリック透過・最前面は未検証",

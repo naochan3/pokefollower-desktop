@@ -11,7 +11,7 @@
 
 ブラウザ拡張 [pokefollower_cursor_web_plugin](https://github.com/ThinkrDoer/pokefollower_cursor_web_plugin) を、
 **デスクトップ全体で OS カーソルを追う常駐マスコット（Electron）** に作り変える、という当初ゴールは達成済み。
-現在は Windows / macOS(arm64) / Linux(AppImage) 向けに配布物を出せる状態。
+現在は Windows / macOS(arm64) 向けの v1.1.0 配布物を公開済み。Linux は AppImage ビルド対応済みですが、v1.1.0 の Release asset は未添付です。
 
 ---
 
@@ -46,7 +46,7 @@
 
 - Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21＋ #31/#32 の追従挙動修正＋ #34（待機を移動方向の逆隅に）＋ #35（第5〜9世代追加・世代フィルタ）込み。追従既定 16ms）。**v1.1.0 では Windows 担当が本 Release に添付**
 - macOS arm64 dmg / zip（**v1.1.0 リリース作成後に macOS 担当（@Nicolas0315）/ CI が同 Release に添付**）
-- Linux AppImage（**v1.1.0 リリース作成後に同 Release に添付**。package smoke、WSLg build/start smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate は v1.0.5 時点で確認済み）
+- Linux AppImage（ビルドターゲットと CI package smoke は確認済み。ただし **v1.1.0 Release の AppImage asset は未添付**。WSLg build/start smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate は v1.0.5 時点で確認済み）
 - ポケモン 956 種（第1〜9世代。未収録69種は出典素材待ち）＋ **地方フォルム 54 種**（アローラ18/ガラル18/ヒスイ16/パルデア2。index 計1010）
 - 日本語表示・日本語検索、タイル選択 UI、世代フィルタ（赤緑/金銀/RS/DP/BW/XY/SM/剣盾/SV）、**種類セレクタ（通常／地方フォルム）でチップ意味を世代⇔地方に切替**
 - 検索用ポケモンメタデータ schema / verifier と自然言語風検索（タイプ・特徴・作品名の deterministic parser + index）
@@ -82,4 +82,4 @@
 - 邪魔しない追従は system idle time が取れない環境では、カーソル近傍回避のみで動作します。
 - 通知コンパニオンは OS 全体の通知取得までは未対応です。現在はアプリ内/許可済みイベントと Codex notify payload を表示する軽量基盤で、OS 別の権限境界は [通知コンパニオンの取得境界](notification-capture.md) に整理しています。
 - モニター間で表示スケール（DPI）が大きく異なると、位置がわずかにずれることがある。
-- Linux は AppImage 配布、WSLg 起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate まで（WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない環境の candidate は visual non-evaluable として扱い、実機の tray・透明・クリック透過・最前面は未検証）。
+- Linux は AppImage ビルド対応、WSLg 起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate まで（v1.1.0 Release の AppImage asset は未添付。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない環境の candidate は visual non-evaluable として扱い、実機の tray・透明・クリック透過・最前面は未検証）。

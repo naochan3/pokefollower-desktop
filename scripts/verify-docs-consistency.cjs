@@ -28,11 +28,10 @@ expectIncludes(
   readme,
   `releases/download/${tag}/PokeFollower-${version}-arm64-mac.zip`,
 );
-expectIncludes(
-  "README Linux AppImage link",
-  readme,
-  `releases/download/${tag}/PokeFollower-${version}.AppImage`,
-);
+if (readme.includes(`releases/download/${tag}/PokeFollower-${version}.AppImage`)) {
+  fail(`README must not link ${tag} Linux AppImage until the Release asset exists`);
+}
+expectIncludes("README Linux pending note", readme, `${tag} の Linux AppImage は Release へ未添付`);
 expectIncludes("STATUS current version", status, `現在のバージョン: **${tag}**`);
 expectIncludes("STATUS included version", status, `現在含まれているもの（${tag}）`);
 expectIncludes("README Windows installer example", readme, `... ${version}.exe`);
