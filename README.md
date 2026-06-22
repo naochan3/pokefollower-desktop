@@ -21,7 +21,7 @@
 
 ### macOS（Apple Silicon）
 
-**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.1.0/PokeFollower-1.1.0-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.1.0/PokeFollower-1.1.0-arm64-mac.zip)）
+**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.2.0/PokeFollower-1.2.0-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.2.0/PokeFollower-1.2.0-arm64-mac.zip)）
 
 1. 上のリンクから `.dmg` をダウンロード
 2. 開いて `PokeFollower.app` を**アプリケーション**にドラッグ → 起動して**メニューバー**（画面右上）に常駐
@@ -32,15 +32,15 @@
 
 ### Linux
 
-**[→ AppImage をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.1.0/PokeFollower-1.1.0.AppImage)**
+**[→ AppImage をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.2.0/PokeFollower-1.2.0.AppImage)**
 
-1. 上のリンクから `PokeFollower-1.1.0.AppImage` をダウンロード
+1. 上のリンクから `PokeFollower-1.2.0.AppImage` をダウンロード
 2. 実行権限を付けて起動
 3. 起動できた環境では、tray または代替の常駐 UI から設定 / 有効・無効 / 終了
 
 ```bash
-chmod +x PokeFollower-1.1.0.AppImage
-./PokeFollower-1.1.0.AppImage
+chmod +x PokeFollower-1.2.0.AppImage
+./PokeFollower-1.2.0.AppImage
 ```
 
 > Linux 版は AppImage のパッケージ検証、WSLg での起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate までです。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない candidate は visual non-evaluable として扱い、デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
@@ -53,20 +53,37 @@ chmod +x PokeFollower-1.1.0.AppImage
 
 - **デスクトップ全体でカーソル追従** — Web ページ内ではなく、OS のマウスカーソルをポケモンが追いかけます。
 - **マルチモニター対応** — ポケモンは画面全体のグローバル座標で動き、モニターの境界を**ワープせず連続して**越えてついてきます。
-- **ポケモン 956 種＋地方フォルム 54 種（第1〜9世代）** — スプライトはレトロ系のドット絵。地方フォルム（アローラ/ガラル/ヒスイ/パルデア）も収録。
-- **日本語表示・日本語検索** — 設定画面はタイル一覧（スプライト＋日本語名＋図鑑番号）。カタカナ／ひらがな／ローマ字／英名／番号で検索できます。
-- **見た目の調整** — サイズ（SCALE）・カーソルからの距離（DISTANCE）・追従速度（SPEED）を変更可能。
+- **ポケモン 956 種＋地方フォルム 54 種（第1〜9世代、index 計1010）** — スプライトはレトロ系のドット絵。地方フォルム（アローラ/ガラル/ヒスイ/パルデア）も収録。
+- **全1010体のタイプデータ＋タイプ色** — タイプ色チップによるビジュアル識別、タイプ絞り込み、タイプ名での検索に対応。
+- **3タブ設定 UI（あいぼう / ボックス / せってい）** — ポケモン体験に合わせたUI設計。詳細は下の「設定画面（3タブ）」セクションを参照。
+- **手持ち6体・先頭=相棒** — 手持ちに最大6体を入れ、先頭が現在の相棒。タップで相棒切替、満杯時は枠タップで入替。
+- **あだ名** — 相棒ポケモンに名前を付けられます。
+- **日本語表示・日本語検索** — 設定画面はタイル一覧（スプライト＋日本語名＋図鑑番号）。カタカナ／ひらがな／ローマ字／英名／番号・タイプ名で検索できます。
+- **見た目の調整** — サイズ（SCALE）・カーソルからの距離（DISTANCE）・追従速度（SPEED）をあいぼうタブのスライダーで変更可能。
+- **邪魔しない追従（カーソルをよける）** — カーソル直下を避け、退避強度を ふつう / つよい から選べます。既定は ON。
+- **アプリに合わせる（任意）** — 前面アプリ名を best-effort で分類し、エディタでは距離を取り、ブラウザ/チャットでは少し近づく控えめな反応に切り替えます。
 - **トレイ常駐** — タスクトレイのモンスターボールから、設定・有効/無効・自動起動・終了を操作（Linux は既知の制限を参照）。
 - **設定の永続化** — 選んだポケモンや各設定は再起動後も保持されます。
 - **通知コンパニオン（任意）** — 設定で ON にすると、許可された通知イベントを短く要約し、ポケモンの近くへドット風の吹き出しとして表示します。既定は OFF です。OS 通知本文は保存せず、Codex notify bridge は本文そのものではなく短い要約だけを最大64件のローカル queue に保持します。
-- **作業見守り（任意）** — 25/5 または 50/10 の作業/休憩タイマーを開始し、切り替わり時に控えめな通知と追従リアクションを出します。
-- **アプリ別リアクション（任意）** — 前面アプリ名を best-effort で分類し、エディタでは距離を取り、ブラウザ/チャットでは少し近づく控えめな反応に切り替えます。
-- **画面端/ウィンドウ端で休憩** — カーソルが止まると、安全な画面端または取得できた前面ウィンドウ端へ移動します。
-- **邪魔しない追従** — カーソル直下を避け、退避強度を Normal / Strong から選べます。最近操作中は距離を広げて動きを抑えます。
-- **お気に入り待機列** — 複数のポケモンをお気に入り登録し、手動 NEXT または指定分数ごとの自動交代ができます。
 - **ログイン時の自動起動**（インストール版のみ）。
 - **全画面アプリで自動的に隠れる** — ゲーム等が全画面で前面にあるときはポケモンを自動で隠し、抜けると戻ります。Chrome の最大化やデスクトップ表示では隠れません。
 - **クリック透過** — 透明・最前面のオーバーレイなので、下のアプリ操作の邪魔をしません。
+
+---
+
+## 設定画面（3タブ）
+
+v1.2.0 からの設定画面は**ポケモン体験に合わせた3タブ構成**になっています。
+
+| タブ | 内容 |
+|---|---|
+| **あいぼう** | 相棒を大きく表示。手持ち6体スロット（先頭=現在の相棒）、大きさ/距離/速さスライダー、あだ名入力 |
+| **ボックス** | 全1010体をタイル一覧で表示。テキスト検索（名前/番号/タイプ名）、通常/地方フォルム切替、世代/地方/タイプ絞り込み |
+| **せってい** | カーソルをよける（ふつう/つよい）・アプリに合わせる・通知コンパニオン・Codex pet 書き出しなどの動作設定 |
+
+**なぜこのUIにしたか** — 旧来の「設定ウィンドウ=スライダーの羅列」から、ポケモンゲームの「あいぼう/ボックス/せってい」という自然な区分に再設計しました。詳しくは [設計仕様](docs/superpowers/specs/2026-06-22-ui-redesign-pokemon-experience-design.md) と [実装計画](docs/superpowers/plans/2026-06-22-ui-redesign-pokemon-experience.md) を参照してください。
+
+---
 
 ### 既知の制限
 
@@ -96,13 +113,14 @@ chmod +x PokeFollower-1.1.0.AppImage
 ### 使い方
 
 - タスクトレイ（画面右下）の**モンスターボールのアイコン**を右クリック：
-  - **設定を開く** — ポケモン選択・サイズ・距離・速度を変更
+  - **設定を開く** — ポケモン選択・サイズ・距離・速度・あだ名などを変更
   - **有効** — 表示の ON / OFF
   - **自動起動** — ログイン時の自動起動の ON / OFF
   - **終了** — アプリを終了
-- 設定画面では、検索ボックスに `ピカチュウ` / `ぴかちゅう` / `pikachu` / `25` などを入力して絞り込めます。
-- 設定画面の `Codex pet` → `EXPORT` で、選択中のポケモンを `~/.codex/pets/pokefollower-.../` に custom pet として書き出せます。
-- 通知コンパニオンは設定画面で ON / OFF できます。Codex の `notify` と連携する場合は、既存の Codex pet helper を残すために chain mode を使います。
+- **あいぼうタブ**：手持ちスロットをタップして相棒を切り替えます。あだ名欄に名前を入力できます。サイズ・距離・速さのスライダーも同タブ内にあります。
+- **ボックスタブ**：検索ボックスに `ピカチュウ` / `ぴかちゅう` / `pikachu` / `25` / `ほのお` などを入力して絞り込めます。世代・地方・タイプチップで絞り込みも可能です。
+- **せっていタブ**の `Codex pet` → `EXPORT` で、選択中のポケモンを `~/.codex/pets/pokefollower-.../` に custom pet として書き出せます。
+- 通知コンパニオンは**せっていタブ**で ON / OFF できます。Codex の `notify` と連携する場合は、既存の Codex pet helper を残すために chain mode を使います。
 
 ```toml
 notify = [
@@ -196,7 +214,7 @@ npm run dist:mac
 npm run dist:linux
 ```
 
-生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.1.0.exe`）
+生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.2.0.exe`）
 
 macOS 生成物：`release/PokeFollower-<version>-arm64.dmg` / `release/PokeFollower-<version>-arm64-mac.zip` など（実行環境の CPU により変わります）。
 
