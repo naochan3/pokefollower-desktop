@@ -453,6 +453,29 @@ ipcMain.handle("packs:search-metadata", (event) => {
   requireSettingsSender(event);
   return packReader.readSearchMetadata();
 });
+ipcMain.handle("packs:meta", (event, packKey) => {
+  requireSettingsSender(event);
+  try { return packReader.readPackMeta(packKey); }
+  catch (_) { return null; }
+});
+ipcMain.handle("nickname:set", (event, payload) => {
+  requireSettingsSender(event);
+  const packKey = payload && payload.packKey;
+  const name = payload && payload.name;
+  const nicknames = { ...(settingsStore.get("nicknames") || {}) };
+  if (typeof name === "string" && name.trim()) nicknames[packKey] = name;
+  else delete nicknames[packKey];
+  return settingsStore.set({ nicknames });
+});
+ipcMain.handle("party:set-lead", async (event, packKey) => {
+  requireSettingsSender(event);
+  const partyMjsUrl = pathToFileURL(path.join(__dirname, "..", "settings", "party.mjs")).href;
+  const { setLead } = await import(partyMjsUrl);
+  const party = setLead(settingsStore.get("favoritePacks"), packKey);
+  settingsStore.set({ favoritePacks: party });
+  applySettingsPatch({ pack: packKey }, { settingsStore, sim, loadPackIntoSim, setEnabled, refreshTrayMenu, syncFavoriteRotation });
+  return settingsStore.getAll();
+});
 ipcMain.handle("companion:test-notification", (event) => {
   requireSettingsSender(event);
   return notificationCompanion.publish({

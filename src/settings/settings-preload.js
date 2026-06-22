@@ -13,4 +13,7 @@ contextBridge.exposeInMainWorld("settingsApi", {
   addFavorite: (packKey) => ipcRenderer.invoke("favorites:add", packKey),
   removeFavorite: (packKey) => ipcRenderer.invoke("favorites:remove", packKey),
   exportCodexPet: (packKey) => ipcRenderer.invoke("codex-pet:export-current", packKey),
+  getPackMeta: (packKey) => ipcRenderer.invoke("packs:meta", packKey),
+  setNickname: (packKey, name) => ipcRenderer.invoke("nickname:set", { packKey, name }),
+  setLead: (packKey) => ipcRenderer.invoke("party:set-lead", packKey),
 });
