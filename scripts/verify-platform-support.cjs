@@ -56,10 +56,16 @@ expect(
   readme.includes("全画面の自動判定は Windows では Win32、macOS では System Events / Accessibility、Linux では `xdotool` / `xprop` / `xwininfo` が利用できる環境で動作します。"),
   "README must describe fullscreen auto-hide platform requirements",
 );
-expect(
-  readme.includes("Linux 版は AppImage のビルドと WSLg での起動 smoke までです。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。"),
-  "README must state Linux visual runtime behavior still needs validation",
-);
+expectIncludesAll(readme, [
+  "Linux 版は AppImage",
+  "WSLg での起動 smoke",
+  "saved pack restore smoke",
+  "X11 window probe",
+  "GUI evidence candidate",
+  "native Linux desktop の目視検証の代替ではありません",
+  "visual non-evaluable",
+  "デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です",
+], "README must state Linux visual runtime behavior still needs validation");
 expect(readme.includes("macOS（Apple Silicon / arm64）"), "README must describe published macOS support as Apple Silicon / arm64");
 expect(!readme.includes("macOS（Apple Silicon / Intel）"), "README must not imply Intel macOS binaries are currently published");
 expect(status.includes("現在は Windows / macOS(arm64) / Linux(AppImage) 向けに配布物を出せる状態。"), "STATUS must describe current distribution targets");

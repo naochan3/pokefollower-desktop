@@ -128,7 +128,9 @@ for (const command of [
 }
 
 expect(
-  readme.includes("WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。"),
+  readme.includes("WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。") &&
+    readme.includes("visual non-evaluable") &&
+    readme.includes("デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。"),
   "README must keep Linux visual runtime validation limitation",
 );
 expect(
