@@ -461,6 +461,7 @@ ipcMain.handle("packs:meta", (event, packKey) => {
 ipcMain.handle("nickname:set", (event, payload) => {
   requireSettingsSender(event);
   const packKey = payload && payload.packKey;
+  if (typeof packKey !== "string" || !packKey) return settingsStore.getAll();
   const name = payload && payload.name;
   const nicknames = { ...(settingsStore.get("nicknames") || {}) };
   if (typeof name === "string" && name.trim()) nicknames[packKey] = name;
