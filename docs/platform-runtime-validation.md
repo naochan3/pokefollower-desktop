@@ -247,6 +247,20 @@ rm -rf "$PF_LINUX_USER_DATA"
 - runtime smoke: `initial pack: retro/gen-1/025-pikachu`、tracked process count 7、avg ps cpu 12.933%、max ps cpu 15.800%、avg rss 787.4 MB、残プロセス 0
 - 備考: 一時 userData の `settings.json` に保存済み pack を入れた Linux unpacked package 起動 smoke です。実画面でピカチュウが見えることの目視確認ではありませんが、最後に保存した pack を含む設定で起動・cleanup できることを確認します。
 
+### 2026-06-22 Linux WSLg GUI evidence attempt
+
+- OS: Ubuntu 26.04 on WSL2 / WSLg（Windows host: rtx4090）
+- PokeFollower commit: `c73472b`
+- package version: `v1.0.5`
+- source transfer: local `git archive` を `/tmp/pf-current-main` に展開
+- 実行予定コマンド: `PF_LINUX_GUI_ARGS=--no-sandbox PF_LINUX_GUI_WARMUP_MS=5000 npm run evidence:linux-gui`
+- result: `blocked before app launch`
+- blocker 1: WSL 側から `github.com` の DNS 解決ができず、remote clone は `Could not resolve host: github.com` で失敗
+- blocker 2: archive 転送後の `npm ci` は Windows 側の `/mnt/c/Program Files/nodejs/npm` を拾い、UNC path 非対応で失敗
+- blocker detail: `Cannot find module 'C:\Windows\script\select-7z-arch.js'`
+- runtime evidence: Linux native `node` が WSL PATH 上に存在せず、`evidence:linux-gui` の実行前に停止
+- 備考: これは Linux GUI PASS 証跡ではありません。WSLg で helper を実行するには、WSL 内の Linux native Node/npm と GitHub DNS、またはネットワーク不要の依存導入手段が必要です。
+
 ## Issue #17 の完了条件
 
 - macOS の権限あり/なし両方でクラッシュせず、全画面判定の可否が説明できる。
