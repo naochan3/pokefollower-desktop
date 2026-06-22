@@ -103,6 +103,14 @@ PF_LINUX_GUI_PACK=retro/gen-1/025-pikachu PF_LINUX_GUI_ARGS=--no-sandbox npm run
 
 `evidence:linux-gui` は実機目視の補助です。`xdotool` / `xwininfo` / `xprop` が使える X11 では window 属性を記録し、利用可能な screenshot command があればスクリーンショットも残します。screenshot backend は `gnome-screenshot` / `grim` / `spectacle` / `scrot` を順に試し、失敗した backend も `attempts` に残します。`status=candidate` でも人間の確認なしに視覚 PASS 証跡として扱いません。process / window / screenshot の証跡が不足する場合は `status=blocked` として終了します。
 
+status の扱い:
+
+- `PASS`: human-check で tray / transparent overlay / click-through / always-on-top / fullscreen hide-restore / saved pack restore を確認し、証跡を残した状態。
+- `candidate`: machine-check の process / window enumeration が取れた状態。UI の見た目・クリック透過・最前面・全画面復帰の正しさは確認済みとは扱いません。
+- `blocked`: アプリ起動、process / window probe、screenshot などの補助証跡収集が不足し、machine-check としても評価不能な状態。
+
+processCount / windowCount / viewableWindowCount / overlayLikeWindowCount は OS window enumeration の補助値です。透明 overlay が見えていること、クリック透過すること、always-on-top が効いていることの代理指標ではありません。screenshot が取れない環境の `candidate` は visual non-evaluable として扱い、Issue #17 の PASS には使いません。
+
 手動の UI 確認で起動する場合:
 
 ```bash
@@ -260,6 +268,24 @@ rm -rf "$PF_LINUX_USER_DATA"
 - blocker detail: `Cannot find module 'C:\Windows\script\select-7z-arch.js'`
 - runtime evidence: Linux native `node` が WSL PATH 上に存在せず、`evidence:linux-gui` の実行前に停止
 - 備考: これは Linux GUI PASS 証跡ではありません。WSLg で helper を実行するには、WSL 内の Linux native Node/npm と GitHub DNS、またはネットワーク不要の依存導入手段が必要です。
+
+### 2026-06-22 Linux WSLg GUI evidence candidate
+
+- OS: Ubuntu 26.04 on WSL2 / WSLg（Windows host: rtx4090）
+- セッション種別: WSLg（`DISPLAY=:0`, `WAYLAND_DISPLAY=wayland-0`）
+- PokeFollower commit: `0b38da5`
+- package version: `v1.0.5`
+- source transfer: local `git archive` を WSL `/tmp/pf-current-main` に展開
+- temporary Node: `/tmp/node-v24.16.0-linux-x64`（Node `v24.16.0`, npm `11.13.0`）
+- 生成コマンド: `npm run dist:linux -- --dir --publish=never` passed
+- package smoke: `node scripts/verify-package-smoke.cjs linux x64` passed
+- evidence helper: `PF_LINUX_GUI_ARGS=--no-sandbox PF_LINUX_GUI_WARMUP_MS=5000 npm run evidence:linux-gui` -> `status=candidate`
+- saved pack restore: 一時 userData の `settings.json` に `retro/gen-1/025-pikachu` を設定して packaged app を起動
+- process/window: processCount 7、windowCount 4、viewableWindowCount 2、overlayLikeWindowCount 2、leftoverProcessCount 0
+- X11 tools: `xdotool`, `xwininfo`, `xprop` available
+- screenshot: `no supported screenshot command found`
+- visual status: screenshot が取れないため visual non-evaluable。process/window count は UI correctness の代理指標ではありません。
+- 備考: これは WSLg 上の machine-check candidate であり、Linux GUI PASS 証跡ではありません。tray / transparent overlay / click-through / always-on-top / fullscreen hide-restore は人間による視覚確認が必要です。
 
 ## Issue #17 の完了条件
 
