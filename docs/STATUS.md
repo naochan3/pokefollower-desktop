@@ -1,6 +1,6 @@
 # プロジェクト状況（計画 vs 現状）
 
-最終更新: 2026-06-22 / 現在のバージョン: **v1.0.5**
+最終更新: 2026-06-22 / 現在のバージョン: **v1.1.0**
 
 このドキュメントは「当初の計画に対して、今どこまで出来ているか」を一覧で把握するためのものです。
 詳細な設計・実装計画は `docs/superpowers/plans/` と `docs/superpowers/specs/` を参照。
@@ -42,13 +42,13 @@
 
 ---
 
-## 現在含まれているもの（v1.0.5）
+## 現在含まれているもの（v1.1.0）
 
-- Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21＋ #31/#32 の追従挙動修正＋ #34（待機を移動方向の逆隅に）＋ #35（第5〜9世代追加・世代フィルタ）込み。追従既定 16ms）
-- macOS arm64 dmg / zip（v1.0.5 添付済み）
-- Linux AppImage（v1.0.5 添付済み。package smoke、WSLg build/start smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate は確認済み）
-- ポケモン 956 種（第1〜9世代。未収録69種は出典素材待ち）
-- 日本語表示・日本語検索、タイル選択 UI、世代フィルタ（赤緑/金銀/RS/DP/BW/XY/SM/剣盾/SV）
+- Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21＋ #31/#32 の追従挙動修正＋ #34（待機を移動方向の逆隅に）＋ #35（第5〜9世代追加・世代フィルタ）込み。追従既定 16ms）。**v1.1.0 では Windows 担当が本 Release に添付**
+- macOS arm64 dmg / zip（**v1.1.0 リリース作成後に macOS 担当（@Nicolas0315）/ CI が同 Release に添付**）
+- Linux AppImage（**v1.1.0 リリース作成後に同 Release に添付**。package smoke、WSLg build/start smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate は v1.0.5 時点で確認済み）
+- ポケモン 956 種（第1〜9世代。未収録69種は出典素材待ち）＋ **地方フォルム 54 種**（アローラ18/ガラル18/ヒスイ16/パルデア2。index 計1010）
+- 日本語表示・日本語検索、タイル選択 UI、世代フィルタ（赤緑/金銀/RS/DP/BW/XY/SM/剣盾/SV）、**種類セレクタ（通常／地方フォルム）でチップ意味を世代⇔地方に切替**
 - 検索用ポケモンメタデータ schema / verifier と自然言語風検索（タイプ・特徴・作品名の deterministic parser + index）
 - 待機位置は移動方向の逆隅に留まる（本家拡張準拠）
 - Follow / Roam（散歩）モード切り替え。Roam は画面内の自律移動、idle/sleep 休止、性格プリセット別タイミングを含む
