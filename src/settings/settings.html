@@ -132,17 +132,27 @@
       align-items: center;
       gap: 6px;
       padding: 8px 14px 0;
+      flex: 1 1 auto;            /* 縦の余白を吸収して下まで埋める */
+      justify-content: center;
+      min-height: 0;
     }
     .hero-sprite-wrap {
-      width: 80px; height: 80px;
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: 200px;
+      height: 180px;
       background: #fafafa;
       border: 2px solid #000;
       border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
       overflow: hidden;
     }
+    .nickname-input {
+      font: inherit; font-size: 15px; font-weight: 700; text-align: center;
+      width: 80%; max-width: 220px; padding: 2px 6px;
+      border: 2px solid var(--red, #e8503a); border-radius: 6px; outline: none;
+    }
     #heroSprite {
-      width: 72px; height: 72px;
       image-rendering: pixelated;
     }
     .hero-info {
@@ -237,9 +247,9 @@
     /* ── Party row ── */
     .party-row {
       display: flex;
-      gap: 5px;
-      padding: 6px 14px 2px;
-      overflow-x: auto;
+      gap: 7px;
+      padding: 9px 14px 4px;
+      justify-content: center;
     }
     .party-slot {
       flex: 0 0 44px;
@@ -248,22 +258,25 @@
       border-radius: 8px;
       background: #fafafa;
       display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
+      overflow: visible;
     }
     .party-slot img {
       width: 40px; height: 40px;
-      image-rendering: pixelated;
       object-fit: contain;
+      border-radius: 6px;
     }
+    /* フォルムは正規化でタイル一杯なので、手持ちでも見た目だけ少し縮小して馴染ませる */
+    .party-slot[data-id*="/forms/"] img { transform: scale(0.8); transform-origin: center; }
     .party-slot { position: relative; cursor: pointer; font: inherit; }
     .party-slot.lead { border-color: var(--red); box-shadow: 0 0 0 2px var(--red) inset; }
     .party-slot.empty { color: #bbb; font-size: 22px; font-weight: 800; line-height: 1; }
     .party-slot .party-remove {
-      position: absolute; top: -4px; right: -4px;
-      width: 16px; height: 16px; line-height: 14px;
+      position: absolute; top: -6px; right: -6px;
+      width: 18px; height: 18px; line-height: 15px;
       border-radius: 50%; border: 1.5px solid #000;
       background: #fff; color: #000;
-      font-size: 11px; font-weight: 900; text-align: center;
+      font-size: 12px; font-weight: 900; text-align: center;
+      z-index: 2;
     }
     .party-slot .party-remove:hover { background: var(--red); color: #fff; }
     .party-row.replacing { outline: 2px dashed var(--red); outline-offset: 2px; animation: party-blink 0.8s steps(2) infinite; }
@@ -406,7 +419,10 @@
       position: absolute; top: 2px; right: 4px;
       color: var(--red); font-size: 10px; font-weight: 900;
     }
-    .tile img { width: 48px; height: 48px; image-rendering: pixelated; object-fit: contain; }
+    .tile img { width: 56px; height: 56px; object-fit: contain; }
+    /* フォルムはタイル一杯に正規化済み。通常種(実サイズ反映)と並べると大きすぎるので、
+       枠は56pxのまま(レイアウト不変=名前/番号が揃う)見た目だけ縮小して馴染ませる */
+    .tile[data-region]:not([data-region=""]) img { transform: scale(0.72); transform-origin: center; }
     .tile .name { font-size: 11px; font-weight: 700; line-height: 1.1; word-break: break-all; }
     .tile .num  { font-size: 10px; color: #888; }
     .tile.hidden { display: none; }

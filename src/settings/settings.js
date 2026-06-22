@@ -132,27 +132,57 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (id && id !== heroMountedId) {
       if (heroStop) { heroStop(); heroStop = null; }
       heroMountedId = id;
+      // 切替時は旧スプライトを即クリア（getPackMeta 待ちの間に旧絵が残って二重に見えるのを防ぐ）
+      heroSpriteEl.style.backgroundImage = "";
+      heroSpriteEl.style.transform = "";
       const meta = await window.settingsApi.getPackMeta(id);
       // getPackMeta は { resolvedKey, meta } を返す。mountIdleSprite は packMeta.meta を見る。
-      heroSpriteEl.style.backgroundImage = "";
-      heroStop = mountIdleSprite(heroSpriteEl, meta, { row: 0 });
+      if (heroMountedId !== id) return; // 待っている間に別の相棒へ切り替わっていたら破棄
+      const wrap = heroSpriteEl.parentElement;
+      const box = wrap ? Math.min(wrap.clientWidth, wrap.clientHeight) : 0;
+      const fit = box > 20 ? box - 16 : 150;
+      heroStop = mountIdleSprite(heroSpriteEl, meta, { row: 0, fit });
     } else if (!id) {
       if (heroStop) { heroStop(); heroStop = null; }
       heroMountedId = null;
     }
   }
 
-  // あだ名編集
+  // あだ名編集（Electron は window.prompt 非対応のため heroName をインライン入力に切り替える）
   const nicknameEditEl = document.getElementById("nicknameEdit");
   if (nicknameEditEl) {
-    nicknameEditEl.addEventListener("click", async () => {
+    nicknameEditEl.addEventListener("click", () => {
       const id = activePackId();
       if (!id) return;
-      const current = nicknameOf(id) || "";
-      const input = window.prompt("あだ名を入力（空で解除）", current);
-      if (input === null) return; // キャンセル
-      const next = await window.settingsApi.setNickname(id, input.trim());
-      await refreshSettings(next);
+      if (heroNameEl.querySelector("input")) return; // すでに編集中
+      const prevText = heroNameEl.textContent;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.maxLength = 24;
+      input.value = nicknameOf(id) || "";
+      input.placeholder = "あだ名（空で解除）";
+      input.className = "nickname-input";
+      heroNameEl.textContent = "";
+      heroNameEl.appendChild(input);
+      input.focus();
+      input.select();
+      let done = false;
+      const commit = async (save) => {
+        if (done) return;
+        done = true;
+        if (save) {
+          const next = await window.settingsApi.setNickname(id, input.value.trim());
+          await refreshSettings(next);
+        } else {
+          heroNameEl.textContent = prevText;
+        }
+      };
+      input.addEventListener("keydown", (e) => {
+        e.stopPropagation(); // ESCで設定窓が閉じるのを防ぐ
+        if (e.key === "Enter") { e.preventDefault(); commit(true); }
+        else if (e.key === "Escape") { e.preventDefault(); commit(false); }
+      });
+      input.addEventListener("blur", () => commit(true));
     });
   }
 
