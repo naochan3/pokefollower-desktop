@@ -46,7 +46,7 @@
 
 - Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21＋ #31/#32 の追従挙動修正＋ #34（待機を移動方向の逆隅に）＋ #35（第5〜9世代追加・世代フィルタ）込み。追従既定 16ms）
 - macOS arm64 dmg / zip（v1.0.5 添付済み）
-- Linux AppImage（v1.0.5 添付済み。WSLg build/start smoke と package smoke は確認済み）
+- Linux AppImage（v1.0.5 添付済み。package smoke、WSLg build/start smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate は確認済み）
 - ポケモン 956 種（第1〜9世代。未収録69種は出典素材待ち）
 - 日本語表示・日本語検索、タイル選択 UI、世代フィルタ（赤緑/金銀/RS/DP/BW/XY/SM/剣盾/SV）
 - 検索用ポケモンメタデータ schema / verifier と自然言語風検索（タイプ・特徴・作品名の deterministic parser + index）
@@ -70,7 +70,7 @@
 | 項目 | 優先度 | issue | メモ |
 |---|---|---|---|
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
-| macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知、macOS runtime smoke、Linux AppImage build/start smoke は確認済み。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。Linux AppImage の tray・透明・クリック透過・最前面は実機目視検証が必要 |
+| macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知、macOS runtime smoke、Linux AppImage build/start smoke、saved pack restore smoke、WSLg GUI evidence candidate は確認済み。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。Linux AppImage の tray・透明・クリック透過・最前面は実機目視検証が必要 |
 
 ---
 
@@ -82,4 +82,4 @@
 - 邪魔しない追従は system idle time が取れない環境では、カーソル近傍回避のみで動作します。
 - 通知コンパニオンは OS 全体の通知取得までは未対応です。現在はアプリ内/許可済みイベントと Codex notify payload を表示する軽量基盤で、OS 別の権限境界は [通知コンパニオンの取得境界](notification-capture.md) に整理しています。
 - モニター間で表示スケール（DPI）が大きく異なると、位置がわずかにずれることがある。
-- Linux は AppImage 配布と WSLg 起動 smoke まで（WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。実機の tray・透明・クリック透過・最前面は未検証）。
+- Linux は AppImage 配布、WSLg 起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate まで（WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない環境の candidate は visual non-evaluable として扱い、実機の tray・透明・クリック透過・最前面は未検証）。

@@ -16,6 +16,11 @@ function expect(condition, message) {
   if (!condition) fail(message);
 }
 
+function expectIncludesAll(text, snippets, message) {
+  const missing = snippets.filter((snippet) => !text.includes(snippet));
+  expect(missing.length === 0, `${message}: missing ${missing.join(", ")}`);
+}
+
 expect(pkg.build?.linux?.target?.includes("AppImage"), "package.json build.linux.target must include AppImage");
 expect(pkg.scripts?.["dist:linux"] === "electron-builder --linux", "package.json dist:linux must build linux target");
 expect(pkg.build?.mac?.target?.includes("dmg"), "package.json build.mac.target must include dmg");
@@ -60,10 +65,16 @@ expect(!readme.includes("macOS（Apple Silicon / Intel）"), "README must not im
 expect(status.includes("現在は Windows / macOS(arm64) / Linux(AppImage) 向けに配布物を出せる状態。"), "STATUS must describe current distribution targets");
 expect(status.includes("macOS arm64 dmg / zip"), "STATUS included assets must describe macOS arm64 assets");
 expect(status.includes("全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。"), "STATUS must state macOS/Linux fullscreen auto-hide dependencies");
-expect(
-  status.includes("Linux は AppImage 配布と WSLg 起動 smoke まで（WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。実機の tray・透明・クリック透過・最前面は未検証）。"),
-  "STATUS must state Linux visual runtime is unverified",
-);
+expectIncludesAll(status, [
+  "Linux は AppImage 配布",
+  "WSLg 起動 smoke",
+  "saved pack restore smoke",
+  "X11 window probe",
+  "GUI evidence candidate",
+  "native Linux desktop の目視検証の代替ではありません",
+  "visual non-evaluable",
+  "実機の tray・透明・クリック透過・最前面は未検証",
+], "STATUS must state Linux visual runtime is unverified");
 
 if (errors.length > 0) {
   for (const error of errors) console.error(`[verify-platform-support] ${error}`);

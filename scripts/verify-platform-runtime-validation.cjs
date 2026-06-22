@@ -12,6 +12,11 @@ function expect(condition, message) {
   if (!condition) errors.push(message);
 }
 
+function expectIncludesAll(text, snippets, message) {
+  const missing = snippets.filter((snippet) => !text.includes(snippet));
+  expect(missing.length === 0, `${message}: missing ${missing.join(", ")}`);
+}
+
 expect(pkg.scripts?.["verify:runtime-validation"] === "node scripts/verify-platform-runtime-validation.cjs", "package.json must expose verify:runtime-validation");
 expect(pkg.scripts?.["verify:local"]?.includes("npm run verify:runtime-validation"), "verify:local must include runtime validation docs guard");
 expect(pkg.scripts?.["evidence:mac-gui"] === "node scripts/capture-mac-gui-evidence.cjs", "package.json must expose evidence:mac-gui");
@@ -130,10 +135,16 @@ expect(
   status.includes("Linux AppImage の tray・透明・クリック透過・最前面は実機目視検証が必要"),
   "STATUS must keep Linux visual runtime validation roadmap item",
 );
-expect(
-  status.includes("Linux は AppImage 配布と WSLg 起動 smoke まで（WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。実機の tray・透明・クリック透過・最前面は未検証）。"),
-  "STATUS must keep Linux visual runtime known limitation",
-);
+expectIncludesAll(status, [
+  "Linux は AppImage 配布",
+  "WSLg 起動 smoke",
+  "saved pack restore smoke",
+  "X11 window probe",
+  "GUI evidence candidate",
+  "native Linux desktop の目視検証の代替ではありません",
+  "visual non-evaluable",
+  "実機の tray・透明・クリック透過・最前面は未検証",
+], "STATUS must keep Linux visual runtime known limitation");
 
 if (errors.length > 0) {
   for (const error of errors) console.error(`[verify-platform-runtime-validation] ${error}`);

@@ -11,13 +11,18 @@ function expect(condition, message) {
   if (!condition) errors.push(message);
 }
 
+function expectIncludesAll(text, snippets, message) {
+  const missing = snippets.filter((snippet) => !text.includes(snippet));
+  expect(missing.length === 0, `${message}: missing ${missing.join(", ")}`);
+}
+
 expect(readme.includes("[docs/STATUS.md](docs/STATUS.md)"), "README must link to docs/STATUS.md");
 expect(status.includes("現在のバージョン: **v1.0.5**"), "STATUS must state current version v1.0.5");
 expect(status.includes("現在含まれているもの（v1.0.5）"), "STATUS must have included-assets section for v1.0.5");
 
 for (const issue of [
   ["#16", "配布物の署名・公証（Win/Mac）", "SmartScreen / Gatekeeper"],
-  ["#17", "macOS / Linux の全画面自動非表示・Linux 実機検証", "Linux AppImage build/start smoke は確認済み"],
+  ["#17", "macOS / Linux の全画面自動非表示・Linux 実機検証", "WSLg GUI evidence candidate は確認済み"],
 ]) {
   const [num, title, note] = issue;
   const id = num.slice(1);
@@ -39,10 +44,16 @@ for (const closedIssue of ["#1", "#2", "#3", "#4", "#6", "#7", "#8", "#9", "#10"
   expect(status.includes(closedIssue), `STATUS completed-plan table must keep ${closedIssue}`);
 }
 
-expect(
-  status.includes("Linux は AppImage 配布と WSLg 起動 smoke まで（WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。実機の tray・透明・クリック透過・最前面は未検証）。"),
-  "STATUS must keep Linux visual runtime limitation",
-);
+expectIncludesAll(status, [
+  "Linux は AppImage 配布",
+  "WSLg 起動 smoke",
+  "saved pack restore smoke",
+  "X11 window probe",
+  "GUI evidence candidate",
+  "native Linux desktop の目視検証の代替ではありません",
+  "visual non-evaluable",
+  "実機の tray・透明・クリック透過・最前面は未検証",
+], "STATUS must keep Linux visual runtime limitation");
 expect(status.includes("全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。"), "STATUS must keep macOS/Linux fullscreen dependency limitation");
 expect(status.includes("macOS / Windows とも **未署名**"), "STATUS must keep unsigned limitation");
 expect(status.includes("[通知コンパニオンの取得境界](notification-capture.md)"), "STATUS must link notification capture boundaries");
