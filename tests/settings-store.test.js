@@ -153,7 +153,7 @@ describe("settings-store", () => {
 
   it("edgeRestはbooleanとして保存する", () => {
     const store = createSettingsStore(file);
-    expect(store.get("edgeRest")).toBe(true);
+    expect(store.get("edgeRest")).toBe(false);
     store.set({ edgeRest: 0 });
     expect(store.get("edgeRest")).toBe(false);
     store.set({ edgeRest: "yes" });
@@ -162,7 +162,7 @@ describe("settings-store", () => {
 
   it("avoidCursorはbooleanとして保存する", () => {
     const store = createSettingsStore(file);
-    expect(store.get("avoidCursor")).toBe(true);
+    expect(store.get("avoidCursor")).toBe(false);
     store.set({ avoidCursor: 0 });
     expect(store.get("avoidCursor")).toBe(false);
     store.set({ avoidCursor: "yes" });

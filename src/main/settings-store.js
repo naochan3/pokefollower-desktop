@@ -11,8 +11,8 @@ const DEFAULTS = {
   scale: 1.25,
   offset: 70,
   lerp: 0.20,
-  edgeRest: true,
-  avoidCursor: true,
+  edgeRest: false,
+  avoidCursor: false,
   avoidCursorStrength: "normal",
   personality: "standard",
   mode: "follow",
@@ -20,6 +20,7 @@ const DEFAULTS = {
   notificationCompanionEnabled: false,
   workWatchEnabled: false,
   workWatchPreset: "25/5",
+  nicknames: {},
 };
 
 const PERSONALITIES = new Set(["standard", "active", "relaxed", "friendly"]);
@@ -49,9 +50,20 @@ function sanitize(patch) {
       for (const pack of packs) {
         const safePack = typeof pack === "string" ? pack.trim() : "";
         if (isSafePackKey(safePack) && !safePacks.includes(safePack)) safePacks.push(safePack);
-        if (safePacks.length >= 12) break;
+        if (safePacks.length >= 6) break;
       }
       out.favoritePacks = safePacks;
+      continue;
+    }
+    if (k === "nicknames") {
+      const src = (v && typeof v === "object" && !Array.isArray(v)) ? v : {};
+      const out2 = {};
+      for (const [pk, name] of Object.entries(src)) {
+        if (!isSafePackKey(pk)) continue;
+        const nm = typeof name === "string" ? name.trim().slice(0, 24) : "";
+        if (nm) out2[pk] = nm;
+      }
+      out.nicknames = out2;
       continue;
     }
     if (k === "rotationIntervalMinutes") {
