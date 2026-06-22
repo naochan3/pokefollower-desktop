@@ -1,0 +1,5578 @@
+{
+  "retro/gen-1/001-bulbasaur": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-1/002-ivysaur": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-1/003-venusaur": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-1/004-charmander": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-1/005-charmeleon": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-1/006-charizard": {
+    "types": [
+      "fire",
+      "flying"
+    ]
+  },
+  "retro/gen-1/007-squirtle": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/008-wartortle": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/009-blastoise": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/010-caterpie": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-1/011-metapod": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-1/012-butterfree": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-1/013-weedle": {
+    "types": [
+      "bug",
+      "poison"
+    ]
+  },
+  "retro/gen-1/014-kakuna": {
+    "types": [
+      "bug",
+      "poison"
+    ]
+  },
+  "retro/gen-1/015-beedrill": {
+    "types": [
+      "bug",
+      "poison"
+    ]
+  },
+  "retro/gen-1/016-pidgey": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-1/017-pidgeotto": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-1/018-pidgeot": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-1/019-rattata": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/forms/alola/019-rattata": {
+    "types": [
+      "dark",
+      "normal"
+    ]
+  },
+  "retro/gen-1/020-raticate": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/forms/alola/020-raticate": {
+    "types": [
+      "dark",
+      "normal"
+    ]
+  },
+  "retro/gen-1/021-spearow": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-1/022-fearow": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-1/023-ekans": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-1/024-arbok": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-1/025-pikachu": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-1/026-raichu": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/forms/alola/026-raichu": {
+    "types": [
+      "electric",
+      "psychic"
+    ]
+  },
+  "retro/gen-1/027-sandshrew": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/forms/alola/027-sandshrew": {
+    "types": [
+      "ice",
+      "steel"
+    ]
+  },
+  "retro/gen-1/028-sandslash": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/forms/alola/028-sandslash": {
+    "types": [
+      "ice",
+      "steel"
+    ]
+  },
+  "retro/gen-1/029-nidoran-f": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-1/030-nidorina": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-1/031-nidoqueen": {
+    "types": [
+      "poison",
+      "ground"
+    ]
+  },
+  "retro/gen-1/032-nidoran-m": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-1/033-nidorino": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-1/034-nidoking": {
+    "types": [
+      "poison",
+      "ground"
+    ]
+  },
+  "retro/gen-1/035-clefairy": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-1/036-clefable": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-1/037-vulpix": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/forms/alola/037-vulpix": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-1/038-ninetales": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/forms/alola/038-ninetales": {
+    "types": [
+      "ice",
+      "fairy"
+    ]
+  },
+  "retro/gen-1/039-jigglypuff": {
+    "types": [
+      "normal",
+      "fairy"
+    ]
+  },
+  "retro/gen-1/040-wigglytuff": {
+    "types": [
+      "normal",
+      "fairy"
+    ]
+  },
+  "retro/gen-1/041-zubat": {
+    "types": [
+      "poison",
+      "flying"
+    ]
+  },
+  "retro/gen-1/042-golbat": {
+    "types": [
+      "poison",
+      "flying"
+    ]
+  },
+  "retro/gen-1/043-oddish": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-1/044-gloom": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-1/045-vileplume": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-1/046-paras": {
+    "types": [
+      "bug",
+      "grass"
+    ]
+  },
+  "retro/gen-1/047-parasect": {
+    "types": [
+      "bug",
+      "grass"
+    ]
+  },
+  "retro/gen-1/048-venonat": {
+    "types": [
+      "bug",
+      "poison"
+    ]
+  },
+  "retro/gen-1/049-venomoth": {
+    "types": [
+      "bug",
+      "poison"
+    ]
+  },
+  "retro/gen-1/050-diglett": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/forms/alola/050-diglett": {
+    "types": [
+      "ground",
+      "steel"
+    ]
+  },
+  "retro/gen-1/051-dugtrio": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/forms/alola/051-dugtrio": {
+    "types": [
+      "ground",
+      "steel"
+    ]
+  },
+  "retro/gen-1/052-meowth": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/forms/alola/052-meowth": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/forms/galar/052-meowth": {
+    "types": [
+      "steel"
+    ]
+  },
+  "retro/gen-1/053-persian": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/forms/alola/053-persian": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/gen-1/054-psyduck": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/055-golduck": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/056-mankey": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-1/057-primeape": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-1/058-growlithe": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/forms/hisui/058-growlithe": {
+    "types": [
+      "fire",
+      "rock"
+    ]
+  },
+  "retro/gen-1/059-arcanine": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/forms/hisui/059-arcanine": {
+    "types": [
+      "fire",
+      "rock"
+    ]
+  },
+  "retro/gen-1/060-poliwag": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/061-poliwhirl": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/062-poliwrath": {
+    "types": [
+      "water",
+      "fighting"
+    ]
+  },
+  "retro/gen-1/063-abra": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-1/064-kadabra": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-1/065-alakazam": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-1/066-machop": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-1/067-machoke": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-1/068-machamp": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-1/069-bellsprout": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-1/070-weepinbell": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-1/071-victreebel": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-1/072-tentacool": {
+    "types": [
+      "water",
+      "poison"
+    ]
+  },
+  "retro/gen-1/073-tentacruel": {
+    "types": [
+      "water",
+      "poison"
+    ]
+  },
+  "retro/gen-1/074-geodude": {
+    "types": [
+      "rock",
+      "ground"
+    ]
+  },
+  "retro/forms/alola/074-geodude": {
+    "types": [
+      "rock",
+      "electric"
+    ]
+  },
+  "retro/gen-1/075-graveler": {
+    "types": [
+      "rock",
+      "ground"
+    ]
+  },
+  "retro/forms/alola/075-graveler": {
+    "types": [
+      "rock",
+      "electric"
+    ]
+  },
+  "retro/gen-1/076-golem": {
+    "types": [
+      "rock",
+      "ground"
+    ]
+  },
+  "retro/forms/alola/076-golem": {
+    "types": [
+      "rock",
+      "electric"
+    ]
+  },
+  "retro/gen-1/077-ponyta": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/forms/galar/077-ponyta": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-1/078-rapidash": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/forms/galar/078-rapidash": {
+    "types": [
+      "psychic",
+      "fairy"
+    ]
+  },
+  "retro/gen-1/079-slowpoke": {
+    "types": [
+      "water",
+      "psychic"
+    ]
+  },
+  "retro/forms/galar/079-slowpoke": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-1/080-slowbro": {
+    "types": [
+      "water",
+      "psychic"
+    ]
+  },
+  "retro/forms/galar/080-slowbro": {
+    "types": [
+      "poison",
+      "psychic"
+    ]
+  },
+  "retro/gen-1/081-magnemite": {
+    "types": [
+      "electric",
+      "steel"
+    ]
+  },
+  "retro/gen-1/082-magneton": {
+    "types": [
+      "electric",
+      "steel"
+    ]
+  },
+  "retro/gen-1/083-farfetchd": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/forms/galar/083-farfetch-d": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-1/084-doduo": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-1/085-dodrio": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-1/086-seel": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/087-dewgong": {
+    "types": [
+      "water",
+      "ice"
+    ]
+  },
+  "retro/gen-1/088-grimer": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/forms/alola/088-grimer": {
+    "types": [
+      "poison",
+      "dark"
+    ]
+  },
+  "retro/gen-1/089-muk": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/forms/alola/089-muk": {
+    "types": [
+      "poison",
+      "dark"
+    ]
+  },
+  "retro/gen-1/090-shellder": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/091-cloyster": {
+    "types": [
+      "water",
+      "ice"
+    ]
+  },
+  "retro/gen-1/092-gastly": {
+    "types": [
+      "ghost",
+      "poison"
+    ]
+  },
+  "retro/gen-1/093-haunter": {
+    "types": [
+      "ghost",
+      "poison"
+    ]
+  },
+  "retro/gen-1/094-gengar": {
+    "types": [
+      "ghost",
+      "poison"
+    ]
+  },
+  "retro/gen-1/095-onix": {
+    "types": [
+      "rock",
+      "ground"
+    ]
+  },
+  "retro/gen-1/096-drowzee": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-1/097-hypno": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-1/098-krabby": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/099-kingler": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/100-voltorb": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/forms/hisui/100-voltorb": {
+    "types": [
+      "electric",
+      "grass"
+    ]
+  },
+  "retro/gen-1/101-electrode": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/forms/hisui/101-electrode": {
+    "types": [
+      "electric",
+      "grass"
+    ]
+  },
+  "retro/gen-1/102-exeggcute": {
+    "types": [
+      "grass",
+      "psychic"
+    ]
+  },
+  "retro/gen-1/103-exeggutor": {
+    "types": [
+      "grass",
+      "psychic"
+    ]
+  },
+  "retro/forms/alola/103-exeggutor": {
+    "types": [
+      "grass",
+      "dragon"
+    ]
+  },
+  "retro/gen-1/104-cubone": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-1/105-marowak": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/forms/alola/105-marowak": {
+    "types": [
+      "fire",
+      "ghost"
+    ]
+  },
+  "retro/gen-1/106-hitmonlee": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-1/107-hitmonchan": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-1/108-lickitung": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-1/109-koffing": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-1/110-weezing": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/forms/galar/110-weezing": {
+    "types": [
+      "poison",
+      "fairy"
+    ]
+  },
+  "retro/gen-1/111-rhyhorn": {
+    "types": [
+      "ground",
+      "rock"
+    ]
+  },
+  "retro/gen-1/112-rhydon": {
+    "types": [
+      "ground",
+      "rock"
+    ]
+  },
+  "retro/gen-1/113-chansey": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-1/114-tangela": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-1/115-kangaskhan": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-1/116-horsea": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/117-seadra": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/118-goldeen": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/119-seaking": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/120-staryu": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/121-starmie": {
+    "types": [
+      "water",
+      "psychic"
+    ]
+  },
+  "retro/gen-1/122-mr-mime": {
+    "types": [
+      "psychic",
+      "fairy"
+    ]
+  },
+  "retro/forms/galar/122-mr-mime": {
+    "types": [
+      "ice",
+      "psychic"
+    ]
+  },
+  "retro/gen-1/123-scyther": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-1/124-jynx": {
+    "types": [
+      "ice",
+      "psychic"
+    ]
+  },
+  "retro/gen-1/125-electabuzz": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-1/126-magmar": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-1/127-pinsir": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-1/128-tauros": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/forms/paldea/128-tauros": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-1/129-magikarp": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/130-gyarados": {
+    "types": [
+      "water",
+      "flying"
+    ]
+  },
+  "retro/gen-1/131-lapras": {
+    "types": [
+      "water",
+      "ice"
+    ]
+  },
+  "retro/gen-1/132-ditto": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-1/133-eevee": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-1/134-vaporeon": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-1/135-jolteon": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-1/136-flareon": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-1/137-porygon": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-1/138-omanyte": {
+    "types": [
+      "rock",
+      "water"
+    ]
+  },
+  "retro/gen-1/139-omastar": {
+    "types": [
+      "rock",
+      "water"
+    ]
+  },
+  "retro/gen-1/140-kabuto": {
+    "types": [
+      "rock",
+      "water"
+    ]
+  },
+  "retro/gen-1/141-kabutops": {
+    "types": [
+      "rock",
+      "water"
+    ]
+  },
+  "retro/gen-1/142-aerodactyl": {
+    "types": [
+      "rock",
+      "flying"
+    ]
+  },
+  "retro/gen-1/143-snorlax": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-1/144-articuno": {
+    "types": [
+      "ice",
+      "flying"
+    ]
+  },
+  "retro/forms/galar/144-articuno": {
+    "types": [
+      "psychic",
+      "flying"
+    ]
+  },
+  "retro/gen-1/145-zapdos": {
+    "types": [
+      "electric",
+      "flying"
+    ]
+  },
+  "retro/forms/galar/145-zapdos": {
+    "types": [
+      "fighting",
+      "flying"
+    ]
+  },
+  "retro/gen-1/146-moltres": {
+    "types": [
+      "fire",
+      "flying"
+    ]
+  },
+  "retro/forms/galar/146-moltres": {
+    "types": [
+      "dark",
+      "flying"
+    ]
+  },
+  "retro/gen-1/147-dratini": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/gen-1/148-dragonair": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/gen-1/149-dragonite": {
+    "types": [
+      "dragon",
+      "flying"
+    ]
+  },
+  "retro/gen-1/150-mewtwo": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-1/151-mew": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-2/152-chikorita": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-2/153-bayleef": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-2/154-meganium": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-2/155-cyndaquil": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-2/156-quilava": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-2/157-typhlosion": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/forms/hisui/157-typhlosion": {
+    "types": [
+      "fire",
+      "ghost"
+    ]
+  },
+  "retro/gen-2/158-totodile": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-2/159-croconaw": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-2/160-feraligatr": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-2/161-sentret": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-2/162-furret": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-2/163-hoothoot": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-2/164-noctowl": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-2/165-ledyba": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-2/166-ledian": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-2/167-spinarak": {
+    "types": [
+      "bug",
+      "poison"
+    ]
+  },
+  "retro/gen-2/168-ariados": {
+    "types": [
+      "bug",
+      "poison"
+    ]
+  },
+  "retro/gen-2/169-crobat": {
+    "types": [
+      "poison",
+      "flying"
+    ]
+  },
+  "retro/gen-2/170-chinchou": {
+    "types": [
+      "water",
+      "electric"
+    ]
+  },
+  "retro/gen-2/171-lanturn": {
+    "types": [
+      "water",
+      "electric"
+    ]
+  },
+  "retro/gen-2/172-pichu": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-2/173-cleffa": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-2/174-igglybuff": {
+    "types": [
+      "normal",
+      "fairy"
+    ]
+  },
+  "retro/gen-2/175-togepi": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-2/176-togetic": {
+    "types": [
+      "fairy",
+      "flying"
+    ]
+  },
+  "retro/gen-2/177-natu": {
+    "types": [
+      "psychic",
+      "flying"
+    ]
+  },
+  "retro/gen-2/178-xatu": {
+    "types": [
+      "psychic",
+      "flying"
+    ]
+  },
+  "retro/gen-2/179-mareep": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-2/180-flaaffy": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-2/181-ampharos": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-2/182-bellossom": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-2/183-marill": {
+    "types": [
+      "water",
+      "fairy"
+    ]
+  },
+  "retro/gen-2/184-azumarill": {
+    "types": [
+      "water",
+      "fairy"
+    ]
+  },
+  "retro/gen-2/185-sudowoodo": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-2/186-politoed": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-2/187-hoppip": {
+    "types": [
+      "grass",
+      "flying"
+    ]
+  },
+  "retro/gen-2/188-skiploom": {
+    "types": [
+      "grass",
+      "flying"
+    ]
+  },
+  "retro/gen-2/189-jumpluff": {
+    "types": [
+      "grass",
+      "flying"
+    ]
+  },
+  "retro/gen-2/190-aipom": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-2/191-sunkern": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-2/192-sunflora": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-2/193-yanma": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-2/194-wooper": {
+    "types": [
+      "water",
+      "ground"
+    ]
+  },
+  "retro/forms/paldea/194-wooper": {
+    "types": [
+      "poison",
+      "ground"
+    ]
+  },
+  "retro/gen-2/195-quagsire": {
+    "types": [
+      "water",
+      "ground"
+    ]
+  },
+  "retro/gen-2/196-espeon": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-2/197-umbreon": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/gen-2/198-murkrow": {
+    "types": [
+      "dark",
+      "flying"
+    ]
+  },
+  "retro/gen-2/199-slowking": {
+    "types": [
+      "water",
+      "psychic"
+    ]
+  },
+  "retro/forms/galar/199-slowking": {
+    "types": [
+      "poison",
+      "psychic"
+    ]
+  },
+  "retro/gen-2/200-misdreavus": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-2/201-unown": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-2/202-wobbuffet": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-2/203-girafarig": {
+    "types": [
+      "normal",
+      "psychic"
+    ]
+  },
+  "retro/gen-2/204-pineco": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-2/205-forretress": {
+    "types": [
+      "bug",
+      "steel"
+    ]
+  },
+  "retro/gen-2/206-dunsparce": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-2/207-gligar": {
+    "types": [
+      "ground",
+      "flying"
+    ]
+  },
+  "retro/gen-2/208-steelix": {
+    "types": [
+      "steel",
+      "ground"
+    ]
+  },
+  "retro/gen-2/209-snubbull": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-2/210-granbull": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-2/211-qwilfish": {
+    "types": [
+      "water",
+      "poison"
+    ]
+  },
+  "retro/forms/hisui/211-qwilfish": {
+    "types": [
+      "dark",
+      "poison"
+    ]
+  },
+  "retro/gen-2/212-scizor": {
+    "types": [
+      "bug",
+      "steel"
+    ]
+  },
+  "retro/gen-2/213-shuckle": {
+    "types": [
+      "bug",
+      "rock"
+    ]
+  },
+  "retro/gen-2/214-heracross": {
+    "types": [
+      "bug",
+      "fighting"
+    ]
+  },
+  "retro/gen-2/215-sneasel": {
+    "types": [
+      "dark",
+      "ice"
+    ]
+  },
+  "retro/forms/hisui/215-sneasel": {
+    "types": [
+      "fighting",
+      "poison"
+    ]
+  },
+  "retro/gen-2/216-teddiursa": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-2/217-ursaring": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-2/218-slugma": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-2/219-magcargo": {
+    "types": [
+      "fire",
+      "rock"
+    ]
+  },
+  "retro/gen-2/220-swinub": {
+    "types": [
+      "ice",
+      "ground"
+    ]
+  },
+  "retro/gen-2/221-piloswine": {
+    "types": [
+      "ice",
+      "ground"
+    ]
+  },
+  "retro/gen-2/222-corsola": {
+    "types": [
+      "water",
+      "rock"
+    ]
+  },
+  "retro/forms/galar/222-corsola": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-2/223-remoraid": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-2/224-octillery": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-2/225-delibird": {
+    "types": [
+      "ice",
+      "flying"
+    ]
+  },
+  "retro/gen-2/226-mantine": {
+    "types": [
+      "water",
+      "flying"
+    ]
+  },
+  "retro/gen-2/227-skarmory": {
+    "types": [
+      "steel",
+      "flying"
+    ]
+  },
+  "retro/gen-2/228-houndour": {
+    "types": [
+      "dark",
+      "fire"
+    ]
+  },
+  "retro/gen-2/229-houndoom": {
+    "types": [
+      "dark",
+      "fire"
+    ]
+  },
+  "retro/gen-2/230-kingdra": {
+    "types": [
+      "water",
+      "dragon"
+    ]
+  },
+  "retro/gen-2/231-phanpy": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-2/232-donphan": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-2/233-porygon2": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-2/234-stantler": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-2/235-smeargle": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-2/236-tyrogue": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-2/237-hitmontop": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-2/238-smoochum": {
+    "types": [
+      "ice",
+      "psychic"
+    ]
+  },
+  "retro/gen-2/239-elekid": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-2/240-magby": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-2/241-miltank": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-2/242-blissey": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-2/243-raikou": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-2/244-entei": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-2/245-suicune": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-2/246-larvitar": {
+    "types": [
+      "rock",
+      "ground"
+    ]
+  },
+  "retro/gen-2/247-pupitar": {
+    "types": [
+      "rock",
+      "ground"
+    ]
+  },
+  "retro/gen-2/248-tyranitar": {
+    "types": [
+      "rock",
+      "dark"
+    ]
+  },
+  "retro/gen-2/249-lugia": {
+    "types": [
+      "psychic",
+      "flying"
+    ]
+  },
+  "retro/gen-2/250-ho-oh": {
+    "types": [
+      "fire",
+      "flying"
+    ]
+  },
+  "retro/gen-2/251-celebi": {
+    "types": [
+      "psychic",
+      "grass"
+    ]
+  },
+  "retro/gen-3/252-treecko": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-3/253-grovyle": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-3/254-sceptile": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-3/255-torchic": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-3/256-combusken": {
+    "types": [
+      "fire",
+      "fighting"
+    ]
+  },
+  "retro/gen-3/257-blaziken": {
+    "types": [
+      "fire",
+      "fighting"
+    ]
+  },
+  "retro/gen-3/258-mudkip": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-3/259-marshtomp": {
+    "types": [
+      "water",
+      "ground"
+    ]
+  },
+  "retro/gen-3/260-swampert": {
+    "types": [
+      "water",
+      "ground"
+    ]
+  },
+  "retro/gen-3/261-poochyena": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/gen-3/262-mightyena": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/gen-3/263-zigzagoon": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/forms/galar/263-zigzagoon": {
+    "types": [
+      "dark",
+      "normal"
+    ]
+  },
+  "retro/gen-3/264-linoone": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/forms/galar/264-linoone": {
+    "types": [
+      "dark",
+      "normal"
+    ]
+  },
+  "retro/gen-3/265-wurmple": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-3/266-silcoon": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-3/267-beautifly": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-3/268-cascoon": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-3/269-dustox": {
+    "types": [
+      "bug",
+      "poison"
+    ]
+  },
+  "retro/gen-3/270-lotad": {
+    "types": [
+      "water",
+      "grass"
+    ]
+  },
+  "retro/gen-3/271-lombre": {
+    "types": [
+      "water",
+      "grass"
+    ]
+  },
+  "retro/gen-3/272-ludicolo": {
+    "types": [
+      "water",
+      "grass"
+    ]
+  },
+  "retro/gen-3/273-seedot": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-3/274-nuzleaf": {
+    "types": [
+      "grass",
+      "dark"
+    ]
+  },
+  "retro/gen-3/275-shiftry": {
+    "types": [
+      "grass",
+      "dark"
+    ]
+  },
+  "retro/gen-3/276-taillow": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-3/277-swellow": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-3/278-wingull": {
+    "types": [
+      "water",
+      "flying"
+    ]
+  },
+  "retro/gen-3/279-pelipper": {
+    "types": [
+      "water",
+      "flying"
+    ]
+  },
+  "retro/gen-3/280-ralts": {
+    "types": [
+      "psychic",
+      "fairy"
+    ]
+  },
+  "retro/gen-3/281-kirlia": {
+    "types": [
+      "psychic",
+      "fairy"
+    ]
+  },
+  "retro/gen-3/282-gardevoir": {
+    "types": [
+      "psychic",
+      "fairy"
+    ]
+  },
+  "retro/gen-3/283-surskit": {
+    "types": [
+      "bug",
+      "water"
+    ]
+  },
+  "retro/gen-3/284-masquerain": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-3/285-shroomish": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-3/286-breloom": {
+    "types": [
+      "grass",
+      "fighting"
+    ]
+  },
+  "retro/gen-3/287-slakoth": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/288-vigoroth": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/289-slaking": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/290-nincada": {
+    "types": [
+      "bug",
+      "ground"
+    ]
+  },
+  "retro/gen-3/291-ninjask": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-3/292-shedinja": {
+    "types": [
+      "bug",
+      "ghost"
+    ]
+  },
+  "retro/gen-3/293-whismur": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/294-loudred": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/295-exploud": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/296-makuhita": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-3/297-hariyama": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-3/298-azurill": {
+    "types": [
+      "normal",
+      "fairy"
+    ]
+  },
+  "retro/gen-3/299-nosepass": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-3/300-skitty": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/301-delcatty": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/302-sableye": {
+    "types": [
+      "dark",
+      "ghost"
+    ]
+  },
+  "retro/gen-3/303-mawile": {
+    "types": [
+      "steel",
+      "fairy"
+    ]
+  },
+  "retro/gen-3/304-aron": {
+    "types": [
+      "steel",
+      "rock"
+    ]
+  },
+  "retro/gen-3/305-lairon": {
+    "types": [
+      "steel",
+      "rock"
+    ]
+  },
+  "retro/gen-3/306-aggron": {
+    "types": [
+      "steel",
+      "rock"
+    ]
+  },
+  "retro/gen-3/307-meditite": {
+    "types": [
+      "fighting",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/308-medicham": {
+    "types": [
+      "fighting",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/309-electrike": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-3/310-manectric": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-3/311-plusle": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-3/312-minun": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-3/313-volbeat": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-3/314-illumise": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-3/315-roselia": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-3/316-gulpin": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-3/317-swalot": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-3/318-carvanha": {
+    "types": [
+      "water",
+      "dark"
+    ]
+  },
+  "retro/gen-3/319-sharpedo": {
+    "types": [
+      "water",
+      "dark"
+    ]
+  },
+  "retro/gen-3/320-wailmer": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-3/321-wailord": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-3/322-numel": {
+    "types": [
+      "fire",
+      "ground"
+    ]
+  },
+  "retro/gen-3/323-camerupt": {
+    "types": [
+      "fire",
+      "ground"
+    ]
+  },
+  "retro/gen-3/324-torkoal": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-3/325-spoink": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-3/326-grumpig": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-3/327-spinda": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/328-trapinch": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-3/329-vibrava": {
+    "types": [
+      "ground",
+      "dragon"
+    ]
+  },
+  "retro/gen-3/330-flygon": {
+    "types": [
+      "ground",
+      "dragon"
+    ]
+  },
+  "retro/gen-3/331-cacnea": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-3/332-cacturne": {
+    "types": [
+      "grass",
+      "dark"
+    ]
+  },
+  "retro/gen-3/333-swablu": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-3/334-altaria": {
+    "types": [
+      "dragon",
+      "flying"
+    ]
+  },
+  "retro/gen-3/335-zangoose": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/336-seviper": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-3/337-lunatone": {
+    "types": [
+      "rock",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/338-solrock": {
+    "types": [
+      "rock",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/339-barboach": {
+    "types": [
+      "water",
+      "ground"
+    ]
+  },
+  "retro/gen-3/340-whiscash": {
+    "types": [
+      "water",
+      "ground"
+    ]
+  },
+  "retro/gen-3/341-corphish": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-3/342-crawdaunt": {
+    "types": [
+      "water",
+      "dark"
+    ]
+  },
+  "retro/gen-3/343-baltoy": {
+    "types": [
+      "ground",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/344-claydol": {
+    "types": [
+      "ground",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/345-lileep": {
+    "types": [
+      "rock",
+      "grass"
+    ]
+  },
+  "retro/gen-3/346-cradily": {
+    "types": [
+      "rock",
+      "grass"
+    ]
+  },
+  "retro/gen-3/347-anorith": {
+    "types": [
+      "rock",
+      "bug"
+    ]
+  },
+  "retro/gen-3/348-armaldo": {
+    "types": [
+      "rock",
+      "bug"
+    ]
+  },
+  "retro/gen-3/349-feebas": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-3/350-milotic": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-3/351-castform": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/352-kecleon": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-3/353-shuppet": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-3/354-banette": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-3/355-duskull": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-3/356-dusclops": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-3/357-tropius": {
+    "types": [
+      "grass",
+      "flying"
+    ]
+  },
+  "retro/gen-3/358-chimecho": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-3/359-absol": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/gen-3/360-wynaut": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-3/361-snorunt": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-3/362-glalie": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-3/363-spheal": {
+    "types": [
+      "ice",
+      "water"
+    ]
+  },
+  "retro/gen-3/364-sealeo": {
+    "types": [
+      "ice",
+      "water"
+    ]
+  },
+  "retro/gen-3/365-walrein": {
+    "types": [
+      "ice",
+      "water"
+    ]
+  },
+  "retro/gen-3/366-clamperl": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-3/367-huntail": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-3/368-gorebyss": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-3/369-relicanth": {
+    "types": [
+      "water",
+      "rock"
+    ]
+  },
+  "retro/gen-3/370-luvdisc": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-3/371-bagon": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/gen-3/372-shelgon": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/gen-3/373-salamence": {
+    "types": [
+      "dragon",
+      "flying"
+    ]
+  },
+  "retro/gen-3/374-beldum": {
+    "types": [
+      "steel",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/375-metang": {
+    "types": [
+      "steel",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/376-metagross": {
+    "types": [
+      "steel",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/377-regirock": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-3/378-regice": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-3/379-registeel": {
+    "types": [
+      "steel"
+    ]
+  },
+  "retro/gen-3/380-latias": {
+    "types": [
+      "dragon",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/381-latios": {
+    "types": [
+      "dragon",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/382-kyogre": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-3/383-groudon": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-3/384-rayquaza": {
+    "types": [
+      "dragon",
+      "flying"
+    ]
+  },
+  "retro/gen-3/385-jirachi": {
+    "types": [
+      "steel",
+      "psychic"
+    ]
+  },
+  "retro/gen-3/386-deoxys": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-4/387-turtwig": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-4/388-grotle": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-4/389-torterra": {
+    "types": [
+      "grass",
+      "ground"
+    ]
+  },
+  "retro/gen-4/390-chimchar": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-4/391-monferno": {
+    "types": [
+      "fire",
+      "fighting"
+    ]
+  },
+  "retro/gen-4/392-infernape": {
+    "types": [
+      "fire",
+      "fighting"
+    ]
+  },
+  "retro/gen-4/393-piplup": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-4/394-prinplup": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-4/395-empoleon": {
+    "types": [
+      "water",
+      "steel"
+    ]
+  },
+  "retro/gen-4/396-starly": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-4/397-staravia": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-4/398-staraptor": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-4/399-bidoof": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-4/400-bibarel": {
+    "types": [
+      "normal",
+      "water"
+    ]
+  },
+  "retro/gen-4/401-kricketot": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-4/402-kricketune": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-4/403-shinx": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-4/404-luxio": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-4/405-luxray": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-4/406-budew": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-4/407-roserade": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-4/408-cranidos": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-4/409-rampardos": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-4/410-shieldon": {
+    "types": [
+      "rock",
+      "steel"
+    ]
+  },
+  "retro/gen-4/411-bastiodon": {
+    "types": [
+      "rock",
+      "steel"
+    ]
+  },
+  "retro/gen-4/412-burmy": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-4/413-wormadam": {
+    "types": [
+      "bug",
+      "grass"
+    ]
+  },
+  "retro/gen-4/414-mothim": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-4/415-combee": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-4/416-vespiquen": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-4/417-pachirisu": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-4/418-buizel": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-4/419-floatzel": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-4/420-cherubi": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-4/421-cherrim": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-4/422-shellos": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-4/423-gastrodon": {
+    "types": [
+      "water",
+      "ground"
+    ]
+  },
+  "retro/gen-4/424-ambipom": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-4/425-drifloon": {
+    "types": [
+      "ghost",
+      "flying"
+    ]
+  },
+  "retro/gen-4/426-drifblim": {
+    "types": [
+      "ghost",
+      "flying"
+    ]
+  },
+  "retro/gen-4/427-buneary": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-4/428-lopunny": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-4/429-mismagius": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-4/430-honchkrow": {
+    "types": [
+      "dark",
+      "flying"
+    ]
+  },
+  "retro/gen-4/431-glameow": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-4/432-purugly": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-4/433-chingling": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-4/434-stunky": {
+    "types": [
+      "poison",
+      "dark"
+    ]
+  },
+  "retro/gen-4/435-skuntank": {
+    "types": [
+      "poison",
+      "dark"
+    ]
+  },
+  "retro/gen-4/436-bronzor": {
+    "types": [
+      "steel",
+      "psychic"
+    ]
+  },
+  "retro/gen-4/437-bronzong": {
+    "types": [
+      "steel",
+      "psychic"
+    ]
+  },
+  "retro/gen-4/438-bonsly": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-4/439-mime-jr": {
+    "types": [
+      "psychic",
+      "fairy"
+    ]
+  },
+  "retro/gen-4/440-happiny": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-4/441-chatot": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-4/442-spiritomb": {
+    "types": [
+      "ghost",
+      "dark"
+    ]
+  },
+  "retro/gen-4/443-gible": {
+    "types": [
+      "dragon",
+      "ground"
+    ]
+  },
+  "retro/gen-4/444-gabite": {
+    "types": [
+      "dragon",
+      "ground"
+    ]
+  },
+  "retro/gen-4/445-garchomp": {
+    "types": [
+      "dragon",
+      "ground"
+    ]
+  },
+  "retro/gen-4/446-munchlax": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-4/447-riolu": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-4/448-lucario": {
+    "types": [
+      "fighting",
+      "steel"
+    ]
+  },
+  "retro/gen-4/449-hippopotas": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-4/450-hippowdon": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-4/451-skorupi": {
+    "types": [
+      "poison",
+      "bug"
+    ]
+  },
+  "retro/gen-4/452-drapion": {
+    "types": [
+      "poison",
+      "dark"
+    ]
+  },
+  "retro/gen-4/453-croagunk": {
+    "types": [
+      "poison",
+      "fighting"
+    ]
+  },
+  "retro/gen-4/454-toxicroak": {
+    "types": [
+      "poison",
+      "fighting"
+    ]
+  },
+  "retro/gen-4/455-carnivine": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-4/456-finneon": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-4/457-lumineon": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-4/458-mantyke": {
+    "types": [
+      "water",
+      "flying"
+    ]
+  },
+  "retro/gen-4/459-snover": {
+    "types": [
+      "grass",
+      "ice"
+    ]
+  },
+  "retro/gen-4/460-abomasnow": {
+    "types": [
+      "grass",
+      "ice"
+    ]
+  },
+  "retro/gen-4/461-weavile": {
+    "types": [
+      "dark",
+      "ice"
+    ]
+  },
+  "retro/gen-4/462-magnezone": {
+    "types": [
+      "electric",
+      "steel"
+    ]
+  },
+  "retro/gen-4/463-lickilicky": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-4/464-rhyperior": {
+    "types": [
+      "ground",
+      "rock"
+    ]
+  },
+  "retro/gen-4/465-tangrowth": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-4/466-electivire": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-4/467-magmortar": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-4/468-togekiss": {
+    "types": [
+      "fairy",
+      "flying"
+    ]
+  },
+  "retro/gen-4/469-yanmega": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-4/470-leafeon": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-4/471-glaceon": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-4/472-gliscor": {
+    "types": [
+      "ground",
+      "flying"
+    ]
+  },
+  "retro/gen-4/473-mamoswine": {
+    "types": [
+      "ice",
+      "ground"
+    ]
+  },
+  "retro/gen-4/474-porygon-z": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-4/475-gallade": {
+    "types": [
+      "psychic",
+      "fighting"
+    ]
+  },
+  "retro/gen-4/476-probopass": {
+    "types": [
+      "rock",
+      "steel"
+    ]
+  },
+  "retro/gen-4/477-dusknoir": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-4/478-froslass": {
+    "types": [
+      "ice",
+      "ghost"
+    ]
+  },
+  "retro/gen-4/479-rotom": {
+    "types": [
+      "electric",
+      "ghost"
+    ]
+  },
+  "retro/gen-4/480-uxie": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-4/481-mesprit": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-4/482-azelf": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-4/483-dialga": {
+    "types": [
+      "steel",
+      "dragon"
+    ]
+  },
+  "retro/gen-4/484-palkia": {
+    "types": [
+      "water",
+      "dragon"
+    ]
+  },
+  "retro/gen-4/485-heatran": {
+    "types": [
+      "fire",
+      "steel"
+    ]
+  },
+  "retro/gen-4/486-regigigas": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-4/487-giratina": {
+    "types": [
+      "ghost",
+      "dragon"
+    ]
+  },
+  "retro/gen-4/488-cresselia": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-4/489-phione": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-4/490-manaphy": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-4/491-darkrai": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/gen-4/492-shaymin": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-4/493-arceus": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-5/494-victini": {
+    "types": [
+      "psychic",
+      "fire"
+    ]
+  },
+  "retro/gen-5/495-snivy": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-5/496-servine": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-5/497-serperior": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-5/498-tepig": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-5/499-pignite": {
+    "types": [
+      "fire",
+      "fighting"
+    ]
+  },
+  "retro/gen-5/500-emboar": {
+    "types": [
+      "fire",
+      "fighting"
+    ]
+  },
+  "retro/gen-5/501-oshawott": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-5/502-dewott": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-5/503-samurott": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/forms/hisui/503-samurott": {
+    "types": [
+      "water",
+      "dark"
+    ]
+  },
+  "retro/gen-5/504-patrat": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-5/505-watchog": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-5/506-lillipup": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-5/507-herdier": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-5/508-stoutland": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-5/509-purrloin": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/gen-5/510-liepard": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/gen-5/511-pansage": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-5/512-simisage": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-5/513-pansear": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-5/515-panpour": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-5/517-munna": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-5/518-musharna": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-5/519-pidove": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-5/521-unfezant": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-5/524-roggenrola": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-5/525-boldore": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-5/526-gigalith": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-5/527-woobat": {
+    "types": [
+      "psychic",
+      "flying"
+    ]
+  },
+  "retro/gen-5/528-swoobat": {
+    "types": [
+      "psychic",
+      "flying"
+    ]
+  },
+  "retro/gen-5/529-drilbur": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-5/530-excadrill": {
+    "types": [
+      "ground",
+      "steel"
+    ]
+  },
+  "retro/gen-5/531-audino": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-5/532-timburr": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-5/533-gurdurr": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-5/534-conkeldurr": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-5/535-tympole": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-5/536-palpitoad": {
+    "types": [
+      "water",
+      "ground"
+    ]
+  },
+  "retro/gen-5/537-seismitoad": {
+    "types": [
+      "water",
+      "ground"
+    ]
+  },
+  "retro/gen-5/539-sawk": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-5/540-sewaddle": {
+    "types": [
+      "bug",
+      "grass"
+    ]
+  },
+  "retro/gen-5/541-swadloon": {
+    "types": [
+      "bug",
+      "grass"
+    ]
+  },
+  "retro/gen-5/542-leavanny": {
+    "types": [
+      "bug",
+      "grass"
+    ]
+  },
+  "retro/gen-5/543-venipede": {
+    "types": [
+      "bug",
+      "poison"
+    ]
+  },
+  "retro/gen-5/544-whirlipede": {
+    "types": [
+      "bug",
+      "poison"
+    ]
+  },
+  "retro/gen-5/545-scolipede": {
+    "types": [
+      "bug",
+      "poison"
+    ]
+  },
+  "retro/gen-5/546-cottonee": {
+    "types": [
+      "grass",
+      "fairy"
+    ]
+  },
+  "retro/gen-5/547-whimsicott": {
+    "types": [
+      "grass",
+      "fairy"
+    ]
+  },
+  "retro/gen-5/548-petilil": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-5/549-lilligant": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/forms/hisui/549-lilligant": {
+    "types": [
+      "grass",
+      "fighting"
+    ]
+  },
+  "retro/gen-5/550-basculin": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-5/551-sandile": {
+    "types": [
+      "ground",
+      "dark"
+    ]
+  },
+  "retro/gen-5/552-krokorok": {
+    "types": [
+      "ground",
+      "dark"
+    ]
+  },
+  "retro/gen-5/553-krookodile": {
+    "types": [
+      "ground",
+      "dark"
+    ]
+  },
+  "retro/gen-5/554-darumaka": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/forms/galar/554-darumaka": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-5/555-darmanitan": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/forms/galar/555-darmanitan": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-5/556-maractus": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-5/557-dwebble": {
+    "types": [
+      "bug",
+      "rock"
+    ]
+  },
+  "retro/gen-5/559-scraggy": {
+    "types": [
+      "dark",
+      "fighting"
+    ]
+  },
+  "retro/gen-5/560-scrafty": {
+    "types": [
+      "dark",
+      "fighting"
+    ]
+  },
+  "retro/gen-5/561-sigilyph": {
+    "types": [
+      "psychic",
+      "flying"
+    ]
+  },
+  "retro/gen-5/562-yamask": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/forms/galar/562-yamask": {
+    "types": [
+      "ground",
+      "ghost"
+    ]
+  },
+  "retro/gen-5/563-cofagrigus": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-5/566-archen": {
+    "types": [
+      "rock",
+      "flying"
+    ]
+  },
+  "retro/gen-5/567-archeops": {
+    "types": [
+      "rock",
+      "flying"
+    ]
+  },
+  "retro/gen-5/568-trubbish": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-5/569-garbodor": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-5/570-zorua": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/forms/hisui/570-zorua": {
+    "types": [
+      "normal",
+      "ghost"
+    ]
+  },
+  "retro/gen-5/571-zoroark": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/forms/hisui/571-zoroark": {
+    "types": [
+      "normal",
+      "ghost"
+    ]
+  },
+  "retro/gen-5/572-minccino": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-5/573-cinccino": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-5/574-gothita": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-5/575-gothorita": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-5/576-gothitelle": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-5/577-solosis": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-5/578-duosion": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-5/579-reuniclus": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-5/580-ducklett": {
+    "types": [
+      "water",
+      "flying"
+    ]
+  },
+  "retro/gen-5/581-swanna": {
+    "types": [
+      "water",
+      "flying"
+    ]
+  },
+  "retro/gen-5/582-vanillite": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-5/583-vanillish": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-5/584-vanilluxe": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-5/585-deerling": {
+    "types": [
+      "normal",
+      "grass"
+    ]
+  },
+  "retro/gen-5/586-sawsbuck": {
+    "types": [
+      "normal",
+      "grass"
+    ]
+  },
+  "retro/gen-5/587-emolga": {
+    "types": [
+      "electric",
+      "flying"
+    ]
+  },
+  "retro/gen-5/588-karrablast": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-5/589-escavalier": {
+    "types": [
+      "bug",
+      "steel"
+    ]
+  },
+  "retro/gen-5/590-foongus": {
+    "types": [
+      "grass",
+      "poison"
+    ]
+  },
+  "retro/gen-5/594-alomomola": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-5/595-joltik": {
+    "types": [
+      "bug",
+      "electric"
+    ]
+  },
+  "retro/gen-5/596-galvantula": {
+    "types": [
+      "bug",
+      "electric"
+    ]
+  },
+  "retro/gen-5/597-ferroseed": {
+    "types": [
+      "grass",
+      "steel"
+    ]
+  },
+  "retro/gen-5/598-ferrothorn": {
+    "types": [
+      "grass",
+      "steel"
+    ]
+  },
+  "retro/gen-5/599-klink": {
+    "types": [
+      "steel"
+    ]
+  },
+  "retro/gen-5/600-klang": {
+    "types": [
+      "steel"
+    ]
+  },
+  "retro/gen-5/601-klinklang": {
+    "types": [
+      "steel"
+    ]
+  },
+  "retro/gen-5/602-tynamo": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-5/603-eelektrik": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-5/604-eelektross": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-5/605-elgyem": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-5/606-beheeyem": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-5/607-litwick": {
+    "types": [
+      "ghost",
+      "fire"
+    ]
+  },
+  "retro/gen-5/608-lampent": {
+    "types": [
+      "ghost",
+      "fire"
+    ]
+  },
+  "retro/gen-5/609-chandelure": {
+    "types": [
+      "ghost",
+      "fire"
+    ]
+  },
+  "retro/gen-5/610-axew": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/gen-5/611-fraxure": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/gen-5/612-haxorus": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/gen-5/613-cubchoo": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-5/614-beartic": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-5/615-cryogonal": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-5/617-accelgor": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-5/619-mienfoo": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-5/620-mienshao": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-5/621-druddigon": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/gen-5/622-golett": {
+    "types": [
+      "ground",
+      "ghost"
+    ]
+  },
+  "retro/gen-5/623-golurk": {
+    "types": [
+      "ground",
+      "ghost"
+    ]
+  },
+  "retro/gen-5/624-pawniard": {
+    "types": [
+      "dark",
+      "steel"
+    ]
+  },
+  "retro/gen-5/625-bisharp": {
+    "types": [
+      "dark",
+      "steel"
+    ]
+  },
+  "retro/gen-5/627-rufflet": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-5/628-braviary": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/forms/hisui/628-braviary": {
+    "types": [
+      "psychic",
+      "flying"
+    ]
+  },
+  "retro/gen-5/629-vullaby": {
+    "types": [
+      "dark",
+      "flying"
+    ]
+  },
+  "retro/gen-5/630-mandibuzz": {
+    "types": [
+      "dark",
+      "flying"
+    ]
+  },
+  "retro/gen-5/631-heatmor": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-5/632-durant": {
+    "types": [
+      "bug",
+      "steel"
+    ]
+  },
+  "retro/gen-5/633-deino": {
+    "types": [
+      "dark",
+      "dragon"
+    ]
+  },
+  "retro/gen-5/634-zweilous": {
+    "types": [
+      "dark",
+      "dragon"
+    ]
+  },
+  "retro/gen-5/635-hydreigon": {
+    "types": [
+      "dark",
+      "dragon"
+    ]
+  },
+  "retro/gen-5/636-larvesta": {
+    "types": [
+      "bug",
+      "fire"
+    ]
+  },
+  "retro/gen-5/637-volcarona": {
+    "types": [
+      "bug",
+      "fire"
+    ]
+  },
+  "retro/gen-5/638-cobalion": {
+    "types": [
+      "steel",
+      "fighting"
+    ]
+  },
+  "retro/gen-5/639-terrakion": {
+    "types": [
+      "rock",
+      "fighting"
+    ]
+  },
+  "retro/gen-5/640-virizion": {
+    "types": [
+      "grass",
+      "fighting"
+    ]
+  },
+  "retro/gen-5/641-tornadus": {
+    "types": [
+      "flying"
+    ]
+  },
+  "retro/gen-5/642-thundurus": {
+    "types": [
+      "electric",
+      "flying"
+    ]
+  },
+  "retro/gen-5/643-reshiram": {
+    "types": [
+      "dragon",
+      "fire"
+    ]
+  },
+  "retro/gen-5/644-zekrom": {
+    "types": [
+      "dragon",
+      "electric"
+    ]
+  },
+  "retro/gen-5/645-landorus": {
+    "types": [
+      "ground",
+      "flying"
+    ]
+  },
+  "retro/gen-5/646-kyurem": {
+    "types": [
+      "dragon",
+      "ice"
+    ]
+  },
+  "retro/gen-5/647-keldeo": {
+    "types": [
+      "water",
+      "fighting"
+    ]
+  },
+  "retro/gen-5/648-meloetta": {
+    "types": [
+      "normal",
+      "psychic"
+    ]
+  },
+  "retro/gen-5/649-genesect": {
+    "types": [
+      "bug",
+      "steel"
+    ]
+  },
+  "retro/gen-6/650-chespin": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-6/651-quilladin": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-6/652-chesnaught": {
+    "types": [
+      "grass",
+      "fighting"
+    ]
+  },
+  "retro/gen-6/653-fennekin": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-6/654-braixen": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-6/655-delphox": {
+    "types": [
+      "fire",
+      "psychic"
+    ]
+  },
+  "retro/gen-6/656-froakie": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-6/657-frogadier": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-6/658-greninja": {
+    "types": [
+      "water",
+      "dark"
+    ]
+  },
+  "retro/gen-6/659-bunnelby": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-6/660-diggersby": {
+    "types": [
+      "normal",
+      "ground"
+    ]
+  },
+  "retro/gen-6/661-fletchling": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-6/662-fletchinder": {
+    "types": [
+      "fire",
+      "flying"
+    ]
+  },
+  "retro/gen-6/663-talonflame": {
+    "types": [
+      "fire",
+      "flying"
+    ]
+  },
+  "retro/gen-6/664-scatterbug": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-6/665-spewpa": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-6/666-vivillon": {
+    "types": [
+      "bug",
+      "flying"
+    ]
+  },
+  "retro/gen-6/667-litleo": {
+    "types": [
+      "fire",
+      "normal"
+    ]
+  },
+  "retro/gen-6/669-flabebe": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-6/670-floette": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-6/671-florges": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-6/672-skiddo": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-6/673-gogoat": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-6/674-pancham": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-6/675-pangoro": {
+    "types": [
+      "fighting",
+      "dark"
+    ]
+  },
+  "retro/gen-6/676-furfrou": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-6/677-espurr": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-6/678-meowstic": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-6/679-honedge": {
+    "types": [
+      "steel",
+      "ghost"
+    ]
+  },
+  "retro/gen-6/680-doublade": {
+    "types": [
+      "steel",
+      "ghost"
+    ]
+  },
+  "retro/gen-6/681-aegislash": {
+    "types": [
+      "steel",
+      "ghost"
+    ]
+  },
+  "retro/gen-6/682-spritzee": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-6/684-swirlix": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-6/685-slurpuff": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-6/686-inkay": {
+    "types": [
+      "dark",
+      "psychic"
+    ]
+  },
+  "retro/gen-6/687-malamar": {
+    "types": [
+      "dark",
+      "psychic"
+    ]
+  },
+  "retro/gen-6/688-binacle": {
+    "types": [
+      "rock",
+      "water"
+    ]
+  },
+  "retro/gen-6/689-barbaracle": {
+    "types": [
+      "rock",
+      "water"
+    ]
+  },
+  "retro/gen-6/690-skrelp": {
+    "types": [
+      "poison",
+      "water"
+    ]
+  },
+  "retro/gen-6/691-dragalge": {
+    "types": [
+      "poison",
+      "dragon"
+    ]
+  },
+  "retro/gen-6/692-clauncher": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-6/693-clawitzer": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-6/694-helioptile": {
+    "types": [
+      "electric",
+      "normal"
+    ]
+  },
+  "retro/gen-6/695-heliolisk": {
+    "types": [
+      "electric",
+      "normal"
+    ]
+  },
+  "retro/gen-6/696-tyrunt": {
+    "types": [
+      "rock",
+      "dragon"
+    ]
+  },
+  "retro/gen-6/697-tyrantrum": {
+    "types": [
+      "rock",
+      "dragon"
+    ]
+  },
+  "retro/gen-6/698-amaura": {
+    "types": [
+      "rock",
+      "ice"
+    ]
+  },
+  "retro/gen-6/699-aurorus": {
+    "types": [
+      "rock",
+      "ice"
+    ]
+  },
+  "retro/gen-6/700-sylveon": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-6/701-hawlucha": {
+    "types": [
+      "fighting",
+      "flying"
+    ]
+  },
+  "retro/gen-6/702-dedenne": {
+    "types": [
+      "electric",
+      "fairy"
+    ]
+  },
+  "retro/gen-6/703-carbink": {
+    "types": [
+      "rock",
+      "fairy"
+    ]
+  },
+  "retro/gen-6/704-goomy": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/gen-6/705-sliggoo": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/forms/hisui/705-sliggoo": {
+    "types": [
+      "steel",
+      "dragon"
+    ]
+  },
+  "retro/gen-6/706-goodra": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/forms/hisui/706-goodra": {
+    "types": [
+      "steel",
+      "dragon"
+    ]
+  },
+  "retro/gen-6/707-klefki": {
+    "types": [
+      "steel",
+      "fairy"
+    ]
+  },
+  "retro/gen-6/708-phantump": {
+    "types": [
+      "ghost",
+      "grass"
+    ]
+  },
+  "retro/gen-6/709-trevenant": {
+    "types": [
+      "ghost",
+      "grass"
+    ]
+  },
+  "retro/gen-6/710-pumpkaboo": {
+    "types": [
+      "ghost",
+      "grass"
+    ]
+  },
+  "retro/gen-6/711-gourgeist": {
+    "types": [
+      "ghost",
+      "grass"
+    ]
+  },
+  "retro/gen-6/712-bergmite": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-6/713-avalugg": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/forms/hisui/713-avalugg": {
+    "types": [
+      "ice",
+      "rock"
+    ]
+  },
+  "retro/gen-6/714-noibat": {
+    "types": [
+      "flying",
+      "dragon"
+    ]
+  },
+  "retro/gen-6/715-noivern": {
+    "types": [
+      "flying",
+      "dragon"
+    ]
+  },
+  "retro/gen-6/716-xerneas": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-6/717-yveltal": {
+    "types": [
+      "dark",
+      "flying"
+    ]
+  },
+  "retro/gen-6/718-zygarde": {
+    "types": [
+      "dragon",
+      "ground"
+    ]
+  },
+  "retro/gen-6/719-diancie": {
+    "types": [
+      "rock",
+      "fairy"
+    ]
+  },
+  "retro/gen-6/720-hoopa": {
+    "types": [
+      "psychic",
+      "ghost"
+    ]
+  },
+  "retro/gen-6/721-volcanion": {
+    "types": [
+      "fire",
+      "water"
+    ]
+  },
+  "retro/gen-7/722-rowlet": {
+    "types": [
+      "grass",
+      "flying"
+    ]
+  },
+  "retro/gen-7/723-dartrix": {
+    "types": [
+      "grass",
+      "flying"
+    ]
+  },
+  "retro/gen-7/724-decidueye": {
+    "types": [
+      "grass",
+      "ghost"
+    ]
+  },
+  "retro/forms/hisui/724-decidueye": {
+    "types": [
+      "grass",
+      "fighting"
+    ]
+  },
+  "retro/gen-7/725-litten": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-7/726-torracat": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-7/727-incineroar": {
+    "types": [
+      "fire",
+      "dark"
+    ]
+  },
+  "retro/gen-7/728-popplio": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-7/729-brionne": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-7/730-primarina": {
+    "types": [
+      "water",
+      "fairy"
+    ]
+  },
+  "retro/gen-7/731-pikipek": {
+    "types": [
+      "normal",
+      "flying"
+    ]
+  },
+  "retro/gen-7/736-grubbin": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-7/737-charjabug": {
+    "types": [
+      "bug",
+      "electric"
+    ]
+  },
+  "retro/gen-7/738-vikavolt": {
+    "types": [
+      "bug",
+      "electric"
+    ]
+  },
+  "retro/gen-7/739-crabrawler": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-7/740-crabominable": {
+    "types": [
+      "fighting",
+      "ice"
+    ]
+  },
+  "retro/gen-7/742-cutiefly": {
+    "types": [
+      "bug",
+      "fairy"
+    ]
+  },
+  "retro/gen-7/743-ribombee": {
+    "types": [
+      "bug",
+      "fairy"
+    ]
+  },
+  "retro/gen-7/744-rockruff": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-7/745-lycanroc": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-7/746-wishiwashi": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-7/747-mareanie": {
+    "types": [
+      "poison",
+      "water"
+    ]
+  },
+  "retro/gen-7/748-toxapex": {
+    "types": [
+      "poison",
+      "water"
+    ]
+  },
+  "retro/gen-7/749-mudbray": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-7/750-mudsdale": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-7/751-dewpider": {
+    "types": [
+      "water",
+      "bug"
+    ]
+  },
+  "retro/gen-7/752-araquanid": {
+    "types": [
+      "water",
+      "bug"
+    ]
+  },
+  "retro/gen-7/753-fomantis": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-7/754-lurantis": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-7/755-morelull": {
+    "types": [
+      "grass",
+      "fairy"
+    ]
+  },
+  "retro/gen-7/757-salandit": {
+    "types": [
+      "poison",
+      "fire"
+    ]
+  },
+  "retro/gen-7/758-salazzle": {
+    "types": [
+      "poison",
+      "fire"
+    ]
+  },
+  "retro/gen-7/759-stufful": {
+    "types": [
+      "normal",
+      "fighting"
+    ]
+  },
+  "retro/gen-7/760-bewear": {
+    "types": [
+      "normal",
+      "fighting"
+    ]
+  },
+  "retro/gen-7/761-bounsweet": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-7/762-steenee": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-7/763-tsareena": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-7/764-comfey": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-7/766-passimian": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-7/767-wimpod": {
+    "types": [
+      "bug",
+      "water"
+    ]
+  },
+  "retro/gen-7/768-golisopod": {
+    "types": [
+      "bug",
+      "water"
+    ]
+  },
+  "retro/gen-7/769-sandygast": {
+    "types": [
+      "ghost",
+      "ground"
+    ]
+  },
+  "retro/gen-7/770-palossand": {
+    "types": [
+      "ghost",
+      "ground"
+    ]
+  },
+  "retro/gen-7/771-pyukumuku": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-7/772-type-null": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-7/773-silvally": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-7/774-minior": {
+    "types": [
+      "rock",
+      "flying"
+    ]
+  },
+  "retro/gen-7/775-komala": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-7/776-turtonator": {
+    "types": [
+      "fire",
+      "dragon"
+    ]
+  },
+  "retro/gen-7/777-togedemaru": {
+    "types": [
+      "electric",
+      "steel"
+    ]
+  },
+  "retro/gen-7/778-mimikyu": {
+    "types": [
+      "ghost",
+      "fairy"
+    ]
+  },
+  "retro/gen-7/779-bruxish": {
+    "types": [
+      "water",
+      "psychic"
+    ]
+  },
+  "retro/gen-7/780-drampa": {
+    "types": [
+      "normal",
+      "dragon"
+    ]
+  },
+  "retro/gen-7/781-dhelmise": {
+    "types": [
+      "ghost",
+      "grass"
+    ]
+  },
+  "retro/gen-7/782-jangmo-o": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/gen-7/783-hakamo-o": {
+    "types": [
+      "dragon",
+      "fighting"
+    ]
+  },
+  "retro/gen-7/784-kommo-o": {
+    "types": [
+      "dragon",
+      "fighting"
+    ]
+  },
+  "retro/gen-7/785-tapu-koko": {
+    "types": [
+      "electric",
+      "fairy"
+    ]
+  },
+  "retro/gen-7/786-tapu-lele": {
+    "types": [
+      "psychic",
+      "fairy"
+    ]
+  },
+  "retro/gen-7/787-tapu-bulu": {
+    "types": [
+      "grass",
+      "fairy"
+    ]
+  },
+  "retro/gen-7/788-tapu-fini": {
+    "types": [
+      "water",
+      "fairy"
+    ]
+  },
+  "retro/gen-7/789-cosmog": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-7/790-cosmoem": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-7/791-solgaleo": {
+    "types": [
+      "psychic",
+      "steel"
+    ]
+  },
+  "retro/gen-7/792-lunala": {
+    "types": [
+      "psychic",
+      "ghost"
+    ]
+  },
+  "retro/gen-7/793-nihilego": {
+    "types": [
+      "rock",
+      "poison"
+    ]
+  },
+  "retro/gen-7/794-buzzwole": {
+    "types": [
+      "bug",
+      "fighting"
+    ]
+  },
+  "retro/gen-7/795-pheromosa": {
+    "types": [
+      "bug",
+      "fighting"
+    ]
+  },
+  "retro/gen-7/796-xurkitree": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-7/797-celesteela": {
+    "types": [
+      "steel",
+      "flying"
+    ]
+  },
+  "retro/gen-7/798-kartana": {
+    "types": [
+      "grass",
+      "steel"
+    ]
+  },
+  "retro/gen-7/799-guzzlord": {
+    "types": [
+      "dark",
+      "dragon"
+    ]
+  },
+  "retro/gen-7/800-necrozma": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-7/801-magearna": {
+    "types": [
+      "steel",
+      "fairy"
+    ]
+  },
+  "retro/gen-7/802-marshadow": {
+    "types": [
+      "fighting",
+      "ghost"
+    ]
+  },
+  "retro/gen-7/803-poipole": {
+    "types": [
+      "poison"
+    ]
+  },
+  "retro/gen-7/804-naganadel": {
+    "types": [
+      "poison",
+      "dragon"
+    ]
+  },
+  "retro/gen-7/805-stakataka": {
+    "types": [
+      "rock",
+      "steel"
+    ]
+  },
+  "retro/gen-7/806-blacephalon": {
+    "types": [
+      "fire",
+      "ghost"
+    ]
+  },
+  "retro/gen-7/807-zeraora": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-7/808-meltan": {
+    "types": [
+      "steel"
+    ]
+  },
+  "retro/gen-7/809-melmetal": {
+    "types": [
+      "steel"
+    ]
+  },
+  "retro/gen-8/810-grookey": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-8/811-thwackey": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-8/812-rillaboom": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-8/813-scorbunny": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-8/814-raboot": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-8/815-cinderace": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-8/816-sobble": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-8/817-drizzile": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-8/818-inteleon": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-8/819-skwovet": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-8/820-greedent": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-8/821-rookidee": {
+    "types": [
+      "flying"
+    ]
+  },
+  "retro/gen-8/822-corvisquire": {
+    "types": [
+      "flying"
+    ]
+  },
+  "retro/gen-8/823-corviknight": {
+    "types": [
+      "flying",
+      "steel"
+    ]
+  },
+  "retro/gen-8/824-blipbug": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-8/825-dottler": {
+    "types": [
+      "bug",
+      "psychic"
+    ]
+  },
+  "retro/gen-8/826-orbeetle": {
+    "types": [
+      "bug",
+      "psychic"
+    ]
+  },
+  "retro/gen-8/827-nickit": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/gen-8/828-thievul": {
+    "types": [
+      "dark"
+    ]
+  },
+  "retro/gen-8/829-gossifleur": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-8/830-eldegoss": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-8/831-wooloo": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-8/832-dubwool": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-8/833-chewtle": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-8/834-drednaw": {
+    "types": [
+      "water",
+      "rock"
+    ]
+  },
+  "retro/gen-8/835-yamper": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-8/836-boltund": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-8/840-applin": {
+    "types": [
+      "grass",
+      "dragon"
+    ]
+  },
+  "retro/gen-8/841-flapple": {
+    "types": [
+      "grass",
+      "dragon"
+    ]
+  },
+  "retro/gen-8/842-appletun": {
+    "types": [
+      "grass",
+      "dragon"
+    ]
+  },
+  "retro/gen-8/843-silicobra": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-8/844-sandaconda": {
+    "types": [
+      "ground"
+    ]
+  },
+  "retro/gen-8/845-cramorant": {
+    "types": [
+      "flying",
+      "water"
+    ]
+  },
+  "retro/gen-8/846-arrokuda": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-8/848-toxel": {
+    "types": [
+      "electric",
+      "poison"
+    ]
+  },
+  "retro/gen-8/849-toxtricity": {
+    "types": [
+      "electric",
+      "poison"
+    ]
+  },
+  "retro/gen-8/850-sizzlipede": {
+    "types": [
+      "fire",
+      "bug"
+    ]
+  },
+  "retro/gen-8/851-centiskorch": {
+    "types": [
+      "fire",
+      "bug"
+    ]
+  },
+  "retro/gen-8/852-clobbopus": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-8/853-grapploct": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-8/854-sinistea": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-8/855-polteageist": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-8/856-hatenna": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-8/857-hattrem": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-8/858-hatterene": {
+    "types": [
+      "psychic",
+      "fairy"
+    ]
+  },
+  "retro/gen-8/859-impidimp": {
+    "types": [
+      "dark",
+      "fairy"
+    ]
+  },
+  "retro/gen-8/860-morgrem": {
+    "types": [
+      "dark",
+      "fairy"
+    ]
+  },
+  "retro/gen-8/861-grimmsnarl": {
+    "types": [
+      "dark",
+      "fairy"
+    ]
+  },
+  "retro/gen-8/862-obstagoon": {
+    "types": [
+      "dark",
+      "normal"
+    ]
+  },
+  "retro/gen-8/863-perrserker": {
+    "types": [
+      "steel"
+    ]
+  },
+  "retro/gen-8/864-cursola": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-8/867-runerigus": {
+    "types": [
+      "ground",
+      "ghost"
+    ]
+  },
+  "retro/gen-8/869-alcremie": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-8/871-pincurchin": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-8/872-snom": {
+    "types": [
+      "ice",
+      "bug"
+    ]
+  },
+  "retro/gen-8/873-frosmoth": {
+    "types": [
+      "ice",
+      "bug"
+    ]
+  },
+  "retro/gen-8/875-eiscue": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-8/876-indeedee": {
+    "types": [
+      "psychic",
+      "normal"
+    ]
+  },
+  "retro/gen-8/877-morpeko": {
+    "types": [
+      "electric",
+      "dark"
+    ]
+  },
+  "retro/gen-8/880-dracozolt": {
+    "types": [
+      "electric",
+      "dragon"
+    ]
+  },
+  "retro/gen-8/881-arctozolt": {
+    "types": [
+      "electric",
+      "ice"
+    ]
+  },
+  "retro/gen-8/882-dracovish": {
+    "types": [
+      "water",
+      "dragon"
+    ]
+  },
+  "retro/gen-8/884-duraludon": {
+    "types": [
+      "steel",
+      "dragon"
+    ]
+  },
+  "retro/gen-8/885-dreepy": {
+    "types": [
+      "dragon",
+      "ghost"
+    ]
+  },
+  "retro/gen-8/886-drakloak": {
+    "types": [
+      "dragon",
+      "ghost"
+    ]
+  },
+  "retro/gen-8/887-dragapult": {
+    "types": [
+      "dragon",
+      "ghost"
+    ]
+  },
+  "retro/gen-8/888-zacian": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-8/889-zamazenta": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-8/890-eternatus": {
+    "types": [
+      "poison",
+      "dragon"
+    ]
+  },
+  "retro/gen-8/891-kubfu": {
+    "types": [
+      "fighting"
+    ]
+  },
+  "retro/gen-8/892-urshifu": {
+    "types": [
+      "fighting",
+      "dark"
+    ]
+  },
+  "retro/gen-8/894-regieleki": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-8/895-regidrago": {
+    "types": [
+      "dragon"
+    ]
+  },
+  "retro/gen-8/897-spectrier": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-8/898-calyrex": {
+    "types": [
+      "psychic",
+      "grass"
+    ]
+  },
+  "retro/gen-8/899-wyrdeer": {
+    "types": [
+      "normal",
+      "psychic"
+    ]
+  },
+  "retro/gen-8/900-kleavor": {
+    "types": [
+      "bug",
+      "rock"
+    ]
+  },
+  "retro/gen-8/901-ursaluna": {
+    "types": [
+      "ground",
+      "normal"
+    ]
+  },
+  "retro/gen-8/902-basculegion": {
+    "types": [
+      "water",
+      "ghost"
+    ]
+  },
+  "retro/gen-8/903-sneasler": {
+    "types": [
+      "fighting",
+      "poison"
+    ]
+  },
+  "retro/gen-8/904-overqwil": {
+    "types": [
+      "dark",
+      "poison"
+    ]
+  },
+  "retro/gen-8/905-enamorus": {
+    "types": [
+      "fairy",
+      "flying"
+    ]
+  },
+  "retro/gen-9/906-sprigatito": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-9/907-floragato": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-9/908-meowscarada": {
+    "types": [
+      "grass",
+      "dark"
+    ]
+  },
+  "retro/gen-9/909-fuecoco": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-9/910-crocalor": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-9/911-skeledirge": {
+    "types": [
+      "fire",
+      "ghost"
+    ]
+  },
+  "retro/gen-9/912-quaxly": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-9/913-quaxwell": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-9/914-quaquaval": {
+    "types": [
+      "water",
+      "fighting"
+    ]
+  },
+  "retro/gen-9/915-lechonk": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-9/916-oinkologne": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-9/918-spidops": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-9/919-nymble": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-9/920-lokix": {
+    "types": [
+      "bug",
+      "dark"
+    ]
+  },
+  "retro/gen-9/921-pawmi": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-9/922-pawmo": {
+    "types": [
+      "electric",
+      "fighting"
+    ]
+  },
+  "retro/gen-9/923-pawmot": {
+    "types": [
+      "electric",
+      "fighting"
+    ]
+  },
+  "retro/gen-9/924-tandemaus": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-9/925-maushold": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-9/926-fidough": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-9/927-dachsbun": {
+    "types": [
+      "fairy"
+    ]
+  },
+  "retro/gen-9/928-smoliv": {
+    "types": [
+      "grass",
+      "normal"
+    ]
+  },
+  "retro/gen-9/930-arboliva": {
+    "types": [
+      "grass",
+      "normal"
+    ]
+  },
+  "retro/gen-9/932-nacli": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-9/933-naclstack": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-9/934-garganacl": {
+    "types": [
+      "rock"
+    ]
+  },
+  "retro/gen-9/935-charcadet": {
+    "types": [
+      "fire"
+    ]
+  },
+  "retro/gen-9/936-armarouge": {
+    "types": [
+      "fire",
+      "psychic"
+    ]
+  },
+  "retro/gen-9/937-ceruledge": {
+    "types": [
+      "fire",
+      "ghost"
+    ]
+  },
+  "retro/gen-9/938-tadbulb": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-9/939-bellibolt": {
+    "types": [
+      "electric"
+    ]
+  },
+  "retro/gen-9/940-wattrel": {
+    "types": [
+      "electric",
+      "flying"
+    ]
+  },
+  "retro/gen-9/941-kilowattrel": {
+    "types": [
+      "electric",
+      "flying"
+    ]
+  },
+  "retro/gen-9/951-capsakid": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-9/952-scovillain": {
+    "types": [
+      "grass",
+      "fire"
+    ]
+  },
+  "retro/gen-9/953-rellor": {
+    "types": [
+      "bug"
+    ]
+  },
+  "retro/gen-9/955-flittle": {
+    "types": [
+      "psychic"
+    ]
+  },
+  "retro/gen-9/957-tinkatink": {
+    "types": [
+      "fairy",
+      "steel"
+    ]
+  },
+  "retro/gen-9/958-tinkatuff": {
+    "types": [
+      "fairy",
+      "steel"
+    ]
+  },
+  "retro/gen-9/959-tinkaton": {
+    "types": [
+      "fairy",
+      "steel"
+    ]
+  },
+  "retro/gen-9/960-wiglett": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-9/961-wugtrio": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-9/963-finizen": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-9/964-palafin": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-9/965-varoom": {
+    "types": [
+      "steel",
+      "poison"
+    ]
+  },
+  "retro/gen-9/966-revavroom": {
+    "types": [
+      "steel",
+      "poison"
+    ]
+  },
+  "retro/gen-9/967-cyclizar": {
+    "types": [
+      "dragon",
+      "normal"
+    ]
+  },
+  "retro/gen-9/969-glimmet": {
+    "types": [
+      "rock",
+      "poison"
+    ]
+  },
+  "retro/gen-9/970-glimmora": {
+    "types": [
+      "rock",
+      "poison"
+    ]
+  },
+  "retro/gen-9/971-greavard": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-9/972-houndstone": {
+    "types": [
+      "ghost"
+    ]
+  },
+  "retro/gen-9/974-cetoddle": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-9/975-cetitan": {
+    "types": [
+      "ice"
+    ]
+  },
+  "retro/gen-9/976-veluza": {
+    "types": [
+      "water",
+      "psychic"
+    ]
+  },
+  "retro/gen-9/977-dondozo": {
+    "types": [
+      "water"
+    ]
+  },
+  "retro/gen-9/978-tatsugiri": {
+    "types": [
+      "dragon",
+      "water"
+    ]
+  },
+  "retro/gen-9/979-annihilape": {
+    "types": [
+      "fighting",
+      "ghost"
+    ]
+  },
+  "retro/gen-9/980-clodsire": {
+    "types": [
+      "poison",
+      "ground"
+    ]
+  },
+  "retro/gen-9/981-farigiraf": {
+    "types": [
+      "normal",
+      "psychic"
+    ]
+  },
+  "retro/gen-9/982-dudunsparce": {
+    "types": [
+      "normal"
+    ]
+  },
+  "retro/gen-9/983-kingambit": {
+    "types": [
+      "dark",
+      "steel"
+    ]
+  },
+  "retro/gen-9/984-great-tusk": {
+    "types": [
+      "ground",
+      "fighting"
+    ]
+  },
+  "retro/gen-9/985-scream-tail": {
+    "types": [
+      "fairy",
+      "psychic"
+    ]
+  },
+  "retro/gen-9/987-flutter-mane": {
+    "types": [
+      "ghost",
+      "fairy"
+    ]
+  },
+  "retro/gen-9/988-slither-wing": {
+    "types": [
+      "bug",
+      "fighting"
+    ]
+  },
+  "retro/gen-9/989-sandy-shocks": {
+    "types": [
+      "electric",
+      "ground"
+    ]
+  },
+  "retro/gen-9/991-iron-bundle": {
+    "types": [
+      "ice",
+      "water"
+    ]
+  },
+  "retro/gen-9/992-iron-hands": {
+    "types": [
+      "fighting",
+      "electric"
+    ]
+  },
+  "retro/gen-9/994-iron-moth": {
+    "types": [
+      "fire",
+      "poison"
+    ]
+  },
+  "retro/gen-9/995-iron-thorns": {
+    "types": [
+      "rock",
+      "electric"
+    ]
+  },
+  "retro/gen-9/996-frigibax": {
+    "types": [
+      "dragon",
+      "ice"
+    ]
+  },
+  "retro/gen-9/997-arctibax": {
+    "types": [
+      "dragon",
+      "ice"
+    ]
+  },
+  "retro/gen-9/998-baxcalibur": {
+    "types": [
+      "dragon",
+      "ice"
+    ]
+  },
+  "retro/gen-9/1000-gholdengo": {
+    "types": [
+      "steel",
+      "ghost"
+    ]
+  },
+  "retro/gen-9/1004-chi-yu": {
+    "types": [
+      "dark",
+      "fire"
+    ]
+  },
+  "retro/gen-9/1005-roaring-moon": {
+    "types": [
+      "dragon",
+      "dark"
+    ]
+  },
+  "retro/gen-9/1006-iron-valiant": {
+    "types": [
+      "fairy",
+      "fighting"
+    ]
+  },
+  "retro/gen-9/1007-koraidon": {
+    "types": [
+      "fighting",
+      "dragon"
+    ]
+  },
+  "retro/gen-9/1009-walking-wake": {
+    "types": [
+      "water",
+      "dragon"
+    ]
+  },
+  "retro/gen-9/1010-iron-leaves": {
+    "types": [
+      "grass",
+      "psychic"
+    ]
+  },
+  "retro/gen-9/1011-dipplin": {
+    "types": [
+      "grass",
+      "dragon"
+    ]
+  },
+  "retro/gen-9/1012-poltchageist": {
+    "types": [
+      "grass",
+      "ghost"
+    ]
+  },
+  "retro/gen-9/1013-sinistcha": {
+    "types": [
+      "grass",
+      "ghost"
+    ]
+  },
+  "retro/gen-9/1015-munkidori": {
+    "types": [
+      "poison",
+      "psychic"
+    ]
+  },
+  "retro/gen-9/1016-fezandipiti": {
+    "types": [
+      "poison",
+      "fairy"
+    ]
+  },
+  "retro/gen-9/1017-ogerpon": {
+    "types": [
+      "grass"
+    ]
+  },
+  "retro/gen-9/1018-archaludon": {
+    "types": [
+      "steel",
+      "dragon"
+    ]
+  },
+  "retro/gen-9/1019-hydrapple": {
+    "types": [
+      "grass",
+      "dragon"
+    ]
+  },
+  "retro/gen-9/1024-terapagos": {
+    "types": [
+      "normal"
+    ]
+  }
+}
