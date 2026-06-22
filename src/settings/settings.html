@@ -144,7 +144,6 @@
     #heroSprite {
       width: 72px; height: 72px;
       image-rendering: pixelated;
-      object-fit: contain;
     }
     .hero-info {
       display: flex;
@@ -538,7 +537,7 @@
       <!-- Hero display -->
       <div class="hero-section">
         <div class="hero-sprite-wrap">
-          <img id="heroSprite" src="" alt="相棒スプライト" />
+          <div id="heroSprite" aria-label="相棒スプライト"></div>
         </div>
         <div class="hero-info">
           <span id="heroName">—</span>
@@ -642,7 +641,7 @@
       <!-- Codex pet -->
       <div class="codex-card">
         <span class="codex-label">Codex pet</span>
-        <button id="exportCodexPet" type="button">EXPORT</button>
+        <button id="exportCodexPet" type="button" aria-label="Codex pet をエクスポート">EXPORT</button>
       </div>
 
       <!-- Coming soon list -->

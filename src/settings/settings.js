@@ -135,7 +135,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       const meta = await window.settingsApi.getPackMeta(id);
       // getPackMeta は { resolvedKey, meta } を返す。mountIdleSprite は packMeta.meta を見る。
       heroSpriteEl.style.backgroundImage = "";
-      heroSpriteEl.removeAttribute("src");
       heroStop = mountIdleSprite(heroSpriteEl, meta, { row: 0 });
     } else if (!id) {
       if (heroStop) { heroStop(); heroStop = null; }
