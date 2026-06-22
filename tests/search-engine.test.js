@@ -80,6 +80,14 @@ const packs = [
   { id: "retro/gen-2/152-chikorita", num: 152, ja: "チコリータ", romaji: "Chicorita", en: "Chikorita" },
 ];
 
+// メタデータなし（search-metadata.json 未登録）の pack を使い、
+// pack.types だけで全 1010 匹のタイプ検索が効くことを確認するための追加データ
+const packsWithTypes = [
+  { id: "no-meta/001-bulbasaur", num: 1, ja: "フシギダネ", romaji: "Fushigidane", en: "Bulbasaur", types: ["grass", "poison"] },
+  { id: "no-meta/007-squirtle", num: 7, ja: "ゼニガメ", romaji: "Zenigame", en: "Squirtle", types: ["water"] },
+  { id: "no-meta/006-charizard", num: 6, ja: "リザードン", romaji: "Lizardon", en: "Charizard", types: ["fire", "flying"] },
+];
+
 describe("pokemon search engine", () => {
   const index = buildPokemonSearchIndex(packs, metadata);
 
@@ -109,5 +117,40 @@ describe("pokemon search engine", () => {
 
   it("初出ゲーム OR 風の alias も metadata 上の複数値で自然に絞り込める", () => {
     expect(searchPokemon(index, "赤緑 ピカチュウ版", metadata).map((result) => result.id)).toEqual(["retro/gen-1/025-pikachu"]);
+  });
+});
+
+describe("pack.types による全 Pokémon タイプ自由文検索", () => {
+  // メタデータなし（search-metadata.json 未登録）の pack でも
+  // pack.types から英語・日本語どちらでもタイプ検索できることを確認する
+  const typeIndex = buildPokemonSearchIndex(packsWithTypes, {});
+
+  it("英語タイプ名 'water' でみず単タイプ pack を返す", () => {
+    const ids = searchPokemon(typeIndex, "water", {}).map((r) => r.id);
+    expect(ids).toContain("no-meta/007-squirtle");
+    expect(ids).not.toContain("no-meta/006-charizard");
+  });
+
+  it("日本語タイプ名 'みず' でみず単タイプ pack を返す", () => {
+    const ids = searchPokemon(typeIndex, "みず", {}).map((r) => r.id);
+    expect(ids).toContain("no-meta/007-squirtle");
+    expect(ids).not.toContain("no-meta/006-charizard");
+  });
+
+  it("英語タイプ名 'fire' でほのお複合タイプ pack も返す", () => {
+    const ids = searchPokemon(typeIndex, "fire", {}).map((r) => r.id);
+    expect(ids).toContain("no-meta/006-charizard");
+    expect(ids).not.toContain("no-meta/007-squirtle");
+  });
+
+  it("日本語タイプ名 'ほのお' でほのお複合タイプ pack も返す", () => {
+    const ids = searchPokemon(typeIndex, "ほのお", {}).map((r) => r.id);
+    expect(ids).toContain("no-meta/006-charizard");
+    expect(ids).not.toContain("no-meta/007-squirtle");
+  });
+
+  it("関係ないタイプ名 'でんき' は何も返さない", () => {
+    const ids = searchPokemon(typeIndex, "でんき", {}).map((r) => r.id);
+    expect(ids).toHaveLength(0);
   });
 });
