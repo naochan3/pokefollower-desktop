@@ -10,6 +10,10 @@ export function matchTile(tile, sel) {
   } else {
     if (sel.region !== "all" && tile.region !== sel.region) return false;
   }
+  if (sel.type && sel.type !== "all") {
+    const types = Array.isArray(tile.types) ? tile.types : [];
+    if (!types.includes(sel.type)) return false;
+  }
   if (sel.q && !tile.search.includes(sel.q)) return false;
   return true;
 }
