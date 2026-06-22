@@ -34,6 +34,14 @@ function makePackReader(root, fileSystem = fs) {
     const file = path.join(root, "assets", "packs", "jp-names.json");
     return readJson(file);
   }
+  function readTypeData() {
+    const file = path.join(root, "assets", "packs", "type-data.json");
+    try {
+      return readJson(file);
+    } catch (_) {
+      return {};
+    }
+  }
   function readSearchMetadata() {
     const file = path.join(root, "assets", "packs", "search-metadata.json");
     try {
@@ -45,6 +53,7 @@ function makePackReader(root, fileSystem = fs) {
   function readPackList() {
     const index = readIndex();
     const jp = readJpNames();
+    const typeData = readTypeData();
     const list = (index.retro || []).map((item) => {
       const slug = packSlug(item.id);          // "009-blastoise"
       const num = dexFromSlug(slug);            // 9
@@ -56,6 +65,7 @@ function makePackReader(root, fileSystem = fs) {
         region: item.region || null,
         ja: item.ja || jpEntry.ja || null,
         romaji: jpEntry.romaji || null,
+        types: (typeData[item.id] && Array.isArray(typeData[item.id].types)) ? typeData[item.id].types : [],
         en: en || slug,
       };
     });
