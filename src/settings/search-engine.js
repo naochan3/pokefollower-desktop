@@ -60,10 +60,22 @@
     return { raw: String(query || ""), tokens, facets, nameTerms };
   }
 
+  // 18タイプの英語→日本語マップ（type-colors.mjs の TYPE_COLORS.ja と同値）
+  // search-engine.js は classic <script> 読み込みのため ESM import 不可なのでここにインライン化
+  const TYPE_EN_TO_JA = {
+    normal: "ノーマル", fire: "ほのお", water: "みず", electric: "でんき",
+    grass: "くさ", ice: "こおり", fighting: "かくとう", poison: "どく",
+    ground: "じめん", flying: "ひこう", psychic: "エスパー", bug: "むし",
+    rock: "いわ", ghost: "ゴースト", dragon: "ドラゴン", dark: "あく",
+    steel: "はがね", fairy: "フェアリー",
+  };
+
   function packSearchText(pack) {
     const num = pack.num == null ? "" : String(pack.num);
     const padded = num ? num.padStart(3, "0") : "";
-    return normalizeText([pack.ja, pack.romaji, pack.en, num, padded, `#${padded}`].filter(Boolean).join(" "));
+    const packTypes = Array.isArray(pack.types) ? pack.types : [];
+    const typeJaNames = packTypes.map((t) => TYPE_EN_TO_JA[String(t).toLowerCase()] || "").filter(Boolean);
+    return normalizeText([pack.ja, pack.romaji, pack.en, num, padded, `#${padded}`, ...packTypes, ...typeJaNames].filter(Boolean).join(" "));
   }
 
   function normalizeMetadataEntry(entry) {

@@ -54,7 +54,7 @@ describe("settings-patch", () => {
         vcp1_scale: 5,
         vcp1_offset: 0,
         vcp1_lerp: 0.5,
-        vcp1_edgeRest: true,
+        vcp1_edgeRest: false,
         vcp1_avoidCursor: true,
         vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "standard",
@@ -65,15 +65,15 @@ describe("settings-patch", () => {
 
   it("edgeRest patchはsim設定を更新する", () => {
     const { deps, calls } = makeDeps();
-    const next = applySettingsPatch({ edgeRest: false }, deps);
-    expect(next.edgeRest).toBe(false);
+    const next = applySettingsPatch({ edgeRest: true }, deps);
+    expect(next.edgeRest).toBe(true);
     expect(calls).toEqual([
-      ["settings:set", { edgeRest: false }],
+      ["settings:set", { edgeRest: true }],
       ["sim:setConfig", {
         vcp1_scale: 1.25,
         vcp1_offset: 70,
         vcp1_lerp: 0.2,
-        vcp1_edgeRest: false,
+        vcp1_edgeRest: true,
         vcp1_avoidCursor: true,
         vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "standard",
@@ -92,7 +92,7 @@ describe("settings-patch", () => {
         vcp1_scale: 1.25,
         vcp1_offset: 70,
         vcp1_lerp: 0.2,
-        vcp1_edgeRest: true,
+        vcp1_edgeRest: false,
         vcp1_avoidCursor: false,
         vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "standard",
@@ -111,7 +111,7 @@ describe("settings-patch", () => {
         vcp1_scale: 1.25,
         vcp1_offset: 70,
         vcp1_lerp: 0.2,
-        vcp1_edgeRest: true,
+        vcp1_edgeRest: false,
         vcp1_avoidCursor: true,
         vcp1_avoidCursorStrength: "strong",
         vcp1_personality: "standard",
@@ -130,7 +130,7 @@ describe("settings-patch", () => {
         vcp1_scale: 1.25,
         vcp1_offset: 70,
         vcp1_lerp: 0.2,
-        vcp1_edgeRest: true,
+        vcp1_edgeRest: false,
         vcp1_avoidCursor: true,
         vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "friendly",
@@ -149,7 +149,7 @@ describe("settings-patch", () => {
         vcp1_scale: 1.25,
         vcp1_offset: 70,
         vcp1_lerp: 0.2,
-        vcp1_edgeRest: true,
+        vcp1_edgeRest: false,
         vcp1_avoidCursor: true,
         vcp1_avoidCursorStrength: "normal",
         vcp1_personality: "standard",

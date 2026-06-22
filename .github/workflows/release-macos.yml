@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag to upload macOS assets to, for example v1.1.0"
+        description: "Release tag to upload macOS assets to, for example v1.2.0"
         required: true
         type: string
 

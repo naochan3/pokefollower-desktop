@@ -6,77 +6,47 @@
   <title>PokéFollower</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* Card sizing + paddings (wider so SPEED fits comfortably) */
     :root {
-      --announce-h: 0px;
-      --announce-side-pad: 14px;
+      --red: #EF4036;
+      --tab-h: 48px;
+      --top-band: 34px; /* red band + black border */
     }
-    html { height: 100%; }
+
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+    }
     body {
-      margin: 0;
-      padding-top: calc(64px + var(--announce-h)); /* give space below top band/notch */
-      padding-bottom: 60px;      /* give space above bottom band text */
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
       font-size: 14px;
-      position: relative;
       background: #fff;
       color: #000;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
     }
 
-    /* Top red band with black line */
-    body::before {
-      content: "";
-      position: absolute; left: 0; right: 0; top: var(--announce-h);
+    /* ── Top red band ── */
+    .top-band {
+      flex: 0 0 auto;
       height: 28px;
-      background: #EF4036;
+      background: var(--red);
       border-bottom: 6px solid #000;
-    }
-    /* Bottom red band with black line */
-    body::after {
-      content: "";
-      position: absolute; left: 0; right: 0; bottom: 0;
-      height: 36px;
-      background: #EF4036;
-      border-top: 5px solid #000;
-      z-index: 0;
-    }
-
-    .announce {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      min-height: var(--announce-h);
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #171717;
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      text-align: center;
-      z-index: 3;
-      padding: 3px var(--announce-side-pad);
-      box-sizing: border-box;
-      white-space: normal;
-      line-height: 1.2;
     }
 
-    /* Half Pokéball notch (outer + inner ring) */
+    /* Pokéball notch */
     .notch {
-      position: absolute; top: calc(6px + var(--announce-h)); left: 50%;
-      transform: translateX(-50%);
       width: 27px; height: 27px;
       background: #fff;
       border: 10px solid #000; border-radius: 50%;
       box-sizing: content-box;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -30%);
     }
     .notch::after {
       content: ""; position: absolute;
@@ -86,184 +56,288 @@
       background: #fff; border: 1px solid #000; border-radius: 50%;
     }
 
-    /* Header row: brand left, enable toggle right */
-    .header {
-      position: relative;
-      height: 26px;
-      display: grid; grid-template-columns: 1fr auto; align-items: center;
-      margin-top: -25px;         /* visually closer to black line */
-      padding: 0 14px;           /* spacing from edges */
-      background: transparent; border: 0;
-    }
-    .brand { 
-      font-weight: 600; font-style: normal; font-size: 12px; letter-spacing: .05em;
-    }
-    .enable {
-      font-weight: 600; font-size: 12px;
-      display: inline-grid; grid-auto-flow: column; align-items: center; gap: 6px;
-    }
-
-    /* Turn the checkbox into the Pokéball toggle */
-    #enabled {
-      appearance: none; -webkit-appearance: none;
-      width: 36px; height: 18px;
-      border: 1.5px solid #000; border-radius: 18px;
-      background: #fff; position: relative; display: inline-block; cursor: pointer; outline: none;
-    }
-    /* switch knob (mini Pokéball) */
-    #enabled::after {
-      content: "";
-      position: absolute; top: 50%; left: -4px; transform: translateY(-50%);
-      width: 18px; height: 18px; border-radius: 50%;
-      border: 2px solid #000; background: linear-gradient(to bottom, #EF4036 50%, #fff 50%);
-    }
-    /* ON state */
-    #enabled:checked { background: #EF4036; }
-    #enabled:checked::after { left: calc(100% - 18px); }
-    /* Card body */
-    .card {
-      padding: 8px 14px 0;
-      flex: 1 1 auto;
+    /* ── Main content area (scrollable, sits between top band and tab bar) ── */
+    .panels-wrap {
+      flex: 1 1 0;
+      min-height: 0;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Panels ── */
+    .panel {
+      flex: 1 1 0;
       min-height: 0;
-      gap: 6px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Controls layout: three columns */
-    .triples {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      text-align: center;
-      flex: 0 0 auto;
-      margin-top: 0;
-    }
-    .triple h4 { font-size: 11px; letter-spacing: .02em; margin: 5px 0 6px; font-weight: 800; }
-
-    /* Row: vertical arrows + underline input */
-    .controlRow { display: flex; align-items: flex-start; justify-content: center; gap: 10px; }
-    .arrowStack { display: flex; flex-direction: column; align-items: center; line-height: 0; }
-    .arrowStack .caret { width: 0; height: 0; border: 7px solid transparent; }
-    .arrowStack .caret.up   { border-bottom-color: #000; margin-bottom: 1px; } /* ▲ */
-    .arrowStack .caret.down { border-top-color:     #000; }                   /* ▼ */
-
-    .inputWrap { display: inline-flex; align-items: flex-start; gap: 6px; margin-top: -1px; }
-    .inputWrap input[type="number"] {
-      width: 28px; text-align: center; border: 0; border-bottom: 2px solid #000; outline: none;
-      font-size: 14px; font-weight: 600; padding: 2px 0 0; background: transparent;
-    }
-    .inputWrap .suffix { font-weight: 700; display: inline-block; margin-top: 7px; }
-
-    .inputWrap input[type="number"]::-webkit-outer-spin-button,
-    .inputWrap input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-
-    /* Bottom hint text over red band */
-    .hint {
-      position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
-      color: #fff; font-weight: 600; margin: 0; font-size: 10px; text-align: center;
-      z-index: 2; pointer-events: auto; white-space: normal; font-style: italic;
-      width: calc(100% - 12px); line-height: 1.6;
-    }
-    .hint-credits {
-      opacity: 0.55;
-    }
-    .hint a {
-      color: inherit;
-    }
-    .hint-links {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      width: fit-content;
-      margin: 0 auto;
-      opacity: 0.95;
-    }
-
-    /* Accessibility helper */
-    .sr-only {
-      position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
-      overflow: hidden; clip: rect(0, 0, 1px, 1px); white-space: nowrap; border: 0;
-    }
-
-    .search { margin: 0 12px; flex: 0 0 auto; }
-    .search input {
-      width: 100%; box-sizing: border-box; padding: 7px 10px;
-      border: 1.5px solid #000; border-radius: 8px; font-size: 13px; font-weight: 600; outline: none;
-    }
-    .gen-chips { margin: 0 14px 6px; display: flex; gap: 3px; }
-    .gen-chip {
-      flex: 1 1 0; min-width: 0; padding: 3px 0; border: 1px solid #ccc; border-radius: 6px;
-      font-size: 11px; font-weight: 700; background: #fff; color: #444; cursor: pointer; outline: none;
-    }
-    .gen-chip:hover { background: #f5f5f5; }
-    .gen-chip.active { background: #EF4036; color: #fff; border-color: #EF4036; }
-    .grid {
-      margin: 0 12px; padding: 4px; flex: 1 1 280px; min-height: 160px; overflow-y: auto;
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-content: start;
-      border: 1.5px solid #000; border-radius: 8px; background: #fafafa;
-    }
-    .tile {
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-      gap: 2px; padding: 6px 2px; border: 2px solid transparent; border-radius: 8px;
-      background: #fff; cursor: pointer; font: inherit; text-align: center;
-    }
-    .tile:hover { background: #f0f0f0; }
-    .tile.selected { border-color: #EF4036; background: #fff4f3; }
-    .tile.favorite::after {
-      content: "★";
-      position: absolute;
-      top: 2px;
-      right: 4px;
-      color: #EF4036;
-      font-size: 10px;
-      font-weight: 900;
-    }
-    .tile {
-      position: relative;
-    }
-    .tile img { width: 48px; height: 48px; image-rendering: pixelated; object-fit: contain; }
-    .tile .name { font-size: 11px; font-weight: 700; line-height: 1.1; word-break: break-all; }
-    .tile .num { font-size: 10px; color: #888; }
-    .tile.hidden { display: none; }
-    .behaviors {
-      margin: 7px 14px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 10px 0 6px;
       gap: 8px;
     }
-    .behavior select {
-      border: 1.5px solid #000;
-      border-radius: 6px;
+    .panel[hidden] { display: none !important; }
+
+    /* ── Bottom tab bar ── */
+    #tabs {
+      flex: 0 0 var(--tab-h);
+      display: flex;
+      background: var(--red);
+      border-top: 5px solid #000;
+      position: relative;
+      z-index: 10;
+    }
+    .tab {
+      flex: 1 1 0;
+      border: none;
+      background: transparent;
+      color: #fff;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      cursor: pointer;
+      padding: 0;
+      opacity: 0.7;
+      transition: opacity .1s, background .1s;
+      position: relative;
+    }
+    .tab:hover { opacity: 0.9; }
+    .tab.active {
+      opacity: 1;
+      background: rgba(0,0,0,.18);
+    }
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 8px; right: 8px;
+      height: 3px;
       background: #fff;
-      color: #000;
+      border-radius: 0 0 3px 3px;
+    }
+
+    /* ── Accessibility ── */
+    .sr-only {
+      position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,1px,1px); white-space: nowrap; border: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       あいぼうパネル
+    ═══════════════════════════════════════════ */
+
+    /* Hero section */
+    .hero-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px 0;
+      flex: 1 1 auto;            /* 縦の余白を吸収して下まで埋める */
+      justify-content: center;
+      min-height: 0;
+    }
+    .hero-sprite-wrap {
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: 200px;
+      height: 180px;
+      background: #fafafa;
+      border: 2px solid #000;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .nickname-input {
+      font: inherit; font-size: 15px; font-weight: 700; text-align: center;
+      width: 80%; max-width: 220px; padding: 2px 6px;
+      border: 2px solid var(--red, #e8503a); border-radius: 6px; outline: none;
+    }
+    #heroSprite {
+      image-rendering: pixelated;
+    }
+    .hero-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    #heroName {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: .03em;
+      line-height: 1;
+    }
+    #heroNum {
+      font-size: 12px;
+      color: #888;
+      font-weight: 700;
+    }
+    #heroTypes {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    /* type chip appearance (populated by settings.js) */
+    #heroTypes .type-chip {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      padding: 2px 8px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(0,0,0,.25);
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    /* Nickname edit button */
+    #nicknameEdit {
+      border: 1.5px solid #000;
+      background: #fff;
       font: inherit;
       font-size: 11px;
       font-weight: 800;
-      padding: 2px 4px;
-      max-width: 76px;
+      padding: 3px 10px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 #000;
+      margin-top: 2px;
     }
-    .behavior {
+    #nicknameEdit:hover { background: #f5f5f5; }
+
+    /* ── Sliders (大きさ / 距離 / 速さ) ── */
+    .sliders-section {
+      padding: 4px 14px 0;
       display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 700;
+      flex-direction: column;
+      gap: 2px;
     }
-    .select-row {
-      margin: 7px 14px 0;
+    .slider-row {
+      display: grid;
+      grid-template-columns: 3em 1fr auto;
+      align-items: center;
+      gap: 8px;
+    }
+    .slider-row label {
+      font-size: 11px;
+      font-weight: 800;
+      text-align: right;
+    }
+    .slider-row input[type="number"] {
+      width: 100%;
+      border: 0;
+      border-bottom: 2px solid #000;
+      background: transparent;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      padding: 2px 0;
+    }
+    .slider-row input[type="number"]::-webkit-outer-spin-button,
+    .slider-row input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .slider-row .readout {
+      font-size: 11px;
+      font-weight: 700;
+      color: #555;
+      min-width: 3em;
+      text-align: left;
+    }
+
+    /* ── Party row ── */
+    .party-row {
+      display: flex;
+      gap: 7px;
+      padding: 9px 14px 4px;
+      justify-content: center;
+    }
+    .party-slot {
+      flex: 0 0 44px;
+      height: 44px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      background: #fafafa;
+      display: flex; align-items: center; justify-content: center;
+      overflow: visible;
+    }
+    .party-slot img {
+      width: 40px; height: 40px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    /* フォルムは正規化でタイル一杯なので、手持ちでも見た目だけ少し縮小して馴染ませる */
+    .party-slot[data-id*="/forms/"] img { transform: scale(0.8); transform-origin: center; }
+    .party-slot { position: relative; cursor: pointer; font: inherit; }
+    .party-slot.lead { border-color: var(--red); box-shadow: 0 0 0 2px var(--red) inset; }
+    .party-slot.empty { color: #bbb; font-size: 22px; font-weight: 800; line-height: 1; }
+    .party-slot .party-remove {
+      position: absolute; top: -6px; right: -6px;
+      width: 18px; height: 18px; line-height: 15px;
+      border-radius: 50%; border: 1.5px solid #000;
+      background: #fff; color: #000;
+      font-size: 12px; font-weight: 900; text-align: center;
+      z-index: 2;
+    }
+    .party-slot .party-remove:hover { background: var(--red); color: #fff; }
+    .party-row.replacing { outline: 2px dashed var(--red); outline-offset: 2px; animation: party-blink 0.8s steps(2) infinite; }
+    @keyframes party-blink { 50% { opacity: .55; } }
+    .replace-hint { color: var(--red) !important; }
+
+    /* ── Roam coming-soon pill ── */
+    #roamSoon {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin: 4px 14px 0;
+      padding: 4px 12px;
+      border: 2px dashed #ccc;
+      border-radius: 20px;
+      background: #fafafa;
+      color: #aaa;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: default;
+      user-select: none;
+      align-self: flex-start;
+    }
+
+    /* ── Section separator ── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      color: #aaa;
+      text-transform: uppercase;
+      padding: 4px 14px 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       ボックスパネル
+    ═══════════════════════════════════════════ */
+
+    /* Search */
+    .search-wrap {
+      padding: 0 12px;
+      flex: 0 0 auto;
+    }
+    .search-wrap input {
+      width: 100%; box-sizing: border-box; padding: 7px 10px;
+      border: 1.5px solid #000; border-radius: 8px;
+      font-size: 13px; font-weight: 600; outline: none;
+    }
+
+    /* Kind select row */
+    .kind-row {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      padding: 0 14px;
       font-size: 12px;
       font-weight: 700;
+      flex: 0 0 auto;
     }
-    .select-row select {
+    .kind-row select {
       border: 1.5px solid #000;
       border-radius: 6px;
       background: #fff;
@@ -272,13 +346,123 @@
       font-weight: 700;
       padding: 3px 6px;
     }
-    #edgeRest, #avoidCursor, #appReactions {
-      width: 16px;
-      height: 16px;
-      accent-color: #EF4036;
+
+    /* Generation chips */
+    .gen-chips {
+      margin: 0 14px;
+      display: flex;
+      gap: 3px;
+      flex: 0 0 auto;
     }
-    .companion,
-    .codexpet {
+    .gen-chip {
+      flex: 1 1 0; min-width: 0; padding: 3px 0;
+      border: 1px solid #ccc; border-radius: 6px;
+      font-size: 11px; font-weight: 700;
+      background: #fff; color: #444;
+      cursor: pointer; outline: none;
+    }
+    .gen-chip:hover { background: #f5f5f5; }
+    .gen-chip.active { background: var(--red); color: #fff; border-color: var(--red); }
+
+    /* Type chips */
+    .type-chips {
+      margin: 0 14px;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      flex: 0 0 auto;
+    }
+    .type-chip-filter {
+      padding: 3px 8px;
+      border: 1.5px solid #ccc;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 800;
+      background: #fff;
+      color: #555;
+      cursor: pointer;
+      outline: none;
+    }
+    .type-chip-filter:hover { background: #f5f5f5; }
+    .type-chip-filter.active {
+      background: #333;
+      color: #fff;
+      border-color: #333;
+    }
+
+    /* Pokémon grid */
+    .grid {
+      margin: 0 12px;
+      padding: 4px;
+      flex: 1 1 280px;
+      min-height: 160px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      align-content: start;
+      border: 1.5px solid #000;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    .tile {
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      gap: 2px; padding: 6px 2px;
+      border: 2px solid transparent; border-radius: 8px;
+      background: #fff; cursor: pointer; font: inherit; text-align: center;
+      position: relative;
+    }
+    .tile:hover { background: #f0f0f0; }
+    .tile.selected { border-color: var(--red); background: #fff4f3; }
+    .tile.favorite::after {
+      content: "★";
+      position: absolute; top: 2px; right: 4px;
+      color: var(--red); font-size: 10px; font-weight: 900;
+    }
+    .tile img { width: 56px; height: 56px; object-fit: contain; }
+    /* フォルムはタイル一杯に正規化済み。通常種(実サイズ反映)と並べると大きすぎるので、
+       枠は56pxのまま(レイアウト不変=名前/番号が揃う)見た目だけ縮小して馴染ませる */
+    .tile[data-region]:not([data-region=""]) img { transform: scale(0.72); transform-origin: center; }
+    .tile .name { font-size: 11px; font-weight: 700; line-height: 1.1; word-break: break-all; }
+    .tile .num  { font-size: 10px; color: #888; }
+    .tile.hidden { display: none; }
+
+    /* ═══════════════════════════════════════════
+       せっていパネル
+    ═══════════════════════════════════════════ */
+
+    /* Enable toggle row */
+    .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Pokéball toggle (preserved from original) */
+    #enabled {
+      appearance: none; -webkit-appearance: none;
+      width: 36px; height: 18px;
+      border: 1.5px solid #000; border-radius: 18px;
+      background: #fff; position: relative;
+      display: inline-block; cursor: pointer; outline: none;
+      flex: 0 0 auto;
+    }
+    #enabled::after {
+      content: "";
+      position: absolute; top: 50%; left: -4px; transform: translateY(-50%);
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid #000;
+      background: linear-gradient(to bottom, var(--red) 50%, #fff 50%);
+    }
+    #enabled:checked { background: var(--red); }
+    #enabled:checked::after { left: calc(100% - 18px); }
+
+    /* Companion / Codex cards */
+    .companion-card,
+    .codex-card {
       display: grid;
       grid-template-columns: 1fr auto;
       align-items: center;
@@ -291,8 +475,7 @@
       box-sizing: border-box;
       flex: 0 0 auto;
     }
-    .companion label,
-    .codexpet label {
+    .companion-card label {
       display: inline-grid;
       grid-template-columns: auto 1fr;
       align-items: center;
@@ -301,15 +484,14 @@
       font-weight: 800;
       min-width: 0;
     }
-    .companion input {
-      width: 16px;
-      height: 16px;
-      accent-color: #EF4036;
+    .companion-card input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: var(--red);
     }
-    .companion button,
-    .codexpet button {
+    .companion-card button,
+    .codex-card button {
       border: 2px solid #000;
-      background: #EF4036;
+      background: var(--red);
       color: #fff;
       box-shadow: 2px 2px 0 #000;
       font: inherit;
@@ -319,270 +501,203 @@
       cursor: pointer;
       min-width: 48px;
     }
-    .codexpet label {
-      grid-template-columns: 1fr;
-    }
-    .codexpet button:disabled {
-      opacity: 0.68;
-      cursor: default;
-    }
-    .workwatch {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 6px;
-      margin: 0 12px;
-      align-items: center;
+    .codex-card .codex-label {
       font-size: 11px;
       font-weight: 800;
     }
-    .team {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 6px;
-      margin: 0 12px;
-      align-items: center;
+
+    /* Coming soon list */
+    #comingSoonList {
+      margin: 4px 12px;
+      padding: 8px 10px;
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      background: #fafafa;
+      list-style: none;
       font-size: 11px;
-      font-weight: 800;
-    }
-    .team-main {
-      display: inline-grid;
-      grid-template-columns: auto auto auto;
-      gap: 5px;
-      align-items: center;
-      min-width: 0;
-    }
-    .team-actions {
-      display: inline-flex;
+      font-weight: 700;
+      color: #888;
+      display: flex;
+      flex-direction: column;
       gap: 4px;
     }
-    .team button {
-      border: 1.5px solid #000;
-      background: #fff;
-      color: #000;
-      font: inherit;
+    #comingSoonList li::before {
+      content: "近日公開 ";
       font-size: 10px;
       font-weight: 800;
-      padding: 2px 5px;
-      cursor: pointer;
+      opacity: .6;
     }
-    .team input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: #EF4036;
-    }
-    .team input[type="number"] {
-      width: 34px;
-      border: 0;
-      border-bottom: 1.5px solid #000;
-      font: inherit;
-      font-size: 11px;
-      font-weight: 800;
-      text-align: center;
-      background: transparent;
-    }
-    .workwatch-main {
-      display: inline-grid;
-      grid-template-columns: auto auto 1fr;
-      align-items: center;
-      gap: 6px;
-      min-width: 0;
-    }
-    .workwatch select {
-      border: 1.5px solid #000;
-      border-radius: 6px;
-      background: #fff;
-      color: #000;
-      font: inherit;
-      font-weight: 800;
-      padding: 2px 4px;
-      min-width: 60px;
-    }
-    .workwatch-actions {
-      display: inline-flex;
-      gap: 4px;
-    }
-    .workwatch button {
-      border: 1.5px solid #000;
-      background: #fff;
-      color: #000;
-      font: inherit;
+    .coming-soon-heading {
       font-size: 10px;
       font-weight: 800;
-      padding: 2px 5px;
-      cursor: pointer;
-    }
-    #workWatch {
-      width: 16px;
-      height: 16px;
-      accent-color: #EF4036;
+      letter-spacing: .06em;
+      color: #aaa;
+      text-transform: uppercase;
+      padding: 4px 14px 0;
     }
   </style>
 </head>
 <body>
-  <!-- Pokéball notch -->
-  <div class="notch" aria-hidden="true"></div>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="brand">PokéFollower</div>
-    <label class="enable" for="enabled">
-      <span>Enable Follower</span>
-      <input id="enabled" type="checkbox" />
-    </label>
+  <!-- Top red band with Pokéball notch -->
+  <div class="top-band" aria-hidden="true">
+    <div class="notch"></div>
   </div>
 
-  <div class="card">
-    <div class="search">
-      <input id="search" type="text" inputmode="search" autocomplete="off" placeholder="名前・タイプ・作品名で検索" aria-label="ポケモン検索" />
-    </div>
-    <label class="select-row" for="kind"><span>種類</span>
-      <select id="kind"><option value="normal">通常</option><option value="forms">地方フォルム</option></select>
-    </label>
-    <div id="genChips" class="gen-chips" role="group" aria-label="世代フィルタ">
-      <button type="button" class="gen-chip active" data-gen="all">全</button>
-      <button type="button" class="gen-chip" data-gen="1" title="第1世代: 赤・緑 / 青 / ピカチュウ（カントー）" aria-label="第1世代: 赤・緑 / 青 / ピカチュウ（カントー）">赤緑</button>
-      <button type="button" class="gen-chip" data-gen="2" title="第2世代: 金・銀 / クリスタル（ジョウト）" aria-label="第2世代: 金・銀 / クリスタル（ジョウト）">金銀</button>
-      <button type="button" class="gen-chip" data-gen="3" title="第3世代: ルビー・サファイア / エメラルド（ホウエン）" aria-label="第3世代: ルビー・サファイア / エメラルド（ホウエン）">RS</button>
-      <button type="button" class="gen-chip" data-gen="4" title="第4世代: ダイヤモンド・パール / プラチナ（シンオウ）" aria-label="第4世代: ダイヤモンド・パール / プラチナ（シンオウ）">DP</button>
-      <button type="button" class="gen-chip" data-gen="5" title="第5世代: ブラック・ホワイト / B2W2（イッシュ）" aria-label="第5世代: ブラック・ホワイト / B2W2（イッシュ）">BW</button>
-      <button type="button" class="gen-chip" data-gen="6" title="第6世代: X・Y（カロス）" aria-label="第6世代: X・Y（カロス）">XY</button>
-      <button type="button" class="gen-chip" data-gen="7" title="第7世代: サン・ムーン / USUM（アローラ）" aria-label="第7世代: サン・ムーン / USUM（アローラ）">SM</button>
-      <button type="button" class="gen-chip" data-gen="8" title="第8世代: ソード・シールド / Legends アルセウス（ガラル/ヒスイ）" aria-label="第8世代: ソード・シールド / Legends アルセウス（ガラル/ヒスイ）">剣盾</button>
-      <button type="button" class="gen-chip" data-gen="9" title="第9世代: スカーレット・バイオレット（パルデア）" aria-label="第9世代: スカーレット・バイオレット（パルデア）">SV</button>
-    </div>
-    <div class="companion">
-      <label for="notificationCompanion">
-        <input id="notificationCompanion" type="checkbox" />
-        <span>通知コンパニオン</span>
-      </label>
-      <button id="testCompanion" type="button">TEST</button>
-    </div>
-    <div class="codexpet">
-      <label for="exportCodexPet">
-        <span>Codex pet</span>
-      </label>
-      <button id="exportCodexPet" type="button">EXPORT</button>
-    </div>
-    <div class="workwatch">
-      <label class="workwatch-main" for="workWatch">
-        <input id="workWatch" type="checkbox" />
-        <span>作業見守り</span>
-        <select id="workWatchPreset" aria-label="作業見守りプリセット">
-          <option value="25/5">25/5</option>
-          <option value="50/10">50/10</option>
+  <!-- ════════════════════ PANELS AREA ════════════════════ -->
+  <div class="panels-wrap">
+
+    <!-- ════ あいぼうパネル ════ -->
+    <section id="panel-aibou" class="panel">
+
+      <!-- Hero display -->
+      <div class="hero-section">
+        <div class="hero-sprite-wrap">
+          <div id="heroSprite" aria-label="相棒スプライト"></div>
+        </div>
+        <div class="hero-info">
+          <span id="heroName">—</span>
+          <span id="heroNum">#000</span>
+          <div id="heroTypes"></div>
+        </div>
+        <button id="nicknameEdit" type="button">&#9998; あだ名をつける</button>
+      </div>
+
+      <!-- Sliders: 大きさ / 距離 / 速さ -->
+      <div class="sliders-section">
+        <div class="slider-row">
+          <label for="scale">大きさ</label>
+          <input id="scale" type="number" min="0.5" max="5.0" step="0.05" inputmode="decimal" />
+          <span id="scaleVal" class="readout" aria-live="polite"></span>
+        </div>
+        <div class="slider-row">
+          <label for="offset">距離</label>
+          <input id="offset" type="number" min="0" max="100" step="1" inputmode="numeric" />
+          <span id="offsetVal" class="readout" aria-live="polite"></span>
+        </div>
+        <div class="slider-row">
+          <label for="lerp">速さ</label>
+          <input id="lerp" type="number" min="0.5" max="5.0" step="0.1" inputmode="decimal" />
+          <span id="lerpVal" class="readout" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <!-- Party row (あいぼうタブ) -->
+      <p class="section-label">手持ち</p>
+      <div id="partyRowAibou" class="party-row"></div>
+
+      <!-- Roam coming-soon pill -->
+      <button id="roamSoon" type="button" disabled aria-disabled="true">
+        おさんぽ — 近日公開
+      </button>
+
+    </section>
+
+    <!-- ════ ボックスパネル ════ -->
+    <section id="panel-box" class="panel" hidden>
+
+      <!-- Party row (ボックスタブ常駐) -->
+      <div id="partyRowBox" class="party-row"></div>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <input id="search" type="text" inputmode="search" autocomplete="off"
+               placeholder="名前・タイプ・作品名で検索" aria-label="ポケモン検索" />
+      </div>
+
+      <!-- Kind select -->
+      <div class="kind-row">
+        <label for="kind">種類</label>
+        <select id="kind">
+          <option value="normal">通常</option>
+          <option value="forms">地方フォルム</option>
         </select>
-      </label>
-      <div class="workwatch-actions">
-        <button id="workWatchStart" type="button">START</button>
-        <button id="workWatchStop" type="button">STOP</button>
-        <button id="workWatchReset" type="button">RESET</button>
       </div>
-    </div>
-    <div class="team">
-      <label class="team-main" for="rotationEnabled">
-        <input id="rotationEnabled" type="checkbox" />
-        <span>待機列 <span id="favoriteCount">0</span></span>
-        <input id="rotationInterval" type="number" min="1" max="120" step="1" aria-label="交代間隔（分）" />
-      </label>
-      <div class="team-actions">
-        <button id="favoriteAdd" type="button">ADD</button>
-        <button id="favoriteNext" type="button">NEXT</button>
-        <button id="favoriteClear" type="button">CLR</button>
+
+      <!-- Generation chips -->
+      <div id="genChips" class="gen-chips" role="group" aria-label="世代フィルタ">
+        <button type="button" class="gen-chip active" data-gen="all">全</button>
+        <button type="button" class="gen-chip" data-gen="1" title="第1世代: 赤・緑 / 青 / ピカチュウ（カントー）" aria-label="第1世代: 赤・緑 / 青 / ピカチュウ（カントー）">赤緑</button>
+        <button type="button" class="gen-chip" data-gen="2" title="第2世代: 金・銀 / クリスタル（ジョウト）" aria-label="第2世代: 金・銀 / クリスタル（ジョウト）">金銀</button>
+        <button type="button" class="gen-chip" data-gen="3" title="第3世代: ルビー・サファイア / エメラルド（ホウエン）" aria-label="第3世代: ルビー・サファイア / エメラルド（ホウエン）">RS</button>
+        <button type="button" class="gen-chip" data-gen="4" title="第4世代: ダイヤモンド・パール / プラチナ（シンオウ）" aria-label="第4世代: ダイヤモンド・パール / プラチナ（シンオウ）">DP</button>
+        <button type="button" class="gen-chip" data-gen="5" title="第5世代: ブラック・ホワイト / B2W2（イッシュ）" aria-label="第5世代: ブラック・ホワイト / B2W2（イッシュ）">BW</button>
+        <button type="button" class="gen-chip" data-gen="6" title="第6世代: X・Y（カロス）" aria-label="第6世代: X・Y（カロス）">XY</button>
+        <button type="button" class="gen-chip" data-gen="7" title="第7世代: サン・ムーン / USUM（アローラ）" aria-label="第7世代: サン・ムーン / USUM（アローラ）">SM</button>
+        <button type="button" class="gen-chip" data-gen="8" title="第8世代: ソード・シールド / Legends アルセウス（ガラル/ヒスイ）" aria-label="第8世代: ソード・シールド / Legends アルセウス（ガラル/ヒスイ）">剣盾</button>
+        <button type="button" class="gen-chip" data-gen="9" title="第9世代: スカーレット・バイオレット（パルデア）" aria-label="第9世代: スカーレット・バイオレット（パルデア）">SV</button>
       </div>
-    </div>
-    <div id="grid" class="grid" role="listbox" aria-label="ポケモン一覧"></div>
-    <div class="behaviors">
-      <label class="behavior" for="edgeRest">
-        <input id="edgeRest" type="checkbox" />
-        <span>Edge Rest</span>
-      </label>
-      <label class="behavior" for="avoidCursor">
+
+      <!-- Type chips -->
+      <div id="typeChips" class="type-chips" role="group" aria-label="タイプフィルタ"></div>
+
+      <!-- Pokémon grid -->
+      <div id="grid" class="grid" role="listbox" aria-label="ポケモン一覧"></div>
+
+    </section>
+
+    <!-- ════ せっていパネル ════ -->
+    <section id="panel-settings" class="panel" hidden>
+
+      <!-- 表示する toggle -->
+      <div class="setting-row">
+        <input id="enabled" type="checkbox" />
+        <label for="enabled">表示する</label>
+      </div>
+
+      <!-- 通知コンパニオン -->
+      <div class="companion-card">
+        <label for="notificationCompanion">
+          <input id="notificationCompanion" type="checkbox" />
+          <span>通知コンパニオン</span>
+        </label>
+        <button id="testCompanion" type="button">TEST</button>
+      </div>
+
+      <!-- カーソルをよける -->
+      <div class="setting-row">
         <input id="avoidCursor" type="checkbox" />
-        <span>Avoid Cursor</span>
-      </label>
-      <label class="behavior" for="avoidCursorStrength">
-        <span>Avoid</span>
-        <select id="avoidCursorStrength" aria-label="カーソル退避強度">
-          <option value="normal">Normal</option>
-          <option value="strong">Strong</option>
+        <label for="avoidCursor">カーソルをよける</label>
+        <select id="avoidCursorStrength" aria-label="よけ方">
+          <option value="normal">ふつう</option>
+          <option value="strong">つよい</option>
         </select>
-      </label>
-      <label class="behavior" for="appReactions">
+      </div>
+
+      <!-- アプリに合わせる -->
+      <div class="setting-row">
         <input id="appReactions" type="checkbox" />
-        <span>App React</span>
-      </label>
-    </div>
-    <label class="select-row" for="mode">
-      <span>Mode</span>
-      <select id="mode">
-        <option value="follow">Follow</option>
-        <option value="roam">Roam</option>
-      </select>
-    </label>
-    <label class="select-row" for="personality">
-      <span>Personality</span>
-      <select id="personality">
-        <option value="standard">Standard</option>
-        <option value="active">Active</option>
-        <option value="relaxed">Relaxed</option>
-        <option value="friendly">Friendly</option>
-      </select>
-    </label>
-
-    <!-- Triple controls -->
-    <div class="triples">
-      <div class="triple">
-        <h4>SCALE</h4>
-        <div class="controlRow">
-          <div class="arrowStack" aria-hidden="true">
-            <div class="caret up"></div>
-            <div class="caret down"></div>
-          </div>
-          <div class="inputWrap">
-            <input id="scale" type="number" min="0.5" max="5.0" step="0.05" inputmode="decimal" />
-            <span class="suffix">x</span>
-          </div>
-        </div>
-        <span id="scaleVal" class="sr-only" aria-live="polite"></span>
+        <label for="appReactions">アプリに合わせる</label>
       </div>
 
-      <div class="triple">
-        <h4>DISTANCE</h4>
-        <div class="controlRow">
-          <div class="arrowStack" aria-hidden="true">
-            <div class="caret up"></div>
-            <div class="caret down"></div>
-          </div>
-          <div class="inputWrap">
-            <input id="offset" type="number" min="0" max="100" step="1" inputmode="numeric" />
-            <span class="suffix">px</span>
-          </div>
-        </div>
-        <span id="offsetVal" class="sr-only" aria-live="polite"></span>
+      <!-- Codex pet -->
+      <div class="codex-card">
+        <span class="codex-label">Codex pet</span>
+        <button id="exportCodexPet" type="button" aria-label="Codex pet をエクスポート">EXPORT</button>
       </div>
 
-      <div class="triple">
-        <h4>SPEED</h4>
-        <div class="controlRow">
-          <div class="arrowStack" aria-hidden="true">
-            <div class="caret up"></div>
-            <div class="caret down"></div>
-          </div>
-          <div class="inputWrap">
-            <input id="lerp" type="number" min="0.5" max="5.0" step="0.1" inputmode="decimal" />
-            <span class="suffix">spd</span>
-          </div>
-        </div>
-        <span id="lerpVal" class="sr-only" aria-live="polite"></span>
-      </div>
-    </div>
+      <!-- Coming soon list -->
+      <p class="coming-soon-heading">近日公開</p>
+      <ul id="comingSoonList">
+        <li>おさんぽ — マップ上を自由に歩き回る</li>
+        <li>せいかく — 行動パターンをカスタマイズ</li>
+        <li>作業見守り — ポモドーロタイマーと連動</li>
+        <li>はじっこで休む — 画面端でのんびりする</li>
+      </ul>
 
-    <!-- Bottom credit (sprite attribution only) -->
-    <p class="hint hint-credits">ドット絵素材: PMD Collab / Pokémon DB</p>
-  </div>
+    </section>
+
+  </div><!-- /panels-wrap -->
+
+  <!-- ════════════════════ BOTTOM TAB BAR ════════════════════ -->
+  <nav id="tabs" role="tablist" aria-label="設定タブ">
+    <button class="tab active" type="button" data-tab="aibou" role="tab" aria-selected="true">あいぼう</button>
+    <button class="tab"        type="button" data-tab="box"     role="tab" aria-selected="false">ボックス</button>
+    <button class="tab"        type="button" data-tab="settings" role="tab" aria-selected="false">せってい</button>
+  </nav>
 
   <script src="generation-labels.js"></script>
   <script src="search-engine.js"></script>
-  <script src="settings.js"></script>
+  <script type="module" src="settings.js"></script>
 </body>
 </html>

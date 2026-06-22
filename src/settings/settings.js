@@ -1,22 +1,21 @@
+import { typeColor, typeJa, TYPE_COLORS } from "./type-colors.mjs";
+import { PARTY_MAX, addToParty, removeFromParty, replaceInParty, isFull } from "./party.mjs";
+import { matchTile } from "./filter.mjs";
+import { mountIdleSprite } from "./sprite-view.mjs";
+
+// 設定ストアのキーへ正規化する（vcp1_* 接頭辞のものだけ変換。既にストア形なら素通り）。
 function mapKeys(obj) {
   const m = {
     vcp1_enabled: "enabled",
     vcp1_pack: "pack",
     vcp1_favorite_packs: "favoritePacks",
-    vcp1_rotation_enabled: "rotationEnabled",
-    vcp1_rotation_interval_minutes: "rotationIntervalMinutes",
     vcp1_scale: "scale",
     vcp1_offset: "offset",
     vcp1_lerp: "lerp",
-    vcp1_edgeRest: "edgeRest",
+    vcp1_notification_companion: "notificationCompanionEnabled",
     vcp1_avoidCursor: "avoidCursor",
     vcp1_avoid_cursor_strength: "avoidCursorStrength",
-    vcp1_personality: "personality",
-    vcp1_mode: "mode",
     vcp1_app_reactions: "appReactionsEnabled",
-    vcp1_notification_companion: "notificationCompanionEnabled",
-    vcp1_work_watch: "workWatchEnabled",
-    vcp1_work_watch_preset: "workWatchPreset",
   };
   const out = {};
   for (const [k, v] of Object.entries(obj)) out[m[k] || k] = v;
@@ -33,436 +32,335 @@ function genOfDex(dex) {
   return GEN_BOUNDS.length;
 }
 
+// カタカナ⇄ひらがな正規化（検索用）
+function toHira(s) {
+  return String(s || "").replace(/[ァ-ヶ]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60));
+}
+function tileSearchText(p) {
+  const num = p.num == null ? "" : String(p.num);
+  const padded = num ? num.padStart(3, "0") : "";
+  return [p.ja, toHira(p.ja), p.romaji, p.en, num, padded, "#" + padded].join(" ").toLowerCase();
+}
+
+// 既定値（content.js の定数に合わせる）
+const DEFAULTS = {
+  vcp1_scale: 1.25,   // SCALE
+  vcp1_offset: 70,    // OFFSET_PX
+  vcp1_lerp: 0.20,    // LERP_ALPHA (lower = floatier/slower follow)
+  vcp1_favorite_packs: [],
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
-  const enabledEl = document.getElementById("enabled");
-  const edgeRestEl = document.getElementById("edgeRest");
-  const avoidCursorEl = document.getElementById("avoidCursor");
-  const avoidCursorStrengthEl = document.getElementById("avoidCursorStrength");
-  const personalityEl = document.getElementById("personality");
-  const modeEl = document.getElementById("mode");
-  const notificationCompanionEl = document.getElementById("notificationCompanion");
-  const appReactionsEl = document.getElementById("appReactions");
-  const testCompanionEl = document.getElementById("testCompanion");
-  const exportCodexPetEl = document.getElementById("exportCodexPet");
-  const workWatchEl = document.getElementById("workWatch");
-  const workWatchPresetEl = document.getElementById("workWatchPreset");
-  const workWatchStartEl = document.getElementById("workWatchStart");
-  const workWatchStopEl = document.getElementById("workWatchStop");
-  const workWatchResetEl = document.getElementById("workWatchReset");
-  const favoriteAddEl = document.getElementById("favoriteAdd");
-  const favoriteNextEl = document.getElementById("favoriteNext");
-  const favoriteClearEl = document.getElementById("favoriteClear");
-  const favoriteCountEl = document.getElementById("favoriteCount");
-  const rotationEnabledEl = document.getElementById("rotationEnabled");
-  const rotationIntervalEl = document.getElementById("rotationInterval");
+  // ───── 共有 state ─────
+  let settings = await window.settingsApi.getSettings();
+  const packs = await window.settingsApi.listPacks();
+  const packById = new Map(packs.map((p) => [p.id, p]));
 
-  // Sliders + readouts
-  const scaleEl   = document.getElementById("scale");
-  const offsetEl  = document.getElementById("offset");
-  const lerpEl    = document.getElementById("lerp");
-
-  const scaleVal  = document.getElementById("scaleVal");
-  const offsetVal = document.getElementById("offsetVal");
-  const lerpVal   = document.getElementById("lerpVal");
-
-  // Defaults align with current content.js constants
-  const DEFAULTS = {
-    vcp1_scale: 1.25,   // SCALE
-    vcp1_offset: 70,    // OFFSET_PX
-    vcp1_lerp: 0.20,    // LERP_ALPHA (lower = floatier/slower follow)
-    vcp1_edgeRest: true,
-    vcp1_avoidCursor: true,
-    vcp1_avoid_cursor_strength: "normal",
-    vcp1_personality: "standard",
-    vcp1_mode: "follow",
-    vcp1_favorite_packs: [],
-    vcp1_rotation_interval_minutes: 15,
-    vcp1_work_watch_preset: "25/5"
-  };
-
-  // Forward live config patches to the overlay via the settings API
-  function pushConfig(patch, { flush = false } = {}) {
-    window.settingsApi.setSettings(mapKeys(patch));
+  // 現在の相棒 = active pack（無ければ手持ち先頭）
+  function activePackId() {
+    const party = currentParty();
+    if (typeof settings.pack === "string" && settings.pack) return settings.pack;
+    return party[0] || null;
+  }
+  function currentParty() {
+    return Array.isArray(settings.favoritePacks) ? settings.favoritePacks.slice() : [];
+  }
+  function nicknameOf(id) {
+    const nn = settings.nicknames && typeof settings.nicknames === "object" ? settings.nicknames : {};
+    const v = nn[id];
+    return typeof v === "string" && v.trim() ? v.trim() : null;
   }
 
-  const asNum = (v) => Number(v);
-
-  // Load saved settings
-  const res = await window.settingsApi.getSettings();
-  {
-      enabledEl.checked = !!res.enabled;
-      if (edgeRestEl) edgeRestEl.checked = res.edgeRest !== false;
-      if (avoidCursorEl) avoidCursorEl.checked = res.avoidCursor !== false;
-      if (avoidCursorStrengthEl) avoidCursorStrengthEl.value = typeof res.avoidCursorStrength === "string" ? res.avoidCursorStrength : DEFAULTS.vcp1_avoid_cursor_strength;
-      if (personalityEl) personalityEl.value = typeof res.personality === "string" ? res.personality : DEFAULTS.vcp1_personality;
-      if (modeEl) modeEl.value = typeof res.mode === "string" ? res.mode : DEFAULTS.vcp1_mode;
-      if (notificationCompanionEl) notificationCompanionEl.checked = !!res.notificationCompanionEnabled;
-      if (appReactionsEl) appReactionsEl.checked = !!res.appReactionsEnabled;
-      if (workWatchEl) workWatchEl.checked = !!res.workWatchEnabled;
-      if (workWatchPresetEl) workWatchPresetEl.value = typeof res.workWatchPreset === "string" ? res.workWatchPreset : DEFAULTS.vcp1_work_watch_preset;
-      if (rotationEnabledEl) rotationEnabledEl.checked = !!res.rotationEnabled;
-      if (rotationIntervalEl) rotationIntervalEl.value = String(typeof res.rotationIntervalMinutes === "number" ? res.rotationIntervalMinutes : DEFAULTS.vcp1_rotation_interval_minutes);
-
-      const scale  = (typeof res.scale  === "number") ? res.scale  : DEFAULTS.vcp1_scale;
-      const offset = (typeof res.offset === "number") ? res.offset : DEFAULTS.vcp1_offset;
-      const lerp   = (typeof res.lerp   === "number") ? res.lerp   : DEFAULTS.vcp1_lerp;
-
-      scaleEl.value  = String(scale);
-      offsetEl.value = String(offset);
-
-      // UI shows speed as 0.5–5.0 (×10 of internal lerp 0.05–0.50)
-      const lerpUI = lerp * 10;
-      lerpEl.value = String(lerpUI.toFixed(1));
-
-      scaleVal.textContent  = scale.toFixed(2) + "×";
-      offsetVal.textContent = offset + " px";
-      lerpVal.textContent   = lerpUI.toFixed(1);
-  }
-
-  // Helper: save but do NOT auto-close
+  // settings:set はストア形キーを取るので mapKeys で整える
   const save = (obj) => window.settingsApi.setSettings(mapKeys(obj));
+  // ストア全体を再取得して全パネルを描き直す
+  async function refreshSettings(next) {
+    settings = next || (await window.settingsApi.getSettings());
+    renderHero();
+    renderPartyRows();
+    updateTileMarkers();
+  }
 
-  // Toggle enable — save and keep the settings window open
-  enabledEl.addEventListener("change", () => {
-    save({ vcp1_enabled: enabledEl.checked });
+  // ═══════════════ タブ切替 ═══════════════
+  (function initTabs() {
+    const tabs = document.getElementById("tabs");
+    const panels = { aibou: "panel-aibou", box: "panel-box", settings: "panel-settings" };
+    function show(name) {
+      for (const [k, id] of Object.entries(panels)) {
+        const p = document.getElementById(id);
+        if (p) p.hidden = (k !== name);
+      }
+      for (const b of tabs.querySelectorAll(".tab")) {
+        const on = b.dataset.tab === name;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      }
+    }
+    tabs.addEventListener("click", (e) => {
+      const b = e.target.closest(".tab");
+      if (b) show(b.dataset.tab);
+    });
+    window.__showTab = show;       // 内部利用（空きスロット→ボックスへ等）
+    show("aibou");
+  })();
+  function gotoBox() { if (window.__showTab) window.__showTab("box"); }
+
+  // ═══════════════ あいぼう: ヒーロー大表示 ═══════════════
+  const heroSpriteEl = document.getElementById("heroSprite");
+  const heroNameEl = document.getElementById("heroName");
+  const heroNumEl = document.getElementById("heroNum");
+  const heroTypesEl = document.getElementById("heroTypes");
+  let heroStop = null;          // 現在再生中アニメの停止関数
+  let heroMountedId = null;     // 二重マウント防止
+
+  async function renderHero() {
+    const id = activePackId();
+    const p = id ? packById.get(id) : null;
+
+    // 名前 / 番号 / タイプチップ（list メタから）
+    heroNameEl.textContent = nicknameOf(id) || (p && p.ja) || (p && p.en) || "—";
+    if (p && p.num != null) heroNumEl.textContent = "#" + String(p.num).padStart(3, "0");
+    else heroNumEl.textContent = "#000";
+    heroTypesEl.innerHTML = "";
+    const types = p && Array.isArray(p.types) ? p.types : [];
+    for (const t of types) {
+      const chip = document.createElement("span");
+      chip.className = "type-chip";
+      chip.textContent = typeJa(t);
+      chip.style.backgroundColor = typeColor(t);
+      heroTypesEl.appendChild(chip);
+    }
+
+    // スプライトアニメ（相棒が変わった時だけ貼り直す）
+    if (id && id !== heroMountedId) {
+      if (heroStop) { heroStop(); heroStop = null; }
+      heroMountedId = id;
+      // 切替時は旧スプライトを即クリア（getPackMeta 待ちの間に旧絵が残って二重に見えるのを防ぐ）
+      heroSpriteEl.style.backgroundImage = "";
+      heroSpriteEl.style.transform = "";
+      const meta = await window.settingsApi.getPackMeta(id);
+      // getPackMeta は { resolvedKey, meta } を返す。mountIdleSprite は packMeta.meta を見る。
+      if (heroMountedId !== id) return; // 待っている間に別の相棒へ切り替わっていたら破棄
+      const wrap = heroSpriteEl.parentElement;
+      const box = wrap ? Math.min(wrap.clientWidth, wrap.clientHeight) : 0;
+      const fit = box > 20 ? box - 16 : 150;
+      heroStop = mountIdleSprite(heroSpriteEl, meta, { row: 0, fit });
+    } else if (!id) {
+      if (heroStop) { heroStop(); heroStop = null; }
+      heroMountedId = null;
+    }
+  }
+
+  // あだ名編集（Electron は window.prompt 非対応のため heroName をインライン入力に切り替える）
+  const nicknameEditEl = document.getElementById("nicknameEdit");
+  if (nicknameEditEl) {
+    nicknameEditEl.addEventListener("click", () => {
+      const id = activePackId();
+      if (!id) return;
+      if (heroNameEl.querySelector("input")) return; // すでに編集中
+      const prevText = heroNameEl.textContent;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.maxLength = 24;
+      input.value = nicknameOf(id) || "";
+      input.placeholder = "あだ名（空で解除）";
+      input.className = "nickname-input";
+      heroNameEl.textContent = "";
+      heroNameEl.appendChild(input);
+      input.focus();
+      input.select();
+      let done = false;
+      const commit = async (save) => {
+        if (done) return;
+        done = true;
+        if (save) {
+          const next = await window.settingsApi.setNickname(id, input.value.trim());
+          await refreshSettings(next);
+        } else {
+          heroNameEl.textContent = prevText;
+        }
+      };
+      input.addEventListener("keydown", (e) => {
+        e.stopPropagation(); // ESCで設定窓が閉じるのを防ぐ
+        if (e.key === "Enter") { e.preventDefault(); commit(true); }
+        else if (e.key === "Escape") { e.preventDefault(); commit(false); }
+      });
+      input.addEventListener("blur", () => commit(true));
+    });
+  }
+
+  // ═══════════════ 手持ち列（あいぼう/ボックス共有） ═══════════════
+  const partyRowAibouEl = document.getElementById("partyRowAibou");
+  const partyRowBoxEl = document.getElementById("partyRowBox");
+
+  // 置き換えモード（ボックスで満員時タイルをタップした後の状態）
+  let replaceMode = false;
+  let replacePendingId = null;
+
+  function makeSlot(id, index) {
+    const slot = document.createElement("button");
+    slot.type = "button";
+    slot.className = "party-slot";
+    slot.dataset.id = id;
+    if (index === 0) slot.classList.add("lead");
+    const p = packById.get(id);
+    const img = document.createElement("img");
+    img.alt = (p && (nicknameOf(id) || p.ja || p.en)) || id;
+    img.loading = "lazy";
+    img.src = tileImageCandidates(id)[0] || "";
+    const cands = tileImageCandidates(id);
+    let ci = 0;
+    img.addEventListener("error", () => {
+      ci += 1;
+      if (ci < cands.length) img.src = cands[ci];
+      else img.style.visibility = "hidden";
+    });
+    slot.appendChild(img);
+    // 除去ボタン
+    const rm = document.createElement("span");
+    rm.className = "party-remove";
+    rm.textContent = "×";
+    rm.title = "手持ちから外す";
+    slot.appendChild(rm);
+    return slot;
+  }
+  function makeEmptySlot() {
+    const slot = document.createElement("button");
+    slot.type = "button";
+    slot.className = "party-slot empty";
+    slot.textContent = "＋";
+    slot.title = "ボックスから追加";
+    return slot;
+  }
+
+  function renderPartyInto(container) {
+    if (!container) return;
+    container.innerHTML = "";
+    const party = currentParty();
+    for (let i = 0; i < PARTY_MAX; i++) {
+      const id = party[i];
+      if (id) container.appendChild(makeSlot(id, i));
+      else container.appendChild(makeEmptySlot());
+    }
+    container.classList.toggle("replacing", replaceMode && container === partyRowBoxEl);
+  }
+  function renderPartyRows() {
+    renderPartyInto(partyRowAibouEl);
+    renderPartyInto(partyRowBoxEl);
+  }
+
+  // 手持ちスロットのクリック（除去 / 相棒化 / 置き換え確定 / 空き→ボックス）を委譲
+  async function onPartyContainerClick(e) {
+    const container = e.currentTarget;
+    const slot = e.target.closest(".party-slot");
+    if (!slot) return;
+
+    // 空きスロット → ボックスタブへ
+    if (slot.classList.contains("empty")) {
+      cancelReplaceMode();
+      gotoBox();
+      return;
+    }
+    const id = slot.dataset.id;
+
+    // ボックス側で置き換えモード中ならスロットを置換先に
+    if (replaceMode && container === partyRowBoxEl) {
+      const party = currentParty();
+      const pendingId = replacePendingId;
+      const replacedLead = party[0] === id;
+      const next = replaceInParty(party, id, pendingId);
+      cancelReplaceMode();
+      if (replacedLead && next[0] === pendingId) {
+        // 先頭スロットを入れ替えた → 相棒も切り替える
+        save({ favoritePacks: next, pack: pendingId });
+        await refreshSettings({ ...settings, favoritePacks: next, pack: pendingId });
+      } else {
+        save({ favoritePacks: next });
+        await refreshSettings({ ...settings, favoritePacks: next });
+      }
+      return;
+    }
+
+    // × クリック → 手持ちから外す
+    if (e.target.classList.contains("party-remove")) {
+      const party = currentParty();
+      const wasLead = party[0] === id;
+      const next = removeFromParty(party, id);
+      if (wasLead && next.length > 0) {
+        // 先頭を外したら新しい先頭(next[0])を相棒にする。favoritePacks と pack を同時に保存。
+        save({ favoritePacks: next, pack: next[0] });
+        await refreshSettings({ ...settings, favoritePacks: next, pack: next[0] });
+      } else {
+        save({ favoritePacks: next });
+        await refreshSettings({ ...settings, favoritePacks: next });
+      }
+      return;
+    }
+
+    // 通常タップ → そのスロットを相棒（先頭）にする
+    const updated = await window.settingsApi.setLead(id);
+    await refreshSettings(updated);
+  }
+  if (partyRowAibouEl) partyRowAibouEl.addEventListener("click", onPartyContainerClick);
+  if (partyRowBoxEl) partyRowBoxEl.addEventListener("click", onPartyContainerClick);
+
+  function cancelReplaceMode() {
+    replaceMode = false;
+    replacePendingId = null;
+    if (partyRowBoxEl) partyRowBoxEl.classList.remove("replacing");
+    hideReplaceHint();
+  }
+  function enterReplaceMode(id) {
+    replaceMode = true;
+    replacePendingId = id;
+    if (partyRowBoxEl) partyRowBoxEl.classList.add("replacing");
+    showReplaceHint();
+  }
+  let replaceHintEl = null;
+  function showReplaceHint() {
+    if (!partyRowBoxEl) return;
+    if (!replaceHintEl) {
+      replaceHintEl = document.createElement("p");
+      replaceHintEl.className = "replace-hint section-label";
+      replaceHintEl.textContent = "入れ替える手持ちをえらんでください";
+      partyRowBoxEl.insertAdjacentElement("afterend", replaceHintEl);
+    }
+    replaceHintEl.hidden = false;
+  }
+  function hideReplaceHint() {
+    if (replaceHintEl) replaceHintEl.hidden = true;
+  }
+  // 手持ち列・グリッド以外をクリックしたら置き換えモードを解除
+  document.addEventListener("click", (e) => {
+    if (!replaceMode) return;
+    if (e.target.closest("#partyRowBox") || e.target.closest("#grid")) return;
+    cancelReplaceMode();
   });
-  if (edgeRestEl) {
-    edgeRestEl.addEventListener("change", () => {
-      save({ vcp1_edgeRest: edgeRestEl.checked });
-    });
-  }
-  if (avoidCursorEl) {
-    avoidCursorEl.addEventListener("change", () => {
-      save({ vcp1_avoidCursor: avoidCursorEl.checked });
-    });
-  }
-  if (avoidCursorStrengthEl) {
-    avoidCursorStrengthEl.addEventListener("change", () => {
-      save({ vcp1_avoid_cursor_strength: avoidCursorStrengthEl.value });
-    });
-  }
-  if (personalityEl) {
-    personalityEl.addEventListener("change", () => {
-      save({ vcp1_personality: personalityEl.value });
-    });
-  }
-  if (modeEl) {
-    modeEl.addEventListener("change", () => {
-      save({ vcp1_mode: modeEl.value });
-    });
-  }
-  if (notificationCompanionEl) {
-    notificationCompanionEl.addEventListener("change", () => {
-      save({ vcp1_notification_companion: notificationCompanionEl.checked });
-    });
-  }
-  if (appReactionsEl) {
-    appReactionsEl.addEventListener("change", () => {
-      save({ vcp1_app_reactions: appReactionsEl.checked });
-    });
-  }
-  if (testCompanionEl) {
-    testCompanionEl.addEventListener("click", () => {
-      window.settingsApi.testCompanionNotification();
-    });
-  }
-  if (exportCodexPetEl) {
-    exportCodexPetEl.addEventListener("click", async () => {
-      const packKey = document.querySelector(".tile.selected")?.dataset.id || res.pack;
-      exportCodexPetEl.disabled = true;
-      exportCodexPetEl.textContent = "...";
-      try {
-        await window.settingsApi.exportCodexPet(packKey);
-        exportCodexPetEl.textContent = "DONE";
-      } catch (_) {
-        exportCodexPetEl.textContent = "ERR";
-      } finally {
-        setTimeout(() => {
-          exportCodexPetEl.disabled = false;
-          exportCodexPetEl.textContent = "EXPORT";
-        }, 1200);
-      }
-    });
-  }
-  if (workWatchEl) {
-    workWatchEl.addEventListener("change", () => {
-      save({ vcp1_work_watch: workWatchEl.checked });
-    });
-  }
-  if (workWatchPresetEl) {
-    workWatchPresetEl.addEventListener("change", () => {
-      save({ vcp1_work_watch_preset: workWatchPresetEl.value });
-    });
-  }
-  if (workWatchStartEl) workWatchStartEl.addEventListener("click", () => window.settingsApi.startWorkWatch());
-  if (workWatchStopEl) workWatchStopEl.addEventListener("click", () => window.settingsApi.stopWorkWatch());
-  if (workWatchResetEl) workWatchResetEl.addEventListener("click", () => window.settingsApi.resetWorkWatch());
-  if (rotationEnabledEl) {
-    rotationEnabledEl.addEventListener("change", () => {
-      save({ vcp1_rotation_enabled: rotationEnabledEl.checked });
-    });
-  }
-  if (rotationIntervalEl) {
-    rotationIntervalEl.addEventListener("change", () => {
-      save({ vcp1_rotation_interval_minutes: Number(rotationIntervalEl.value) });
-    });
+
+  // ═══════════════ あいぼう: スライダー（旧ロジック流用） ═══════════════
+  const scaleEl = document.getElementById("scale");
+  const offsetEl = document.getElementById("offset");
+  const lerpEl = document.getElementById("lerp");
+  const scaleVal = document.getElementById("scaleVal");
+  const offsetVal = document.getElementById("offsetVal");
+  const lerpVal = document.getElementById("lerpVal");
+
+  function pushConfig(patch) { save(patch); }
+
+  {
+    const scale  = (typeof settings.scale  === "number") ? settings.scale  : DEFAULTS.vcp1_scale;
+    const offset = (typeof settings.offset === "number") ? settings.offset : DEFAULTS.vcp1_offset;
+    const lerp   = (typeof settings.lerp   === "number") ? settings.lerp   : DEFAULTS.vcp1_lerp;
+    scaleEl.value  = String(scale);
+    offsetEl.value = String(offset);
+    // UI shows speed as 0.5–5.0 (×10 of internal lerp 0.05–0.50)
+    const lerpUI = lerp * 10;
+    lerpEl.value = String(lerpUI.toFixed(1));
+    scaleVal.textContent  = scale.toFixed(2) + "×";
+    offsetVal.textContent = offset + " px";
+    lerpVal.textContent   = lerpUI.toFixed(1);
   }
 
-  // --- カタカナ⇄ひらがな正規化（検索用） ---
-  function toHira(s) {
-    return String(s || "").replace(/[ァ-ヶ]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60));
-  }
-  function tileSearchText(p) {
-    const num = p.num == null ? "" : String(p.num);
-    const padded = num ? num.padStart(3, "0") : "";
-    return [p.ja, toHira(p.ja), p.romaji, p.en, num, padded, "#" + padded].join(" ").toLowerCase();
-  }
-
-  async function initGrid() {
-    const gridEl = document.getElementById("grid");
-    const searchEl = document.getElementById("search");
-    const genChipsEl = document.getElementById("genChips");
-    const kindEl = document.getElementById("kind");
-    if (!gridEl) return;
-    const packs = await window.settingsApi.listPacks();
-    const searchMetadata = await window.settingsApi.getSearchMetadata();
-    const searchEngine = window.PokeFollowerSearch;
-    const searchIndex = searchEngine ? searchEngine.buildPokemonSearchIndex(packs, searchMetadata) : [];
-    let selectedId = res.pack;
-    let favoriteIds = Array.isArray(res.favoritePacks) ? res.favoritePacks.slice(0, 12) : [];
-
-    // フィルタ状態
-    let selectedKind = 'normal';
-    let selectedGen = 'all';
-    let selectedRegion = 'all';
-
-    function matchTile(tile, sel) {
-      const isForm = !!tile.region;
-      if (sel.kind === "normal" && isForm) return false;
-      if (sel.kind === "forms" && !isForm) return false;
-      if (sel.kind === "normal") {
-        if (sel.gen !== "all" && String(tile.gen) !== String(sel.gen)) return false;
-      } else {
-        if (sel.region !== "all" && tile.region !== sel.region) return false;
-      }
-      if (sel.searchIds && !sel.searchIds.has(tile.id)) return false;
-      if (sel.q && !tile.search.includes(sel.q) && !tile.search.includes(toHira(sel.q))) return false;
-      return true;
-    }
-
-    const frag = document.createDocumentFragment();
-    const tiles = [];
-    function updateFavoriteUi() {
-      for (const t of tiles) {
-        const isFavorite = favoriteIds.includes(t.dataset.id);
-        t.classList.toggle("favorite", isFavorite);
-        t.dataset.favorite = isFavorite ? "true" : "false";
-      }
-      if (favoriteCountEl) favoriteCountEl.textContent = String(favoriteIds.length);
-      if (favoriteAddEl) {
-        const selectedIsFavorite = favoriteIds.includes(selectedId);
-        favoriteAddEl.textContent = selectedIsFavorite ? "DEL" : "ADD";
-        favoriteAddEl.title = selectedIsFavorite ? "選択中のポケモンを待機列から外す" : "選択中のポケモンを待機列に追加";
-        favoriteAddEl.setAttribute("aria-pressed", selectedIsFavorite ? "true" : "false");
-      }
-    }
-    function selectPack(packId) {
-      if (!packId) return;
-      if (packId === selectedId) {
-        updateFavoriteUi();
-        return;
-      }
-      selectedId = packId;
-      for (const t of tiles) t.classList.toggle("selected", t.dataset.id === selectedId);
-      window.settingsApi.setSettings({ pack: packId });
-      updateFavoriteUi();
-    }
-    function saveFavorites() {
-      save({ vcp1_favorite_packs: favoriteIds });
-      updateFavoriteUi();
-    }
-    for (const p of packs) {
-      // UIイメージディレクトリを一般化: 通常=gen-1, フォルム=forms/alola
-      const parts = p.id.split("/");
-      const dir = parts.slice(1, -1).join("/") || parts[1] || "gen-1";
-      const slug = p.id.split("/").pop();
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "tile" + (p.id === selectedId ? " selected" : "") + (favoriteIds.includes(p.id) ? " favorite" : "");
-      btn.dataset.id = p.id;
-      btn.dataset.region = p.region || "";
-      btn.dataset.search = tileSearchText(p);
-      // 世代番号を data 属性に持たせて絞り込みに使う
-      btn.dataset.gen = p.num != null ? String(genOfDex(p.num)) : "0";
-      const numStr = p.num == null ? "" : String(p.num).padStart(3, "0");
-      const slugCompact = slug.replace(/-/g, "");
-      const nameOnly = slug.replace(/^[0-9]+-?/, "");
-      const imgCandidates = [slug, slugCompact, nameOnly]
-        .filter((v, i, a) => v && a.indexOf(v) === i)
-        .map((n) => `app://bundle/assets/ui/${dir}/${n}.png`);
-      let imgCi = 0;
-      const img = document.createElement("img");
-      img.loading = "lazy";
-      img.alt = p.ja || p.en || slug;
-      img.src = imgCandidates[imgCi];
-      img.addEventListener("error", () => {
-        imgCi += 1;
-        if (imgCi < imgCandidates.length) img.src = imgCandidates[imgCi];
-        else img.style.visibility = "hidden";
-      });
-      const name = document.createElement("span");
-      name.className = "name";
-      name.textContent = p.ja || p.en || slug;
-      const num = document.createElement("span");
-      num.className = "num";
-      num.textContent = numStr ? "#" + numStr : "";
-      btn.append(img, name, num);
-      btn.addEventListener("click", () => {
-        selectPack(p.id);
-      });
-      tiles.push(btn);
-      frag.appendChild(btn);
-    }
-    gridEl.appendChild(frag);
-    updateFavoriteUi();
-    if (favoriteAddEl) {
-      favoriteAddEl.addEventListener("click", async () => {
-        if (!selectedId) return;
-        if (favoriteIds.includes(selectedId)) {
-          favoriteIds = await window.settingsApi.removeFavorite(selectedId);
-        } else {
-          favoriteIds = await window.settingsApi.addFavorite(selectedId);
-        }
-        updateFavoriteUi();
-      });
-    }
-    if (favoriteNextEl) {
-      favoriteNextEl.addEventListener("click", async () => {
-        const nextPack = await window.settingsApi.nextFavorite();
-        if (nextPack) selectPack(nextPack);
-      });
-    }
-    if (favoriteClearEl) {
-      favoriteClearEl.addEventListener("click", () => {
-        favoriteIds = [];
-        saveFavorites();
-      });
-    }
-
-    // 初期選択をスクロールして見せる
-    const sel = tiles.find((t) => t.classList.contains("selected"));
-    if (sel) gridEl.scrollTop = Math.max(0, sel.offsetTop - gridEl.clientHeight / 2);
-
-    // チップ行を種類に応じて再描画する
-    function renderChips() {
-      if (!genChipsEl) return;
-      genChipsEl.innerHTML = "";
-      if (selectedKind === "normal") {
-        genChipsEl.setAttribute("aria-label", "世代フィルタ");
-        const allBtn = document.createElement("button");
-        allBtn.type = "button";
-        allBtn.className = "gen-chip active";
-        allBtn.dataset.gen = "all";
-        allBtn.textContent = "全";
-        genChipsEl.appendChild(allBtn);
-        for (let g = 1; g <= 9; g++) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "gen-chip";
-          btn.dataset.gen = String(g);
-          const label = generationLabelFor(g);
-          btn.textContent = label ? label.short : String(g);
-          if (label) {
-            btn.title = label.title;
-            btn.setAttribute("aria-label", label.title);
-          }
-          genChipsEl.appendChild(btn);
-        }
-      } else {
-        genChipsEl.setAttribute("aria-label", "地方フィルタ");
-        // フォルムパックに存在するリージョンを収集（順序固定）
-        const ORDER = ["alola", "galar", "hisui", "paldea"];
-        const present = new Set(tiles.map((t) => t.dataset.region).filter(Boolean));
-        const regions = ORDER.filter((r) => present.has(r));
-        const allBtn = document.createElement("button");
-        allBtn.type = "button";
-        allBtn.className = "gen-chip active";
-        allBtn.dataset.region = "all";
-        allBtn.textContent = "全";
-        genChipsEl.appendChild(allBtn);
-        const REGION_LABEL = { alola: "アローラ", galar: "ガラル", hisui: "ヒスイ", paldea: "パルデア" };
-        for (const r of regions) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "gen-chip";
-          btn.dataset.region = r;
-          btn.textContent = REGION_LABEL[r] || r;
-          genChipsEl.appendChild(btn);
-        }
-      }
-    }
-
-    // タイル表示を種類×(世代|地方)×検索で絞り込む共通関数
-    function applyFilter() {
-      const raw = searchEl ? searchEl.value.trim().toLowerCase() : "";
-      const searchIds = raw && searchEngine
-        ? new Set(searchEngine.searchPokemon(searchIndex, raw, searchMetadata).map((result) => result.id))
-        : null;
-      for (const t of tiles) {
-        const visible = matchTile(
-          { id: t.dataset.id, region: t.dataset.region, gen: t.dataset.gen, search: t.dataset.search },
-          { kind: selectedKind, gen: String(selectedGen), region: selectedRegion, searchIds, q: searchIds ? "" : raw }
-        );
-        t.classList.toggle("hidden", !visible);
-      }
-    }
-
-    // 初期チップ描画
-    renderChips();
-
-    if (searchEl) {
-      searchEl.addEventListener("input", applyFilter);
-    }
-
-    // 種類セレクタ変更
-    if (kindEl) {
-      kindEl.addEventListener("change", () => {
-        selectedKind = kindEl.value;
-        selectedGen = 'all';
-        selectedRegion = 'all';
-        renderChips();
-        applyFilter();
-      });
-    }
-
-    // チップのクリック処理（世代チップ・地方チップ共通）
-    if (genChipsEl) {
-      genChipsEl.addEventListener("click", (e) => {
-        const chip = e.target.closest(".gen-chip");
-        if (!chip) return;
-        if (selectedKind === "normal") {
-          const val = chip.dataset.gen;
-          if (!val) return;
-          selectedGen = val === "all" ? "all" : Number(val);
-          for (const c of genChipsEl.querySelectorAll(".gen-chip")) {
-            c.classList.toggle("active", c.dataset.gen === val);
-          }
-        } else {
-          const val = chip.dataset.region;
-          if (val === undefined) return;
-          selectedRegion = val;
-          for (const c of genChipsEl.querySelectorAll(".gen-chip")) {
-            c.classList.toggle("active", c.dataset.region === val);
-          }
-        }
-        applyFilter();
-      });
-    }
-  }
-
-  initGrid();
-
-  // function clampFrom helper
   function clampFrom(el) {
     const v = Number(el.value);
     const min = Number(el.min);
@@ -476,11 +374,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (Number.isFinite(max) && v > max) return max;
     return v;
   }
-
   function isPartialNumber(value) {
     return value === "" || value.endsWith(".");
   }
-
   function attachEnterCommit(input, commitFn) {
     if (!input) return;
     input.addEventListener("keydown", (evt) => {
@@ -494,16 +390,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Scale
   function previewScale() {
     const raw = scaleEl.value.trim();
-    if (isPartialNumber(raw)) {
-      scaleVal.textContent = raw;
-      return;
-    }
+    if (isPartialNumber(raw)) { scaleVal.textContent = raw; return; }
     const num = Number(raw);
-    if (Number.isFinite(num)) {
-      scaleVal.textContent = num.toFixed(2) + "×";
-    } else {
-      scaleVal.textContent = raw;
-    }
+    scaleVal.textContent = Number.isFinite(num) ? num.toFixed(2) + "×" : raw;
   }
   function commitScale({ flush = false } = {}) {
     const v = clampFrom(scaleEl);
@@ -532,19 +421,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   offsetEl.addEventListener("change", () => commitOffset({ flush: true }));
   attachEnterCommit(offsetEl, commitOffset);
 
-  // Lerp
+  // Lerp（UI 0.5–5.0 ↔ 内部 0.05–0.50）
   function previewLerp() {
     const raw = lerpEl.value.trim();
-    if (isPartialNumber(raw)) {
-      lerpVal.textContent = raw ? raw : "";
-      return;
-    }
+    if (isPartialNumber(raw)) { lerpVal.textContent = raw ? raw : ""; return; }
     const num = Number(raw);
-    if (Number.isFinite(num)) {
-      lerpVal.textContent = num.toFixed(1);
-    } else {
-      lerpVal.textContent = raw;
-    }
+    lerpVal.textContent = Number.isFinite(num) ? num.toFixed(1) : raw;
   }
   function commitLerp({ flush = false } = {}) {
     const ui = clampFrom(lerpEl);
@@ -558,79 +440,310 @@ document.addEventListener("DOMContentLoaded", async () => {
   lerpEl.addEventListener("change", () => commitLerp({ flush: true }));
   attachEnterCommit(lerpEl, commitLerp);
 
-  // Removed dragging pointer event listeners for sliders since number inputs do not need them
-
-  // Safety: end dragging if mouse released outside
-  // document.addEventListener("pointerup", () => setDragging(false));
-
-  // ===== TRIANGLES (▲/▼) — JS-only wiring, no HTML changes required =====
-
-  // Find the number input associated with a triangle within the same .triple block
-  function inputForTriangle(el) {
-    const triple = el.closest(".triple");
-    if (!triple) return null;
-    // Prefer an explicit number input inside the triple
-    return triple.querySelector('input[type="number"]');
+  // ═══════════════ ボックス: タイル画像候補 ═══════════════
+  function tileImageCandidates(id) {
+    const parts = id.split("/");
+    const dir = parts.slice(1, -1).join("/") || parts[1] || "gen-1";
+    const slug = parts[parts.length - 1];
+    const slugCompact = slug.replace(/-/g, "");
+    const nameOnly = slug.replace(/^[0-9]+-?/, "");
+    return [slug, slugCompact, nameOnly]
+      .filter((v, i, a) => v && a.indexOf(v) === i)
+      .map((n) => `app://bundle/assets/ui/${dir}/${n}.png`);
   }
 
-  // Use native stepUp/stepDown so min/max/step are respected
-  function nudgeInput(input, dir /* 'up' | 'down' */) {
-    if (!input) return;
-    if (dir === "down") input.stepDown();
-    else input.stepUp();
-    // Live update and persist via existing handlers
-    input.dispatchEvent(new Event("input",  { bubbles: true }));
-    input.dispatchEvent(new Event("change", { bubbles: true }));
-  }
+  // ═══════════════ ボックス: グリッド・検索・フィルタ ═══════════════
+  const gridEl = document.getElementById("grid");
+  const searchEl = document.getElementById("search");
+  const genChipsEl = document.getElementById("genChips");
+  const typeChipsEl = document.getElementById("typeChips");
+  const kindEl = document.getElementById("kind");
 
-  // Press-and-hold repeat
-  let holdT = null, rptT = null, holdInput = null, holdDir = "up";
+  const searchMetadata = await window.settingsApi.getSearchMetadata();
+  const searchEngine = window.PokeFollowerSearch;
+  const searchIndex = searchEngine ? searchEngine.buildPokemonSearchIndex(packs, searchMetadata) : [];
 
-  function stopHold() {
-    if (holdT) { clearTimeout(holdT); holdT = null; }
-    if (rptT)  { clearInterval(rptT); rptT = null; }
-    holdInput = null;
-  }
+  let selectedKind = "normal";
+  let selectedGen = "all";
+  let selectedRegion = "all";
+  let selectedType = "all";
 
-  document.addEventListener("mousedown", (e) => {
-    const caret = e.target.closest(".arrowStack .caret");
-    if (!caret) return;
+  const tiles = [];
 
-    const input = inputForTriangle(caret);
-    if (!input) return;
-
-    holdInput = input;
-    holdDir = caret.classList.contains("down") ? "down" : "up";
-
-    // First tick immediately
-    nudgeInput(holdInput, holdDir);
-
-    // Then start repeating
-    stopHold();
-    holdT = setTimeout(() => {
-      rptT = setInterval(() => nudgeInput(holdInput, holdDir), 90);
-    }, 250);
-  }, true);
-
-  // Keyboard support for triangles: Space/Enter nudges once
-  document.addEventListener("keydown", (e) => {
-    const caret = e.target.closest(".arrowStack .caret");
-    if (!caret) return;
-    if (e.key !== " " && e.key !== "Enter") return;
-    e.preventDefault();
-    const input = inputForTriangle(caret);
-    const dir = caret.classList.contains("down") ? "down" : "up";
-    nudgeInput(input, dir);
-  }, true);
-
-  window.addEventListener("mouseup", stopHold, true);
-  window.addEventListener("mouseleave", stopHold, true);
-  window.addEventListener("blur", stopHold, true);
-
-  // ESC to close (QoL)
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      window.close();
+  function updateTileMarkers() {
+    const party = currentParty();
+    const lead = party[0] || null;
+    for (const t of tiles) {
+      const inParty = party.includes(t.dataset.id);
+      t.classList.toggle("favorite", inParty);
+      t.classList.toggle("selected", t.dataset.id === lead);
+      t.dataset.favorite = inParty ? "true" : "false";
     }
+  }
+
+  async function onTileTap(id) {
+    const party = currentParty();
+    if (party.includes(id)) {
+      // 既に手持ち → 相棒（先頭）にする
+      cancelReplaceMode();
+      const updated = await window.settingsApi.setLead(id);
+      await refreshSettings(updated);
+      return;
+    }
+    if (!isFull(party)) {
+      const wasEmpty = party.length === 0;
+      const next = addToParty(party, id);
+      if (wasEmpty) {
+        // 空だった → 追加分を相棒に（favoritePacks と pack を同時保存）
+        save({ favoritePacks: next, pack: id });
+        await refreshSettings({ ...settings, favoritePacks: next, pack: id });
+      } else {
+        save({ favoritePacks: next });
+        await refreshSettings({ ...settings, favoritePacks: next });
+      }
+      return;
+    }
+    // 満員 → 置き換えモード
+    enterReplaceMode(id);
+  }
+
+  function buildGrid() {
+    if (!gridEl) return;
+    const frag = document.createDocumentFragment();
+    for (const p of packs) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tile";
+      btn.dataset.id = p.id;
+      btn.dataset.region = p.region || "";
+      btn.dataset.search = tileSearchText(p);
+      btn.dataset.gen = p.num != null ? String(genOfDex(p.num)) : "0";
+      btn.dataset.types = (Array.isArray(p.types) ? p.types : []).join(",");
+      const cands = tileImageCandidates(p.id);
+      let ci = 0;
+      const img = document.createElement("img");
+      img.loading = "lazy";
+      img.alt = p.ja || p.en || p.id;
+      img.src = cands[ci];
+      img.addEventListener("error", () => {
+        ci += 1;
+        if (ci < cands.length) img.src = cands[ci];
+        else img.style.visibility = "hidden";
+      });
+      const name = document.createElement("span");
+      name.className = "name";
+      name.textContent = p.ja || p.en || p.id;
+      const num = document.createElement("span");
+      num.className = "num";
+      num.textContent = p.num != null ? "#" + String(p.num).padStart(3, "0") : "";
+      btn.append(img, name, num);
+      btn.addEventListener("click", () => onTileTap(p.id));
+      tiles.push(btn);
+      frag.appendChild(btn);
+    }
+    gridEl.appendChild(frag);
+    updateTileMarkers();
+  }
+
+  // 世代/地方チップ（旧 renderChips を流用）
+  function renderChips() {
+    if (!genChipsEl) return;
+    genChipsEl.innerHTML = "";
+    if (selectedKind === "normal") {
+      genChipsEl.setAttribute("aria-label", "世代フィルタ");
+      const allBtn = document.createElement("button");
+      allBtn.type = "button";
+      allBtn.className = "gen-chip active";
+      allBtn.dataset.gen = "all";
+      allBtn.textContent = "全";
+      genChipsEl.appendChild(allBtn);
+      for (let g = 1; g <= 9; g++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "gen-chip";
+        btn.dataset.gen = String(g);
+        const label = generationLabelFor(g);
+        btn.textContent = label ? label.short : String(g);
+        if (label) {
+          btn.title = label.title;
+          btn.setAttribute("aria-label", label.title);
+        }
+        genChipsEl.appendChild(btn);
+      }
+    } else {
+      genChipsEl.setAttribute("aria-label", "地方フィルタ");
+      const ORDER = ["alola", "galar", "hisui", "paldea"];
+      const present = new Set(tiles.map((t) => t.dataset.region).filter(Boolean));
+      const regions = ORDER.filter((r) => present.has(r));
+      const allBtn = document.createElement("button");
+      allBtn.type = "button";
+      allBtn.className = "gen-chip active";
+      allBtn.dataset.region = "all";
+      allBtn.textContent = "全";
+      genChipsEl.appendChild(allBtn);
+      const REGION_LABEL = { alola: "アローラ", galar: "ガラル", hisui: "ヒスイ", paldea: "パルデア" };
+      for (const r of regions) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "gen-chip";
+        btn.dataset.region = r;
+        btn.textContent = REGION_LABEL[r] || r;
+        genChipsEl.appendChild(btn);
+      }
+    }
+  }
+
+  // タイプチップ（全 + グリッドに存在するタイプのみ、type-colors で色付け）
+  function renderTypeChips() {
+    if (!typeChipsEl) return;
+    typeChipsEl.innerHTML = "";
+    const present = new Set();
+    for (const p of packs) for (const t of (Array.isArray(p.types) ? p.types : [])) present.add(t);
+    const order = Object.keys(TYPE_COLORS).filter((t) => present.has(t));
+
+    const allBtn = document.createElement("button");
+    allBtn.type = "button";
+    allBtn.className = "type-chip-filter active";
+    allBtn.dataset.type = "all";
+    allBtn.textContent = "全";
+    typeChipsEl.appendChild(allBtn);
+    for (const t of order) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "type-chip-filter";
+      btn.dataset.type = t;
+      btn.textContent = typeJa(t);
+      btn.style.borderColor = typeColor(t);
+      typeChipsEl.appendChild(btn);
+    }
+    typeChipsEl.addEventListener("click", (e) => {
+      const chip = e.target.closest(".type-chip-filter");
+      if (!chip) return;
+      selectedType = chip.dataset.type;
+      for (const c of typeChipsEl.querySelectorAll(".type-chip-filter")) {
+        const on = c.dataset.type === selectedType;
+        c.classList.toggle("active", on);
+        // active 時は背景を色で塗る（"全" は既定の濃色）
+        if (on && c.dataset.type !== "all") c.style.backgroundColor = typeColor(c.dataset.type);
+        else c.style.backgroundColor = "";
+        c.style.color = on && c.dataset.type !== "all" ? "#fff" : "";
+      }
+      applyFilter();
+    });
+  }
+
+  function applyFilter() {
+    const raw = searchEl ? searchEl.value.trim().toLowerCase() : "";
+    const searchIds = raw && searchEngine
+      ? new Set(searchEngine.searchPokemon(searchIndex, raw, searchMetadata).map((r) => r.id))
+      : null;
+    for (const t of tiles) {
+      const types = (t.dataset.types || "").split(",").filter(Boolean);
+      let visible = matchTile(
+        { id: t.dataset.id, region: t.dataset.region, gen: t.dataset.gen, search: t.dataset.search, types },
+        { kind: selectedKind, gen: String(selectedGen), region: selectedRegion, type: selectedType, q: searchIds ? "" : raw }
+      );
+      // 共有検索エンジンが返した id 集合で追加フィルタ（matchTile は searchIds を見ない）
+      if (visible && searchIds && !searchIds.has(t.dataset.id)) visible = false;
+      // フォールバック: 検索語がカナの場合のひらがな一致
+      if (visible && !searchIds && raw && !t.dataset.search.includes(raw) && !t.dataset.search.includes(toHira(raw))) visible = false;
+      t.classList.toggle("hidden", !visible);
+    }
+  }
+
+  buildGrid();
+  renderChips();
+  renderTypeChips();
+
+  if (searchEl) searchEl.addEventListener("input", applyFilter);
+  if (kindEl) {
+    kindEl.addEventListener("change", () => {
+      selectedKind = kindEl.value;
+      selectedGen = "all";
+      selectedRegion = "all";
+      renderChips();
+      applyFilter();
+    });
+  }
+  if (genChipsEl) {
+    genChipsEl.addEventListener("click", (e) => {
+      const chip = e.target.closest(".gen-chip");
+      if (!chip) return;
+      if (selectedKind === "normal") {
+        const val = chip.dataset.gen;
+        if (!val) return;
+        selectedGen = val === "all" ? "all" : Number(val);
+        for (const c of genChipsEl.querySelectorAll(".gen-chip")) c.classList.toggle("active", c.dataset.gen === val);
+      } else {
+        const val = chip.dataset.region;
+        if (val === undefined) return;
+        selectedRegion = val;
+        for (const c of genChipsEl.querySelectorAll(".gen-chip")) c.classList.toggle("active", c.dataset.region === val);
+      }
+      applyFilter();
+    });
+  }
+
+  // ═══════════════ せってい ═══════════════
+  const enabledEl = document.getElementById("enabled");
+  const avoidCursorEl = document.getElementById("avoidCursor");
+  const avoidCursorStrengthEl = document.getElementById("avoidCursorStrength");
+  const appReactionsEl = document.getElementById("appReactions");
+  const notificationCompanionEl = document.getElementById("notificationCompanion");
+  const testCompanionEl = document.getElementById("testCompanion");
+  const exportCodexPetEl = document.getElementById("exportCodexPet");
+
+  if (enabledEl) {
+    enabledEl.checked = !!settings.enabled;
+    enabledEl.addEventListener("change", () => save({ vcp1_enabled: enabledEl.checked }));
+  }
+  if (avoidCursorEl) {
+    avoidCursorEl.checked = settings.avoidCursor !== false;
+    avoidCursorEl.addEventListener("change", () => save({ vcp1_avoidCursor: avoidCursorEl.checked }));
+  }
+  if (avoidCursorStrengthEl) {
+    avoidCursorStrengthEl.value = typeof settings.avoidCursorStrength === "string" ? settings.avoidCursorStrength : "normal";
+    avoidCursorStrengthEl.addEventListener("change", () => save({ vcp1_avoid_cursor_strength: avoidCursorStrengthEl.value }));
+  }
+  if (appReactionsEl) {
+    appReactionsEl.checked = !!settings.appReactionsEnabled;
+    appReactionsEl.addEventListener("change", () => save({ vcp1_app_reactions: appReactionsEl.checked }));
+  }
+  if (notificationCompanionEl) {
+    notificationCompanionEl.checked = !!settings.notificationCompanionEnabled;
+    notificationCompanionEl.addEventListener("change", () => {
+      save({ vcp1_notification_companion: notificationCompanionEl.checked });
+    });
+  }
+  if (testCompanionEl) {
+    testCompanionEl.addEventListener("click", () => window.settingsApi.testCompanionNotification());
+  }
+  if (exportCodexPetEl) {
+    exportCodexPetEl.addEventListener("click", async () => {
+      const packKey = activePackId();
+      if (!packKey) return;
+      exportCodexPetEl.disabled = true;
+      exportCodexPetEl.textContent = "...";
+      try {
+        await window.settingsApi.exportCodexPet(packKey);
+        exportCodexPetEl.textContent = "DONE";
+      } catch (_) {
+        exportCodexPetEl.textContent = "ERR";
+      } finally {
+        setTimeout(() => {
+          exportCodexPetEl.disabled = false;
+          exportCodexPetEl.textContent = "EXPORT";
+        }, 1200);
+      }
+    });
+  }
+
+  // ═══════════════ 初期描画 ═══════════════
+  renderHero();
+  renderPartyRows();
+
+  // ESC で閉じる（QoL）
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") window.close();
   });
 });
