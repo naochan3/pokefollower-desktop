@@ -40,7 +40,9 @@ expect(/function scheduleBuildOverlays\(\)/.test(main), "main.js must define sch
 expect(/clearTimeout\(displayRebuildTimer\)/.test(main), "display rebuild scheduler must coalesce rapid display events");
 expect(/setTimeout\(\(\) => \{[\s\S]*buildOverlays\(\);[\s\S]*\}, DISPLAY_REBUILD_DEBOUNCE_MS\)/.test(main), "display rebuild scheduler must rebuild overlays after debounce");
 expect(/sim\.setRestSurfaces\(\[\{ kind: "window", x: info\.x, y: info\.y, width: info\.w, height: info\.h \}\]\)/.test(main), "main.js must pass foreground window bounds to edge rest");
-expect(/const FULLSCREEN_POLL_INTERVAL_MS = process\.platform === "win32" \? 600 : 2000;/.test(main), "fullscreen polling must keep fast Win32 checks and slower external-command checks elsewhere");
+expect(/const FULLSCREEN_INITIAL_DELAY_MS = process\.platform === "darwin" \? 1000 : 0;/.test(main), "macOS fullscreen polling must delay the initial external command so startup can render first");
+expect(/const FULLSCREEN_POLL_INTERVAL_MS = process\.platform === "win32" \? 600 : process\.platform === "darwin" \? 5000 : 2000;/.test(main), "fullscreen polling must keep fast Win32 checks, slower macOS System Events checks, and Linux external-command checks");
+expect(/let fullscreenInitialTimer = null;/.test(main), "main.js must track the delayed macOS fullscreen startup timer");
 expect(/let fullscreenTimer = null;/.test(main), "main.js must track fullscreen polling timer");
 expect(/let fullscreenCheckInFlight = false;/.test(main), "main.js must prevent overlapping async fullscreen checks");
 expect(/function applyFullscreenInfo\(info\)/.test(main), "main.js must separate fullscreen result application from polling");
@@ -49,7 +51,10 @@ expect(/fullscreenCheckInFlight = true;[\s\S]*\.finally\(\(\) => \{[\s\S]*fullsc
 expect(/function startFullscreenPolling\(\)/.test(main), "main.js must define startFullscreenPolling");
 expect(/function stopFullscreenPolling\(\)/.test(main), "main.js must define stopFullscreenPolling");
 expect(/function stopSimLoop\(\{ hide = false \} = \{\}\)/.test(main), "main.js must define a stoppable sim loop helper");
+expect(/if \(fullscreenTimer \|\| fullscreenInitialTimer\) return;/.test(main), "fullscreen polling must avoid duplicate interval or delayed-start timers");
+expect(/setTimeout\(\(\) => \{[\s\S]*fullscreenInitialTimer = null;[\s\S]*startInterval\(\);[\s\S]*\}, FULLSCREEN_INITIAL_DELAY_MS\)/.test(main), "macOS fullscreen polling must use a tracked delayed first check");
 expect(/fullscreenTimer = setInterval\(checkFullscreen, FULLSCREEN_POLL_INTERVAL_MS\)/.test(main), "fullscreen polling must use a tracked interval");
+expect(/clearTimeout\(fullscreenInitialTimer\)/.test(main), "fullscreen delayed startup timer must be stoppable");
 expect(/clearInterval\(fullscreenTimer\)/.test(main), "fullscreen polling must be stoppable");
 expect(/clearInterval\(simTimer\)/.test(main), "sim loop must be stoppable while disabled or fullscreen-suppressed");
 expect(!/setInterval\(checkFullscreen, 600\)/.test(main), "main.js must not leave fullscreen polling as an untracked always-on interval");

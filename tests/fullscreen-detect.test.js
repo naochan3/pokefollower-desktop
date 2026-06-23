@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  MAC_FOREGROUND_FAILURE_BACKOFF_MS,
+  createFailureBackoffCommandRunner,
   createLinuxForegroundInfoGetter,
   createMacForegroundInfoGetter,
   parseLinuxForegroundInfo,
@@ -15,6 +17,17 @@ describe("fullscreen-detect parsers", () => {
       w: 1920,
       h: 1080,
       isFullscreen: true,
+    });
+  });
+
+  it("macOS の window なし出力を安定した前面情報へ変換する", () => {
+    expect(parseMacForegroundInfo("Finder\t0\t0\t0\t0\tfalse")).toEqual({
+      cls: "Finder",
+      x: 0,
+      y: 0,
+      w: 0,
+      h: 0,
+      isFullscreen: false,
     });
   });
 
@@ -42,6 +55,41 @@ describe("fullscreen-detect parsers", () => {
       h: 1080,
       isFullscreen: true,
     });
+  });
+
+  it("macOS の System Events 失敗後は一定時間コマンド再実行を避ける", async () => {
+    let now = 1000;
+    let calls = 0;
+    const runCommand = createFailureBackoffCommandRunner(async () => {
+      calls += 1;
+      return null;
+    }, { now: () => now, failureBackoffMs: 30000 });
+
+    await expect(runCommand("osascript", ["-e", "test"])).resolves.toBe(null);
+    await expect(runCommand("osascript", ["-e", "test"])).resolves.toBe(null);
+    expect(calls).toBe(1);
+
+    now += 30000;
+    await expect(runCommand("osascript", ["-e", "test"])).resolves.toBe(null);
+    expect(calls).toBe(2);
+  });
+
+  it("macOS の foreground getter は失敗バックオフ既定値を使う", async () => {
+    let now = 2000;
+    let calls = 0;
+    const getForegroundInfo = createMacForegroundInfoGetter(async () => {
+      calls += 1;
+      return null;
+    }, { now: () => now });
+
+    await expect(getForegroundInfo()).resolves.toBe(null);
+    now += MAC_FOREGROUND_FAILURE_BACKOFF_MS - 1;
+    await expect(getForegroundInfo()).resolves.toBe(null);
+    expect(calls).toBe(1);
+
+    now += 1;
+    await expect(getForegroundInfo()).resolves.toBe(null);
+    expect(calls).toBe(2);
   });
 
   it("Linux の X11 出力を前面ウィンドウ情報へ変換する", () => {

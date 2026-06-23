@@ -15,6 +15,8 @@ Issue #17 の残タスクは、ソース上の best-effort 実装ではなく、
 
 - macOS / Linux の前面ウィンドウ検知は非同期で実行し、Electron main process をブロックしません（`verify:platform`）。
 - macOS の System Events 実行失敗時は、前面ウィンドウ情報を `null` として扱います（`tests/fullscreen-detect.test.js`）。
+- macOS の System Events 実行失敗後は 30 秒バックオフし、権限未許可環境で `osascript` を 2 秒ごとに起動し続けないようにします（`tests/fullscreen-detect.test.js` / `verify:platform`）。
+- macOS の全画面初回チェックは起動後 1 秒遅延し、通常 polling は 5 秒間隔にして、起動直後の追従開始と常駐負荷を優先します（`verify:runtime`）。
 - Linux の `xdotool` / `xprop` / `xwininfo` 出力不足時は、前面ウィンドウ情報を `null` として扱います（`tests/fullscreen-detect.test.js`）。
 - `main.js` は `null` の前面ウィンドウ情報を全画面扱いにせず、自動非表示だけを無効化して通常追従を継続します（`tests/fullscreen-policy.test.js` / `verify:runtime`）。
 - package smoke は macOS / Linux の生成物に必要な runtime payload が入っていることを確認します（CI package smoke）。
