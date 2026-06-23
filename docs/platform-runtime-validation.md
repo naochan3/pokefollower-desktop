@@ -1,6 +1,6 @@
 # macOS / Linux 実機ランタイム検証
 
-最終更新: 2026-06-22
+最終更新: 2026-06-23
 
 Issue #17 の残タスクは、ソース上の best-effort 実装ではなく、実機での常駐・透明オーバーレイ・クリック透過・最前面・全画面抑制の確認です。この文書は、検証者が同じ観点で結果を残せるようにするためのチェックリストです。
 
@@ -17,6 +17,7 @@ Issue #17 の残タスクは、ソース上の best-effort 実装ではなく、
 - macOS の System Events 実行失敗時は、前面ウィンドウ情報を `null` として扱います（`tests/fullscreen-detect.test.js`）。
 - macOS の System Events 実行失敗後は 30 秒バックオフし、権限未許可環境で `osascript` を 2 秒ごとに起動し続けないようにします（`tests/fullscreen-detect.test.js` / `verify:platform`）。
 - macOS の全画面初回チェックは起動後 1 秒遅延し、通常 polling は 5 秒間隔にして、起動直後の追従開始と常駐負荷を優先します（`verify:runtime`）。
+- overlay renderer は `requestAnimationFrame` で座標を表示補間し、main process の simulation tick を 16ms 既定のまま保ちます。非表示時は補間状態を破棄し、fullscreen 復帰時に古い座標から補間しないことを確認します（`tests/overlay-interpolation.test.js` / `verify:overlay`）。
 - Linux の `xdotool` / `xprop` / `xwininfo` 出力不足時は、前面ウィンドウ情報を `null` として扱います（`tests/fullscreen-detect.test.js`）。
 - `main.js` は `null` の前面ウィンドウ情報を全画面扱いにせず、自動非表示だけを無効化して通常追従を継続します（`tests/fullscreen-policy.test.js` / `verify:runtime`）。
 - package smoke は macOS / Linux の生成物に必要な runtime payload が入っていることを確認します（CI package smoke）。

@@ -22,7 +22,7 @@ function expectIncludesAll(text, snippets, message) {
 }
 
 expect(pkg.build?.linux?.target?.includes("AppImage"), "package.json build.linux.target must include AppImage");
-expect(pkg.scripts?.["dist:linux"] === "electron-builder --linux", "package.json dist:linux must build linux target");
+expect(pkg.scripts?.["dist:linux"] === "electron-builder --linux --publish never", "package.json dist:linux must build linux target with publish disabled");
 expect(pkg.build?.mac?.target?.includes("dmg"), "package.json build.mac.target must include dmg");
 expect(pkg.build?.mac?.target?.includes("zip"), "package.json build.mac.target must include zip");
 
@@ -64,7 +64,8 @@ expect(
   "README must describe fullscreen auto-hide platform requirements",
 );
 expectIncludesAll(readme, [
-  "Linux 版は AppImage",
+  "Linux 版は AppImage のビルド対応",
+  "v1.2.0 Release asset は未添付",
   "WSLg での起動 smoke",
   "saved pack restore smoke",
   "X11 window probe",
@@ -75,11 +76,12 @@ expectIncludesAll(readme, [
 ], "README must state Linux visual runtime behavior still needs validation");
 expect(readme.includes("macOS（Apple Silicon / arm64）"), "README must describe published macOS support as Apple Silicon / arm64");
 expect(!readme.includes("macOS（Apple Silicon / Intel）"), "README must not imply Intel macOS binaries are currently published");
-expect(status.includes("現在は Windows / macOS(arm64) / Linux(AppImage) 向けに配布物を出せる状態。"), "STATUS must describe current distribution targets");
+expect(status.includes("現在は Windows / macOS(arm64) 向け Release asset を出せる状態。Linux AppImage はビルド対応済みですが、v1.2.0 Release asset は未添付です。"), "STATUS must describe current distribution targets");
 expect(status.includes("macOS arm64 dmg / zip"), "STATUS included assets must describe macOS arm64 assets");
 expect(status.includes("全画面の自動非表示は macOS / Linux では権限や外部コマンドに依存します。"), "STATUS must state macOS/Linux fullscreen auto-hide dependencies");
 expectIncludesAll(status, [
-  "Linux は AppImage 配布",
+  "Linux は AppImage ビルド対応",
+  "v1.2.0 Release asset は未添付",
   "WSLg 起動 smoke",
   "saved pack restore smoke",
   "X11 window probe",

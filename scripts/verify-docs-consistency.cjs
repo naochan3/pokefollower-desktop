@@ -8,6 +8,7 @@ const tag = `v${version}`;
 const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
 const status = fs.readFileSync(path.join(root, "docs", "STATUS.md"), "utf8");
 const releasing = fs.readFileSync(path.join(root, "RELEASING.md"), "utf8");
+const expectLinuxAppImage = process.env.PF_EXPECT_LINUX_APPIMAGE === "1";
 
 function fail(message) {
   console.error(`[verify-docs-consistency] ${message}`);
@@ -28,11 +29,15 @@ expectIncludes(
   readme,
   `releases/download/${tag}/PokeFollower-${version}-arm64-mac.zip`,
 );
-expectIncludes(
-  "README Linux AppImage link",
-  readme,
-  `releases/download/${tag}/PokeFollower-${version}.AppImage`,
-);
+if (expectLinuxAppImage) {
+  expectIncludes(
+    "README Linux AppImage link",
+    readme,
+    `releases/download/${tag}/PokeFollower-${version}.AppImage`,
+  );
+} else if (readme.includes(`releases/download/${tag}/PokeFollower-${version}.AppImage`)) {
+  fail(`README links ${tag} Linux AppImage but PF_EXPECT_LINUX_APPIMAGE is not enabled`);
+}
 expectIncludes("STATUS current version", status, `現在のバージョン: **${tag}**`);
 expectIncludes("STATUS included version", status, `現在含まれているもの（${tag}）`);
 expectIncludes("README Windows installer example", readme, `... ${version}.exe`);
@@ -55,6 +60,16 @@ expectIncludes(
   "RELEASING Linux AppImage asset rule",
   releasing,
   `PokeFollower-<ver>.AppImage`,
+);
+expectIncludes(
+  "README Linux release boundary",
+  readme,
+  `${tag} Release asset は未添付`,
+);
+expectIncludes(
+  "STATUS Linux release boundary",
+  status,
+  `${tag} Release asset は未添付`,
 );
 
 if (/macOS 版は現在 \*\*v\d+\.\d+\.\d+/.test(readme)) {
