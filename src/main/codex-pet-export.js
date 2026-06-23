@@ -30,13 +30,26 @@ function slugForPackKey(packKey) {
 }
 
 function petSlugForPackKey(packKey) {
-  return `pokefollower-${slugForPackKey(packKey)}`;
+  const clean = String(packKey || "")
+    .trim()
+    .replace(/^retro\//, "")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase();
+  return `pokefollower-${clean || slugForPackKey(packKey)}`;
+}
+
+function variantLabelForPackKey(packKey) {
+  const parts = String(packKey || "").split("/");
+  if (parts[0] === "retro" && parts[1] === "forms" && parts[2]) return parts[2];
+  return null;
 }
 
 function displayNameForPack(packKey, packList) {
   const found = (packList || []).find((item) => item.id === packKey);
   const name = found?.ja || found?.en || slugForPackKey(packKey);
-  return `PokéFollower ${name}`;
+  const variant = variantLabelForPackKey(packKey);
+  return variant ? `PokéFollower ${name} (${variant})` : `PokéFollower ${name}`;
 }
 
 function buildPetManifest({ displayName, description, spritesheetPath = "spritesheet.png" }) {
@@ -87,7 +100,7 @@ function readSheetDataUrls(root, meta) {
   return out;
 }
 
-async function renderSpritesheetPng({ BrowserWindow, root, meta }) {
+function createRendererWindow(BrowserWindow) {
   const win = new BrowserWindow({
     show: false,
     width: 1,
@@ -98,71 +111,98 @@ async function renderSpritesheetPng({ BrowserWindow, root, meta }) {
       sandbox: true,
     },
   });
+  return win;
+}
 
+async function ensureRendererLoaded(win) {
+  if (win.__pokefollowerCodexPetRendererLoaded) return;
+  await win.loadURL("data:text/html;charset=utf-8,<canvas></canvas>");
+  win.__pokefollowerCodexPetRendererLoaded = true;
+}
+
+async function renderSpritesheetPngInWindow({ win, root, meta }) {
+  await ensureRendererLoaded(win);
+  const payload = {
+    width: CODEX_SHEET_WIDTH,
+    height: CODEX_SHEET_HEIGHT,
+    frameWidth: CODEX_FRAME_WIDTH,
+    frameHeight: CODEX_FRAME_HEIGHT,
+    sheets: readSheetDataUrls(root, meta),
+    frames: buildFramePlan(meta),
+  };
+  const base64 = await win.webContents.executeJavaScript(`
+    (async (payload) => {
+      const canvas = document.querySelector("canvas");
+      canvas.width = payload.width;
+      canvas.height = payload.height;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, payload.width, payload.height);
+      ctx.imageSmoothingEnabled = false;
+      const cache = new Map();
+      const loadImage = (src) => new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error("failed to load spritesheet"));
+        img.src = src;
+      });
+      for (const frame of payload.frames) {
+        const src = payload.sheets[frame.sourceState];
+        if (!cache.has(src)) cache.set(src, await loadImage(src));
+        const img = cache.get(src);
+        const scale = Math.min(frame.targetWidth / frame.sourceWidth, frame.targetHeight / frame.sourceHeight);
+        const drawWidth = Math.max(1, Math.round(frame.sourceWidth * scale));
+        const drawHeight = Math.max(1, Math.round(frame.sourceHeight * scale));
+        const drawX = frame.targetX + Math.floor((frame.targetWidth - drawWidth) / 2);
+        const drawY = frame.targetY + Math.floor((frame.targetHeight - drawHeight) / 2);
+        ctx.drawImage(
+          img,
+          frame.sourceColumn * frame.sourceWidth,
+          frame.sourceRow * frame.sourceHeight,
+          frame.sourceWidth,
+          frame.sourceHeight,
+          drawX,
+          drawY,
+          drawWidth,
+          drawHeight
+        );
+      }
+      return canvas.toDataURL("image/png").split(",")[1];
+    })(${JSON.stringify(payload)})
+  `);
+  return Buffer.from(base64, "base64");
+}
+
+function createCodexPetRenderer({ BrowserWindow }) {
+  const win = createRendererWindow(BrowserWindow);
+  return {
+    render: ({ root, meta }) => renderSpritesheetPngInWindow({ win, root, meta }),
+    destroy: () => {
+      if (!win.isDestroyed()) win.destroy();
+    },
+  };
+}
+
+async function renderSpritesheetPng({ BrowserWindow, root, meta }) {
+  const renderer = createCodexPetRenderer({ BrowserWindow });
   try {
-    await win.loadURL("data:text/html;charset=utf-8,<canvas></canvas>");
-    const payload = {
-      width: CODEX_SHEET_WIDTH,
-      height: CODEX_SHEET_HEIGHT,
-      frameWidth: CODEX_FRAME_WIDTH,
-      frameHeight: CODEX_FRAME_HEIGHT,
-      sheets: readSheetDataUrls(root, meta),
-      frames: buildFramePlan(meta),
-    };
-    const base64 = await win.webContents.executeJavaScript(`
-      (async (payload) => {
-        const canvas = document.querySelector("canvas");
-        canvas.width = payload.width;
-        canvas.height = payload.height;
-        const ctx = canvas.getContext("2d");
-        ctx.imageSmoothingEnabled = false;
-        const cache = new Map();
-        const loadImage = (src) => new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => resolve(img);
-          img.onerror = () => reject(new Error("failed to load spritesheet"));
-          img.src = src;
-        });
-        for (const frame of payload.frames) {
-          const src = payload.sheets[frame.sourceState];
-          if (!cache.has(src)) cache.set(src, await loadImage(src));
-          const img = cache.get(src);
-          const scale = Math.min(frame.targetWidth / frame.sourceWidth, frame.targetHeight / frame.sourceHeight);
-          const drawWidth = Math.max(1, Math.round(frame.sourceWidth * scale));
-          const drawHeight = Math.max(1, Math.round(frame.sourceHeight * scale));
-          const drawX = frame.targetX + Math.floor((frame.targetWidth - drawWidth) / 2);
-          const drawY = frame.targetY + Math.floor((frame.targetHeight - drawHeight) / 2);
-          ctx.drawImage(
-            img,
-            frame.sourceColumn * frame.sourceWidth,
-            frame.sourceRow * frame.sourceHeight,
-            frame.sourceWidth,
-            frame.sourceHeight,
-            drawX,
-            drawY,
-            drawWidth,
-            drawHeight
-          );
-        }
-        return canvas.toDataURL("image/png").split(",")[1];
-      })(${JSON.stringify(payload)})
-    `);
-    return Buffer.from(base64, "base64");
+    return await renderer.render({ root, meta });
   } finally {
-    if (!win.isDestroyed()) win.destroy();
+    renderer.destroy();
   }
 }
 
-async function exportCodexPet({ BrowserWindow, root, packReader, packKey, codexHome = getCodexHome() }) {
+async function exportCodexPet({ BrowserWindow, root, packReader, packKey, codexHome = getCodexHome(), renderer = null, packList = null }) {
   const { resolvedKey, meta } = packReader.readPackMeta(packKey);
   const slug = petSlugForPackKey(resolvedKey);
   const targetDir = path.join(codexHome, "pets", slug);
   const spritesheetPath = path.join(targetDir, "spritesheet.png");
   const manifestPath = path.join(targetDir, "pet.json");
-  const displayName = displayNameForPack(resolvedKey, packReader.readPackList());
+  const displayName = displayNameForPack(resolvedKey, packList || packReader.readPackList());
   const description = `Generated from PokeFollower pack ${resolvedKey}.`;
   const manifest = buildPetManifest({ displayName, description });
-  const spritesheet = await renderSpritesheetPng({ BrowserWindow, root, meta });
+  const spritesheet = renderer
+    ? await renderer.render({ root, meta })
+    : await renderSpritesheetPng({ BrowserWindow, root, meta });
 
   fs.mkdirSync(targetDir, { recursive: true });
   fs.writeFileSync(spritesheetPath, spritesheet);
@@ -185,8 +225,10 @@ module.exports = {
   CODEX_SHEET_WIDTH,
   buildFramePlan,
   buildPetManifest,
+  createCodexPetRenderer,
   displayNameForPack,
   exportCodexPet,
   getCodexHome,
   petSlugForPackKey,
+  variantLabelForPackKey,
 };

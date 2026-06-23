@@ -11,6 +11,7 @@ import {
   displayNameForPack,
   getCodexHome,
   petSlugForPackKey,
+  variantLabelForPackKey,
 } from "../src/main/codex-pet-export.js";
 
 describe("codex-pet-export", () => {
@@ -68,7 +69,8 @@ describe("codex-pet-export", () => {
   });
 
   it("manifestとslugはCodexのcustom avatar loaderに合う形にする", () => {
-    expect(petSlugForPackKey("retro/gen-1/025-pikachu")).toBe("pokefollower-025-pikachu");
+    expect(petSlugForPackKey("retro/gen-1/025-pikachu")).toBe("pokefollower-gen-1-025-pikachu");
+    expect(petSlugForPackKey("retro/forms/alola/026-raichu")).toBe("pokefollower-forms-alola-026-raichu");
     expect(buildPetManifest({ displayName: "PokéFollower ピカチュウ", description: "generated" })).toEqual({
       displayName: "PokéFollower ピカチュウ",
       description: "generated",
@@ -78,7 +80,9 @@ describe("codex-pet-export", () => {
 
   it("表示名はpack listの日本語名を優先する", () => {
     expect(displayNameForPack("retro/gen-1/025-pikachu", [{ id: "retro/gen-1/025-pikachu", ja: "ピカチュウ", en: "Pikachu" }])).toBe("PokéFollower ピカチュウ");
+    expect(displayNameForPack("retro/forms/alola/026-raichu", [{ id: "retro/forms/alola/026-raichu", ja: "ライチュウ", en: "Raichu" }])).toBe("PokéFollower ライチュウ (alola)");
     expect(displayNameForPack("retro/gen-1/025-pikachu", [])).toBe("PokéFollower 025-pikachu");
+    expect(variantLabelForPackKey("retro/forms/hisui/058-growlithe")).toBe("hisui");
   });
 
   it("CODEX_HOMEがあればcustom petsの出力先rootに使う", () => {
