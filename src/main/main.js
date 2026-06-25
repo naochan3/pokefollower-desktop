@@ -165,6 +165,9 @@ function createOverlayWindow(display) {
       sandbox: true,
     },
   });
+  // 透過窓は生成時にプライマリ表示のサイズへ潰されることがある（スケール混在のマルチモニタで顕著）。
+  // 生成後に明示 setBounds して担当ディスプレイ全体を確実に覆う。
+  win.setBounds({ x, y, width, height });
   win.setIgnoreMouseEvents(true, { forward: true });
   win.setAlwaysOnTop(true, "screen-saver");
   hardenRendererNavigation(win);
