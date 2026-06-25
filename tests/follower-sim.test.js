@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import path from "node:path";
 import { createFollowerSim } from "../src/main/follower-sim.js";
 
 const META = {
@@ -13,6 +14,50 @@ describe("follower-sim", () => {
   it("Rust WASM backend を追従計算に使う", () => {
     const sim = createFollowerSim();
     expect(sim.backend()).toBe("rust-wasm");
+  });
+
+  it("WASM が無い環境では JS fallback で起動する", () => {
+    const sim = createFollowerSim({
+      rootDir: path.join(process.cwd(), "__missing_wasm_root__"),
+    });
+    expect(sim.backend()).toBe("js");
+    sim.setMeta(META);
+    sim.resetTo(100, 100, 0);
+    expect(sim.step(16, 16)).toMatchObject({ state: "idle", walking: true });
+  });
+
+  it("同一カーソル軌道で Rust WASM と JS fallback の追従結果が一致する", () => {
+    const rust = createFollowerSim();
+    const js = createFollowerSim({ useRust: false });
+    rust.setMeta(META);
+    js.setMeta(META);
+    rust.setConfig({ vcp1_offset: 70, vcp1_lerp: 0.20 });
+    js.setConfig({ vcp1_offset: 70, vcp1_lerp: 0.20 });
+    rust.resetTo(10, 20, 0);
+    js.resetTo(10, 20, 0);
+
+    const cursorPath = [
+      { x: 10, y: 20, steps: 5 },
+      { x: 500, y: 20, steps: 45 },
+      { x: 500, y: 350, steps: 45 },
+      { x: -120, y: 350, steps: 45 },
+      { x: -120, y: -80, steps: 45 },
+      { x: 240, y: 120, steps: 45 },
+    ];
+
+    let now = 0;
+    for (const point of cursorPath) {
+      for (let i = 0; i < point.steps; i++) {
+        now += 16;
+        rust.updateCursor(point.x, point.y, now);
+        js.updateCursor(point.x, point.y, now);
+        const rustFrame = rust.step(16, now);
+        const jsFrame = js.step(16, now);
+        expect(rustFrame.x).toBeCloseTo(jsFrame.x, 10);
+        expect(rustFrame.y).toBeCloseTo(jsFrame.y, 10);
+        expect(rustFrame.walking).toBe(jsFrame.walking);
+      }
+    }
   });
 
   it("meta未設定なら step は null", () => {

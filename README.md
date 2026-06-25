@@ -80,6 +80,9 @@ npm test
 
 # Rust 版追従コアの同等性テスト
 npm run test:rust
+
+# 追従シムの Rust WASM / JS fallback マイクロベンチ
+npm run bench
 ```
 
 > `npm start` は起動時のコードを読み込んだまま動きます（自動リロードなし）。コードを変えたら一度終了して起動し直してください。
@@ -99,7 +102,7 @@ npm run dist:linux
 
 生成物：`release/PokeFollower Setup 1.0.0.exe`
 
-macOS 生成物：`release/PokeFollower-1.0.0-arm64.dmg` / `release/PokeFollower-1.0.0-arm64-mac.zip` など（実行環境の CPU により変わります）。
+macOS 生成物：`release/PokeFollower-1.0.0-arm64.dmg` / `release/PokeFollower-1.0.0.dmg` など（`dist:mac` は Intel / Apple Silicon の両アーキテクチャを明示してビルドします）。
 
 Linux 生成物：`release/PokeFollower-1.0.0.AppImage` など。
 
@@ -111,7 +114,7 @@ Linux 生成物：`release/PokeFollower-1.0.0.AppImage` など。
 
 | 部品 | 役割 |
 |---|---|
-| メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（約60fps）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
+| メインプロセス（`src/main/main.js`） | 司令塔。カーソル取得・追従シムの駆動（8ms 間隔、最大約120fps目標）・設定の永続化・各窓への描画配信・トレイ・設定窓の管理 |
 | 追従シム（`src/main/follower-sim.js`） | 追従とアニメーションの計算（グローバル座標）。DOM 非依存・テスト可能 |
 | Rust 追従コア（`crates/follower_core/`） | 追従位置計算の本体。WASM として `native/pokefollower_core.wasm` にビルドされ、Electron 実行時に読み込まれる |
 | オーバーレイ窓（`src/overlay/`） | **モニターごとに1枚**常設。透明・最前面・クリック透過。メインから受け取ったローカル座標でスプライトを描くだけ |

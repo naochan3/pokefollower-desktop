@@ -5,7 +5,7 @@ const fs = require("node:fs");
 const { makePackReader } = require("./pack-reader.js");
 const { createSettingsStore } = require("./settings-store.js");
 const { createFollowerSim } = require("./follower-sim.js");
-const { getForegroundInfo } = require("./fullscreen-detect.js");
+const { getForegroundInfo, isFullscreenForeground } = require("./fullscreen-detect.js");
 
 const ROOT = path.join(__dirname, "..", ".."); // assets/ の親（プロジェクトルート）
 const packReader = makePackReader(ROOT);
@@ -22,18 +22,10 @@ let lastStepTs = 0;
 let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）があるか
 const SIM_INTERVAL_MS = 8;
 
-// 前面ウィンドウがいずれかのモニター全体を覆っていれば「全画面」とみなす。
-// 最大化（Chrome等）は作業領域までなので一致せず、隠れない。
-// デスクトップ/タスクバー等のシェル窓は画面全体サイズだが全画面アプリではない
-const SHELL_CLASSES = new Set(["Progman", "WorkerW", "Shell_TrayWnd", "Shell_SecondaryTrayWnd", ""]);
 const TRAY_ICON_SIZE_PX = 28;
 function checkFullscreen() {
   const info = getForegroundInfo();
-  if (!info || SHELL_CLASSES.has(info.cls)) { fullscreenActive = false; return; }
-  fullscreenActive = screen.getAllDisplays().some((d) => {
-    const sf = d.scaleFactor || 1;
-    return info.w >= d.bounds.width * sf - 2 && info.h >= d.bounds.height * sf - 2;
-  });
+  fullscreenActive = isFullscreenForeground(info, screen.getAllDisplays());
 }
 
 protocol.registerSchemesAsPrivileged([

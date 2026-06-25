@@ -5,6 +5,15 @@
 // - デスクトップ/タスクバー等のシェル窓は画面全体サイズだが「クラス名」で除外する
 
 let getForegroundInfo = () => null;
+const SHELL_CLASSES = new Set(["Progman", "WorkerW", "Shell_TrayWnd", "Shell_SecondaryTrayWnd", ""]);
+
+function isFullscreenForeground(info, displays) {
+  if (!info || SHELL_CLASSES.has(info.cls)) return false;
+  return displays.some((d) => {
+    const sf = d.scaleFactor || 1;
+    return info.w >= d.bounds.width * sf - 2 && info.h >= d.bounds.height * sf - 2;
+  });
+}
 
 if (process.platform === "win32") {
   try {
@@ -32,4 +41,4 @@ if (process.platform === "win32") {
   }
 }
 
-module.exports = { getForegroundInfo };
+module.exports = { getForegroundInfo, isFullscreenForeground };

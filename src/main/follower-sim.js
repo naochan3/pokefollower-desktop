@@ -15,9 +15,10 @@ const SPEED_CONFIG_MIN = 0.05;
 const SPEED_CONFIG_MAX = 0.50;
 const IDLE_OFFSET_DIR = { x: 0.72, y: 0.69 };
 
-function createFollowerSim() {
+function createFollowerSim(options = {}) {
+  const { useRust = true, rootDir = path.join(__dirname, "..", "..") } = options;
   const CONFIG = { scale: 1.25, offset: 70, lerp: 0.20 };
-  const rustCore = createRustFollowerCore(path.join(__dirname, "..", ".."));
+  const rustCore = useRust ? createRustFollowerCore(rootDir) : null;
   let meta = null;
   const R = {
     anim: { name: "idle", frame: 0, row: 0, accMs: 0 },
@@ -165,6 +166,7 @@ function createFollowerSim() {
         frame: R.anim.frame % st.frames,
         row: R.anim.row,
         scale: CONFIG.scale,
+        walking: R.isWalking,
       };
     },
   };
