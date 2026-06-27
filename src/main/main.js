@@ -31,6 +31,7 @@ let currentMeta = null;
 let enabled = false;
 let simTimer = null;
 let simIntervalMs = null;
+let fullscreenInitialTimer = null;
 let fullscreenTimer = null;
 let lastStepTs = 0;
 let lastRender = null;
@@ -46,7 +47,8 @@ let favoriteRotationTimer = null;
 
 const TRAY_ICON_SIZE_PX = 28;
 const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
-const FULLSCREEN_POLL_INTERVAL_MS = process.platform === "win32" ? 600 : 2000;
+const FULLSCREEN_INITIAL_DELAY_MS = process.platform === "darwin" ? 1000 : 0;
+const FULLSCREEN_POLL_INTERVAL_MS = process.platform === "win32" ? 600 : process.platform === "darwin" ? 5000 : 2000;
 
 function applyFullscreenInfo(info) {
   lastForegroundInfo = info || null;
@@ -283,13 +285,30 @@ function refreshSimLoopInterval() {
 }
 
 function startFullscreenPolling() {
-  if (fullscreenTimer) return;
-  checkFullscreen();
-  fullscreenTimer = setInterval(checkFullscreen, FULLSCREEN_POLL_INTERVAL_MS);
+  if (fullscreenTimer || fullscreenInitialTimer) return;
+  const startInterval = () => {
+    checkFullscreen();
+    fullscreenTimer = setInterval(checkFullscreen, FULLSCREEN_POLL_INTERVAL_MS);
+  };
+  if (FULLSCREEN_INITIAL_DELAY_MS > 0) {
+    fullscreenInitialTimer = setTimeout(() => {
+      fullscreenInitialTimer = null;
+      startInterval();
+    }, FULLSCREEN_INITIAL_DELAY_MS);
+  } else {
+    startInterval();
+  }
 }
 
 function stopFullscreenPolling() {
-  if (!fullscreenTimer) return;
+  if (fullscreenInitialTimer) {
+    clearTimeout(fullscreenInitialTimer);
+    fullscreenInitialTimer = null;
+  }
+  if (!fullscreenTimer) {
+    fullscreenActive = false;
+    return;
+  }
   clearInterval(fullscreenTimer);
   fullscreenTimer = null;
   fullscreenActive = false;

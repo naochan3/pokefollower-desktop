@@ -7,6 +7,7 @@
 const { execFile, execFileSync } = require("node:child_process");
 
 let getForegroundInfo = () => null;
+const MAC_FOREGROUND_FAILURE_BACKOFF_MS = 30000;
 
 function execText(command, args) {
   return execFileSync(command, args, { encoding: "utf8", timeout: 500, windowsHide: true }).trim();
@@ -32,12 +33,28 @@ function parseMacForegroundInfo(output) {
   return { cls: cls || "", x: parseNumber(x), y: parseNumber(y), w: parseNumber(w), h: parseNumber(h), isFullscreen: isFullscreen === "true" };
 }
 
-function createMacForegroundInfoGetter(runCommand = execTextAsync) {
+function createFailureBackoffCommandRunner(runCommand, { failureBackoffMs = MAC_FOREGROUND_FAILURE_BACKOFF_MS, now = Date.now } = {}) {
+  let nextAllowedAt = 0;
+  return async (command, args) => {
+    const current = now();
+    if (current < nextAllowedAt) return null;
+    const output = await runCommand(command, args);
+    if (output) {
+      nextAllowedAt = 0;
+      return output;
+    }
+    nextAllowedAt = current + failureBackoffMs;
+    return null;
+  };
+}
+
+function createMacForegroundInfoGetter(runCommand = execTextAsync, options = {}) {
+  const runWithBackoff = createFailureBackoffCommandRunner(runCommand, options);
   const script = [
     'tell application "System Events"',
     'set frontApp to first application process whose frontmost is true',
     'set appName to name of frontApp',
-    'if (count of windows of frontApp) is 0 then return appName & tab & "0" & tab & "0" & tab & "false"',
+    'if (count of windows of frontApp) is 0 then return appName & tab & "0" & tab & "0" & tab & "0" & tab & "0" & tab & "false"',
     'set frontWindow to window 1 of frontApp',
     'try',
     'set isFs to value of attribute "AXFullScreen" of frontWindow',
@@ -63,7 +80,7 @@ function createMacForegroundInfoGetter(runCommand = execTextAsync) {
     'return appName & tab & winX & tab & winY & tab & winWidth & tab & winHeight & tab & isFs',
     "end tell",
   ].join("\n");
-  return async () => parseMacForegroundInfo(await runCommand("osascript", ["-e", script]));
+  return async () => parseMacForegroundInfo(await runWithBackoff("osascript", ["-e", script]));
 }
 
 function parseLinuxForegroundInfo(state, wmClass, geometry) {
@@ -127,7 +144,9 @@ if (process.platform === "win32") {
 }
 
 module.exports = {
+  MAC_FOREGROUND_FAILURE_BACKOFF_MS,
   createLinuxForegroundInfoGetter,
+  createFailureBackoffCommandRunner,
   createMacForegroundInfoGetter,
   getForegroundInfo,
   parseLinuxForegroundInfo,

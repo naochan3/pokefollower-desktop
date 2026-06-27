@@ -103,14 +103,14 @@ if (!releasing.includes("hardenedRuntime: true") || !releasing.includes(entitlem
 if (!releasing.includes("秘密情報はリポジトリ、Issue、ログ、Release notes に書かず")) {
   fail("RELEASING.md must document signing secret handling boundaries");
 }
-if (pkg.scripts?.dist !== "electron-builder --win --x64 --config electron-builder.unsigned.cjs") {
-  fail("package.json dist must use electron-builder.unsigned.cjs");
+if (pkg.scripts?.dist !== "electron-builder --win --x64 --config electron-builder.unsigned.cjs --publish never") {
+  fail("package.json dist must use electron-builder.unsigned.cjs with publish disabled");
 }
-if (pkg.scripts?.["dist:win"] !== "electron-builder --win --x64 --config electron-builder.unsigned.cjs") {
-  fail("package.json dist:win must use electron-builder.unsigned.cjs");
+if (pkg.scripts?.["dist:win"] !== "electron-builder --win --x64 --config electron-builder.unsigned.cjs --publish never") {
+  fail("package.json dist:win must use electron-builder.unsigned.cjs with publish disabled");
 }
-if (pkg.scripts?.["dist:mac"] !== "electron-builder --mac --config electron-builder.unsigned.cjs") {
-  fail("package.json dist:mac must use electron-builder.unsigned.cjs");
+if (pkg.scripts?.["dist:mac"] !== "electron-builder --mac --config electron-builder.unsigned.cjs --publish never") {
+  fail("package.json dist:mac must use electron-builder.unsigned.cjs with publish disabled");
 }
 if (pkg.scripts?.["dist:mac:signed"] !== "electron-builder --mac --config electron-builder.signed.cjs") {
   fail("package.json dist:mac:signed must use electron-builder.signed.cjs");

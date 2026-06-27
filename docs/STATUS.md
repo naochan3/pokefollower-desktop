@@ -1,6 +1,6 @@
 # プロジェクト状況（計画 vs 現状）
 
-最終更新: 2026-06-22 / 現在のバージョン: **v1.2.0**
+最終更新: 2026-06-23 / 現在のバージョン: **v1.2.0**
 
 このドキュメントは「当初の計画に対して、今どこまで出来ているか」を一覧で把握するためのものです。
 詳細な設計・実装計画は `docs/superpowers/plans/` と `docs/superpowers/specs/` を参照。
@@ -11,7 +11,7 @@
 
 ブラウザ拡張 [pokefollower_cursor_web_plugin](https://github.com/ThinkrDoer/pokefollower_cursor_web_plugin) を、
 **デスクトップ全体で OS カーソルを追う常駐マスコット（Electron）** に作り変える、という当初ゴールは達成済み。
-現在は Windows / macOS(arm64) / Linux(AppImage) 向けに配布物を出せる状態。
+現在は Windows / macOS(arm64) 向け Release asset を出せる状態。Linux AppImage はビルド対応済みですが、v1.2.0 Release asset は未添付です。
 
 ---
 
@@ -39,6 +39,7 @@
 - **Windows 配布物に zip ターゲット追加**（PR #12）。`npm run dist:win` で `.exe` と `.zip` を生成。v1.0.2 リリースに同梱済み
 - **Electron セキュリティ更新**（PR #18）：Electron 31→42.4.1、`app://` を assets/ 配下に制限、レンダラ sandbox 有効化、npm audit 0件。Node >=22.12.0 必須
 - **追従更新間隔の軽量化**（PR #21）：既定を16ms（最大60fps相当）へ戻し、検証用に `POKEFOLLOWER_SIM_INTERVAL_MS=8` の明示 override を維持
+- **overlay 側の表示補間**：main process の simulation tick は 16ms 既定のまま維持し、overlay renderer で `requestAnimationFrame` による座標補間を行う。非表示後は補間状態を破棄し、fullscreen 復帰時に古い座標からワープ補間しないことを `tests/overlay-interpolation.test.js` と `verify:overlay` で検証
 
 ---
 
@@ -46,7 +47,7 @@
 
 - Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21＋ #31/#32 の追従挙動修正＋ #34（待機を移動方向の逆隅に）＋ #35（第5〜9世代追加・世代フィルタ）込み。追従既定 16ms）。**v1.2.0 では Windows 担当が本 Release に添付**
 - macOS arm64 dmg / zip（**v1.2.0 リリース作成後に macOS 担当（@Nicolas0315）/ CI が同 Release に添付**）
-- Linux AppImage（**v1.2.0 リリース作成後に同 Release に添付**。package smoke、WSLg build/start smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate は v1.0.5 時点で確認済み）
+- Linux AppImage（ビルド対応済み。ただし **v1.2.0 Release asset は未添付**。package smoke、WSLg build/start smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate は v1.0.5 時点で確認済み）
 - ポケモン 956 種＋地方フォルム 54 種（index 計1010）（第1〜9世代。未収録69種は出典素材待ち）
 - 3タブ設定 UI（あいぼう / ボックス / せってい）— ポケモン体験に合わせたUI設計（v1.2.0 新規）
 - 手持ち6体・先頭=相棒（タップで相棒切替、満杯時は枠タップで入替）（v1.2.0 新規）
@@ -59,6 +60,7 @@
 - アプリに合わせる（opt-in）。前面アプリ情報が取れる環境では、エディタ/ターミナルで距離を取り、ブラウザ/チャットでは少し近づく軽量ルールを適用
 - マルチモニター連続追従、全画面自動非表示（Windows / macOS / Linux best-effort）、ログイン自動起動、クリック透過
 - 追従更新間隔の軽量化（既定を16ms（最大60fps相当）へ戻し、検証用に `POKEFOLLOWER_SIM_INTERVAL_MS=8` の明示 override を維持）
+- overlay renderer の `requestAnimationFrame` 表示補間（高Hzディスプレイでは表示cadenceに合わせて座標を中間描画。120Hz / ProMotion / 外部高Hzモニターの目視検証は #103 / #104 で継続）
 - 通知コンパニオン基盤（既定 OFF、OS 通知本文は保存しない、Codex notify bridge は短い要約だけを最大64件のローカル queue に保持）
 - Codex custom pet 書き出し（設定画面の `Codex pet` → `EXPORT` で選択中ポケモンを `~/.codex/pets/` へ出力）
 
@@ -81,6 +83,7 @@
 |---|---|---|---|
 | 配布物の署名・公証（Win/Mac） | 低 | [#16](https://github.com/naochan3/pokefollower-desktop/issues/16) | SmartScreen / Gatekeeper 警告の解消。証明書・Apple Developer ID が必要 |
 | macOS / Linux の全画面自動非表示・Linux 実機検証 | 低 | [#17](https://github.com/naochan3/pokefollower-desktop/issues/17) | macOS / Linux の best-effort 検知、macOS runtime smoke、Linux AppImage build/start smoke、saved pack restore smoke、WSLg GUI evidence candidate は確認済み。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。Linux AppImage の tray・透明・クリック透過・最前面は実機目視検証が必要 |
+| 120Hz / ProMotion / 高Hz表示補間の実機確認 | 中 | [#103](https://github.com/naochan3/pokefollower-desktop/issues/103) / [#104](https://github.com/naochan3/pokefollower-desktop/issues/104) | overlay の rAF 補間は実装済み。Windows 120Hz 以上、macOS ProMotion / 外部高Hzモニターでの目視・CPU/RSS確認が必要 |
 
 ---
 
@@ -92,4 +95,4 @@
 - 邪魔しない追従は system idle time が取れない環境では、カーソル近傍回避のみで動作します。
 - 通知コンパニオンは OS 全体の通知取得までは未対応です。現在はアプリ内/許可済みイベントと Codex notify payload を表示する軽量基盤で、OS 別の権限境界は [通知コンパニオンの取得境界](notification-capture.md) に整理しています。
 - モニター間で表示スケール（DPI）が大きく異なると、位置がわずかにずれることがある。
-- Linux は AppImage 配布、WSLg 起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate まで（WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない環境の candidate は visual non-evaluable として扱い、実機の tray・透明・クリック透過・最前面は未検証）。
+- Linux は AppImage ビルド対応、WSLg 起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate まで（v1.2.0 Release asset は未添付。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない環境の candidate は visual non-evaluable として扱い、実機の tray・透明・クリック透過・最前面は未検証）。
