@@ -353,7 +353,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const lerp   = (typeof settings.lerp   === "number") ? settings.lerp   : DEFAULTS.vcp1_lerp;
     scaleEl.value  = String(scale);
     offsetEl.value = String(offset);
-    // UI shows speed as 0.5–5.0 (×10 of internal lerp 0.05–0.50)
+    // UI shows speed as 0.5–10.0 (×10 of internal lerp 0.05–1.0)
     const lerpUI = lerp * 10;
     lerpEl.value = String(lerpUI.toFixed(1));
     scaleVal.textContent  = scale.toFixed(2) + "×";
@@ -421,7 +421,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   offsetEl.addEventListener("change", () => commitOffset({ flush: true }));
   attachEnterCommit(offsetEl, commitOffset);
 
-  // Lerp（UI 0.5–5.0 ↔ 内部 0.05–0.50）
+  // Lerp（UI 0.5–10.0 ↔ 内部 0.05–1.0）
   function previewLerp() {
     const raw = lerpEl.value.trim();
     if (isPartialNumber(raw)) { lerpVal.textContent = raw ? raw : ""; return; }
@@ -433,7 +433,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const normalized = Number.isFinite(ui) ? Number(ui.toFixed(1)) : Number((DEFAULTS.vcp1_lerp * 10).toFixed(1));
     lerpEl.value = normalized.toFixed(1);
     lerpVal.textContent = normalized.toFixed(1);
-    const lerp = normalized / 10;              // internal 0.05–0.50
+    const lerp = normalized / 10;              // internal 0.05–1.0
     pushConfig({ vcp1_lerp: lerp }, { flush });
   }
   lerpEl.addEventListener("input", previewLerp);

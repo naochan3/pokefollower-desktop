@@ -6,11 +6,13 @@ const SLOW_RADIUS_PX: f64 = 60.0;
 // QUICK_START 以下は通常速度、QUICK_FULL 以上で最大。間は線形。スプライト・向きは一切変えない。
 const QUICK_START_PX: f64 = 120.0;
 const QUICK_FULL_PX: f64 = 320.0;
-const QUICK_MULT: f64 = 2.2;
+const QUICK_MULT: f64 = 3.5;
 const WALK_SPEED_MIN_PXPS: f64 = 80.0;
-const WALK_SPEED_MAX_PXPS: f64 = 640.0;
+// 上限 lerp を 0.50→1.0 へ広げた際、既存 lerp 値の速度を不変に保つため傾きを維持した値（JS 側と一致）。
+// 80 + 560 * (1.0-0.05)/(0.50-0.05) ≈ 1262。lerp=0.50 で従来どおり 640px/s、lerp=1.0 で約1262px/s。
+const WALK_SPEED_MAX_PXPS: f64 = 1262.0;
 const SPEED_CONFIG_MIN: f64 = 0.05;
-const SPEED_CONFIG_MAX: f64 = 0.50;
+const SPEED_CONFIG_MAX: f64 = 1.0;
 const IDLE_OFFSET_DIR: Vec2 = Vec2 { x: 0.0, y: -1.0 }; // 待機時はカーソルの真上に寄る（本家拡張と同じ）
 const CURSOR_CLEARANCE_PX: f64 = 48.0;
 
