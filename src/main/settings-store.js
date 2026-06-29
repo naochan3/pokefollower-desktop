@@ -29,9 +29,9 @@ const AVOID_CURSOR_STRENGTHS = new Set(["normal", "strong"]);
 const WORK_WATCH_PRESETS = new Set(["25/5", "50/10"]);
 
 const LIMITS = {
-  scale: { min: 0.5, max: 5.0 },
-  offset: { min: 0, max: 100 },
-  lerp: { min: 0.05, max: 0.5 },
+  scale: { min: 0.5, max: 10.0 },
+  offset: { min: 0, max: 250 },
+  lerp: { min: 0.05, max: 1.0 },
 };
 
 function clamp(n, { min, max }) {
