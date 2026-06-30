@@ -1,0 +1,97 @@
+name: 機能候補 / 検証
+description: 実装・検証までは進め、ローンチ判断は分離する機能候補
+title: "機能候補: "
+labels:
+  - enhancement
+  - "feature:idea"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        機能の実装・検証を進めるためのテンプレートです。
+        ユーザーへローンチするかは、検証完了後に別途 PdM 判断します。
+  - type: textarea
+    id: value
+    attributes:
+      label: 価値仮説
+      description: 誰の何が楽になる / 楽しくなる想定ですか。
+      placeholder: "例: 通知を見逃しやすいユーザーが、作業中でも軽く内容を把握できる。"
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 実装スコープ
+      description: 今回作ることと、作らないことを書いてください。
+      placeholder: |
+        作る:
+        - 設定 ON/OFF
+        - 検証用 UI
+
+        作らない:
+        - 既定 ON
+        - Release notes への掲載
+    validations:
+      required: true
+  - type: dropdown
+    id: current_state
+    attributes:
+      label: 現在の状態
+      description: 機能候補のライフサイクル上の状態です。
+      options:
+        - idea
+        - experiment-ready
+        - implemented
+        - validated
+        - launch-approved
+        - parked
+      default: 0
+    validations:
+      required: true
+  - type: dropdown
+    id: launch_decision
+    attributes:
+      label: ローンチ判断
+      description: 現時点のユーザー公開判断です。
+      options:
+        - 未判断
+        - GO: launch-approved に進める
+        - NO-GO: parked にする
+        - 保留: validated のまま再判断
+      default: 0
+    validations:
+      required: true
+  - type: checkboxes
+    id: validation
+    attributes:
+      label: 検証項目
+      options:
+        - label: "自動テストまたは verifier を追加/更新する"
+        - label: "`npm run verify:local` を通す"
+        - label: "対象 OS の package smoke を確認する"
+        - label: "手動 GUI 検証が必要な場合、環境と結果を記録する"
+        - label: "CPU/RSS/起動時間など、常駐負荷への影響を確認する"
+        - label: "既定 OFF または既存ユーザーに影響しない導線にする"
+  - type: textarea
+    id: risks
+    attributes:
+      label: リスクと境界
+      description: 性能、権限、通知本文、配布物、OS差分など。
+      placeholder: |
+        - risk:performance
+        - risk:privacy
+        - risk:release
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: 完了条件
+      description: 実装・検証が完了したと言える条件を書いてください。
+      placeholder: |
+        - 設定 OFF で既存挙動が変わらない
+        - ON で期待挙動が出る
+        - verify:local PASS
+        - ローンチ判断は別コメントで記録
+    validations:
+      required: true
