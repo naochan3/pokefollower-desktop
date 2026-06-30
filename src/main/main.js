@@ -1,7 +1,9 @@
-const { app, BrowserWindow, protocol, net, screen, ipcMain, Tray, Menu, nativeImage, powerMonitor, session } = require("electron");
+const { app, BrowserWindow, protocol, net, screen, ipcMain, dialog, shell, Tray, Menu, nativeImage, powerMonitor, session } = require("electron");
 const path = require("node:path");
 const { pathToFileURL } = require("node:url");
 const fs = require("node:fs");
+const { spawn } = require("node:child_process");
+const { checkLatestRelease, isOutdated, pickWindowsInstallerAsset } = require("./updater.js");
 const { makePackReader } = require("./pack-reader.js");
 const { createSettingsStore } = require("./settings-store.js");
 const { createFollowerSim } = require("./follower-sim.js");
@@ -346,6 +348,72 @@ function buildTray() {
   tray.on("double-click", () => getSettingsWin());
 }
 
+// 担当ディスプレイ全体の DL を temp に保存して exe パスを返す（net.fetch はリダイレクトを追従）。
+async function downloadInstaller(url, version) {
+  const res = await net.fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const buf = Buffer.from(await res.arrayBuffer());
+  if (buf.length === 0) throw new Error("ダウンロードしたファイルが空です");
+  const dest = path.join(app.getPath("temp"), `PokeFollower-Setup-${version}.exe`);
+  fs.writeFileSync(dest, buf);
+  return dest;
+}
+
+let updateCheckInFlight = false;
+
+// 「アップデートを確認」: GitHub の最新リリースを調べ、古ければ更新する。
+// Windows: 確認 → DL → インストーラ起動 → 終了（oneClick NSIS が上書き再起動）。
+// macOS/その他: リリースDLページを開く（未署名のため自動更新は不可）。
+async function runUpdateCheck() {
+  if (updateCheckInFlight) return;
+  updateCheckInFlight = true;
+  try {
+    const current = app.getVersion();
+    let release;
+    try {
+      release = await checkLatestRelease((url, opts) => net.fetch(url, opts));
+    } catch (err) {
+      await dialog.showMessageBox({ type: "error", title: "アップデート", message: "更新の確認に失敗しました", detail: String((err && err.message) || err) });
+      return;
+    }
+
+    if (!isOutdated(current, release.version)) {
+      await dialog.showMessageBox({ type: "info", title: "アップデート", message: `最新版です（v${current}）` });
+      return;
+    }
+
+    if (process.platform !== "win32") {
+      const r = await dialog.showMessageBox({ type: "info", title: "アップデート", message: `新しいバージョン v${release.version} があります`, detail: "ダウンロードページを開きます（macOS は手動での入れ替えが必要です）。", buttons: ["ページを開く", "あとで"], defaultId: 0, cancelId: 1 });
+      if (r.response === 0 && release.htmlUrl) shell.openExternal(release.htmlUrl);
+      return;
+    }
+
+    const installerUrl = pickWindowsInstallerAsset(release.assets);
+    if (!installerUrl) {
+      await dialog.showMessageBox({ type: "error", title: "アップデート", message: "インストーラが見つかりませんでした", detail: "リリースに PokeFollower-Setup.exe が含まれていません。" });
+      return;
+    }
+
+    const confirm = await dialog.showMessageBox({ type: "question", title: "アップデート", message: `新しいバージョン v${release.version} が見つかりました`, detail: "今すぐ更新しますか？アプリは一旦終了し、更新後に再起動します。", buttons: ["今すぐ更新", "あとで"], defaultId: 0, cancelId: 1 });
+    if (confirm.response !== 0) return;
+
+    let exePath;
+    try {
+      exePath = await downloadInstaller(installerUrl, release.version);
+    } catch (err) {
+      await dialog.showMessageBox({ type: "error", title: "アップデート", message: "ダウンロードに失敗しました", detail: String((err && err.message) || err) });
+      return;
+    }
+
+    const child = spawn(exePath, [], { detached: true, stdio: "ignore", shell: false });
+    child.unref();
+    app.isQuitting = true;
+    app.quit();
+  } finally {
+    updateCheckInFlight = false;
+  }
+}
+
 function refreshTrayMenu() {
   const menu = Menu.buildFromTemplate([
     { label: "設定を開く", click: () => getSettingsWin() },
@@ -367,6 +435,7 @@ function refreshTrayMenu() {
       },
     },
     { type: "separator" },
+    { label: "アップデートを確認", click: () => { runUpdateCheck(); } },
     { label: "終了", click: () => { app.isQuitting = true; app.quit(); } },
   ]);
   tray.setContextMenu(menu);
@@ -447,6 +516,14 @@ function saveFavoritePacks(favoritePacks) {
 ipcMain.handle("settings:get", (event) => {
   requireSettingsSender(event);
   return settingsStore.getAll();
+});
+ipcMain.handle("update:get-version", (event) => {
+  requireSettingsSender(event);
+  return app.getVersion();
+});
+ipcMain.handle("update:check", (event) => {
+  requireSettingsSender(event);
+  runUpdateCheck();
 });
 ipcMain.handle("packs:list", (event) => {
   requireSettingsSender(event);
