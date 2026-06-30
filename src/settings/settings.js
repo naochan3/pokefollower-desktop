@@ -692,6 +692,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const notificationCompanionEl = document.getElementById("notificationCompanion");
   const testCompanionEl = document.getElementById("testCompanion");
   const exportCodexPetEl = document.getElementById("exportCodexPet");
+  const checkUpdateEl = document.getElementById("checkUpdate");
+  const appVersionEl = document.getElementById("appVersion");
 
   if (enabledEl) {
     enabledEl.checked = !!settings.enabled;
@@ -717,6 +719,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   if (testCompanionEl) {
     testCompanionEl.addEventListener("click", () => window.settingsApi.testCompanionNotification());
+  }
+  if (appVersionEl && window.settingsApi.getAppVersion) {
+    window.settingsApi.getAppVersion().then((v) => { appVersionEl.textContent = `v${v}`; }).catch(() => {});
+  }
+  if (checkUpdateEl) {
+    checkUpdateEl.addEventListener("click", () => window.settingsApi.checkForUpdate());
   }
   if (exportCodexPetEl) {
     exportCodexPetEl.addEventListener("click", async () => {
