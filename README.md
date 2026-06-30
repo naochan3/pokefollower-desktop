@@ -21,7 +21,7 @@
 
 ### macOS（Apple Silicon）
 
-**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.3.0/PokeFollower-1.3.0-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.3.0/PokeFollower-1.3.0-arm64-mac.zip)）
+**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.0/PokeFollower-1.4.0-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.0/PokeFollower-1.4.0-arm64-mac.zip)）
 
 1. 上のリンクから `.dmg` をダウンロード
 2. 開いて `PokeFollower.app` を**アプリケーション**にドラッグ → 起動して**メニューバー**（画面右上）に常駐
@@ -32,15 +32,15 @@
 
 ### Linux
 
-**[→ AppImage をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.3.0/PokeFollower-1.3.0.AppImage)**
+**[→ AppImage をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.0/PokeFollower-1.4.0.AppImage)**
 
-1. 上のリンクから `PokeFollower-1.3.0.AppImage` をダウンロード
+1. 上のリンクから `PokeFollower-1.4.0.AppImage` をダウンロード
 2. 実行権限を付けて起動
 3. 起動できた環境では、tray または代替の常駐 UI から設定 / 有効・無効 / 終了
 
 ```bash
-chmod +x PokeFollower-1.3.0.AppImage
-./PokeFollower-1.3.0.AppImage
+chmod +x PokeFollower-1.4.0.AppImage
+./PokeFollower-1.4.0.AppImage
 ```
 
 > Linux 版は AppImage のパッケージ検証、WSLg での起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate までです。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない candidate は visual non-evaluable として扱い、デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
@@ -214,7 +214,7 @@ npm run dist:mac
 npm run dist:linux
 ```
 
-生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.3.0.exe`）
+生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.4.0.exe`）
 
 macOS 生成物：`release/PokeFollower-<version>-arm64.dmg` / `release/PokeFollower-<version>-arm64-mac.zip` など（実行環境の CPU により変わります）。
 
