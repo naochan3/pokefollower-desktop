@@ -29,12 +29,25 @@
 
 ### 1. バージョンを上げる
 
+バージョンを上げるときは **package だけでなく以下のドキュメント・検証スクリプトも同じ版数へ更新** する。
+1つでも漏れると CI の `verify:docs` / `verify:roadmap` が落ちる。
+
+| 更新対象 | 何を直すか |
+|---|---|
+| `package.json` / `package-lock.json` | `npm version <ver> --no-git-tag-version` で両方更新 |
+| `README.md` | macOS dmg/zip リンク、Linux AppImage リンク、Windows 例示 `... <ver>.exe`（Windows DL リンクは `releases/latest/...` で固定なので不要） |
+| `docs/STATUS.md` | `現在のバージョン: **v<ver>**`、見出し `現在含まれているもの（v<ver>）`、追加内容の箇条書き |
+| `scripts/verify-roadmap-issues.cjs` | **ハードコードされた版数スナップショット**（現在のバージョン文字列・含有物見出し・README AppImage リンクの3箇所）。これがリリース毎に手で更新する隠れ手順 |
+
 ```bash
-# package.json の "version" を編集（例: 1.0.1 → 1.0.2）
-git add package.json
-git commit -m "release: v1.0.2"
+npm version 1.0.2 --no-git-tag-version   # package.json / package-lock.json を更新
+# 上表の README / STATUS / verify-roadmap-issues.cjs を編集
+npm run verify:local                     # verify:docs / verify:roadmap が通ることを確認
+git add -A
+git commit -m "chore(release): v1.0.2"
+# main は保護ブランチのため PR 経由でマージ。マージ後に main でタグを打つ：
+git checkout main && git pull
 git tag v1.0.2
-git push origin main
 git push origin v1.0.2
 ```
 
