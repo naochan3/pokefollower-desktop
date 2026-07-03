@@ -54,7 +54,7 @@
     "build:index": "node scripts/build-index.mjs"
   },
   "devDependencies": {
-    "electron": "^42.4.1",
+    "electron": "^43.0.0",
     "electron-builder": "^26.15.3",
     "fast-xml-parser": "^5.9.3",
     "image-size": "^2.0.2",
