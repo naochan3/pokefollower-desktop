@@ -61,7 +61,7 @@
     "vitest": "^4.1.9"
   },
   "optionalDependencies": {
-    "sharp": "^0.35.2"
+    "sharp": "^0.35.3"
   },
   "build": {
     "appId": "com.naochan3.pokefollower",
