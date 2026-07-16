@@ -17,8 +17,8 @@ function expectIncludesAll(text, snippets, message) {
 }
 
 expect(readme.includes("[docs/STATUS.md](docs/STATUS.md)"), "README must link to docs/STATUS.md");
-expect(status.includes("現在のバージョン: **v1.4.0**"), "STATUS must state current version v1.4.0");
-expect(status.includes("現在含まれているもの（v1.4.0）"), "STATUS must have included-assets section for v1.4.0");
+expect(status.includes("現在のバージョン: **v1.4.1**"), "STATUS must state current version v1.4.1");
+expect(status.includes("現在含まれているもの（v1.4.1）"), "STATUS must have included-assets section for v1.4.1");
 
 for (const issue of [
   ["#16", "配布物の署名・公証（Win/Mac）", "SmartScreen / Gatekeeper"],
@@ -58,7 +58,7 @@ expect(status.includes("全画面の自動非表示は macOS / Linux では権�
 expect(status.includes("macOS / Windows とも **未署名**"), "STATUS must keep unsigned limitation");
 expect(status.includes("[通知コンパニオンの取得境界](notification-capture.md)"), "STATUS must link notification capture boundaries");
 expect(readme.includes("[通知コンパニオンの取得境界](docs/notification-capture.md)"), "README must link notification capture boundaries");
-expect(readme.includes("releases/download/v1.4.0/PokeFollower-1.4.0.AppImage"), "README must link the v1.4.0 Linux AppImage asset");
+expect(readme.includes("releases/download/v1.4.1/PokeFollower-1.4.1.AppImage"), "README must link the v1.4.1 Linux AppImage asset");
 expect(!readme.includes("v1.2.0 の Release には AppImage asset をまだ添付していない"), "README must not keep the stale missing Linux AppImage note");
 expect(status.includes("未完了・対応中・検討中の項目"), "STATUS roadmap must not describe active work as only unstarted");
 expect(status.includes("OS 通知本文は保存しない"), "STATUS must distinguish OS notification bodies from Codex summaries");

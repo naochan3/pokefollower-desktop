@@ -21,26 +21,31 @@
 
 ### macOS（Apple Silicon）
 
-**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.0/PokeFollower-1.4.0-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.0/PokeFollower-1.4.0-arm64-mac.zip)）
+**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.1/PokeFollower-1.4.1-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.1/PokeFollower-1.4.1-arm64-mac.zip)）
 
 1. 上のリンクから `.dmg` をダウンロード
 2. 開いて `PokeFollower.app` を**アプリケーション**にドラッグ → 起動して**メニューバー**（画面右上）に常駐
 3. メニューバーのモンスターボールを**クリック**で、設定 / 有効・無効 / 終了
 
-> 未署名・未公証のため、初回は Gatekeeper にブロックされます。アプリを**右クリック →「開く」**、または `システム設定 → プライバシーとセキュリティ` の「このまま開く」で実行してください。
+> 未署名・未公証のため、初回は Gatekeeper にブロックされます（ad-hoc 署名済みなので「壊れている」ではなく「開発元を確認できない」扱いです）。次のいずれかで起動できます。
+>
+> - アプリを**右クリック →「開く」** → 確認ダイアログでもう一度「開く」
+> - または `システム設定 → プライバシーとセキュリティ` を開き、下部の「このまま開く」
+> - まれに「壊れているため開けません」と出る場合は、リリースページの **`mac-fix.command` をダウンロードしてダブルクリック**（または ターミナルで `xattr -cr /Applications/PokeFollower.app` を実行）してから起動してください。
+>
 > （macOS 版は contributor がビルドした arm64 バイナリ。全画面アプリの自動非表示にはアクセシビリティ許可が必要な場合があります）
 
 ### Linux
 
-**[→ AppImage をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.0/PokeFollower-1.4.0.AppImage)**
+**[→ AppImage をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.1/PokeFollower-1.4.1.AppImage)**
 
-1. 上のリンクから `PokeFollower-1.4.0.AppImage` をダウンロード
+1. 上のリンクから `PokeFollower-1.4.1.AppImage` をダウンロード
 2. 実行権限を付けて起動
 3. 起動できた環境では、tray または代替の常駐 UI から設定 / 有効・無効 / 終了
 
 ```bash
-chmod +x PokeFollower-1.4.0.AppImage
-./PokeFollower-1.4.0.AppImage
+chmod +x PokeFollower-1.4.1.AppImage
+./PokeFollower-1.4.1.AppImage
 ```
 
 > Linux 版は AppImage のパッケージ検証、WSLg での起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate までです。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない candidate は visual non-evaluable として扱い、デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
@@ -214,7 +219,7 @@ npm run dist:mac
 npm run dist:linux
 ```
 
-生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.4.0.exe`）
+生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.4.1.exe`）
 
 macOS 生成物：`release/PokeFollower-<version>-arm64.dmg` / `release/PokeFollower-<version>-arm64-mac.zip` など（実行環境の CPU により変わります）。
 

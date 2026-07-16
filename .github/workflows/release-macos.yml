@@ -60,5 +60,6 @@ jobs:
           gh release upload "${{ inputs.tag }}" \
             "release/PokeFollower-${version}-arm64.dmg" \
             "release/PokeFollower-${version}-arm64-mac.zip" \
+            "mac-fix.command" \
             --clobber \
             --repo "${{ github.repository }}"
