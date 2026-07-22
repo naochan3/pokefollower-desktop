@@ -13,11 +13,13 @@ const SLOW_RADIUS_PX = 60;
 // スプライト・向きは変えない。Rustコア(quick_step_mult)と同ロジック。
 const QUICK_START_PX = 120;
 const QUICK_FULL_PX = 320;
-const QUICK_MULT = 2.2;
+const QUICK_MULT = 3.5;
 const WALK_SPEED_MIN_PXPS = 80;
-const WALK_SPEED_MAX_PXPS = 640;
+// 上限 lerp を 0.50→1.0 へ広げた際、既存 lerp 値の速度を不変に保つため傾きを維持した値。
+// 80 + 560 * (1.0-0.05)/(0.50-0.05) ≈ 1262。lerp=0.50 で従来どおり 640px/s、lerp=1.0 で約1262px/s。
+const WALK_SPEED_MAX_PXPS = 1262;
 const SPEED_CONFIG_MIN = 0.05;
-const SPEED_CONFIG_MAX = 0.50;
+const SPEED_CONFIG_MAX = 1.0;
 const IDLE_OFFSET_DIR = { x: 0, y: -1 }; // 待機時はカーソルの真上に寄る（本家拡張と同じ）
 const MOVE_DIR_MIN_PX = 0.75; // 平滑後の移動量がこれ未満なら front（停止＝正面）
 const MOVE_DIR_SMOOTHING = 0.25; // 向き用移動ベクトルのEMA係数。到着間際のパタつき(ぶるぶる)を抑える

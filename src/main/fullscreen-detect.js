@@ -50,6 +50,7 @@ function createFailureBackoffCommandRunner(runCommand, { failureBackoffMs = MAC_
 
 function createMacForegroundInfoGetter(runCommand = execTextAsync, options = {}) {
   const runWithBackoff = createFailureBackoffCommandRunner(runCommand, options);
+  let lastSuccessfulInfo = null;
   const script = [
     'tell application "System Events"',
     'set frontApp to first application process whose frontmost is true',
@@ -80,7 +81,11 @@ function createMacForegroundInfoGetter(runCommand = execTextAsync, options = {})
     'return appName & tab & winX & tab & winY & tab & winWidth & tab & winHeight & tab & isFs',
     "end tell",
   ].join("\n");
-  return async () => parseMacForegroundInfo(await runWithBackoff("osascript", ["-e", script]));
+  return async () => {
+    const info = parseMacForegroundInfo(await runWithBackoff("osascript", ["-e", script]));
+    if (info) lastSuccessfulInfo = info;
+    return info || lastSuccessfulInfo;
+  };
 }
 
 function parseLinuxForegroundInfo(state, wmClass, geometry) {

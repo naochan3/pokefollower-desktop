@@ -46,6 +46,10 @@ expect(/let fullscreenInitialTimer = null;/.test(main), "main.js must track the 
 expect(/let fullscreenTimer = null;/.test(main), "main.js must track fullscreen polling timer");
 expect(/let fullscreenCheckInFlight = false;/.test(main), "main.js must prevent overlapping async fullscreen checks");
 expect(/function applyFullscreenInfo\(info\)/.test(main), "main.js must separate fullscreen result application from polling");
+expect(/require\("\.\/updater\.js"\)/.test(main), "main.js must preserve updater module wiring during conflict resolution");
+expect(/ipcMain\.handle\("update:get-version"/.test(main), "main.js must preserve the version IPC handler");
+expect(/ipcMain\.handle\("update:check"/.test(main), "main.js must preserve the update check IPC handler");
+expect(/label: "アップデートを確認"/.test(main), "main.js must preserve the tray update action");
 expect(/typeof info\.then !== "function"/.test(main), "main.js must support synchronous Win32 fullscreen checks");
 expect(/fullscreenCheckInFlight = true;[\s\S]*\.finally\(\(\) => \{[\s\S]*fullscreenCheckInFlight = false;/.test(main), "main.js must release async fullscreen in-flight state");
 expect(/function startFullscreenPolling\(\)/.test(main), "main.js must define startFullscreenPolling");

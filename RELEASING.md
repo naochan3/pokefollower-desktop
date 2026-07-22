@@ -29,12 +29,25 @@
 
 ### 1. バージョンを上げる
 
+バージョンを上げるときは **package だけでなく以下のドキュメント・検証スクリプトも同じ版数へ更新** する。
+1つでも漏れると CI の `verify:docs` / `verify:roadmap` が落ちる。
+
+| 更新対象 | 何を直すか |
+|---|---|
+| `package.json` / `package-lock.json` | `npm version <ver> --no-git-tag-version` で両方更新 |
+| `README.md` | macOS dmg/zip リンク、Linux AppImage リンク、Windows 例示 `... <ver>.exe`（Windows DL リンクは `releases/latest/...` で固定なので不要） |
+| `docs/STATUS.md` | `現在のバージョン: **v<ver>**`、見出し `現在含まれているもの（v<ver>）`、追加内容の箇条書き |
+| `scripts/verify-roadmap-issues.cjs` | **ハードコードされた版数スナップショット**（現在のバージョン文字列・含有物見出し・README AppImage リンクの3箇所）。これがリリース毎に手で更新する隠れ手順 |
+
 ```bash
-# package.json の "version" を編集（例: 1.0.1 → 1.0.2）
-git add package.json
-git commit -m "release: v1.0.2"
+npm version 1.0.2 --no-git-tag-version   # package.json / package-lock.json を更新
+# 上表の README / STATUS / verify-roadmap-issues.cjs を編集
+npm run verify:local                     # verify:docs / verify:roadmap が通ることを確認
+git add -A
+git commit -m "chore(release): v1.0.2"
+# main は保護ブランチのため PR 経由でマージ。マージ後に main でタグを打つ：
+git checkout main && git pull
 git tag v1.0.2
-git push origin main
 git push origin v1.0.2
 ```
 
@@ -115,7 +128,7 @@ git commit -m "build: rebuild rust wasm core"
 - 現状、Windows / macOS とも **未署名** です。
   - Windows: 初回起動時に SmartScreen 警告（「詳細情報」→「実行」で回避）。
   - macOS: Gatekeeper でブロック（右クリック→「開く」、または設定で許可）。
-- 通常の `npm run dist:win` / `npm run dist:mac` は未署名のままです。通常ビルドは `electron-builder.unsigned.cjs` で Windows の `signExecutable: false`、macOS の `identity: null` / `notarize: false` を明示し、環境内の証明書を自動検出して署名しないようにしています。
+- 通常の `npm run dist:win` / `npm run dist:mac` は Developer ID 署名も公証も付けません（Apple 的には「未署名・未公証」扱いのまま）。通常ビルドは `electron-builder.unsigned.cjs` で Windows の `signExecutable: false`、macOS の `identity: "-"`（ad-hoc 署名）/ `notarize: false` を明示します。macOS を `identity: "-"` にしているのは、Apple Silicon で必須の「自己完結した有効な署名」だけを付けるためです（`identity: null` だと electron-builder が署名工程ごとスキップし、配布物が「壊れている」判定＝起動不能になるため使いません）。Developer ID / 公証は付けないので Gatekeeper の初回警告は残ります。
 - 署名済み配布物を作る場合だけ、資格情報を環境変数で注入して signed build を使います。
 
 ```bash

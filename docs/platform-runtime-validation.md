@@ -1,6 +1,6 @@
 # macOS / Linux 実機ランタイム検証
 
-最終更新: 2026-06-23
+最終更新: 2026-07-22
 
 Issue #17 の残タスクは、ソース上の best-effort 実装ではなく、実機での常駐・透明オーバーレイ・クリック透過・最前面・全画面抑制の確認です。この文書は、検証者が同じ観点で結果を残せるようにするためのチェックリストです。
 
@@ -14,7 +14,7 @@ Issue #17 の残タスクは、ソース上の best-effort 実装ではなく、
 ## 自動検証で担保している範囲
 
 - macOS / Linux の前面ウィンドウ検知は非同期で実行し、Electron main process をブロックしません（`verify:platform`）。
-- macOS の System Events 実行失敗時は、前面ウィンドウ情報を `null` として扱います（`tests/fullscreen-detect.test.js`）。
+- macOS の System Events が初回から失敗した場合は `null` とし、成功後の一時的な失敗では直前の前面ウィンドウ情報を保持します（`tests/fullscreen-detect.test.js`）。
 - macOS の System Events 実行失敗後は 30 秒バックオフし、権限未許可環境で `osascript` を 2 秒ごとに起動し続けないようにします（`tests/fullscreen-detect.test.js` / `verify:platform`）。
 - macOS の全画面初回チェックは起動後 1 秒遅延し、通常 polling は 5 秒間隔にして、起動直後の追従開始と常駐負荷を優先します（`verify:runtime`）。
 - overlay renderer は `requestAnimationFrame` で座標を表示補間し、main process の simulation tick を 16ms 既定のまま保ちます。非表示時は補間状態を破棄し、fullscreen 復帰時に古い座標から補間しないことを確認します（`tests/overlay-interpolation.test.js` / `verify:overlay`）。

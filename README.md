@@ -21,30 +21,34 @@
 
 ### macOS（Apple Silicon）
 
-**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.2.0/PokeFollower-1.2.0-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.2.0/PokeFollower-1.2.0-arm64-mac.zip)）
+**[→ ディスクイメージ（.dmg）をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.1/PokeFollower-1.4.1-arm64.dmg)**（[.zip 版](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.1/PokeFollower-1.4.1-arm64-mac.zip)）
 
 1. 上のリンクから `.dmg` をダウンロード
 2. 開いて `PokeFollower.app` を**アプリケーション**にドラッグ → 起動して**メニューバー**（画面右上）に常駐
 3. メニューバーのモンスターボールを**クリック**で、設定 / 有効・無効 / 終了
 
-> 未署名・未公証のため、初回は Gatekeeper にブロックされます。アプリを**右クリック →「開く」**、または `システム設定 → プライバシーとセキュリティ` の「このまま開く」で実行してください。
+> 未署名・未公証のため、初回は Gatekeeper にブロックされます（ad-hoc 署名済みなので「壊れている」ではなく「開発元を確認できない」扱いです）。次のいずれかで起動できます。
+>
+> - アプリを**右クリック →「開く」** → 確認ダイアログでもう一度「開く」
+> - または `システム設定 → プライバシーとセキュリティ` を開き、下部の「このまま開く」
+> - まれに「壊れているため開けません」と出る場合は、リリースページの **`mac-fix.command` をダウンロードしてダブルクリック**（または ターミナルで `xattr -cr /Applications/PokeFollower.app` を実行）してから起動してください。
+>
 > （macOS 版は contributor がビルドした arm64 バイナリ。全画面アプリの自動非表示にはアクセシビリティ許可が必要な場合があります）
 
 ### Linux
 
-v1.2.0 Release には Linux AppImage はまだ添付されていません。Linux 環境で `npm run dist:linux` を実行すると `release/PokeFollower-1.2.0.AppImage` を生成できます。
+**[→ AppImage をダウンロード](https://github.com/naochan3/pokefollower-desktop/releases/download/v1.4.1/PokeFollower-1.4.1.AppImage)**
 
-1. Linux 環境で AppImage を生成
+1. 上のリンクから `PokeFollower-1.4.1.AppImage` をダウンロード
 2. 実行権限を付けて起動
 3. 起動できた環境では、tray または代替の常駐 UI から設定 / 有効・無効 / 終了
 
 ```bash
-npm run dist:linux
-chmod +x PokeFollower-1.2.0.AppImage
-./PokeFollower-1.2.0.AppImage
+chmod +x PokeFollower-1.4.1.AppImage
+./PokeFollower-1.4.1.AppImage
 ```
 
-> Linux 版は AppImage のビルド対応、package smoke、WSLg での起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate までです。v1.2.0 Release asset は未添付です。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない candidate は visual non-evaluable として扱い、デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
+> Linux 版は AppImage のパッケージ検証、WSLg での起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate までです。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない candidate は visual non-evaluable として扱い、デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
 
 > 最新の配布状況は常に[リリースページ](https://github.com/naochan3/pokefollower-desktop/releases/latest)から確認できます。
 
@@ -89,7 +93,7 @@ v1.2.0 からの設定画面は**ポケモン体験に合わせた3タブ構成*
 ### 既知の制限
 
 - macOS 版はビルド対応済みですが、未署名・未公証です。配布する場合は Developer ID で署名し、公証してください。
-- Linux 版は AppImage のビルド対応、WSLg での起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate までです。v1.2.0 Release asset は未添付です。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない candidate は visual non-evaluable として扱い、デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
+- Linux 版は AppImage のビルド、WSLg での起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate までです。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない candidate は visual non-evaluable として扱い、デスクトップ環境ごとの tray / 透明オーバーレイ / クリック透過 / 最前面挙動は追加検証が必要です。
 - 全画面の自動判定は Windows では Win32、macOS では System Events / Accessibility、Linux では `xdotool` / `xprop` / `xwininfo` が利用できる環境で動作します。権限やツールが無い環境では自動非表示だけ無効になります。
 - アプリ別リアクションは全画面検知と同じ前面ウィンドウ情報を使うため、macOS では Accessibility/System Events、Linux では `xdotool` / `xprop` / `xwininfo` の可否に依存します。取得できない場合は通常追従に戻ります。
 - 邪魔しない追従は Electron の system idle time とカーソル位置を使うため、キー入力/ドラッグを個別に記録しません。取得できない環境ではカーソル近傍回避だけにフォールバックします。
@@ -103,7 +107,7 @@ v1.2.0 からの設定画面は**ポケモン体験に合わせた3タブ構成*
 
 - Windows 10 / 11（x64）
 - macOS（Apple Silicon / arm64）
-- Linux（AppImage ビルド対応。v1.2.0 Release asset は未添付で、実機 GUI 挙動は追加検証が必要）
+- Linux（AppImage 配布あり。実機 GUI 挙動は追加検証が必要）
 
 ## インストール（使う人向け）
 
@@ -215,7 +219,7 @@ npm run dist:mac
 npm run dist:linux
 ```
 
-生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.2.0.exe`）
+生成物：`release/PokeFollower Setup <version>.exe`（例: `... 1.4.1.exe`）
 
 macOS 生成物：`release/PokeFollower-<version>-arm64.dmg` / `release/PokeFollower-<version>-arm64-mac.zip` など（実行環境の CPU により変わります）。
 

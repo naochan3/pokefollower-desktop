@@ -92,6 +92,30 @@ describe("fullscreen-detect parsers", () => {
     expect(calls).toBe(2);
   });
 
+  it("macOS の取得失敗とバックオフ中は直前の全画面状態を保持する", async () => {
+    let now = 1000;
+    let calls = 0;
+    const outputs = [
+      "Game\t0\t0\t1920\t1080\ttrue",
+      null,
+      "Editor\t20\t30\t1200\t800\tfalse",
+    ];
+    const getForegroundInfo = createMacForegroundInfoGetter(async () => {
+      calls += 1;
+      return outputs.shift();
+    }, { now: () => now, failureBackoffMs: 30000 });
+
+    const fullscreenInfo = await getForegroundInfo();
+    expect(fullscreenInfo.isFullscreen).toBe(true);
+    await expect(getForegroundInfo()).resolves.toEqual(fullscreenInfo);
+    await expect(getForegroundInfo()).resolves.toEqual(fullscreenInfo);
+    expect(calls).toBe(2);
+
+    now += 30000;
+    await expect(getForegroundInfo()).resolves.toMatchObject({ cls: "Editor", isFullscreen: false });
+    expect(calls).toBe(3);
+  });
+
   it("Linux の X11 出力を前面ウィンドウ情報へ変換する", () => {
     const state = '_NET_WM_STATE(ATOM) = _NET_WM_STATE_FULLSCREEN, _NET_WM_STATE_ABOVE';
     const wmClass = 'WM_CLASS(STRING) = "game", "GameWindow"';

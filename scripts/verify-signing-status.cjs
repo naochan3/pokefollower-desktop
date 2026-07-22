@@ -80,13 +80,13 @@ if (!readme.includes("未署名・未公証のため、初回は Gatekeeper")) {
 if (!status.includes("macOS / Windows とも **未署名**")) {
   fail("docs/STATUS.md must state Windows/macOS are unsigned");
 }
-if (!releasing.includes("通常の `npm run dist:win` / `npm run dist:mac` は未署名のままです。")) {
+if (!releasing.includes("通常の `npm run dist:win` / `npm run dist:mac` は Developer ID 署名も公証も付けません")) {
   fail("RELEASING.md must state normal Windows/macOS builds stay unsigned");
 }
 if (
   !releasing.includes("electron-builder.unsigned.cjs") ||
   !releasing.includes("signExecutable: false") ||
-  !releasing.includes("identity: null") ||
+  !releasing.includes('identity: "-"') ||
   !releasing.includes("notarize: false")
 ) {
   fail("RELEASING.md must document normal Windows/macOS build explicit unsigned configuration");
@@ -118,8 +118,8 @@ if (pkg.scripts?.["dist:mac:signed"] !== "electron-builder --mac --config electr
 if (unsignedConfig.win?.signExecutable !== false) {
   fail("electron-builder.unsigned.cjs must disable Windows signing");
 }
-if (unsignedConfig.mac?.identity !== null) {
-  fail("electron-builder.unsigned.cjs must disable mac identity auto-detection");
+if (unsignedConfig.mac?.identity !== "-") {
+  fail('electron-builder.unsigned.cjs must ad-hoc sign macOS builds (identity: "-") so the bundle stays launchable on Apple Silicon');
 }
 if (unsignedConfig.mac?.hardenedRuntime !== false) {
   fail("electron-builder.unsigned.cjs must keep mac hardenedRuntime disabled");

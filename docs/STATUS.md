@@ -1,6 +1,6 @@
 # プロジェクト状況（計画 vs 現状）
 
-最終更新: 2026-06-23 / 現在のバージョン: **v1.2.0**
+最終更新: 2026-07-22 / 現在のバージョン: **v1.4.1**
 
 このドキュメントは「当初の計画に対して、今どこまで出来ているか」を一覧で把握するためのものです。
 詳細な設計・実装計画は `docs/superpowers/plans/` と `docs/superpowers/specs/` を参照。
@@ -11,7 +11,7 @@
 
 ブラウザ拡張 [pokefollower_cursor_web_plugin](https://github.com/ThinkrDoer/pokefollower_cursor_web_plugin) を、
 **デスクトップ全体で OS カーソルを追う常駐マスコット（Electron）** に作り変える、という当初ゴールは達成済み。
-現在は Windows / macOS(arm64) 向け Release asset を出せる状態。Linux AppImage はビルド対応済みですが、v1.2.0 Release asset は未添付です。
+現在は Windows / macOS(arm64) / Linux(AppImage) 向けに配布物を出せる状態。
 
 ---
 
@@ -43,11 +43,14 @@
 
 ---
 
-## 現在含まれているもの（v1.2.0）
+## 現在含まれているもの（v1.4.1）
 
-- Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21＋ #31/#32 の追従挙動修正＋ #34（待機を移動方向の逆隅に）＋ #35（第5〜9世代追加・世代フィルタ）込み。追従既定 16ms）。**v1.2.0 では Windows 担当が本 Release に添付**
+- **v1.4.1 追加**: macOS 配布物の起動不能を修正（`electron-builder.unsigned.cjs` の `identity: null` → `"-"`。ad-hoc 署名を必ず付け、Apple Silicon での「壊れている」判定＝起動不能を解消）。DL後に起動しない場合向けの `mac-fix.command` を Release に同梱。Windows 版は v1.4.0 と同一
+- **v1.4.0 追加**: 自前アップデート機能（トレイ＋設定から最新版を確認し更新。GitHub アカウント不要、Windows は自動更新、macOS はDLページを開く・PR #116）
+- **v1.3.0 追加**: 遠いと速足（距離ベース速度スケーリング・PR #109）／マルチモニタ（スケール混在）でオーバーレイ窓が潰れポケモンが消える不具合の修正（#112）／速さ・大きさ・距離の設定上限引き上げ＋遠い時のダッシュ強化（2.2→3.5倍・#114）
+- Windows インストーラ＋zip（Electron 42・Rust コア同梱、PR #11/#18/#21＋ #31/#32 の追従挙動修正＋ #34（待機を移動方向の逆隅に）＋ #35（第5〜9世代追加・世代フィルタ）込み。追従既定 16ms）。**Windows 担当が本 Release に添付**
 - macOS arm64 dmg / zip（**v1.2.0 リリース作成後に macOS 担当（@Nicolas0315）/ CI が同 Release に添付**）
-- Linux AppImage（ビルド対応済み。ただし **v1.2.0 Release asset は未添付**。package smoke、WSLg build/start smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate は v1.0.5 時点で確認済み）
+- Linux AppImage（**v1.2.0 リリース作成後に同 Release に添付**。package smoke、WSLg build/start smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate は v1.0.5 時点で確認済み）
 - ポケモン 956 種＋地方フォルム 54 種（index 計1010）（第1〜9世代。未収録69種は出典素材待ち）
 - 3タブ設定 UI（あいぼう / ボックス / せってい）— ポケモン体験に合わせたUI設計（v1.2.0 新規）
 - 手持ち6体・先頭=相棒（タップで相棒切替、満杯時は枠タップで入替）（v1.2.0 新規）
@@ -60,7 +63,7 @@
 - アプリに合わせる（opt-in）。前面アプリ情報が取れる環境では、エディタ/ターミナルで距離を取り、ブラウザ/チャットでは少し近づく軽量ルールを適用
 - マルチモニター連続追従、全画面自動非表示（Windows / macOS / Linux best-effort）、ログイン自動起動、クリック透過
 - 追従更新間隔の軽量化（既定を16ms（最大60fps相当）へ戻し、検証用に `POKEFOLLOWER_SIM_INTERVAL_MS=8` の明示 override を維持）
-- overlay renderer の `requestAnimationFrame` 表示補間（高Hzディスプレイでは表示cadenceに合わせて座標を中間描画。120Hz / ProMotion / 外部高Hzモニターの目視検証は #103 / #104 で継続）
+- overlay renderer の `requestAnimationFrame` 表示補間（高Hzディスプレイでは表示 cadence に合わせて座標を中間描画。120Hz / ProMotion / 外部高Hzモニターの目視検証は #103 / #104 で継続）
 - 通知コンパニオン基盤（既定 OFF、OS 通知本文は保存しない、Codex notify bridge は短い要約だけを最大64件のローカル queue に保持）
 - Codex custom pet 書き出し（設定画面の `Codex pet` → `EXPORT` で選択中ポケモンを `~/.codex/pets/` へ出力）
 
@@ -95,4 +98,4 @@
 - 邪魔しない追従は system idle time が取れない環境では、カーソル近傍回避のみで動作します。
 - 通知コンパニオンは OS 全体の通知取得までは未対応です。現在はアプリ内/許可済みイベントと Codex notify payload を表示する軽量基盤で、OS 別の権限境界は [通知コンパニオンの取得境界](notification-capture.md) に整理しています。
 - モニター間で表示スケール（DPI）が大きく異なると、位置がわずかにずれることがある。
-- Linux は AppImage ビルド対応、WSLg 起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate まで（v1.2.0 Release asset は未添付。WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない環境の candidate は visual non-evaluable として扱い、実機の tray・透明・クリック透過・最前面は未検証）。
+- Linux は AppImage 配布、WSLg 起動 smoke、saved pack restore smoke、X11 window probe、GUI evidence candidate まで（WSLg は runtime smoke の参考環境であり、native Linux desktop の目視検証の代替ではありません。screenshot が取れない環境の candidate は visual non-evaluable として扱い、実機の tray・透明・クリック透過・最前面は未検証）。
