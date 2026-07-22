@@ -30,13 +30,13 @@ function slugForPackKey(packKey) {
 }
 
 function petSlugForPackKey(packKey) {
-  const clean = String(packKey || "")
-    .trim()
-    .replace(/^retro\//, "")
+  const raw = String(packKey || "").trim();
+  const scopedKey = raw.startsWith("retro/forms/") ? raw.replace(/^retro\//, "") : slugForPackKey(raw);
+  const clean = scopedKey
     .replace(/[^a-zA-Z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .toLowerCase();
-  return `pokefollower-${clean || slugForPackKey(packKey)}`;
+  return `pokefollower-${clean || "pokemon"}`;
 }
 
 function variantLabelForPackKey(packKey) {
