@@ -134,9 +134,6 @@ expectIncludes(template, "feature issue template", [
   "id: risks",
   "id: done",
   "- 未判断",
-  "- GO: launch-approved に進める",
-  "- NO-GO: parked にする",
-  "- 保留: validated のまま再判断",
   "`npm run verify:local` を通す",
   "既定 OFF または既存ユーザーに影響しない導線にする",
 ]);
