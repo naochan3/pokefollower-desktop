@@ -69,7 +69,7 @@ describe("codex-pet-export", () => {
   });
 
   it("manifestとslugはCodexのcustom avatar loaderに合う形にする", () => {
-    expect(petSlugForPackKey("retro/gen-1/025-pikachu")).toBe("pokefollower-gen-1-025-pikachu");
+    expect(petSlugForPackKey("retro/gen-1/025-pikachu")).toBe("pokefollower-025-pikachu");
     expect(petSlugForPackKey("retro/forms/alola/026-raichu")).toBe("pokefollower-forms-alola-026-raichu");
     expect(buildPetManifest({ displayName: "PokéFollower ピカチュウ", description: "generated" })).toEqual({
       displayName: "PokéFollower ピカチュウ",
