@@ -55,9 +55,9 @@ body:
       description: 現時点のユーザー公開判断です。
       options:
         - 未判断
-        - GO: launch-approved に進める
-        - NO-GO: parked にする
-        - 保留: validated のまま再判断
+        - "GO: launch-approved に進める"
+        - "NO-GO: parked にする"
+        - "保留: validated のまま再判断"
       default: 0
     validations:
       required: true
