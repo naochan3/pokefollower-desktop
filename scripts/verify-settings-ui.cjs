@@ -93,15 +93,15 @@ expect(html.includes('value="forms"'), 'kind select must include value="forms"')
 // ─── 6. スライダー属性（保存） ─────────────────────────────────────────
 expect(inputAttrs("scale")?.type === "number", "scale input must be number");
 expect(inputAttrs("scale")?.min === "0.5", "scale min must be 0.5");
-expect(inputAttrs("scale")?.max === "5.0", "scale max must be 5.0");
+expect(inputAttrs("scale")?.max === "10.0", "scale max must be 10.0");
 expect(inputAttrs("scale")?.step === "0.05", "scale step must be 0.05");
 expect(inputAttrs("offset")?.type === "number", "offset input must be number");
 expect(inputAttrs("offset")?.min === "0", "offset min must be 0");
-expect(inputAttrs("offset")?.max === "100", "offset max must be 100");
+expect(inputAttrs("offset")?.max === "250", "offset max must be 250");
 expect(inputAttrs("offset")?.step === "1", "offset step must be 1");
 expect(inputAttrs("lerp")?.type === "number", "lerp input must be number");
 expect(inputAttrs("lerp")?.min === "0.5", "lerp min must be 0.5");
-expect(inputAttrs("lerp")?.max === "5.0", "lerp max must be 5.0");
+expect(inputAttrs("lerp")?.max === "10.0", "lerp max must be 10.0");
 expect(inputAttrs("lerp")?.step === "0.1", "lerp step must be 0.1");
 expect(inputAttrs("enabled")?.type === "checkbox", "enabled input must be a checkbox");
 expect(inputAttrs("notificationCompanion")?.type === "checkbox", "notification companion input must be a checkbox");

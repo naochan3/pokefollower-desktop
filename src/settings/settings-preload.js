@@ -16,4 +16,6 @@ contextBridge.exposeInMainWorld("settingsApi", {
   getPackMeta: (packKey) => ipcRenderer.invoke("packs:meta", packKey),
   setNickname: (packKey, name) => ipcRenderer.invoke("nickname:set", { packKey, name }),
   setLead: (packKey) => ipcRenderer.invoke("party:set-lead", packKey),
+  getAppVersion: () => ipcRenderer.invoke("update:get-version"),
+  checkForUpdate: () => ipcRenderer.invoke("update:check"),
 });

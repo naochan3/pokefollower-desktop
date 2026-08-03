@@ -47,13 +47,13 @@ describe("settings-patch", () => {
   it("数値patchはsanitize後の値でsim設定を更新する", () => {
     const { deps, calls } = makeDeps();
     const next = applySettingsPatch({ scale: 999, offset: -10, lerp: 99 }, deps);
-    expect(next).toMatchObject({ scale: 5, offset: 0, lerp: 0.5 });
+    expect(next).toMatchObject({ scale: 10, offset: 0, lerp: 1.0 });
     expect(calls).toEqual([
-      ["settings:set", { scale: 5, offset: 0, lerp: 0.5 }],
+      ["settings:set", { scale: 10, offset: 0, lerp: 1.0 }],
       ["sim:setConfig", {
-        vcp1_scale: 5,
+        vcp1_scale: 10,
         vcp1_offset: 0,
-        vcp1_lerp: 0.5,
+        vcp1_lerp: 1.0,
         vcp1_edgeRest: false,
         vcp1_avoidCursor: true,
         vcp1_avoidCursorStrength: "normal",
