@@ -16,6 +16,7 @@ concurrency:
 
 env:
   NODE_VERSION: "22.12.0"
+  RUST_WASM_VERSION: "1.96.0"
   CARGO_TERM_COLOR: always
 
 jobs:
@@ -86,10 +87,10 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      - name: Install Rust stable with WASM target
+      - name: Install Rust ${{ env.RUST_WASM_VERSION }} with WASM target
         run: |
-          rustup toolchain install stable --profile minimal
-          rustup default stable
+          rustup toolchain install ${{ env.RUST_WASM_VERSION }} --profile minimal
+          rustup default ${{ env.RUST_WASM_VERSION }}
           rustup component add rustfmt
           rustup target add wasm32-unknown-unknown
 
