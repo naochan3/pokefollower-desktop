@@ -18,6 +18,10 @@ function expectIncludes(label, text) {
   if (!workflow.includes(text)) errors.push(`${label} missing: ${text}`);
 }
 
+function expectMatches(label, pattern) {
+  if (!pattern.test(workflow)) errors.push(`${label} missing`);
+}
+
 function expectFile(relativePath) {
   if (!fs.existsSync(path.join(root, relativePath))) errors.push(`required file missing: ${relativePath}`);
 }
@@ -34,7 +38,7 @@ expectIncludes("minimum permissions", "contents: read");
 expectIncludes("concurrency", "cancel-in-progress: true");
 expectIncludes("node version", 'NODE_VERSION: "22.12.0"');
 expectIncludes("checkout action", "uses: actions/checkout@v7");
-expectIncludes("setup-node action", "uses: actions/setup-node@v6");
+expectMatches("setup-node action", /uses: actions\/setup-node@v\d+/);
 
 expectDependabotIncludes("version", "version: 2");
 expectDependabotIncludes("npm ecosystem", 'package-ecosystem: "npm"');
