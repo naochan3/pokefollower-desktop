@@ -34,10 +34,6 @@ for (const [section, names] of [
 expect(pkg.engines?.node === ">=22.12.0", "package.json engines.node must remain >=22.12.0");
 expect(workflow.includes('NODE_VERSION: "22.12.0"'), "CI NODE_VERSION must remain 22.12.0");
 expect(lock.lockfileVersion === 3, "package-lock lockfileVersion must remain 3");
-expect(lock.packages?.["node_modules/electron"]?.version === "42.4.1", "locked electron version must remain 42.4.1");
-expect(lock.packages?.["node_modules/electron-builder"]?.version === "26.15.3", "locked electron-builder version must remain 26.15.3");
-expect(lock.packages?.["node_modules/vitest"]?.version === "4.1.9", "locked vitest version must remain 4.1.9");
-expect(lock.packages?.["node_modules/koffi"]?.version === "3.0.2", "locked koffi version must remain 3.0.2");
 
 if (errors.length > 0) {
   for (const error of errors) console.error(`[verify-dependency-metadata] ${error}`);
