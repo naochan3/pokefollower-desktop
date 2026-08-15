@@ -22,7 +22,7 @@ function expectIncludesAll(text, snippets, message) {
 }
 
 expect(pkg.build?.linux?.target?.includes("AppImage"), "package.json build.linux.target must include AppImage");
-expect(pkg.scripts?.["dist:linux"] === "electron-builder --linux", "package.json dist:linux must build linux target");
+expect(pkg.scripts?.["dist:linux"] === "electron-builder --linux --publish never", "package.json dist:linux must build linux target with publish disabled");
 expect(pkg.build?.mac?.target?.includes("dmg"), "package.json build.mac.target must include dmg");
 expect(pkg.build?.mac?.target?.includes("zip"), "package.json build.mac.target must include zip");
 
@@ -39,8 +39,15 @@ expect(
   "fullscreen-detect should include best-effort macOS foreground detection",
 );
 expect(/function createMacForegroundInfoGetter/.test(fullscreenDetect), "fullscreen-detect should expose a testable macOS foreground getter");
+expect(/MAC_FOREGROUND_FAILURE_BACKOFF_MS = 30000/.test(fullscreenDetect), "macOS foreground detection should back off after System Events failures");
+expect(/function createFailureBackoffCommandRunner/.test(fullscreenDetect), "fullscreen-detect should expose a testable failure-backoff command runner");
+expect(/createFailureBackoffCommandRunner\(runCommand, options\)/.test(fullscreenDetect), "macOS foreground getter should use failure backoff around osascript");
 expect(/x: r\.left/.test(fullscreenDetect), "Win32 foreground info should expose window x coordinate");
 expect(/set windowPosition to position of frontWindow/.test(fullscreenDetect), "macOS foreground info should expose window position when allowed");
+expect(
+  /"0" & tab & "0" & tab & "0" & tab & "0" & tab & "false"/.test(fullscreenDetect),
+  "macOS foreground info should return stable x/y/width/height/fullscreen fields when the front app has no windows",
+);
 expect(/Absolute upper-left X/.test(fullscreenDetect), "Linux foreground info should expose xwininfo absolute position");
 expect(
   /execTextAsync/.test(fullscreenDetect) && /createMacForegroundInfoGetter\(execTextAsync\)/.test(fullscreenDetect),

@@ -89,7 +89,7 @@ for (const text of [
   "PF_LINUX_UNPACKED_PACK=retro/gen-1/025-pikachu",
   "AppImage 終了後、PokeFollower の残プロセスが 0",
   "Electron main process をブロックしません",
-  "System Events 実行失敗時は、前面ウィンドウ情報を `null` として扱います",
+  "System Events が初回から失敗した場合は `null` とし、成功後の一時的な失敗では直前の前面ウィンドウ情報を保持します",
   "`xdotool` / `xprop` / `xwininfo` 出力不足時は、前面ウィンドウ情報を `null` として扱います",
   "`main.js` は `null` の前面ウィンドウ情報を全画面扱いにせず",
   "実際の見え方と操作感は、引き続き実機目視で確認します",

@@ -65,10 +65,8 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      - name: Install Rust stable
-        run: |
-          rustup toolchain install stable --profile minimal
-          rustup default stable
+      - name: Install pinned Rust
+        run: rustup show active-toolchain || rustup toolchain install
 
       - run: npm ci
       - run: npm test
@@ -86,12 +84,8 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      - name: Install Rust stable with WASM target
-        run: |
-          rustup toolchain install stable --profile minimal
-          rustup default stable
-          rustup component add rustfmt
-          rustup target add wasm32-unknown-unknown
+      - name: Install pinned Rust with WASM target
+        run: rustup show active-toolchain || rustup toolchain install
 
       - run: npm ci
       - run: cargo fmt --manifest-path crates/follower_core/Cargo.toml --check

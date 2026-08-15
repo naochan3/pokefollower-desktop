@@ -10,12 +10,21 @@ const NOTIFICATION_FALLBACK_WIDTH = 292;
 const NOTIFICATION_FALLBACK_HEIGHT = 124;
 const NOTIFICATION_SIDE_MARGIN = 24;
 const NOTIFICATION_BOTTOM_MARGIN = 96;
+const FRAME_INTERPOLATION_FALLBACK_MS = 16;
+const FRAME_INTERPOLATION_MAX_MS = 80;
 let visible = false;
 let appliedState = "";
 let appliedSize = "";
 let appliedBgSize = "";
 let appliedFramePosition = "";
 let appliedTransform = "";
+let renderFromFrame = null;
+let renderToFrame = null;
+let renderStartMs = 0;
+let renderDurationMs = FRAME_INTERPOLATION_FALLBACK_MS;
+let renderRafId = 0;
+let lastFrameReceivedMs = 0;
+let lastRenderedFrame = null;
 let notificationEl = null;
 let notificationSourceEl = null;
 let notificationTitleEl = null;
@@ -54,6 +63,34 @@ function ensureEl() {
     display: "none",
   });
   document.documentElement.appendChild(followerEl);
+}
+
+function nowMs() {
+  return window.performance && typeof window.performance.now === "function" ? window.performance.now() : Date.now();
+}
+
+function cancelRenderLoop() {
+  if (!renderRafId) return;
+  window.cancelAnimationFrame(renderRafId);
+  renderRafId = 0;
+}
+
+function resetInterpolation() {
+  cancelRenderLoop();
+  renderFromFrame = null;
+  renderToFrame = null;
+  renderStartMs = 0;
+  renderDurationMs = FRAME_INTERPOLATION_FALLBACK_MS;
+  lastFrameReceivedMs = 0;
+  lastRenderedFrame = null;
+}
+
+function hideFollower() {
+  if (visible) {
+    followerEl.style.display = "none";
+    visible = false;
+  }
+  resetInterpolation();
 }
 
 function ensureNotificationEl() {
@@ -155,28 +192,12 @@ window.pokeapi.onMeta((m) => {
   appliedBgSize = "";
   appliedFramePosition = "";
   appliedTransform = "";
+  resetInterpolation();
   ensureEl();
   preloadImages(m);
 });
 
-// 毎フレームの描画指示（座標はこのウィンドウのローカル座標）
-window.pokeapi.onFrame((f) => {
-  ensureEl();
-  if (!f || !f.visible || !meta) {
-    if (visible) {
-      followerEl.style.display = "none";
-      visible = false;
-    }
-    return;
-  }
-  const st = meta.states ? meta.states[f.state] : null;
-  if (!st || !st.frame || typeof st.frames !== "number") {
-    if (visible) {
-      followerEl.style.display = "none";
-      visible = false;
-    }
-    return;
-  }
+function applyFrameVisuals(frame, st) {
   const { w, h } = st.frame;
   if (!visible) {
     followerEl.style.display = "block";
@@ -188,12 +209,12 @@ window.pokeapi.onFrame((f) => {
     followerEl.style.height = `${h}px`;
     appliedSize = sizeKey;
   }
-  if (appliedState !== f.state) {
-    followerEl.style.backgroundImage = `url("${sheetUrlFor(f.state)}")`;
-    appliedState = f.state;
+  if (appliedState !== frame.state) {
+    followerEl.style.backgroundImage = `url("${sheetUrlFor(frame.state)}")`;
+    appliedState = frame.state;
     appliedBgSize = "";
   }
-  const img = images[f.state];
+  const img = images[frame.state];
   if (img && img.naturalWidth && img.naturalHeight) {
     const bgSize = `${img.naturalWidth}px ${img.naturalHeight}px`;
     if (appliedBgSize !== bgSize) {
@@ -201,16 +222,70 @@ window.pokeapi.onFrame((f) => {
       appliedBgSize = bgSize;
     }
   }
-  const framePosition = `${-(f.frame * w)}px ${-(f.row * h)}px`;
+  const framePosition = `${-(frame.frame * w)}px ${-(frame.row * h)}px`;
   if (appliedFramePosition !== framePosition) {
     followerEl.style.backgroundPosition = framePosition;
     appliedFramePosition = framePosition;
   }
-  const transform = `translate3d(${f.x.toFixed(2)}px, ${f.y.toFixed(2)}px, 0) translate(-50%, -50%) scale(${f.scale})`;
+}
+
+function applyFrameTransform(frame) {
+  const transform = `translate3d(${frame.x.toFixed(2)}px, ${frame.y.toFixed(2)}px, 0) translate(-50%, -50%) scale(${frame.scale})`;
   if (appliedTransform !== transform) {
     followerEl.style.transform = transform;
     appliedTransform = transform;
   }
+  lastRenderedFrame = frame;
+}
+
+function interpolateFrame(from, to, progress) {
+  const p = Math.min(1, Math.max(0, progress));
+  return {
+    ...to,
+    x: from.x + ((to.x - from.x) * p),
+    y: from.y + ((to.y - from.y) * p),
+    scale: from.scale + ((to.scale - from.scale) * p),
+  };
+}
+
+function renderInterpolatedFrame(ts) {
+  renderRafId = 0;
+  if (!visible || !renderFromFrame || !renderToFrame) return;
+  const progress = renderDurationMs > 0 ? (ts - renderStartMs) / renderDurationMs : 1;
+  const frame = interpolateFrame(renderFromFrame, renderToFrame, progress);
+  applyFrameTransform(frame);
+  if (progress < 1) {
+    renderRafId = window.requestAnimationFrame(renderInterpolatedFrame);
+  }
+}
+
+function beginInterpolatedRender(frame) {
+  const ts = nowMs();
+  const elapsed = lastFrameReceivedMs > 0 ? ts - lastFrameReceivedMs : FRAME_INTERPOLATION_FALLBACK_MS;
+  const duration = Math.min(FRAME_INTERPOLATION_MAX_MS, Math.max(FRAME_INTERPOLATION_FALLBACK_MS, elapsed));
+  renderFromFrame = lastRenderedFrame || frame;
+  renderToFrame = frame;
+  renderStartMs = ts;
+  renderDurationMs = duration;
+  lastFrameReceivedMs = ts;
+  cancelRenderLoop();
+  renderInterpolatedFrame(ts);
+}
+
+// 毎フレームの描画指示（座標はこのウィンドウのローカル座標）
+window.pokeapi.onFrame((f) => {
+  ensureEl();
+  if (!f || !f.visible || !meta) {
+    hideFollower();
+    return;
+  }
+  const st = meta.states ? meta.states[f.state] : null;
+  if (!st || !st.frame || typeof st.frames !== "number") {
+    hideFollower();
+    return;
+  }
+  applyFrameVisuals(f, st);
+  beginInterpolatedRender(f);
 });
 
 window.pokeapi.onCompanionNotification((n) => {

@@ -1,0 +1,8 @@
+[toolchain]
+# native/pokefollower_core.wasm is committed and CI asserts a byte-clean rebuild.
+# A floating `stable` changes codegen on every Rust release, so the pin is what
+# keeps that assertion meaningful.
+channel = "1.96.0"
+components = ["rustfmt"]
+targets = ["wasm32-unknown-unknown"]
+profile = "minimal"
