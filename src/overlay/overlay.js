@@ -10,12 +10,16 @@ const NOTIFICATION_FALLBACK_WIDTH = 292;
 const NOTIFICATION_FALLBACK_HEIGHT = 124;
 const NOTIFICATION_SIDE_MARGIN = 24;
 const NOTIFICATION_BOTTOM_MARGIN = 96;
+const MOTION_SMOOTH_MIN_MS = 8;
+const MOTION_SMOOTH_MAX_MS = 34;
 let visible = false;
 let appliedState = "";
 let appliedSize = "";
 let appliedBgSize = "";
 let appliedFramePosition = "";
 let appliedTransform = "";
+let appliedTransitionDuration = "";
+let lastFrameReceivedAt = 0;
 let notificationEl = null;
 let notificationSourceEl = null;
 let notificationTitleEl = null;
@@ -51,6 +55,8 @@ function ensureEl() {
     backfaceVisibility: "hidden",
     willChange: "transform, background-position, background-image",
     transformOrigin: "center center",
+    transitionProperty: "transform",
+    transitionTimingFunction: "linear",
     display: "none",
   });
   document.documentElement.appendChild(followerEl);
@@ -147,6 +153,35 @@ function preloadImages(m) {
   }
 }
 
+function transformFor(x, y, scale) {
+  return `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) translate(-50%, -50%) scale(${scale})`;
+}
+
+function applyTransform(x, y, scale) {
+  const transform = transformFor(x, y, scale);
+  if (appliedTransform !== transform) {
+    followerEl.style.transform = transform;
+    appliedTransform = transform;
+  }
+}
+
+function applyTransitionDuration(durationMs) {
+  const transitionDuration = `${Math.max(0, durationMs).toFixed(0)}ms`;
+  if (appliedTransitionDuration !== transitionDuration) {
+    followerEl.style.transitionDuration = transitionDuration;
+    appliedTransitionDuration = transitionDuration;
+  }
+}
+
+function moveTowardFrame(f, { immediate = false } = {}) {
+  const now = performance.now();
+  const elapsed = lastFrameReceivedAt > 0 ? now - lastFrameReceivedAt : 16;
+  const durationMs = Math.min(MOTION_SMOOTH_MAX_MS, Math.max(MOTION_SMOOTH_MIN_MS, elapsed || 16));
+  lastFrameReceivedAt = now;
+  applyTransitionDuration(immediate ? 0 : durationMs);
+  applyTransform(f.x, f.y, f.scale);
+}
+
 // メタ（パック情報）を受け取って画像をプリロード
 window.pokeapi.onMeta((m) => {
   meta = m;
@@ -155,6 +190,8 @@ window.pokeapi.onMeta((m) => {
   appliedBgSize = "";
   appliedFramePosition = "";
   appliedTransform = "";
+  appliedTransitionDuration = "";
+  lastFrameReceivedAt = 0;
   ensureEl();
   preloadImages(m);
 });
@@ -167,6 +204,7 @@ window.pokeapi.onFrame((f) => {
       followerEl.style.display = "none";
       visible = false;
     }
+    applyTransitionDuration(0);
     return;
   }
   const st = meta.states ? meta.states[f.state] : null;
@@ -175,9 +213,11 @@ window.pokeapi.onFrame((f) => {
       followerEl.style.display = "none";
       visible = false;
     }
+    applyTransitionDuration(0);
     return;
   }
   const { w, h } = st.frame;
+  const wasVisible = visible;
   if (!visible) {
     followerEl.style.display = "block";
     visible = true;
@@ -206,11 +246,7 @@ window.pokeapi.onFrame((f) => {
     followerEl.style.backgroundPosition = framePosition;
     appliedFramePosition = framePosition;
   }
-  const transform = `translate3d(${f.x.toFixed(2)}px, ${f.y.toFixed(2)}px, 0) translate(-50%, -50%) scale(${f.scale})`;
-  if (appliedTransform !== transform) {
-    followerEl.style.transform = transform;
-    appliedTransform = transform;
-  }
+  moveTowardFrame(f, { immediate: !wasVisible });
 });
 
 window.pokeapi.onCompanionNotification((n) => {

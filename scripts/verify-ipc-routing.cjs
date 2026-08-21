@@ -36,11 +36,14 @@ expect(/lastFrameKey: "hidden"/.test(buildOverlays), "new overlay records must s
 expect(/let lastRender = null;/.test(main), "main.js must remember the last rendered frame for newly loaded overlays");
 expect(/sendFrameToOverlay\(overlay, lastRender, true\)/.test(createOverlayWindow), "overlay load must force-send the latest frame after meta");
 expect(/frameForOverlay\(render, o\.bounds, currentMeta\)/.test(sendFrameToOverlay), "sendFrameToOverlay must compute per-overlay frame routing");
-expect(/if \(!o\.win \|\| o\.win\.isDestroyed\(\)\) return;/.test(sendFrameToOverlay), "sendFrameToOverlay must skip destroyed overlays");
+expect(/function ensureOverlayWindow\(o\)/.test(main), "sendFrameToOverlay must create overlay windows lazily through ensureOverlayWindow");
 expect(/if \(!frame\.visible\)/.test(sendFrameToOverlay), "sendFrameToOverlay must branch on invisible frames");
-expect(/if \(force \|\| o\.visible\) \{[\s\S]*?webContents\.send\("frame", frame\)[\s\S]*?o\.visible = false;[\s\S]*?\}/.test(sendFrameToOverlay), "sendFrameToOverlay must force-send hide frames for newly loaded overlays");
+expect(/if \(o\.win && !o\.win\.isDestroyed\(\) && \(force \|\| o\.visible\)\) \{[\s\S]*?webContents\.send\("frame", frame\)[\s\S]*?o\.visible = false;[\s\S]*?\}/.test(sendFrameToOverlay), "sendFrameToOverlay must force-send hide frames only to existing overlays");
 expect(/o\.lastFrameKey = "hidden";/.test(sendFrameToOverlay), "sendFrameToOverlay must reset frame cache on hide");
+expect(/scheduleOverlayIdleDestroy\(o\)/.test(sendFrameToOverlay), "sendFrameToOverlay must schedule hidden overlay windows for idle cleanup");
 expect(/return;/.test(sendFrameToOverlay), "sendFrameToOverlay must return after invisible-frame handling");
+expect(/const ready = ensureOverlayWindow\(o\);/.test(sendFrameToOverlay), "sendFrameToOverlay must lazily create visible overlay windows");
+expect(/if \(!ready \|\| o\.win\.webContents\.isLoading\(\)\) return;/.test(sendFrameToOverlay), "sendFrameToOverlay must wait for newly created overlays to finish loading");
 expect(/const nextFrameKey = frameKey\(frame\);/.test(sendFrameToOverlay), "sendFrameToOverlay must compute a stable visible frame key");
 expect(/if \(!force && o\.visible && o\.lastFrameKey === nextFrameKey\) return;/.test(sendFrameToOverlay), "sendFrameToOverlay must skip duplicate visible frames unless forced");
 expect(/webContents\.send\("frame", frame\);[\s\S]*?o\.visible = true;/.test(sendFrameToOverlay), "sendFrameToOverlay must send visible frames and mark overlay visible");

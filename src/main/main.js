@@ -37,6 +37,7 @@ let fullscreenActive = false; // 前面に全画面アプリ（ゲーム等）�
 let fullscreenCheckInFlight = false;
 let lastForegroundInfo = null;
 let currentReactionMode = "normal";
+let lastReactionSyncAt = 0;
 let notificationCompanion = null;
 let codexNotificationWatcher = null;
 let workWatchSession = null;
@@ -46,6 +47,8 @@ let favoriteRotationTimer = null;
 const TRAY_ICON_SIZE_PX = 28;
 const DISPLAY_REBUILD_DEBOUNCE_MS = 250;
 const FULLSCREEN_POLL_INTERVAL_MS = process.platform === "win32" ? 600 : 2000;
+const REACTION_SYNC_INTERVAL_MS = 250;
+const OVERLAY_IDLE_DESTROY_MS = 10000;
 
 function applyFullscreenInfo(info) {
   lastForegroundInfo = info || null;
@@ -73,7 +76,9 @@ function workWatchPhase() {
   return state.phase;
 }
 
-function syncReactionMode() {
+function syncReactionMode({ force = false, now = Date.now() } = {}) {
+  if (!force && now - lastReactionSyncAt < REACTION_SYNC_INTERVAL_MS) return;
+  lastReactionSyncAt = now;
   if (!settingsStore) return;
   const recentlyActive = settingsStore.get("avoidCursor") && (() => {
     try { return powerMonitor.getSystemIdleTime() <= 1; }
@@ -126,13 +131,19 @@ function registerPermissionGuards() {
   session.defaultSession.setPermissionCheckHandler(() => false);
 }
 
-function getUserDataPath() {
+function getIsolatedTestUserDataPath() {
   if (process.env.POKEFOLLOWER_ALLOW_TEST_USER_DATA === "1" && process.env.POKEFOLLOWER_TEST_USER_DATA_DIR) {
     const tempRoot = process.env.TEMP || process.env.TMPDIR || process.env.TMP;
     const testUserDataPath = path.resolve(process.env.POKEFOLLOWER_TEST_USER_DATA_DIR);
     const testRoot = tempRoot ? path.resolve(tempRoot) : "";
     if (testRoot && testUserDataPath.startsWith(testRoot + path.sep)) return testUserDataPath;
   }
+  return "";
+}
+
+function getUserDataPath() {
+  const testUserDataPath = getIsolatedTestUserDataPath();
+  if (testUserDataPath) return testUserDataPath;
   if (!app.isPackaged && process.env.PF_DEV_USER_DATA_DIR) return process.env.PF_DEV_USER_DATA_DIR;
   return app.getPath("userData");
 }
@@ -144,9 +155,9 @@ function hardenRendererNavigation(win) {
   });
 }
 
-// --- オーバーレイ（モニターごとに常設。各窓は描画役） ---
-function createOverlayWindow(display) {
-  const { x, y, width, height } = display.bounds;
+// --- オーバーレイ（必要なモニターだけ遅延生成。各窓は描画役） ---
+function createOverlayWindow(bounds) {
+  const { x, y, width, height } = bounds;
   const win = new BrowserWindow({
     x, y, width, height,
     transparent: true,
@@ -177,10 +188,44 @@ function createOverlayWindow(display) {
   return win;
 }
 
+function destroyOverlayWindow(o) {
+  if (o.idleDestroyTimer) {
+    clearTimeout(o.idleDestroyTimer);
+    o.idleDestroyTimer = null;
+  }
+  if (o.win && !o.win.isDestroyed()) o.win.destroy();
+  o.win = null;
+  o.visible = false;
+  o.lastFrameKey = "hidden";
+}
+
+function scheduleOverlayIdleDestroy(o) {
+  if (o.idleDestroyTimer) clearTimeout(o.idleDestroyTimer);
+  o.idleDestroyTimer = setTimeout(() => {
+    o.idleDestroyTimer = null;
+    if (!o.visible) destroyOverlayWindow(o);
+  }, OVERLAY_IDLE_DESTROY_MS);
+}
+
+function ensureOverlayWindow(o) {
+  if (o.win && !o.win.isDestroyed()) return true;
+  o.win = createOverlayWindow(o.bounds);
+  o.visible = false;
+  o.lastFrameKey = "hidden";
+  return false;
+}
+
 function buildOverlays() {
-  for (const o of overlays) { if (o.win && !o.win.isDestroyed()) o.win.destroy(); }
-  overlays = screen.getAllDisplays().map((d) => ({ win: createOverlayWindow(d), bounds: d.bounds, visible: false, lastFrameKey: "hidden" }));
+  for (const o of overlays) destroyOverlayWindow(o);
+  overlays = screen.getAllDisplays().map((d) => ({
+    win: null,
+    bounds: d.bounds,
+    visible: false,
+    lastFrameKey: "hidden",
+    idleDestroyTimer: null,
+  }));
   sim.setDisplayBounds(overlays.map((o) => o.bounds));
+  if (lastRender) broadcastFrame(lastRender);
 }
 
 let displayRebuildTimer = null;
@@ -210,16 +255,22 @@ function switchPack(packKey) {
 }
 
 function sendFrameToOverlay(o, render, force = false) {
-  if (!o.win || o.win.isDestroyed()) return;
   const frame = frameForOverlay(render, o.bounds, currentMeta);
   if (!frame.visible) {
-    if (force || o.visible) {
+    if (o.win && !o.win.isDestroyed() && (force || o.visible)) {
       o.win.webContents.send("frame", frame);
       o.visible = false;
       o.lastFrameKey = "hidden";
+      scheduleOverlayIdleDestroy(o);
     }
     return;
   }
+  if (o.idleDestroyTimer) {
+    clearTimeout(o.idleDestroyTimer);
+    o.idleDestroyTimer = null;
+  }
+  const ready = ensureOverlayWindow(o);
+  if (!ready || o.win.webContents.isLoading()) return;
   const nextFrameKey = frameKey(frame);
   if (!force && o.visible && o.lastFrameKey === nextFrameKey) return;
   o.win.webContents.send("frame", frame);
@@ -245,7 +296,7 @@ function runSimFrame() {
   const dt = now - lastStepTs;
   lastStepTs = now;
   if (!enabled || fullscreenActive) { broadcastFrame(null); return; }
-  syncReactionMode();
+  syncReactionMode({ now });
   const cursor = screen.getCursorScreenPoint(); // グローバル座標
   sim.updateCursor(cursor.x, cursor.y, now);
   broadcastFrame(sim.step(dt, now));
@@ -396,7 +447,7 @@ function startWorkWatchTimer() {
   workWatchTimer = setInterval(() => {
     const { event, state } = workWatchSession.tick(Date.now());
     if (event) publishWorkWatchEvent(event);
-    if (event) syncReactionMode();
+    if (event) syncReactionMode({ force: true });
     if (!state.running) stopWorkWatchTimer();
   }, 1000);
 }
@@ -408,7 +459,7 @@ function syncWorkWatchConfig() {
     workWatchSession.stop();
     stopWorkWatchTimer();
   }
-  syncReactionMode();
+  syncReactionMode({ force: true });
 }
 
 function stopFavoriteRotation() {
@@ -461,7 +512,7 @@ ipcMain.handle("work-watch:start", (event) => {
   settingsStore.set({ workWatchEnabled: true });
   syncWorkWatchConfig();
   const state = workWatchSession.start(Date.now());
-  syncReactionMode();
+  syncReactionMode({ force: true });
   startWorkWatchTimer();
   return state;
 });
@@ -469,14 +520,14 @@ ipcMain.handle("work-watch:stop", (event) => {
   requireSettingsSender(event);
   const state = workWatchSession.stop();
   stopWorkWatchTimer();
-  syncReactionMode();
+  syncReactionMode({ force: true });
   return state;
 });
 ipcMain.handle("work-watch:reset", (event) => {
   requireSettingsSender(event);
   const state = workWatchSession.stop();
   stopWorkWatchTimer();
-  syncReactionMode();
+  syncReactionMode({ force: true });
   return state;
 });
 ipcMain.handle("favorites:next", (event) => {
@@ -501,7 +552,9 @@ ipcMain.on("settings:set", (event, patch) => {
 });
 
 // 二重起動を禁止（複数インスタンスが同時にカーソルを追って競合するのを防ぐ）。
-const gotSingleInstanceLock = app.requestSingleInstanceLock();
+const allowIsolatedTestInstance = !!getIsolatedTestUserDataPath();
+const allowDevMultiInstance = !app.isPackaged && !!process.env.PF_DEV_USER_DATA_DIR;
+const gotSingleInstanceLock = allowIsolatedTestInstance || allowDevMultiInstance || app.requestSingleInstanceLock();
 
 app.whenReady().then(() => {
   if (!gotSingleInstanceLock) { app.quit(); return; }

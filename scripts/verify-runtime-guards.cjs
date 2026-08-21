@@ -22,6 +22,13 @@ expect(lockIndex >= 0, "main.js must request a single instance lock");
 expect(readyIndex >= 0, "main.js must register app.whenReady()");
 expect(lockIndex >= 0 && readyIndex >= 0 && lockIndex < readyIndex, "single instance lock must be requested before app.whenReady()");
 expect(
+  /function getIsolatedTestUserDataPath\(\)/.test(main) &&
+    /const allowIsolatedTestInstance = !!getIsolatedTestUserDataPath\(\);/.test(main) &&
+    /const allowDevMultiInstance = !app\.isPackaged && !!process\.env\.PF_DEV_USER_DATA_DIR;/.test(main) &&
+    /const gotSingleInstanceLock = allowIsolatedTestInstance \|\| allowDevMultiInstance \|\| app\.requestSingleInstanceLock\(\);/.test(main),
+  "main.js may bypass single instance locking only for isolated test userData or development runs with PF_DEV_USER_DATA_DIR",
+);
+expect(
   /if \(!gotSingleInstanceLock\) \{ app\.quit\(\); return; \}/.test(main),
   "main.js must quit before creating windows when the single instance lock is missing",
 );
@@ -39,6 +46,12 @@ expect(/const DISPLAY_REBUILD_DEBOUNCE_MS = 250;/.test(main), "display rebuild d
 expect(/function scheduleBuildOverlays\(\)/.test(main), "main.js must define scheduleBuildOverlays");
 expect(/clearTimeout\(displayRebuildTimer\)/.test(main), "display rebuild scheduler must coalesce rapid display events");
 expect(/setTimeout\(\(\) => \{[\s\S]*buildOverlays\(\);[\s\S]*\}, DISPLAY_REBUILD_DEBOUNCE_MS\)/.test(main), "display rebuild scheduler must rebuild overlays after debounce");
+expect(/const OVERLAY_IDLE_DESTROY_MS = 10000;/.test(main), "hidden overlay windows must be eligible for idle destruction");
+expect(/function ensureOverlayWindow\(o\)/.test(main), "overlay windows must be lazily created only when a display needs rendering");
+expect(/function scheduleOverlayIdleDestroy\(o\)/.test(main), "hidden overlay windows must be scheduled for cleanup");
+expect(/function destroyOverlayWindow\(o\)/.test(main), "overlay cleanup must destroy idle BrowserWindows");
+expect(/overlays = screen\.getAllDisplays\(\)\.map\(\(d\) => \(\{[\s\S]*win: null,[\s\S]*idleDestroyTimer: null,[\s\S]*\}\)\)/.test(main), "display rebuild must not eagerly create one renderer per display");
+expect(/const ready = ensureOverlayWindow\(o\);[\s\S]*if \(!ready \|\| o\.win\.webContents\.isLoading\(\)\) return;/.test(main), "frame routing must wait for lazily created overlays to finish loading");
 expect(/sim\.setRestSurfaces\(\[\{ kind: "window", x: info\.x, y: info\.y, width: info\.w, height: info\.h \}\]\)/.test(main), "main.js must pass foreground window bounds to edge rest");
 expect(/const FULLSCREEN_POLL_INTERVAL_MS = process\.platform === "win32" \? 600 : 2000;/.test(main), "fullscreen polling must keep fast Win32 checks and slower external-command checks elsewhere");
 expect(/let fullscreenTimer = null;/.test(main), "main.js must track fullscreen polling timer");
@@ -78,6 +91,11 @@ expect(
 expect(/reactionModeForForeground/.test(main), "main.js must derive app/work-watch reaction mode from foreground context");
 expect(/workWatchPhase\(\)/.test(main), "main.js must let work watch override app reaction mode");
 expect(/powerMonitor\.getSystemIdleTime\(\) <= 1/.test(main), "main.js must use system idle time for non-intrusive busy reactions");
+expect(/const REACTION_SYNC_INTERVAL_MS = 250;/.test(main), "reaction mode checks must be throttled away from the sim tick rate");
+expect(/function syncReactionMode\(\{ force = false, now = Date\.now\(\) \} = \{\}\)/.test(main), "reaction mode sync must support throttled and forced updates");
+expect(/if \(!force && now - lastReactionSyncAt < REACTION_SYNC_INTERVAL_MS\) return;/.test(main), "reaction mode sync must skip repeated checks inside the throttle window");
+expect(/syncReactionMode\(\{ now \}\)/.test(main), "sim frames must use throttled reaction mode sync");
+expect(/syncReactionMode\(\{ force: true \}\)/.test(main), "event-driven reaction mode changes must be able to force immediate sync");
 expect(/function syncFavoriteRotation\(\)/.test(main), "main.js must define favorite rotation synchronization");
 expect(/ipcMain\.handle\("favorites:next"/.test(main), "main.js must expose settings-only manual favorite switching");
 expect(/isSuppressed: \(\) => !enabled \|\| fullscreenActive \|\| currentReactionMode === "busy"/.test(main), "notification companion must suppress during fullscreen and non-intrusive busy mode");
@@ -87,10 +105,12 @@ expect(/function computeWindowEdgeRestTarget/.test(sim), "follower-sim must use 
 expect(/classifyForegroundApp/.test(appReactions), "app-reactions must expose a pure foreground classifier");
 expect(
   /function getUserDataPath\(\)/.test(main) &&
+    /function getIsolatedTestUserDataPath\(\)/.test(main) &&
     /process\.env\.POKEFOLLOWER_ALLOW_TEST_USER_DATA === "1"/.test(main) &&
     /process\.env\.POKEFOLLOWER_TEST_USER_DATA_DIR/.test(main) &&
     /process\.env\.TEMP \|\| process\.env\.TMPDIR \|\| process\.env\.TMP/.test(main) &&
     /testUserDataPath\.startsWith\(testRoot \+ path\.sep\)/.test(main) &&
+    /const testUserDataPath = getIsolatedTestUserDataPath\(\);[\s\S]*if \(testUserDataPath\) return testUserDataPath;/.test(main) &&
     /!app\.isPackaged && process\.env\.PF_DEV_USER_DATA_DIR/.test(main) &&
     /return app\.getPath\("userData"\);/.test(main),
   "main.js must keep explicit test userData overrides and the development-only userData override",

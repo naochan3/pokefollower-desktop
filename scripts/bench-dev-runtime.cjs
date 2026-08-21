@@ -106,8 +106,19 @@ function summarize(processes, pids) {
 function stopProcesses(pids) {
   const list = [...pids].filter((pid) => pid !== process.pid);
   if (list.length === 0) return;
-  const arg = list.join(",");
-  ps(`Stop-Process -Id ${arg} -Force -ErrorAction SilentlyContinue`);
+  try {
+    ps(`
+      $ids = @(${list.join(",")})
+      $existing = foreach ($id in $ids) {
+        if (Get-Process -Id $id -ErrorAction SilentlyContinue) { $id }
+      }
+      if ($existing.Count -gt 0) {
+        Stop-Process -Id $existing -Force
+      }
+    `);
+  } catch (_) {
+    // The app can exit by itself while the benchmark is cleaning up.
+  }
 }
 
 function enabledForMode(mode) {
