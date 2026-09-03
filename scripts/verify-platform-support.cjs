@@ -22,7 +22,7 @@ function expectIncludesAll(text, snippets, message) {
 }
 
 expect(pkg.build?.linux?.target?.includes("AppImage"), "package.json build.linux.target must include AppImage");
-expect(pkg.scripts?.["dist:linux"] === "electron-builder --linux", "package.json dist:linux must build linux target");
+expect(pkg.scripts?.["dist:linux"] === "electron-builder --linux --publish never", "package.json dist:linux must build linux target with --publish never");
 expect(pkg.build?.mac?.target?.includes("dmg"), "package.json build.mac.target must include dmg");
 expect(pkg.build?.mac?.target?.includes("zip"), "package.json build.mac.target must include zip");
 

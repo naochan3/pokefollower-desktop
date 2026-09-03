@@ -46,18 +46,24 @@
 
   function parsePokemonSearchQuery(query, metadata = {}, aliasMap = null) {
     const facets = [];
+    const facetGroups = [];
     const nameTerms = [];
     aliasMap = aliasMap || buildAliasMap(metadata);
     const tokens = tokenizeQuery(query);
     for (const token of tokens) {
       const matches = aliasMap.get(token);
       if (matches && matches.length) {
+        // 1トークンが複数 facet に当たる場合は「どちらの意味でもよい」= OR。
+        // 例: 「アローラ」は generations:7 と regions:alola の両方に当たるので、
+        // AND にすると（地方フォルムの dex 世代は 7 ではないため）ほぼ0件になる。
+        // トークンどうしは AND のまま（「みず ひこう」= みず AND ひこう）。
+        facetGroups.push(matches);
         facets.push(...matches);
       } else {
         nameTerms.push(token);
       }
     }
-    return { raw: String(query || ""), tokens, facets, nameTerms };
+    return { raw: String(query || ""), tokens, facets, facetGroups, nameTerms };
   }
 
   // 18タイプの英語→日本語マップ（type-colors.mjs の TYPE_COLORS.ja と同値）
@@ -92,9 +98,12 @@
     };
   }
 
-  function buildPokemonSearchIndex(packs, metadata = {}) {
+  function buildPokemonSearchIndex(packs, metadata = {}, options = {}) {
     const metadataEntries = metadata.entries || {};
     const aliasMap = buildAliasMap(metadata);
+    // 世代は pack.num から導出できるが、境界表は settings/gen-util.js 側にあり
+    // このファイルは classic <script> で ESM import できない。呼び出し元から渡す。
+    const genOfDex = typeof options.genOfDex === "function" ? options.genOfDex : null;
     const index = (Array.isArray(packs) ? packs : []).map((pack) => {
       const searchMetadata = normalizeMetadataEntry(metadataEntries[pack.id]);
       const metadataText = normalizeText([
@@ -107,18 +116,41 @@
         ...searchMetadata.debutGames,
         ...searchMetadata.mediaTags,
       ].filter(Boolean).join(" "));
-      return { id: pack.id, pack, text: `${packSearchText(pack)} ${metadataText}`.trim(), metadata: searchMetadata, hasMetadata: Boolean(metadataEntries[pack.id]) };
+      const derivedGeneration = genOfDex && pack.num != null ? String(genOfDex(pack.num)) : null;
+      return {
+        id: pack.id,
+        pack,
+        text: `${packSearchText(pack)} ${metadataText}`.trim(),
+        metadata: searchMetadata,
+        derivedGeneration,
+        hasMetadata: Boolean(metadataEntries[pack.id]),
+      };
     });
     Object.defineProperty(index, "__pokemonSearchAliasMap", { value: aliasMap, enumerable: false });
     return index;
   }
 
+  // search-metadata.json のエントリは意図的に疎（全 pack を網羅しない）。
+  // types / regions / generations は pack 自身が持つ情報から導けるので、
+  // メタデータに無い pack も facet 一致させる。これが無いと「みず」で検索した時に
+  // メタデータ登録済みの1件しか出ず、タイプチップ（147件）と結果が食い違う。
   function facetMatches(entry, facet, value) {
     const metadata = entry.metadata;
-    if (facet === "types") return metadata.types.includes(value);
+    if (facet === "types") {
+      if (metadata.types.includes(value)) return true;
+      const packTypes = Array.isArray(entry.pack.types) ? entry.pack.types : [];
+      const wanted = String(value).toLowerCase();
+      return packTypes.some((type) => String(type).toLowerCase() === wanted);
+    }
+    if (facet === "regions") {
+      if (metadata.region === value) return true;
+      return entry.pack.region != null && String(entry.pack.region) === String(value);
+    }
+    if (facet === "generations") {
+      if (metadata.generation === value) return true;
+      return entry.derivedGeneration != null && entry.derivedGeneration === String(value);
+    }
     if (facet === "traits") return metadata.traits.includes(value);
-    if (facet === "generations") return metadata.generation === value;
-    if (facet === "regions") return metadata.region === value;
     if (facet === "debutGames") return metadata.debutGames.includes(value);
     if (facet === "mediaTags") return metadata.mediaTags.includes(value);
     return false;
@@ -141,8 +173,9 @@
     if (parsed.facets.length === 0 && parsed.nameTerms.length === 0) {
       return (Array.isArray(index) ? index : []).map((entry) => ({ id: entry.id, score: 0, parsed }));
     }
+    const groups = parsed.facetGroups || parsed.facets.map((facet) => [facet]);
     return (Array.isArray(index) ? index : [])
-      .filter((entry) => parsed.facets.every((facet) => facetMatches(entry, facet.facet, facet.value)))
+      .filter((entry) => groups.every((group) => group.some((facet) => facetMatches(entry, facet.facet, facet.value))))
       .filter((entry) => parsed.nameTerms.every((term) => entry.text.includes(term)))
       .map((entry) => ({ id: entry.id, score: scoreEntry(entry, parsed), parsed }))
       .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));

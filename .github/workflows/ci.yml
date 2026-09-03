@@ -74,6 +74,42 @@ jobs:
       - run: npm test
       - run: npm run test:rust
 
+  ui-render:
+    name: UI render (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      # 実 BrowserWindow を描画する gate。Linux は仮想ディスプレイが必要。
+      - name: Render gates (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          xvfb-run -a npm run verify:notification
+          xvfb-run -a npm run verify:overlay-render
+          xvfb-run -a npm run verify:settings-render
+
+      - name: Render gates (Windows / macOS)
+        if: runner.os != 'Linux'
+        run: |
+          npm run verify:notification
+          npm run verify:overlay-render
+          npm run verify:settings-render
+
   rust-wasm-artifact:
     name: Rust WASM artifact consistency
     runs-on: windows-latest
@@ -96,6 +132,10 @@ jobs:
       - run: npm ci
       - run: cargo fmt --manifest-path crates/follower_core/Cargo.toml --check
       - run: npm run build:rust
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-rust-wasm
+          path: native/pokefollower_core.wasm
       - name: Verify committed WASM is current
         run: git diff --exit-code -- native/pokefollower_core.wasm
 
