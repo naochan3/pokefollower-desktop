@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { buildPokemonSearchIndex, parsePokemonSearchQuery, searchPokemon, tokenizeQuery } from "../src/settings/search-engine.js";
+import { makePackReader } from "../src/main/pack-reader.js";
+
+const repoRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const metadata = {
   facets: {
@@ -152,5 +157,71 @@ describe("pack.types による全 Pokémon タイプ自由文検索", () => {
   it("関係ないタイプ名 'でんき' は何も返さない", () => {
     const ids = searchPokemon(typeIndex, "でんき", {}).map((r) => r.id);
     expect(ids).toHaveLength(0);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────
+// 本番のメタデータ（assets/packs/search-metadata.json）を使った回帰。
+// 上の "pack.types による..." ブロックは metadata={} で検証しているため
+// alias が facet に解決されない経路だけを通っていた。本番メタデータでは
+// 「みず」が types facet になり、facet 一致がメタデータ登録済み pack だけに
+// 絞られて 147件→1件になる不整合があった（タイプチップとの食い違い）。
+// ─────────────────────────────────────────────────────────────────
+describe("本番メタデータでの facet 検索と pack 情報の整合", () => {
+  const packReader = makePackReader(repoRoot);
+  const realPacks = packReader.readPackList();
+  const realMetadata = packReader.readSearchMetadata();
+  const GEN_BOUNDS = [151, 251, 386, 493, 649, 721, 809, 905, 1025];
+  const genOfDex = (dex) => {
+    for (let i = 0; i < GEN_BOUNDS.length; i += 1) if (dex <= GEN_BOUNDS[i]) return i + 1;
+    return GEN_BOUNDS.length;
+  };
+  const realIndex = buildPokemonSearchIndex(realPacks, realMetadata, { genOfDex });
+  const byId = new Map(realPacks.map((pack) => [pack.id, pack]));
+  const search = (query) => searchPokemon(realIndex, query, realMetadata).map((result) => result.id);
+  const normalOnly = (ids) => ids.filter((id) => !byId.get(id).region);
+
+  it.each([
+    ["みず", "water"],
+    ["ほのお", "fire"],
+    ["でんき", "electric"],
+    ["ドラゴン", "dragon"],
+  ])("タイプ名 '%s' の検索結果が pack.types による絞り込みと完全一致する", (query, type) => {
+    const expected = realPacks.filter((pack) => !pack.region && (pack.types || []).includes(type)).map((pack) => pack.id);
+    expect(normalOnly(search(query)).slice().sort()).toEqual(expected.slice().sort());
+    expect(expected.length).toBeGreaterThan(10);
+  });
+
+  it("世代名の検索結果が dex 由来の世代と一致する", () => {
+    const expected = realPacks.filter((pack) => !pack.region && genOfDex(pack.num) === 2).map((pack) => pack.id);
+    expect(normalOnly(search("第2世代")).slice().sort()).toEqual(expected.slice().sort());
+  });
+
+  it("地方名の検索結果が該当地方フォルムを全件含む", () => {
+    // 「アローラ」は generations:7 にも regions:alola にも当たる曖昧語。
+    // 1トークンの複数 facet は OR なので結果は和集合になるが、
+    // 地方フォルムが1件も落ちないことを保証する。
+    const alolaForms = realPacks.filter((pack) => pack.region === "alola").map((pack) => pack.id);
+    const hits = search("アローラ");
+    expect(alolaForms.length).toBeGreaterThan(10);
+    for (const id of alolaForms) expect(hits).toContain(id);
+  });
+
+  it("複数トークンは AND のまま（みず ひこう は両タイプ持ちだけ）", () => {
+    const ids = normalOnly(search("みず ひこう"));
+    expect(ids.length).toBeGreaterThan(0);
+    for (const id of ids) {
+      const types = byId.get(id).types || [];
+      expect(types).toContain("water");
+      expect(types).toContain("flying");
+    }
+  });
+
+  it("メタデータ未登録の pack もタイプ名で引ける", () => {
+    const unregistered = realPacks.find(
+      (pack) => !pack.region && (pack.types || []).includes("water") && !(realMetadata.entries || {})[pack.id],
+    );
+    expect(unregistered).toBeTruthy();
+    expect(search("みず")).toContain(unregistered.id);
   });
 });

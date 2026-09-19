@@ -1,0 +1,10 @@
+# native/pokefollower_core.wasm は CI で `git diff --exit-code` により
+# ソースとの一致を検証している。rustc のバージョンが変わると同じソースでも
+# 出力バイト列が変わるため、toolchain を固定して検証を再現可能にする。
+# ここを更新するときは、同じ toolchain で `npm run build:rust` を実行し、
+# native/pokefollower_core.wasm も一緒にコミットすること。
+[toolchain]
+channel = "1.98.1"
+profile = "minimal"
+components = ["rustfmt"]
+targets = ["wasm32-unknown-unknown"]

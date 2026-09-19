@@ -17,6 +17,7 @@ const { createNotificationCompanion } = require("./notification-companion.js");
 const { createCodexNotificationWatcher } = require("./codex-notification-watcher.js");
 const { defaultNotificationQueuePath } = require("./notification-queue.js");
 const { createWorkWatchSession } = require("./work-watch.js");
+const { buildTrayMenuTemplate } = require("./tray-menu.js");
 const { reactionModeForForeground } = require("./app-reactions.js");
 const { addFavoritePack, nextFavoritePack, removeFavoritePack } = require("./favorite-rotation.js");
 const { exportCodexPet } = require("./codex-pet-export.js");
@@ -415,30 +416,24 @@ async function runUpdateCheck() {
 }
 
 function refreshTrayMenu() {
-  const menu = Menu.buildFromTemplate([
-    { label: "設定を開く", click: () => getSettingsWin() },
-    { type: "separator" },
+  const template = buildTrayMenuTemplate(
+    { enabled, openAtLogin: app.getLoginItemSettings().openAtLogin },
     {
-      label: "有効", type: "checkbox", checked: enabled,
-      click: (item) => {
-        settingsStore.set({ enabled: item.checked });
-        setEnabled(item.checked);
+      openSettings: () => getSettingsWin(),
+      setEnabled: (next) => {
+        settingsStore.set({ enabled: next });
+        setEnabled(next);
         refreshTrayMenu();
       },
-    },
-    {
-      label: "自動起動", type: "checkbox",
-      checked: app.getLoginItemSettings().openAtLogin,
-      click: (item) => {
-        app.setLoginItemSettings({ openAtLogin: item.checked });
+      setOpenAtLogin: (next) => {
+        app.setLoginItemSettings({ openAtLogin: next });
         refreshTrayMenu();
       },
+      checkUpdate: () => { runUpdateCheck(); },
+      quit: () => { app.isQuitting = true; app.quit(); },
     },
-    { type: "separator" },
-    { label: "アップデートを確認", click: () => { runUpdateCheck(); } },
-    { label: "終了", click: () => { app.isQuitting = true; app.quit(); } },
-  ]);
-  tray.setContextMenu(menu);
+  );
+  tray.setContextMenu(Menu.buildFromTemplate(template));
 }
 
 function publishWorkWatchEvent(event) {
