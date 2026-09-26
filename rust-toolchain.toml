@@ -1,0 +1,9 @@
+# native/pokefollower_core.wasm を再現可能に生成するための固定 toolchain。
+# コミット済み WASM の producers セクションに記録された rustc と一致させること
+# （scripts/verify-wasm-artifact.cjs が検査する）。版を上げるときは
+# このファイルの更新と `npm run build:rust` による WASM 再生成を同じコミットで行う。
+[toolchain]
+channel = "1.96.0"
+profile = "minimal"
+components = ["rustfmt"]
+targets = ["wasm32-unknown-unknown"]
