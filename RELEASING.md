@@ -112,14 +112,18 @@ macOS はアセット名にバージョンが入るため、README では `relea
 
 - 追従位置計算は Rust crate `crates/follower_core/` で実装し、`wasm32-unknown-unknown` 向けにビルドした `native/pokefollower_core.wasm` を **リポジトリにコミット** しています。
 - `npm test` / `npm run dist` は同梱 WASM を使うだけなので、**cargo は不要**。
-- **Rust ソースを変更したときだけ**、再ビルドして WASM を更新・コミットします（cargo + `wasm32-unknown-unknown` ターゲットが必要）：
+- **Rust ソースを変更したときだけ**、再ビルドして WASM を更新・コミットします（rustup が必要）：
 
 ```bash
-rustup target add wasm32-unknown-unknown   # 初回のみ
+rustup toolchain install                    # 初回のみ。rust-toolchain.toml の固定版と wasm target を入れる
 npm run build:rust                          # crates/.../*.wasm → native/ にコピー
 git add native/pokefollower_core.wasm
 git commit -m "build: rebuild rust wasm core"
 ```
+
+- **生成 toolchain の正典はリポジトリ直下の `rust-toolchain.toml`**（現在 rustc 1.96.0 / `wasm32-unknown-unknown` / release profile / `Cargo.lock` 固定）。同じ toolchain なら OS に依らず同一バイトになる前提で、CI の `Rust WASM artifact consistency`（windows-latest）が再生成と `git diff --exit-code` で検証します。
+- rustup の proxy ではなく Homebrew 等の `cargo` が PATH で先に来ると toolchain ファイルが効かず、別版で生成されます。`rustc --version` が固定版と一致することを確認してから実行してください。
+- rustc を上げるときは `rust-toolchain.toml` の更新と WASM 再生成を**同じコミット**で行います。WASM の producers セクションに記録された rustc と固定版が食い違うと `npm run verify:wasm` が失敗します。
 
 ---
 

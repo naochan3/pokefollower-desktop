@@ -72,6 +72,13 @@ for (const command of [
   expectIncludes("required command", command);
 }
 
+// Rust toolchain は rust-toolchain.toml で固定する。浮動の stable を入れると
+// rustc 更新のたびに WASM が変わり、artifact consistency が base 由来で落ちる。
+expectIncludes("pinned rust toolchain install", "rustup toolchain install\n");
+for (const floating of ["rustup default stable", "rustup toolchain install stable"]) {
+  if (workflow.includes(floating)) errors.push(`CI must not install a floating Rust toolchain: ${floating}`);
+}
+
 for (const os of ["ubuntu-latest", "windows-latest", "macos-latest"]) {
   expectIncludes("test OS matrix", os);
 }
@@ -217,6 +224,7 @@ for (const file of [
   "scripts/verify-settings-ui.cjs",
   "scripts/verify-signing-status.cjs",
   "scripts/verify-wasm-artifact.cjs",
+  "rust-toolchain.toml",
 ]) {
   expectFile(file);
 }

@@ -198,7 +198,7 @@ npm run verify:local
 # Rust 版追従コアの同等性テスト（cargo が必要）
 npm run test:rust
 
-# Rust コアを変更したとき：WASM を再ビルドして native/ に反映（cargo + wasm32-unknown-unknown ターゲットが必要）
+# Rust コアを変更したとき：WASM を再ビルドして native/ に反映（rustup が必要。版は rust-toolchain.toml で固定）
 npm run build:rust
 ```
 
