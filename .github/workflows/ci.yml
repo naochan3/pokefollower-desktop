@@ -109,15 +109,15 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            command: npm run dist:win -- --dir --publish=never
+            command: npm run dist:win -- --dir
             platform: win32
             arch: x64
           - os: macos-latest
-            command: npm run dist:mac -- --arm64 --dir --publish=never
+            command: npm run dist:mac -- --arm64 --dir
             platform: darwin
             arch: arm64
           - os: ubuntu-latest
-            command: npm run dist:linux -- --dir --publish=never
+            command: npm run dist:linux -- --dir
             platform: linux
             arch: x64
 
