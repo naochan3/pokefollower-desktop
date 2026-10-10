@@ -15,6 +15,9 @@ async function runElectronMain() {
   const win = new BrowserWindow({
     width: 360,
     height: 240,
+    // width/height は枠込み。Linux では内容高が 213px になり bottomMargin 分岐が変わるため
+    // 内容サイズで固定して全OSで同じビューポートにする。
+    useContentSize: true,
     show: false,
     backgroundColor: "#ffffff",
     webPreferences: {
@@ -120,13 +123,13 @@ async function runElectronMain() {
 if (process.versions.electron && process.type === "browser") {
   runElectronMain().catch((error) => {
     console.error(`[verify-notification-overlay-render] ${error.stack || error.message}`);
-    process.exitCode = 1;
+    // app.quit() は Windows で process.exitCode を無視し exit 0 になる（実測）。
     const { app } = require("electron");
-    app.quit();
+    app.exit(1);
   });
 } else {
   const electron = require("electron");
-  const result = spawnSync(electron, [__filename], {
+  const result = spawnSync(electron, [__filename, ...(process.platform === "linux" ? ["--no-sandbox", "--disable-gpu"] : [])], {
     cwd: root,
     env: { ...process.env },
     stdio: "inherit",

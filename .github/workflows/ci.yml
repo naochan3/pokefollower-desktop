@@ -65,6 +65,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
+      # rust-toolchain.toml pins the compiler, components, and target for reproducible WASM.
       - name: Install pinned Rust toolchain
         run: |
           rustup toolchain install
@@ -73,6 +74,43 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run test:rust
+
+  ui-render:
+    name: UI render (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      # 実 BrowserWindow を描画する gate。Linux は仮想ディスプレイが必要。
+      - name: Render gates (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          xvfb-run -a npm run verify:notification
+          xvfb-run -a npm run verify:overlay-render
+          xvfb-run -a npm run verify:settings-render
+
+      - name: Render gates (Windows / macOS)
+        if: runner.os != 'Linux'
+        shell: bash
+        run: |
+          npm run verify:notification
+          npm run verify:overlay-render
+          npm run verify:settings-render
 
   rust-wasm-artifact:
     name: Rust WASM artifact consistency
@@ -86,6 +124,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
+      # rust-toolchain.toml pins the compiler, components, and target for reproducible WASM.
       - name: Install pinned Rust toolchain with WASM target
         run: |
           rustup toolchain install
@@ -94,6 +133,10 @@ jobs:
       - run: npm ci
       - run: cargo fmt --manifest-path crates/follower_core/Cargo.toml --check
       - run: npm run build:rust
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-rust-wasm
+          path: native/pokefollower_core.wasm
       - name: Verify committed WASM is current
         run: git diff --exit-code -- native/pokefollower_core.wasm
 
@@ -109,7 +152,7 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            command: npm run dist:win -- --dir
+            command: npm run dist:win
             platform: win32
             arch: x64
           - os: macos-latest
@@ -132,3 +175,6 @@ jobs:
       - run: npm ci
       - run: ${{ matrix.command }}
       - run: node scripts/verify-package-smoke.cjs ${{ matrix.platform }} ${{ matrix.arch }}
+      - name: Verify Windows distribution
+        if: matrix.platform == 'win32'
+        run: npm run verify:win-dist

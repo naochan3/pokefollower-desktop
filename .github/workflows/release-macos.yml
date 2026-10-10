@@ -51,6 +51,11 @@ jobs:
 
       - run: node scripts/verify-package-smoke.cjs darwin arm64
 
+      # 配布物そのものを検証する。署名・zip 往復・検疫付き起動・Gatekeeper 判定・
+      # dmg のインストール導線まで見るので、v1.4.0 の「Apple Silicon で起動不能」を
+      # アップロード前に止められる。
+      - run: npm run verify:mac-dist
+
       - name: Upload macOS assets to release
         env:
           GH_TOKEN: ${{ github.token }}

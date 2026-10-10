@@ -40,15 +40,17 @@
 | `scripts/verify-roadmap-issues.cjs` | **ハードコードされた版数スナップショット**（現在のバージョン文字列・含有物見出し・README AppImage リンクの3箇所）。これがリリース毎に手で更新する隠れ手順 |
 
 ```bash
-npm version 1.0.2 --no-git-tag-version   # package.json / package-lock.json を更新
+read -r -p "新しいバージョン: " VERSION
+npm version "$VERSION" --no-git-tag-version   # package.json / package-lock.json を更新
 # 上表の README / STATUS / verify-roadmap-issues.cjs を編集
 npm run verify:local                     # verify:docs / verify:roadmap が通ることを確認
 git add -A
-git commit -m "chore(release): v1.0.2"
+git commit -m "chore(release): v${VERSION}"
 # main は保護ブランチのため PR 経由でマージ。マージ後に main でタグを打つ：
 git checkout main && git pull
-git tag v1.0.2
-git push origin v1.0.2
+VERSION=$(node -p "require('./package.json').version")
+git tag "v${VERSION}"
+git push origin "v${VERSION}"
 ```
 
 ### 2. 各 OS で配布物をビルド
@@ -69,17 +71,19 @@ npm run dist:linux  # → release/PokeFollower-<ver>.AppImage
 ### 3. GitHub Release を作成し、アセットを上げる
 
 ```bash
-# Windows 担当が新規 Release を作成（exe は安定名にリネームして添付）
-cp "release/PokeFollower Setup 1.0.2.exe" PokeFollower-Setup.exe
-gh release create v1.0.2 PokeFollower-Setup.exe --title "PokéFollower v1.0.2" --notes "変更点..."
+# package.json の現在バージョンから Release タグと成果物名を組み立てる
+VERSION=$(node -p "require('./package.json').version")
+cp "release/PokeFollower Setup ${VERSION}.exe" "PokeFollower-Setup.exe"
+gh release create "v${VERSION}" "PokeFollower-Setup.exe" --title "PokéFollower v${VERSION}" --notes "変更点..."
 ```
 
 その後、macOS 担当が **同じ Release** に Mac アセットを追加：
 
 ```bash
-gh release upload v1.0.2 \
-  "release/PokeFollower-1.0.2-arm64.dmg" \
-  "release/PokeFollower-1.0.2-arm64-mac.zip"
+VERSION=$(node -p "require('./package.json').version")
+gh release upload "v${VERSION}" \
+  "release/PokeFollower-${VERSION}-arm64.dmg" \
+  "release/PokeFollower-${VERSION}-arm64-mac.zip"
 ```
 
 GitHub の Web からでも、Releases → 対象タグ → Edit → ドラッグ&ドロップで添付できます。
@@ -89,7 +93,8 @@ workflow を手動実行して、macOS runner 上で arm64 dmg/zip を生成し�
 アップロードできます。
 
 ```bash
-gh workflow run release-macos.yml -f tag=v1.0.2
+VERSION=$(node -p "require('./package.json').version")
+gh workflow run release-macos.yml -f tag="v${VERSION}"
 ```
 
 ### 4. アセット名のルール（重要）
@@ -121,7 +126,7 @@ git add native/pokefollower_core.wasm
 git commit -m "build: rebuild rust wasm core"
 ```
 
-- **生成 toolchain の正典はリポジトリ直下の `rust-toolchain.toml`**（現在 rustc 1.96.0 / `wasm32-unknown-unknown` / release profile / `Cargo.lock` 固定）。同じ toolchain なら OS に依らず同一バイトになる前提で、CI の `Rust WASM artifact consistency`（windows-latest）が再生成と `git diff --exit-code` で検証します。
+- **生成 toolchain の正典はリポジトリ直下の `rust-toolchain.toml`**（現在 rustc 1.98.1 / `wasm32-unknown-unknown` / release profile / `Cargo.lock` 固定）。同じ toolchain なら OS に依らず同一バイトになる前提で、CI の `Rust WASM artifact consistency`（windows-latest）が再生成と `git diff --exit-code` で検証します。
 - rustup の proxy ではなく Homebrew 等の `cargo` が PATH で先に来ると toolchain ファイルが効かず、別版で生成されます。`rustc --version` が固定版と一致することを確認してから実行してください。
 - rustc を上げるときは `rust-toolchain.toml` の更新と WASM 再生成を**同じコミット**で行います。WASM の producers セクションに記録された rustc と固定版が食い違うと `npm run verify:wasm` が失敗します。
 
