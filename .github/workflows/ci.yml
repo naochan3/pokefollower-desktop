@@ -65,9 +65,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      # rust-toolchain.toml で固定したバージョンを使う（WASM 成果物の再現性のため）。
+      # rust-toolchain.toml pins the compiler, components, and target for reproducible WASM.
       - name: Install pinned Rust toolchain
-        run: rustup show active-toolchain || rustup toolchain install
+        run: |
+          rustup toolchain install
+          rustc --version
 
       - run: npm ci
       - run: npm test
@@ -121,13 +123,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      # stable が動くと同じソースでも WASM のバイト列が変わるため、
-      # rust-toolchain.toml で固定したバージョンだけを使う。
+      # rust-toolchain.toml pins the compiler, components, and target for reproducible WASM.
       - name: Install pinned Rust toolchain with WASM target
         run: |
-          rustup show active-toolchain || rustup toolchain install
-          rustup component add rustfmt
-          rustup target add wasm32-unknown-unknown
+          rustup toolchain install
+          rustc --version
 
       - run: npm ci
       - run: cargo fmt --manifest-path crates/follower_core/Cargo.toml --check
@@ -151,15 +151,15 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            command: npm run dist:win -- --dir --publish=never
+            command: npm run dist:win -- --dir
             platform: win32
             arch: x64
           - os: macos-latest
-            command: npm run dist:mac -- --arm64 --dir --publish=never
+            command: npm run dist:mac -- --arm64 --dir
             platform: darwin
             arch: arm64
           - os: ubuntu-latest
-            command: npm run dist:linux -- --dir --publish=never
+            command: npm run dist:linux -- --dir
             platform: linux
             arch: x64
 
