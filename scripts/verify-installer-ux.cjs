@@ -57,14 +57,16 @@ if (installerNameMatch) {
     );
   } else {
     // 固定していない場合は、手作業リネーム手順が RELEASING.md に残っていること。
+    const versionCommand = /VERSION=.*node -p.*package\.json.*version/;
+    const quote = String.fromCharCode(34);
+    const renameCommand = "cp " + quote + "release/" + pkg.build.productName + " Setup " + String.fromCharCode(36) + "{VERSION}.exe" + quote + " " + quote + installerName + quote;
     expect(
-      releasing.includes(installerName),
-      `RELEASING.md must document the rename to ${installerName}`
-      + "（nsis.artifactName 未設定なので、この手順だけが updater.js と README を繋いでいる）",
+      versionCommand.test(releasing),
+      "RELEASING.md must derive VERSION from package.json before publishing",
     );
     expect(
-      /cp\s+"release\/.*Setup.*\.exe"/.test(releasing),
-      "RELEASING.md must show the release/<default name> → 安定名 のリネームコマンド",
+      releasing.includes(renameCommand),
+      "RELEASING.md must rename the current-version installer with: " + renameCommand,
     );
   }
 }

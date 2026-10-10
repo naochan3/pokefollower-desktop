@@ -43,6 +43,13 @@ function expectTrue(condition, label) {
   if (!condition) fail(label);
 }
 
+function matchesWindowsVersion(actual, expected) {
+  const actualVersion = String(actual ?? "");
+  const expectedVersion = String(expected ?? "");
+  return Boolean(expectedVersion)
+    && (actualVersion === expectedVersion || actualVersion.startsWith(expectedVersion + "."));
+}
+
 // PowerShell を1回で回して JSON を受け取る（呼び出しコストが高いのでまとめる）
 function ps(script) {
   const result = spawnSync("powershell", ["-NoProfile", "-NonInteractive", "-Command", script], { encoding: "utf8" });
@@ -112,11 +119,11 @@ function main() {
     const info = psJson(`(Get-Item ${JSON.stringify(exePath)}).VersionInfo | Select-Object ProductName,ProductVersion,FileVersion,CompanyName`);
     expectTrue(!!info, "3 バージョン情報: VersionInfo が読めない");
     expectTrue(
-      String(info.ProductVersion || "").startsWith(version),
+      matchesWindowsVersion(info.ProductVersion, version),
       `3 バージョン情報: ProductVersion が package.json と一致しない (${info.ProductVersion} vs ${version})`,
     );
     expectTrue(
-      String(info.FileVersion || "").startsWith(version),
+      matchesWindowsVersion(info.FileVersion, version),
       `3 バージョン情報: FileVersion が package.json と一致しない (${info.FileVersion} vs ${version})`,
     );
     pass(`3 バージョン情報 ProductName=${info.ProductName} ProductVersion=${info.ProductVersion}`);
@@ -154,7 +161,7 @@ function main() {
       expectTrue(fs.existsSync(extractedExe), `5 zip: 展開後に ${productName}.exe が無い`);
       const info = psJson(`(Get-Item ${JSON.stringify(extractedExe)}).VersionInfo | Select-Object ProductVersion`);
       expectTrue(
-        String(info.ProductVersion || "").startsWith(version),
+        matchesWindowsVersion(info.ProductVersion, version),
         `5 zip: 展開後 exe のバージョンが一致しない (${info.ProductVersion})`,
       );
       // koffi のネイティブは asarUnpack 対象。展開後も実体があること。

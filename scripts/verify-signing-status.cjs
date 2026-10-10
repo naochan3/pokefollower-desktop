@@ -114,7 +114,7 @@ if (pkg.scripts?.["dist:mac"] !== "electron-builder --mac --config electron-buil
   fail("package.json dist:mac must use electron-builder.unsigned.cjs with --publish never");
 }
 if (pkg.scripts?.["dist:linux"] !== "electron-builder --linux --publish never") {
-  fail("package.json dist:linux must use electron-builder.unsigned.cjs with --publish never");
+  fail("package.json dist:linux must disable publishing with --publish never");
 }
 if (pkg.scripts?.["dist:mac:signed"] !== "electron-builder --mac --config electron-builder.signed.cjs") {
   fail("package.json dist:mac:signed must use electron-builder.signed.cjs");

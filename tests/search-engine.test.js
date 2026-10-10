@@ -197,6 +197,13 @@ describe("本番メタデータでの facet 検索と pack 情報の整合", () 
     expect(normalOnly(search("第2世代")).slice().sort()).toEqual(expected.slice().sort());
   });
 
+  it("地方フォルムの世代は基礎 dex 番号ではなく初出世代に従う", () => {
+    const alolanRaichuId = "retro/forms/alola/026-raichu";
+    expect(realMetadata.entries[alolanRaichuId]?.generation).toBe(7);
+    expect(search("第1世代")).not.toContain(alolanRaichuId);
+    expect(search("第7世代")).toContain(alolanRaichuId);
+  });
+
   it("地方名の検索結果が該当地方フォルムを全件含む", () => {
     // 「アローラ」は generations:7 にも regions:alola にも当たる曖昧語。
     // 1トークンの複数 facet は OR なので結果は和集合になるが、

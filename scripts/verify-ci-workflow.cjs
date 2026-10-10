@@ -31,6 +31,8 @@ for (const trigger of ["pull_request:", "push:", "workflow_dispatch:"]) {
 }
 
 expectIncludes("minimum permissions", "contents: read");
+expectIncludes("Windows render gates use fail-fast Bash", "shell: bash");
+expectIncludes("Windows distribution verifier is wired into CI", "npm run verify:win-dist");
 expectIncludes("concurrency", "cancel-in-progress: true");
 expectIncludes("node version", 'NODE_VERSION: "22.12.0"');
 expectIncludes("checkout action", "uses: actions/checkout@v7");
@@ -75,6 +77,7 @@ for (const command of [
   "name: windows-rust-wasm",
   "git diff --exit-code -- native/pokefollower_core.wasm",
   "node scripts/verify-package-smoke.cjs ${{ matrix.platform }} ${{ matrix.arch }}",
+  "npm run verify:win-dist",
 ]) {
   expectIncludes("required command", command);
 }
@@ -91,7 +94,7 @@ for (const os of ["ubuntu-latest", "windows-latest", "macos-latest"]) {
 }
 
 for (const smoke of [
-  "command: npm run dist:win -- --dir",
+  "command: npm run dist:win",
   "platform: win32",
   "arch: x64",
   "command: npm run dist:mac -- --arm64 --dir",

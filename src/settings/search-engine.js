@@ -116,7 +116,7 @@
         ...searchMetadata.debutGames,
         ...searchMetadata.mediaTags,
       ].filter(Boolean).join(" "));
-      const derivedGeneration = genOfDex && pack.num != null ? String(genOfDex(pack.num)) : null;
+      const derivedGeneration = genOfDex && pack.num != null && !pack.region ? String(genOfDex(pack.num)) : null;
       return {
         id: pack.id,
         pack,

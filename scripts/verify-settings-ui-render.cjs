@@ -16,6 +16,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
+const readConsoleMessage = require(path.join(__dirname, "lib", "console-message.cjs"));
 
 const root = path.join(__dirname, "..");
 const shotsDir = process.env.PF_UI_SHOTS_DIR || "";
@@ -166,9 +167,10 @@ async function runElectronMain() {
   });
 
   const consoleErrors = [];
-  win.webContents.on("console-message", (event) => {
-    if (event.level !== "error") return;
-    const text = String(event.message || "");
+  win.webContents.on("console-message", (...args) => {
+    const details = readConsoleMessage(...args);
+    if (!details.isError) return;
+    const text = details.message;
     // タイル画像の候補フォールバック（img.onerror）は仕様上の 404 なので除外する。
     if (/ERR_FILE_NOT_FOUND|Failed to load resource/.test(text)) return;
     consoleErrors.push(text);
@@ -192,12 +194,39 @@ async function runElectronMain() {
     await new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  async function reloadAndWait() {
+    await new Promise((resolve, reject) => {
+      let timeout;
+      const cleanup = () => {
+        clearTimeout(timeout);
+        win.webContents.removeListener("did-finish-load", onFinished);
+        win.webContents.removeListener("did-fail-load", onFailed);
+      };
+      const onFinished = () => {
+        cleanup();
+        resolve();
+      };
+      const onFailed = (_event, errorCode, errorDescription, _validatedURL, isMainFrame) => {
+        if (isMainFrame === false) return;
+        cleanup();
+        reject(new Error("settings page reload failed (" + errorCode + "): " + errorDescription));
+      };
+      win.webContents.once("did-finish-load", onFinished);
+      win.webContents.on("did-fail-load", onFailed);
+      timeout = setTimeout(() => {
+        cleanup();
+        reject(new Error("timeout waiting for settings page reload"));
+      }, 20000);
+      win.reload();
+    });
+  }
+
   // シナリオごとに settings を差し替えて再読み込みする（40件の操作を1連鎖にしない）。
   async function load(overrides = {}) {
     settings = baseSettings(overrides);
     patches.length = 0;
     calls.length = 0;
-    if (win.webContents.getURL()) win.reload();
+    if (win.webContents.getURL()) await reloadAndWait();
     else await win.loadFile(path.join(root, "src", "settings", "settings.html"));
     if (shotScale !== 1) win.webContents.setZoomFactor(shotScale);
     await waitFor(`document.querySelectorAll("#grid .tile").length > 0`, "grid to build");

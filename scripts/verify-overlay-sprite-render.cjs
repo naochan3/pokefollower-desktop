@@ -12,6 +12,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
+const readConsoleMessage = require(path.join(__dirname, "lib", "console-message.cjs"));
 
 const root = path.join(__dirname, "..");
 const shotsDir = process.env.PF_OVERLAY_SHOTS_DIR || "";
@@ -83,8 +84,9 @@ async function runElectronMain() {
   });
 
   const consoleErrors = [];
-  win.webContents.on("console-message", (event) => {
-    if (event.level === "error") consoleErrors.push(String(event.message || ""));
+  win.webContents.on("console-message", (...args) => {
+    const details = readConsoleMessage(...args);
+    if (details.isError) consoleErrors.push(details.message);
   });
 
   await win.loadFile(path.join(root, "src", "overlay", "overlay.html"));

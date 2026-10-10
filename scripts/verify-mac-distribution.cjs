@@ -17,6 +17,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { execFileSync, spawn, spawnSync } = require("node:child_process");
+const waitForProcessExit = require(path.join(__dirname, "lib", "wait-for-process-exit.cjs"));
 
 const root = path.join(__dirname, "..");
 const releaseDir = path.join(root, "release");
@@ -59,7 +60,7 @@ function plist(file, key) {
   return result.status === 0 ? result.out : null;
 }
 
-function main() {
+async function main() {
   if (process.platform !== "darwin") {
     console.log("[verify-mac-distribution] skip: macOS 以外では検証できない（配布物の署名判定に codesign/spctl が必要）");
     return;
@@ -152,20 +153,15 @@ function main() {
           POKEFOLLOWER_TEST_USER_DATA_DIR: userDataDir,
         },
       });
-      let exited = null;
-      child.on("exit", (code, signal) => { exited = { code, signal }; });
-      const deadline = Date.now() + launchMs;
-      while (Date.now() < deadline && exited === null) {
-        execFileSync("sleep", ["0.2"]);
-      }
-      const alive = exited === null;
+      const exitState = await waitForProcessExit(child, launchMs);
+      const alive = exitState === null;
       try { child.kill("SIGTERM"); } catch (_) { /* 既に終了 */ }
       try { execFileSync("pkill", ["-f", extracted], { stdio: "ignore" }); } catch (_) { /* 残骸なし */ }
       fs.rmSync(userDataDir, { recursive: true, force: true });
       expectTrue(
         alive,
-        `6 検疫付き起動: ${Math.round(launchMs / 1000)}秒で終了した (${JSON.stringify(exited)})。`
-        + " 署名が無効で AMFI に SIGKILL されている可能性が高い（v1.4.0 の症状）",
+        "6 検疫付き起動: " + Math.round(launchMs / 1000) + "秒で終了した ("
+        + JSON.stringify(exitState) + ")。署名が無効で AMFI に SIGKILL されている可能性が高い（v1.4.0 の症状）",
       );
       pass(`6 検疫フラグ付きコピーが ${Math.round(launchMs / 1000)}秒生存（AMFI の署名強制を通る）`);
     }
@@ -234,9 +230,7 @@ function main() {
   for (const note of notes) console.log(`  note: ${note}`);
 }
 
-try {
-  main();
-} catch (error) {
-  console.error(`[verify-mac-distribution] ${error.message}`);
+main().catch((error) => {
+  console.error("[verify-mac-distribution] " + error.message);
   process.exit(1);
-}
+});
