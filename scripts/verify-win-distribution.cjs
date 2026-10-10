@@ -52,7 +52,9 @@ function matchesWindowsVersion(actual, expected) {
 
 // PowerShell を1回で回して JSON を受け取る（呼び出しコストが高いのでまとめる）
 function ps(script) {
-  const result = spawnSync("powershell", ["-NoProfile", "-NonInteractive", "-Command", script], { encoding: "utf8" });
+  // GitHub Actions runs pwsh; keep its module path paired with PowerShell 7 instead of Windows PowerShell 5.1.
+  const executable = process.env.GITHUB_ACTIONS === "true" ? "pwsh" : "powershell";
+  const result = spawnSync(executable, ["-NoProfile", "-NonInteractive", "-Command", script], { encoding: "utf8" });
   const out = `${result.stdout || ""}`.trim();
   if (result.status !== 0) {
     fail(`powershell failed (${result.status}): ${`${result.stderr || ""}`.trim() || out}`);
