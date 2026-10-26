@@ -139,7 +139,9 @@ if (process.versions.electron && process.type === "browser") {
     delete env.ELECTRON_RUN_AS_NODE;
     const result = spawnSync(require("electron"), [
       __filename, "--ozone-platform=x11", "--disable-gpu", `--force-device-scale-factor=${scale}`,
-      ...(process.getuid?.() === 0 ? ["--no-sandbox"] : []),
+      // Hosted CI has no configured SUID helper; only this isolated test process
+      // uses the same no-sandbox convention as the existing render verifiers.
+      ...(process.env.CI === "true" || process.getuid?.() === 0 ? ["--no-sandbox"] : []),
     ], { cwd: root, env, stdio: "inherit", timeout: 45000 });
     if (result.error) console.error(`[verify-x11-click-through] ${result.error.message}`);
     process.exitCode = result.status ?? 1;
