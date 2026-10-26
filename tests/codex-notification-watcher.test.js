@@ -1,11 +1,28 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createCodexNotificationWatcher } from "../src/main/codex-notification-watcher.js";
 
 describe("codex-notification-watcher", () => {
+  const watchers = [];
+  function createWatcher(options) {
+    const watcher = createCodexNotificationWatcher(options);
+    watchers.push(watcher);
+    return watcher;
+  }
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => {
+    try {
+      for (const watcher of watchers.splice(0)) watcher.stop();
+      expect(vi.getTimerCount()).toBe(0);
+      vi.advanceTimersByTime(240);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("設定OFFではwatchを開始せず、ONで開始し、OFFで停止する", () => {
     const calls = [];
     let enabled = false;
-    const watcher = createCodexNotificationWatcher({
+    const watcher = createWatcher({
       queuePath: "/tmp/pf-codex.jsonl",
       getSettings: () => ({ notificationCompanionEnabled: enabled }),
       publish: () => true,
@@ -33,7 +50,7 @@ describe("codex-notification-watcher", () => {
     const timers = [];
     const published = [];
     let currentOffset = 0;
-    const watcher = createCodexNotificationWatcher({
+    const watcher = createWatcher({
       queuePath: "/tmp/pf-codex.jsonl",
       getSettings: () => ({ notificationCompanionEnabled: true }),
       publish: (n) => published.push(n),
@@ -68,7 +85,7 @@ describe("codex-notification-watcher", () => {
 
   it("起動時は既存queue本文をパースせずoffsetだけ合わせる", () => {
     const calls = [];
-    const watcher = createCodexNotificationWatcher({
+    const watcher = createWatcher({
       queuePath: "/tmp/pf-codex.jsonl",
       getSettings: () => ({ notificationCompanionEnabled: true }),
       publish: () => {},
@@ -88,6 +105,11 @@ describe("codex-notification-watcher", () => {
 
     watcher.sync();
     watcher.handleChange();
+    expect(calls).toEqual(["stat"]);
+    expect(vi.getTimerCount()).toBe(1);
+    watcher.stop();
+    expect(vi.getTimerCount()).toBe(0);
+    vi.advanceTimersByTime(240);
     expect(calls).toEqual(["stat"]);
   });
 });
