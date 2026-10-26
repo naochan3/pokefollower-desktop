@@ -31,6 +31,8 @@ for (const trigger of ["pull_request:", "push:", "workflow_dispatch:"]) {
 }
 
 expectIncludes("minimum permissions", "contents: read");
+expectIncludes("Windows render gates use fail-fast Bash", "shell: bash");
+expectIncludes("Windows distribution verifier is wired into CI", "npm run verify:win-dist");
 expectIncludes("concurrency", "cancel-in-progress: true");
 expectIncludes("node version", 'NODE_VERSION: "22.12.0"');
 expectIncludes("checkout action", "uses: actions/checkout@v7");
@@ -42,7 +44,7 @@ expectDependabotIncludes("actions ecosystem", 'package-ecosystem: "github-action
 expectDependabotIncludes("root directory", 'directory: "/"');
 expectDependabotIncludes("weekly schedule", 'interval: "weekly"');
 
-for (const job of ["static-checks:", "unit-tests:", "rust-wasm-artifact:", "package-smoke:"]) {
+for (const job of ["static-checks:", "unit-tests:", "ui-render:", "rust-wasm-artifact:", "package-smoke:"]) {
   expectIncludes("required job", job);
 }
 
@@ -64,10 +66,18 @@ for (const command of [
   "npm run verify:wasm",
   "npm test",
   "npm run test:rust",
+  // 実描画 gate（ui-render job）。Linux は xvfb 必須なので分岐ごと固定する。
+  "xvfb-run -a npm run verify:notification",
+  "xvfb-run -a npm run verify:overlay-render",
+  "xvfb-run -a npm run verify:settings-render",
+  "npm run verify:overlay-render",
+  "npm run verify:settings-render",
   "cargo fmt --manifest-path crates/follower_core/Cargo.toml --check",
   "npm run build:rust",
+  "name: windows-rust-wasm",
   "git diff --exit-code -- native/pokefollower_core.wasm",
   "node scripts/verify-package-smoke.cjs ${{ matrix.platform }} ${{ matrix.arch }}",
+  "npm run verify:win-dist",
 ]) {
   expectIncludes("required command", command);
 }
@@ -84,13 +94,13 @@ for (const os of ["ubuntu-latest", "windows-latest", "macos-latest"]) {
 }
 
 for (const smoke of [
-  "command: npm run dist:win -- --dir --publish=never",
+  "command: npm run dist:win",
   "platform: win32",
   "arch: x64",
-  "command: npm run dist:mac -- --arm64 --dir --publish=never",
+  "command: npm run dist:mac -- --arm64 --dir",
   "platform: darwin",
   "arch: arm64",
-  "command: npm run dist:linux -- --dir --publish=never",
+  "command: npm run dist:linux -- --dir",
   "platform: linux",
 ]) {
   expectIncludes("package smoke matrix", smoke);
@@ -110,6 +120,8 @@ if (!pkg.scripts || !pkg.scripts["verify:local"]) {
     "npm run verify:ipc",
     "npm run verify:notification",
     "npm run verify:overlay",
+    "npm run verify:overlay-render",
+    "npm run verify:settings-render",
     "npm run verify:platform",
     "npm run verify:roadmap",
     "npm run verify:runtime",
@@ -121,6 +133,19 @@ if (!pkg.scripts || !pkg.scripts["verify:local"]) {
     if (!pkg.scripts["verify:local"].includes(command)) {
       errors.push(`package.json verify:local must include ${command}`);
     }
+  }
+}
+
+// リリース経路: macOS 配布物は署名/起動/Gatekeeper まで検証してからアップロードする。
+// AGENTS.md の Release Safety（未署名パッケージは publish 無効）も両方の面で守る。
+const releaseMacWorkflow = fs.readFileSync(path.join(root, ".github", "workflows", "release-macos.yml"), "utf8");
+for (const text of ["npm run verify:mac-dist", "node scripts/verify-package-smoke.cjs darwin arm64", "--publish never", "mac-fix.command"]) {
+  if (!releaseMacWorkflow.includes(text)) errors.push(`release-macos workflow missing: ${text}`);
+}
+for (const script of ["dist", "dist:win", "dist:mac", "dist:linux"]) {
+  const command = pkg.scripts?.[script] || "";
+  if (!/--publish[ =]never/.test(command)) {
+    errors.push(`package.json ${script} must keep publish disabled with --publish never (AGENTS.md Release Safety)`);
   }
 }
 
@@ -219,6 +244,13 @@ for (const file of [
   "scripts/verify-ipc-routing.cjs",
   "scripts/verify-notification-overlay-render.cjs",
   "scripts/verify-overlay-cache.cjs",
+  "scripts/verify-overlay-sprite-render.cjs",
+  "scripts/verify-settings-ui-render.cjs",
+  "scripts/verify-mac-distribution.cjs",
+  "scripts/verify-win-distribution.cjs",
+  "src/main/tray-menu.js",
+  "tests/tray-menu.test.js",
+  "mac-fix.command",
   "scripts/verify-roadmap-issues.cjs",
   "scripts/verify-runtime-guards.cjs",
   "scripts/verify-settings-ui.cjs",
