@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -60,7 +60,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
@@ -89,12 +89,22 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
       - run: npm ci
+
+      - name: Install X11 input acceptance tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y xdotool
+
+      - name: Verify native X11 click-through after bounds changes
+        if: runner.os == 'Linux'
+        run: |
+          PF_X11_SCALE=1 xvfb-run -a -s "-screen 0 1920x1080x24" npm run verify:x11-click-through
+          PF_X11_SCALE=2 xvfb-run -a -s "-screen 0 1920x1080x24" npm run verify:x11-click-through
 
       # 実 BrowserWindow を描画する gate。Linux は仮想ディスプレイが必要。
       - name: Render gates (Linux)
@@ -119,7 +129,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
@@ -167,7 +177,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm

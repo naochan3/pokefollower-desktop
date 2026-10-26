@@ -33,6 +33,7 @@
     "verify:mac-dist": "node scripts/verify-mac-distribution.cjs",
     "verify:notification": "node scripts/verify-notification-overlay-render.cjs",
     "verify:overlay": "node scripts/verify-overlay-cache.cjs",
+    "verify:x11-click-through": "node scripts/verify-x11-click-through.cjs",
     "verify:overlay-render": "node scripts/verify-overlay-sprite-render.cjs",
     "verify:settings-render": "node scripts/verify-settings-ui-render.cjs",
     "verify:platform": "node scripts/verify-platform-support.cjs",
@@ -58,14 +59,14 @@
     "verify:win-dist": "node scripts/verify-win-distribution.cjs"
   },
   "devDependencies": {
-    "electron": "^42.4.1",
+    "electron": "^43.7.6",
     "electron-builder": "^26.15.3",
     "fast-xml-parser": "^5.11.1",
     "image-size": "^2.0.2",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   },
   "optionalDependencies": {
-    "sharp": "^0.35.2"
+    "sharp": "^0.35.4"
   },
   "build": {
     "appId": "com.naochan3.pokefollower",
@@ -113,6 +114,6 @@
     }
   },
   "dependencies": {
-    "koffi": "^3.0.2"
+    "koffi": "^3.1.1"
   }
 }
