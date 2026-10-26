@@ -62,7 +62,7 @@
     "electron-builder": "^26.15.3",
     "fast-xml-parser": "^5.11.1",
     "image-size": "^2.0.2",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   },
   "optionalDependencies": {
     "sharp": "^0.35.4"
