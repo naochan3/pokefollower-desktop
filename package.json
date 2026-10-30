@@ -59,7 +59,7 @@
     "verify:win-dist": "node scripts/verify-win-distribution.cjs"
   },
   "devDependencies": {
-    "electron": "^43.7.6",
+    "electron": "^45.0.0",
     "electron-builder": "^26.15.3",
     "fast-xml-parser": "^5.11.1",
     "image-size": "^2.0.2",
