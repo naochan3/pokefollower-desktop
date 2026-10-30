@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "electron": "^43.7.6",
-    "electron-builder": "^26.15.3",
+    "electron-builder": "^26.18.0",
     "fast-xml-parser": "^5.11.1",
     "image-size": "^2.0.2",
     "vitest": "^4.1.10"
