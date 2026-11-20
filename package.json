@@ -114,6 +114,6 @@
     }
   },
   "dependencies": {
-    "koffi": "^3.3.7"
+    "koffi": "^3.3.8"
   }
 }
